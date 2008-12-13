@@ -1,71 +1,46 @@
 <?php
 
-class Taxonomy_rank_model extends Model
+class Taxonomy_rank_model extends BioModel
 {
-  public static $table = 'taxonomy_rank';
-
   function Taxonomy_rank_model()
   {
-    parent::Model();
+    parent::BioModel('taxonomy_rank');
   }
 
   function get_ranks()
   {
-    return $this->db->get(self::$table)->result_array();
+    return $this->get_all();
   }
 
   function edit($id, $new_name)
   {
-    if($this->has($new_name)) {
+    if($this->has_name($new_name)) {
       return false;
     }
 
-    $this->db->where('id', $id);
-    $data = array(
-      'name' => $new_name,
-    );
+    $this->db->trans_start();
 
-    $this->db->update(self::$table, $data);
+    $this->update_history($id);
+    $this->edit_field($id, 'name', $new_name);
+
+    $this->db->trans_complete();
 
     return true;
   }
 
-  function get($id) {
-    $query = $this->db->get_where(self::$table, array('id' => $id));
-
-    return $query->row_array();
-  }
-
   function get_name($id)
   {
-    $this->db->select('name');
-    $query = $this->db->get_where(self::$table, array('id' => $id));
-
-    $data = $query->row_array();
-
-    return $data['name'];
+    return $this->get_field($id, 'name');
   }
 
-  function has_id($id)
+  function has_name($name)
   {
-    $query = $this->db->get_where(self::$table, array('id' => $id));
-
-    return $query->num_rows() == 1;
-  }
-
-  function has($name)
-  {
-    $query = $this->db->get_where(self::$table, array('name' => $name));
-
-    return $query->num_rows() == 1;
+    return $this->has_field('name', $name);
   }
 
   function add($name)
   {
-    $data = array('name' => $name);
-    $this->db->insert(self::$table, $data);
-
-    return $this->db->insert_id();
+    return $this->insert_data_with_history(array('name' => $name));
   }
 
   function add_array($arr)
@@ -75,11 +50,6 @@ class Taxonomy_rank_model extends Model
         $this->add($name);
       }
     }
-  }
-
-  function delete($id)
-  {
-    $this->db->delete(self::$table, array('id' => $id));
   }
 }
 

@@ -2,11 +2,9 @@
 
 class Taxonomy_model extends BioModel
 {
-  public static $table = 'taxonomy';
-
   function Taxonomy_model()
   {
-    parent::BioModel();
+    parent::BioModel('taxonomy');
   }
 
   function add($name, $rank)
@@ -16,9 +14,7 @@ class Taxonomy_model extends BioModel
       'rank_id' => $rank,
     );
 
-    $this->db->insert(self::$table, $data);
-
-    return $this->db->insert_id();
+    return $this->insert_data_with_history($data);
   }
 
   function get($id)
@@ -39,46 +35,37 @@ class Taxonomy_model extends BioModel
 
   function get_name($id)
   {
-    $this->db->select('name');
-    $query = $this->db->get_where(self::$table, array('id' => $id));
-
-    if($query->num_rows() != 1) {
-      return null;
-    }
-
-    $data = $query->row_array();
-
-    return $data['name'];
+    return $this->get_field($id, 'name');
   }
 
   function edit_name($id, $name)
   {
-    $this->db->where('id', $id);
-    $data = array(
-      'name' => $name,
-    );
+    $this->db->trans_start();
 
-    $this->db->update(self::$table, $data);
+    $this->update_history($id);
+    $this->edit_field($id, 'name', $name);
+
+    $this->db->trans_complete();
   }
 
   function edit_rank($id, $rank_id)
   {
-    $this->db->where('id', $id);
-    $data = array(
-      'rank_id' => $rank_id,
-    );
+    $this->db->trans_start();
 
-    $this->db->update(self::$table, $data);
+    $this->update_history($id);
+    $this->edit_field($id, 'rank_id', $rank_id);
+
+    $this->db->trans_complete();
   }
 
   function edit_parent($id, $parent_id)
   {
-    $this->db->where('id', $id);
-    $data = array(
-      'parent_id' => $parent_id,
-    );
+    $this->db->trans_start();
 
-    $this->db->update(self::$table, $data);
+    $this->update_history($id);
+    $this->edit_field($id, 'parent_id', $parent_id);
+
+    $this->db->trans_complete();
   }
 
   function _get_search_sql($name, $rank)
@@ -121,8 +108,8 @@ class Taxonomy_model extends BioModel
   {
     // delete all names
     $this->db->trans_start();
-    $this->db->delete('taxonomy_name', array('tax_id' => $id));
-    $this->db->delete(self::$table, array('id' => $id));
+    $this->delete_by_field('tax_id', $id, 'taxonomy_name');
+    $this->delete_id($id);
     $this->db->trans_complete();
   }
 }

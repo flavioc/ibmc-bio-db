@@ -39,8 +39,7 @@ class Rank extends BioController {
       echo $value;
     } else {
       // Name already used.
-      $row = $this->taxonomy_rank_model->get($id);
-      echo $row['name'];
+      echo $this->taxonomy_rank_model->get_name($id);
     }
   }
 
@@ -49,7 +48,7 @@ class Rank extends BioController {
       return;
     }
 
-    $this->taxonomy_rank_model->delete($id);
+    $this->taxonomy_rank_model->delete_id($id);
 
     echo build_ok();
   }
@@ -59,7 +58,7 @@ class Rank extends BioController {
       return;
     }
 
-    if($this->taxonomy_rank_model->has($name)) {
+    if($this->taxonomy_rank_model->has_name($name)) {
       echo "$name is already on the database";
     } else {
       $id = $this->taxonomy_rank_model->add($name);

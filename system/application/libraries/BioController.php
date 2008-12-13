@@ -12,6 +12,14 @@ class BioController extends Controller
     $this->user_type = $this->session->userdata('user_type');
     $this->user_id = $this->session->userdata('user_id');
     $this->is_admin = $this->user_type == 'admin';
+
+    $CI =& get_instance();
+    $CI->logged_in = $this->logged_in;
+    $CI->username = $this->username;
+    $CI->user_type = $this->user_type;
+    $CI->user_id = $this->user_id;
+    $CI->is_admin = $this->is_admin;
+
     $this->smarty = $this->biosmarty;
     $this->smarty->set_controller($this);
     $this->smarty->assign('elapsed_time', $this->benchmark->elapsed_time('total_execution_time_start', 'total_execution_time_end'));
