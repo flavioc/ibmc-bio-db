@@ -24,36 +24,29 @@
   <script>
   {literal}
   $().ready(function() {
-    var taxonomies = $('#taxonomy_id');
-    var is_visible = $.session("taxonomy_menu_visible");
-    if(is_visible == true) {
-      taxonomies.show();
-    } else {
-      taxonomies.hide();
-    }
-    $('#taxonomy_menu').click(function (event) {
-      var tax_id = $('#taxonomy_id');
-      if(taxonomies.is(':hidden')) {
-        tax_id.slideDown();
-        $.session("taxonomy_menu_visible", true);
-      } else {
-        tax_id.slideUp();
-        $.session("taxonomy_menu_visible", false);
-      }
-    });
+    toggle_menu('taxonomy');
+    toggle_menu('sequence');
+    toggle_menu('label');
   });
   {/literal}
   </script>
   <ul>
-    <li id="taxonomy_menu"><a href="#">Taxonomias</a></li>
+    <li id="taxonomy_menu"><a href="#">Taxonomies</a></li>
     <ul id="taxonomy_id">
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
       <li><a href="{site}/rank">Ranks</a></li>
       <li><a href="{site}/taxonomy/sync">Sync</a></li>
     </ul>
-    <li><a href="{site}/sequencia">Sequências</a></li>
-    <li><a href="{site}/label">Labels</a></li>
+    <li id="sequence_menu"><a href="#">Sequences</a></li>
+    <ul id="sequence_id">
+      <li><a href="{site}/sequence/list">List</a></li>
+      <li><a href="{site}/sequence/add">Add</a></li>
+    </ul>
+    <li id="label_menu"><a href="#">Labels</a></li>
+    <ul id="label_id">
+      <li><a href="{site}/label/list">List</a></li>
+    </ul>
     {if $logged_in && ($user_type == 'admin')}
       <li><a href="{site}/profile/list_all">Utilizadores</a></li>
     {/if}

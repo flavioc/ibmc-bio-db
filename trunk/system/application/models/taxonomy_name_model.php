@@ -1,66 +1,54 @@
 <?php
 
-class Taxonomy_name_model extends Model
+class Taxonomy_name_model extends BioModel
 {
-  public static $table = 'taxonomy_name';
-
   function Taxonomy_name_model()
   {
-    parent::Model();
+    parent::BioModel('taxonomy_name');
   }
 
   function get($id)
   {
-    $query = $this->db->get_where(self::$table, array('id' => $id));
-
-    if(!$query || $query->num_rows() != 1) {
-      return null;
-    }
-
-    return $query->row_array();
+    return $this->get_id($id);
   }
 
   function get_tax($tax_id)
   {
-    $query = $this->db->get_where('taxonomy_name_and_type', array('tax_id' => $tax_id));
+    return $this->get_all_by_field('tax_id', $tax_id, 'taxonomy_name_and_type');
+  }
 
-    $data = $query->result_array();
-
-    return $data;
+  function get_tax_id($id)
+  {
+    return $this->get_field($id, 'tax_id');
   }
 
   function edit_type($id, $type_id)
   {
-    $this->db->where('id', $id);
-    $data = array(
-      'type_id' => $type_id,
-    );
+    $tax = $this->get_tax_id($id);
 
-    $this->db->update(self::$table, $data);
+    $this->db->trans_start();
+
+    $this->edit_field($id, 'type_id', $type_id);
+    $this->update_history($tax, 'taxonomy');
+
+    $this->db->trans_complete();
   }
 
   function edit_name($id, $name)
   {
-    $this->db->where('id', $id);
-    $data = array(
-      'name' => $name,
-    );
+    $tax = $this->get_tax_id($id);
 
-    $this->db->update(self::$table, $data);
+    $this->db->trans_start();
+
+    $this->edit_field($id, 'name', $name);
+    $this->update_history($tax, 'taxonomy');
+
+    $this->db->trans_complete();
   }
 
   function get_name($id)
   {
-    $this->db->select('name');
-    $query = $this->db->get_where(self::$table, array('id' => $id));
-
-    if(!$query || $query->num_rows() != 1) {
-      return null;
-    }
-
-    $data = $query->row_array();
-
-    return $data['name'];
+    return $this->get_field($id, 'name');
   }
 
   function add($tax, $name, $type)
@@ -71,13 +59,18 @@ class Taxonomy_name_model extends Model
       'type_id' => $type,
     );
 
-    $this->db->insert(self::$table, $data);
+    $this->db->trans_start();
 
-    return $this->db->insert_id();
+    $ret = $this->insert_data($data);
+    $this->update_history($tax, 'taxonomy');
+
+    $this->db->trans_complete();
+
+    return $ret;
   }
 
   function delete($id)
   {
-    $this->db->delete(self::$table, array('id' => $id));
+    $this->delete_id($id);
   }
 }
