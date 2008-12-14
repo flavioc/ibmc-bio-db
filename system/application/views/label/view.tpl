@@ -59,7 +59,11 @@ $(document).ready(function() {
   <p><span class="desc">Type: </span><span id="labeltype">{$label.type}</span></p>
   <p><span class="desc">Auto Add: </span>
     <span id="labelautoadd">
+    {if $label.default}
+      {boolean value=$label.default}
+    {else}
       {form_open name=form_autoadd}{form_checkbox name=autoadd checked=$label.autoadd}{form_end}
+    {/if}
     </span>
   </p>
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
@@ -67,7 +71,6 @@ $(document).ready(function() {
 </div>
 
 {if !$label.default}
-
 
 {form_open name=form_delete to="label/delete_redirect/$label_id"}
 {form_submit name=submit_delete msg=Delete}

@@ -35,25 +35,17 @@ class Label extends BioController {
 
     $this->smarty->assign('title', 'View label');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
-    $this->assign_types();
+    $this->__assign_types();
     $this->smarty->assign('label', $label);
     $this->smarty->view('label/view');
   }
 
   function __get_types()
   {
-    $ret = array();
-    $ret[] = array('name' => 'integer');
-    $ret[] = array('name' => 'text');
-    $ret[] = array('name' => 'obj');
-    $ret[] = array('name' => 'position');
-    $ret[] = array('name' => 'ref');
-    $ret[] = array('name' => 'tax');
-
-    return $ret;
+    return build_data_array(array('integer', 'text', 'obj', 'position', 'ref', 'tax'));
   }
 
-  function assign_types()
+  function __assign_types()
   {
     $this->smarty->assign('types', $this->__get_types());
   }
@@ -72,7 +64,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('autoadd');
     $this->smarty->fetch_form_row('comment');
 
-    $this->assign_types();
+    $this->__assign_types();
 
     $this->smarty->view('label/add');
   }
@@ -89,7 +81,7 @@ class Label extends BioController {
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
-    $this->form_validation->set_rules('name', 'Name', 'trim|min_length[2]|max_length[512]');
+    $this->form_validation->set_rules('name', 'Name', 'trim|min_length[2]|max_length[255]');
 
     if($this->form_validation->run() == FALSE) {
       $errors = true;
@@ -172,7 +164,7 @@ class Label extends BioController {
     $this->load->model('label_model');
 
     $size = strlen($value);
-    if($size < 3 || $size > 512) {
+    if($size < 3 || $size > 255) {
       $name = $this->label_model->get_name($id);
       echo $name;
       return;
