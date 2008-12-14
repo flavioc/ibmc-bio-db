@@ -22,3 +22,8 @@ function build_ok()
 {
   return "ok";
 }
+
+function parse_yes($yes)
+{
+  return $yes == 'yes' ? TRUE : FALSE;
+}

@@ -51,3 +51,8 @@ function toggle_menu(what) {
       }
     });
 }
+
+function is_yes(data)
+{
+  return data == 'yes';
+}

@@ -40,12 +40,13 @@
     </ul>
     <li id="sequence_menu"><a href="#">Sequences</a></li>
     <ul id="sequence_id">
-      <li><a href="{site}/sequence/list">List</a></li>
+      <li><a href="{site}/sequence/browse">List</a></li>
       <li><a href="{site}/sequence/add">Add</a></li>
     </ul>
     <li id="label_menu"><a href="#">Labels</a></li>
     <ul id="label_id">
-      <li><a href="{site}/label/list">List</a></li>
+      <li><a href="{site}/label/add">Add new</a></li>
+      <li><a href="{site}/label/browse">List</a></li>
     </ul>
     {if $logged_in && ($user_type == 'admin')}
       <li><a href="{site}/profile/list_all">Utilizadores</a></li>

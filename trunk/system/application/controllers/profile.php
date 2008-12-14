@@ -43,13 +43,12 @@ class Profile extends BioController {
   function do_delete($id)
   {
     if(!$this->is_admin) {
-      echo "error";
       return;
     }
 
     $this->user_model->delete_user($id);
 
-    echo "ok";
+    echo build_ok();
   }
 
   function edit()

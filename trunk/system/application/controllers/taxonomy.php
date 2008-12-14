@@ -36,8 +36,6 @@ class Taxonomy extends BioController {
     $this->form_validation->set_rules('rank', 'Rank', 'trim|numeric');
 
     if($this->form_validation->run() == FALSE) {
-      $this->assign_row_data('name');
-      $this->assign_row_data('rank');
       $errors = true;
     }
 
@@ -51,6 +49,9 @@ class Taxonomy extends BioController {
     }
 
     if($errors) {
+      $this->assign_row_data('name');
+      $this->assign_row_data('rank');
+
       redirect('taxonomy/add');
     } else {
       $name = $this->get_post('name');
