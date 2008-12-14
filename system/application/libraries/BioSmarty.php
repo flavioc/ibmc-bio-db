@@ -107,13 +107,17 @@ function smarty_function_form_end($params, &$smarty)
   return '</form>';
 }
 
-function smarty_function_form_input($params, &$smarty)
+function common_input_textarea(&$data, $params)
 {
   $readonly = $params['readonly'];
   if(!$readonly) {
     $readonly = null;
   } else {
     $readonly = ($readonly == 'true') ? 'readonly' : null;
+  }
+
+  if($readonly) {
+    $data['readonly'] = $readonly;
   }
 
   $name = $params['name'];
@@ -127,14 +131,22 @@ function smarty_function_form_input($params, &$smarty)
 
   $data['id'] = $id;
 
-  if($readonly) {
-    $data['readonly'] = $readonly;
-  }
-
   $init = $params['value'];
   if($init) {
     $data['value'] = $init;
   }
+
+  $class = $params['class'];
+  if($class) {
+    $data['class'] = $class;
+  }
+}
+
+function smarty_function_form_input($params, &$smarty)
+{
+  $data = array();
+
+  common_input_textarea(&$data, $params);
 
   $max_value = $params['max'];
   if($max_value) {
@@ -146,12 +158,57 @@ function smarty_function_form_input($params, &$smarty)
     $data['size'] = $size;
   }
 
+  return form_input($data);
+}
+
+function smarty_function_form_textarea($params, &$smarty)
+{
+  $data = array();
+
+  common_input_textarea(&$data, $params);
+
+  $rows = $params['rows'];
+  if($rows) {
+    $data['rows'] = $rows;
+  }
+
+  $cols = $params['cols'];
+  if($cols) {
+    $data['cols'] = $cols;
+  }
+
+  return form_textarea($data);
+}
+
+function smarty_function_form_checkbox($params, &$smarty)
+{
+  $data = array();
+
+  $name = $params['name'];
+  $data['name'] = $name;
+
+  $id = $params['id'];
+  if(!$id) {
+    $id = $name;
+  }
+  $data['id'] = $id;
+
+  $value = $params['value'];
+  if(!$value) {
+    $value = 'yes';
+  }
+
+  $data['value'] = $value;
+
   $class = $params['class'];
-  if($class) {
+  if(!$class) {
     $data['class'] = $class;
   }
 
-  return form_input($data);
+  $checked = $params['checked'];
+  $data['checked'] = ($checked ? TRUE : FALSE);
+
+  return form_checkbox($data);
 }
 
 function smarty_function_form_select($params, &$smarty)
@@ -254,6 +311,7 @@ function smarty_function_form_row($params, &$smarty)
 
   $size = $params['size'];
   $class = $params['class'];
+  $id = $params['id'];
 
   if($type == 'password') {
     $password_data = array(
@@ -261,17 +319,37 @@ function smarty_function_form_row($params, &$smarty)
       'size' => $size,
       'class' => $class,
     );
-    $ret .= smarty_function_form_password($params, &$smarty);
+    $ret .= smarty_function_form_password($password_data, &$smarty);
   } else if($type == 'upload') {
     $upload_data = array(
       'name' => $what,
       'size' => $size,
+      'id' => $id,
       'class' => $class,
     );
-    $ret .= smarty_function_form_upload($params, &$smarty);
+    $ret .= smarty_function_form_upload($upload_data, &$smarty);
+  } else if($type == 'checkbox') {
+    $value = $params['value'];
+    $checked = $params['checked'];
+
+    $initial = $smarty->get_template_vars(build_initial_name($what));
+    if($initial) {
+      $checked = TRUE;
+    }
+
+    $check_data = array(
+      'name' => $what,
+      'class' => $class,
+      'id' => $id,
+      'value' => $value,
+      'checked' => $checked,
+    );
+
+    $ret .= smarty_function_form_checkbox($check_data, &$smarty);
   } else if($type == 'select') {
     $start = $params['start'];
-    $initial = $smarty->get_template_vars(build_initial_name($what));
+    $initial_str = build_initial_name($what);
+    $initial = $smarty->get_template_vars($initial_str);
 
     if($initial) {
       $start = $initial;
@@ -280,6 +358,7 @@ function smarty_function_form_row($params, &$smarty)
     $select_data = array(
       'name' => $what,
       'class' => $class,
+      'id' => $id,
       'start' => $start,
       'blank' => $params['blank'],
       'key' => $params['key'],
@@ -287,15 +366,24 @@ function smarty_function_form_row($params, &$smarty)
       'data' => $params['data'],
     );
 
-    $ret .= smarty_function_form_select($params, &$smarty);
+    $ret .= smarty_function_form_select($select_data, &$smarty);
   } else {
     $input_data = array(
       'name' => $what,
+      'id' => $id,
       'value' => $smarty->get_template_vars(build_initial_name($what)),
       'size' => $size,
       'class' => $class,
+      'cols' => $params['cols'],
+      'rows' => $params['rows'],
+      'maxlength' => $params['maxlength'],
     );
-    $ret .= smarty_function_form_input($input_data, $smarty);
+
+    if($type == 'textarea') {
+      $ret .= smarty_function_form_textarea($input_data, $smarty);
+    } else {
+      $ret .= smarty_function_form_input($input_data, $smarty);
+    }
   }
 
   $ret .= "\n" . smarty_function_form_label_error($label_error_data, $smarty) .  "\n";
@@ -373,6 +461,17 @@ function smarty_function_loader_pic($params, &$smarty)
   return "<img id=\"loader\" src=\"$site/images/loading.gif\" style=\"display: none;\" />";
 }
 
+function smarty_function_boolean($params, &$smarty)
+{
+  $value = $params['value'];
+
+  if($value) {
+    return 'Yes';
+  } else {
+    return 'No';
+  }
+}
+
 class BioSmarty extends Smarty
 {
   var $controller;
@@ -388,6 +487,8 @@ class BioSmarty extends Smarty
     $this->register_function('form_submit', 'smarty_function_form_submit');
     $this->register_function('form_open', 'smarty_function_form_open');
     $this->register_function('form_end', 'smarty_function_form_end');
+    $this->register_function('form_checkbox', 'smarty_function_form_checkbox');
+    $this->register_function('form_textarea', 'smarty_function_form_textarea');
     $this->register_function('form_input', 'smarty_function_form_input');
     $this->register_function('form_select', 'smarty_function_form_select');
     $this->register_function('form_row', 'smarty_function_form_row');
@@ -399,6 +500,7 @@ class BioSmarty extends Smarty
     $this->register_function('restore_delimiters', 'smarty_function_restore_delimiters');
     $this->register_function('encode_json_data', 'smarty_function_encode_json_data');
     $this->register_function('loader_pic', 'smarty_function_loader_pic');
+    $this->register_function('boolean', 'smarty_function_boolean');
 
 		$config =& get_config();
 		

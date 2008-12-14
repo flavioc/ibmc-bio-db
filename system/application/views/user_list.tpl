@@ -18,15 +18,16 @@
       var url = "{site}/profile/do_delete/" + id;
 
       $.post(url, function(data) {ldelim}
-        if(data == 'ok') {ldelim}
-          $('#tr_' + id).fadeOut("slow");
+        if(is_ok(data)) {ldelim}
+          var tr_id = build_tr_id(id);
+
+          $('#' + tr_id).fadeOut("slow");
         {rdelim} else {ldelim}
           alert("Error deleting user: " + data);
         {rdelim}
       {rdelim});
       return false;
-  {rdelim});
-    $('.deletable').confirm();
+  {rdelim}).confirm();
   {rdelim});
   </script>
 

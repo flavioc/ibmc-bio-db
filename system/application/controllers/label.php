@@ -1,0 +1,239 @@
+<?php
+
+class Label extends BioController {
+
+  function Label()
+  {
+    parent::BioController();
+  }
+
+  function browse()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+
+    $labels = $this->label_model->get_all();
+
+    $this->smarty->load_scripts(CONFIRM_SCRIPT);
+    $this->smarty->assign('title', 'View labels');
+    $this->smarty->assign('labels', $labels);
+    $this->smarty->view('label/list');
+  }
+
+  function view($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+
+    $label = $this->label_model->get($id);
+
+    $this->smarty->assign('title', 'View label');
+    $this->smarty->load_scripts(JEDITABLE_SCRIPT);
+    $this->assign_types();
+    $this->smarty->assign('label', $label);
+    $this->smarty->view('label/view');
+  }
+
+  function __get_types()
+  {
+    $ret = array();
+    $ret[] = array('name' => 'integer');
+    $ret[] = array('name' => 'text');
+    $ret[] = array('name' => 'obj');
+    $ret[] = array('name' => 'position');
+    $ret[] = array('name' => 'ref');
+    $ret[] = array('name' => 'tax');
+
+    return $ret;
+  }
+
+  function assign_types()
+  {
+    $this->smarty->assign('types', $this->__get_types());
+  }
+
+  function add()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->smarty->assign('title', 'Add label');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+
+    $this->smarty->fetch_form_row('name');
+    $this->smarty->fetch_form_row('type');
+    $this->smarty->fetch_form_row('autoadd');
+    $this->smarty->fetch_form_row('comment');
+
+    $this->assign_types();
+
+    $this->smarty->view('label/add');
+  }
+
+  function do_add()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $errors = false;
+
+    $this->load->library('input');
+    $this->load->library('form_validation');
+
+    // define form rules and validate all form fields
+    $this->form_validation->set_rules('name', 'Name', 'trim|min_length[2]|max_length[512]');
+
+    if($this->form_validation->run() == FALSE) {
+      $errors = true;
+    }
+
+    if(!$errors) {
+      $this->load->model('label_model');
+      $name = $this->get_post('name');
+
+      if($this->label_model->has($name)) {
+        $this->set_form_error('name', "Name is already being used.");
+        $errors = true;
+      }
+    }
+
+    if($errors) {
+      $this->assign_row_data('name');
+      $this->assign_row_data('type');
+      $this->assign_row_data('autoadd');
+
+      redirect('label/add');
+    } else {
+      $type = $this->get_post('type');
+      $autoadd = $this->get_post('autoadd');
+      $comment = $this->get_post('comment');
+
+      $autoadd = ($autoadd ? TRUE : FALSE);
+
+      $id = $this->label_model->add($name, $type, $autoadd, $comment);
+
+      redirect('label/view/' . $id);
+    }
+  }
+
+  function delete($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+
+    if($this->label_model->is_default($id)) {
+      return;
+    }
+
+    $this->label_model->delete($id);
+
+    echo build_ok();
+  }
+
+  function delete_redirect($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+
+    if($this->label_model->is_default($id)) {
+      return;
+    }
+
+    $this->label_model->delete($id);
+
+    redirect('label/browse');
+  }
+
+  function edit_name()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $this->load->model('label_model');
+
+    $size = strlen($value);
+    if($size < 3 || $size > 512) {
+      $name = $this->label_model->get_name($id);
+      echo $name;
+      return;
+    }
+
+    if($this->label_model->has($value)) {
+      echo $this->label_model->get_name($id);
+      return;
+    }
+
+    $this->label_model->edit_name($id, $value);
+
+    echo $value;
+  }
+
+  function edit_type()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $this->load->model('label_model');
+
+    $this->label_model->edit_type($id, $value);
+
+    echo $value;
+  }
+
+  function edit_autoadd($id, $yes)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $value = parse_yes($yes);
+
+    $this->load->model('label_model');
+
+    $this->label_model->edit_autoadd($id, $value);
+  }
+
+  function edit_comment()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $this->load->model('label_model');
+
+    $this->label_model->edit_comment($id, $value);
+
+    echo $value;
+  }
+}
