@@ -74,5 +74,6 @@ $CI = load_class('Controller');
 
 // load Model parent class
 require_once(BASEPATH.'libraries/Model'.EXT);
+require_once(APPPATH.'libraries/BioModel'.EXT);
 
 ?> 
