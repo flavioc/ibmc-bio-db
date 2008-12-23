@@ -73,4 +73,41 @@ class Taxonomy_name_model extends BioModel
   {
     $this->delete_id($id);
   }
+
+  function get_id_by_name($name)
+  {
+    return $this->get_id_by_field('name', $name);
+  }
+
+  function get_id_by_name_and_tax($tax, $name)
+  {
+    $this->db->select('id');
+    $this->db->where('tax_id', intval($tax));
+    $this->db->where('name', $name);
+
+    $data = $this->db->get($this->table)->row_array();
+
+    if($data == null) {
+      return null;
+    }
+
+    return $data['id'];
+  }
+
+  function ensure_existance($tax, $name, $type)
+  {
+    $id = $this->get_id_by_name_and_tax($tax, $name);
+
+    if($id == null) {
+      return $this->add($tax, $name, $type);
+    } else {
+      $data = array(
+        'tax_id' => $tax,
+        'type_id' => $type,
+      );
+
+      $this->edit_data($id, $data);
+      return $id;
+    }
+  }
 }

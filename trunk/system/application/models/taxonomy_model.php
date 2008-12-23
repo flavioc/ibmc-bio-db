@@ -70,12 +70,25 @@ class Taxonomy_model extends BioModel
 
   function _get_search_sql($name, $rank)
   {
-    $lower_name = strtolower($name);
+    $nocase = false;
+
+    if($nocase) {
+      $lower_name = strtolower($name);
+    } else {
+      $lower_name = $name;
+    }
 
     $sql = " FROM taxonomy_parent_rank a
       WHERE a.id IN (SELECT DISTINCT id
                     FROM taxonomy_all_names AS b
-                    WHERE LCASE(b.name) LIKE '%$lower_name%')";
+                    WHERE ";
+    if($nocase) {
+      $sql .= "LCASE(b.name)";
+    } else {
+      $sql .= "b.name";
+    }
+
+    $sql .= " LIKE '%$lower_name%') ";
 
     if($rank) {
       $sql .= " AND a.rank_id = $rank";
@@ -111,6 +124,54 @@ class Taxonomy_model extends BioModel
     $this->delete_by_field('tax_id', $id, 'taxonomy_name');
     $this->delete_id($id);
     $this->db->trans_complete();
+  }
+
+  function get_import_id($id)
+  {
+    return $this->get_id_by_field('import_id', $id);
+  }
+
+  function ensure_existance($import_id, $import_parent_id, $rank, $name)
+  {
+    $id = $this->get_import_id($import_id);
+    
+    if($id != null) {
+      $data = array(
+        'name' => $name,
+        'rank_id' => $rank,
+        'import_parent_id' => $import_parent_id,
+      );
+
+      $this->edit_data($id, $data);
+
+      return $id;
+    } else {
+      $data = array(
+        'name' => $name,
+        'rank_id' => $rank,
+        'import_id' => $import_id,
+        'import_parent_id' => $import_parent_id,
+      );
+
+      return $this->insert_data($data);
+    }
+  }
+
+  function get_import_parented()
+  {
+    $this->db->select('id, import_parent_id');
+    $this->db->where('import_parent_id IS NOT NULL');
+
+    return $this->db->get($this->table)->result_array();
+  }
+
+  function fix_imported_parent($id, $imported_parent)
+  {
+    $parent_id = $this->get_import_id($imported_parent);
+
+    $this->edit_field($id, 'parent_id', $parent_id);
+
+    return $parent_id != null;
   }
 }
 
