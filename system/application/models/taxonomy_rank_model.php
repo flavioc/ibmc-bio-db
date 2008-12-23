@@ -12,6 +12,17 @@ class Taxonomy_rank_model extends BioModel
     return $this->get_all();
   }
 
+  function get_rank_id($rank)
+  {
+    $id = $this->get_id_by_field('name', $rank);
+
+    if($id == null) {
+      return $this->add($rank);
+    } else {
+      return $id;
+    }
+  }
+
   function edit($id, $new_name)
   {
     if($this->has_name($new_name)) {

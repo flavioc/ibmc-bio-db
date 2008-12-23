@@ -18,6 +18,10 @@ class History_model extends Model
 
   function update($id)
   {
+    if($this->user_id == null) {
+      return null;
+    }
+
     $this->db->where('id', $id);
     $data = array(
       'update_user_id' => $this->user_id,
@@ -30,6 +34,10 @@ class History_model extends Model
 
   function add()
   {
+    if($this->user_id == null) {
+      return null;
+    }
+
     $data = array('update_user_id' => $this->user_id);
     $this->db->insert(self::$table, $data);
 
