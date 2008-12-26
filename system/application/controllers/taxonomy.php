@@ -139,6 +139,8 @@ class Taxonomy extends BioController {
 
   function _browse($title)
   {
+    $this->use_paging_size();
+
     $this->smarty->assign('title', 'Browse taxonomies');
     $this->smarty->assign('subtitle', $title);
     $this->smarty->load_scripts(VALIDATE_SCRIPT, APPENDDOM_SCRIPT, CONFIRM_SCRIPT);
@@ -177,13 +179,15 @@ class Taxonomy extends BioController {
 
     $name = $this->input->post('name');
     $rank = $this->input->post('rank');
+    $start = $this->input->post('start');
+    $size = $this->input->post('size');
 
     if($rank == '0') {
       $rank = null;
     }
 
     $this->load->model('taxonomy_model');
-    $result = $this->taxonomy_model->search($name, $rank);
+    $result = $this->taxonomy_model->search($name, $rank, $start, $size);
 
     echo json_encode($result);
   }
