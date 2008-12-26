@@ -78,7 +78,16 @@ class Taxonomy_model extends BioModel
       $lower_name = $name;
     }
 
-    $sql = " FROM taxonomy_parent_rank a NATURAL JOIN
+    $sql = " FROM (SELECT *
+                  FROM taxonomy_parent_rank ";
+
+    if($rank) {
+      $sql .= "WHERE rank_id = $rank";
+    }
+
+    $sql .= ") AS a";
+    
+    $sql .= " NATURAL JOIN
               (SELECT DISTINCT id
               FROM taxonomy_all_names AS b
               WHERE ";
@@ -89,13 +98,8 @@ class Taxonomy_model extends BioModel
       $sql .= "b.name";
     }
 
-    $sql .= " LIKE '%$lower_name%') AS c";
-
-    if($rank) {
-      $sql .= " AND a.rank_id = $rank";
-    }
-
-    $sql .= ' ORDER BY name ';
+    $sql .= " LIKE '%$lower_name%') AS c
+ORDER BY name";
 
     return $sql;
   }
