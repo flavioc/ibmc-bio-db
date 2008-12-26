@@ -60,12 +60,6 @@ $(document).ready(function () {
           ]
         );
 
-        var navigation = $('#navigation');
-
-        if(navigation.is(':hidden')) {
-          navigation.slideDown("slow");
-        }
-
         var rows = $.evalJSON(data);
 
         for (var i=0; i< rows.length; i++) {
@@ -122,11 +116,13 @@ $(document).ready(function () {
         var next_start = start + paging_size;
         var previous = $('#nav_previous');
         var previous_start = start - paging_size;
+        var has_next = (next_start < total);
+        var has_previous = (previous_start >= 0);
 
         next.unbind();
         previous.unbind();
 
-        if(next_start < total) {
+        if(has_next) {
           if(next.is(':hidden')) {
             next.fadeIn();
           }
@@ -140,7 +136,7 @@ $(document).ready(function () {
           }
         }
 
-        if(previous_start >= 0) {
+        if(has_previous) {
           if(previous.is(':hidden')) {
             previous.fadeIn();
           }
@@ -151,6 +147,19 @@ $(document).ready(function () {
         } else {
           if(!previous.is(':hidden')) {
             previous.fadeOut();
+          }
+        }
+
+        var navigation = $('#navigation');
+        var has_nav = (has_next || has_previous);
+
+        if(has_nav) {
+          if(navigation.is(':hidden')) {
+            navigation.slideDown("slow");
+          }
+        } else {
+          if(!navigation.is(':hidden')) {
+            navigation.hide();
           }
         }
 
