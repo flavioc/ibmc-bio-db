@@ -128,3 +128,18 @@ body>div#content div.data_show {
   margin-right: 50px;
 }
 
+body>div#content div.navigation {
+  margin-top: 7px;
+  border: 1px solid black;
+  width: 150px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding: 5px;
+}
+
+body>div#content div.navigation a:hover {
+  background: #c00;
+  color: white;
+  border: 1px dashed black;
+}
+
