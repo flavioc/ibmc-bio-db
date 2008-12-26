@@ -68,7 +68,7 @@ class Taxonomy_model extends BioModel
     $this->db->trans_complete();
   }
 
-  function _get_search_sql($name, $rank)
+  function _get_search_sql($name, $rank, $start = null, $size = null)
   {
     $nocase = false;
 
@@ -98,15 +98,19 @@ class Taxonomy_model extends BioModel
       $sql .= "b.name";
     }
 
-    $sql .= " LIKE '%$lower_name%') AS c
+    $sql .= " LIKE '$lower_name%') AS c
 ORDER BY name";
+  
+    if($start != null && $size != null) {
+      $sql .= " LIMIT $start, $size";
+    }
 
     return $sql;
   }
 
-  function search($name, $rank)
+  function search($name, $rank, $start = null, $size = null)
   {
-    $query = $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank));
+    $query = $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank, $start, $size));
 
     $data = $query->result_array();
 
