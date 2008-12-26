@@ -457,7 +457,7 @@ function smarty_function_encode_json_data($params, &$smarty)
 
 function smarty_function_loader_pic($params, &$smarty)
 {
-  $site = site_url();
+  $site = base_url();
   return "<img id=\"loader\" src=\"$site/images/loading.gif\" style=\"display: none;\" />";
 }
 
