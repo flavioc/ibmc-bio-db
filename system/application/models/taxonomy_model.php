@@ -78,17 +78,18 @@ class Taxonomy_model extends BioModel
       $lower_name = $name;
     }
 
-    $sql = " FROM taxonomy_parent_rank a
-      WHERE a.id IN (SELECT DISTINCT id
-                    FROM taxonomy_all_names AS b
-                    WHERE ";
+    $sql = " FROM taxonomy_parent_rank a NATURAL JOIN
+              (SELECT DISTINCT id
+              FROM taxonomy_all_names AS b
+              WHERE ";
+
     if($nocase) {
       $sql .= "LCASE(b.name)";
     } else {
       $sql .= "b.name";
     }
 
-    $sql .= " LIKE '%$lower_name%') ";
+    $sql .= " LIKE '%$lower_name%') AS c";
 
     if($rank) {
       $sql .= " AND a.rank_id = $rank";
@@ -136,6 +137,7 @@ class Taxonomy_model extends BioModel
     $id = $this->get_import_id($import_id);
     
     if($id != null) {
+      /*
       $data = array(
         'name' => $name,
         'rank_id' => $rank,
@@ -143,7 +145,7 @@ class Taxonomy_model extends BioModel
       );
 
       $this->edit_data($id, $data);
-
+*/
       return $id;
     } else {
       $data = array(
