@@ -127,6 +127,8 @@ function get_scientific_name($data)
 
 $nodes = new ReadFile("nodes");
 $names = new ReadFile("names");
+$ranks = array();
+$types = array();
 
 $cnt = 0;
 while($nodes->readNext()) {
@@ -136,7 +138,16 @@ while($nodes->readNext()) {
   if($names->readAllNext($id)) {
     $parent_id = intval($nodes->getData(1));
     $rank = $nodes->getData(2);
-    $rank_id = $CI->taxonomy_rank_model->get_rank_id($rank);
+    $rank_id = null;
+
+    if(array_key_exists($rank, $ranks)) {
+      $rank_id = $ranks[$rank];
+    }
+
+    if($rank_id == null) {
+      $rank_id = $CI->taxonomy_rank_model->get_rank_id($rank);
+      $ranks[$rank] = $rank_id;
+    }
 
     $names_data = $names->getAllItems();
 
@@ -149,7 +160,16 @@ while($nodes->readNext()) {
     foreach($names_data as $name) {
       if(!is_scientific_name($name)) {
         $tipo = $name[3];
-        $type_id = $CI->taxonomy_name_type_model->get_type_id($tipo);
+        $type_id = null;
+
+        if(array_key_exists($tipo, $types)) {
+          $type_id = $types[$tipo];
+        }
+
+        if($type_id == null) {
+          $type_id = $CI->taxonomy_name_type_model->get_type_id($tipo);
+          $types[$tipo] = $type_id;
+        }
 
         $CI->taxonomy_name_model->ensure_existance($real_id,
           $name[1], $type_id);
@@ -160,9 +180,6 @@ while($nodes->readNext()) {
     print("\r\b=> $cnt");
   }
 
-  /*if($cnt == 3) {
-    break;
-  }*/
 }
 
 $names->close();
@@ -186,3 +203,4 @@ foreach($taxonomies_bad_parents as $tax)
 require_once('ci_model_remote_close.php');
 
 ?> 
+
