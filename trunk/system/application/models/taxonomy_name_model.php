@@ -101,12 +101,14 @@ class Taxonomy_name_model extends BioModel
     if($id == null) {
       return $this->add($tax, $name, $type);
     } else {
+      /*
       $data = array(
         'tax_id' => $tax,
         'type_id' => $type,
       );
 
       $this->edit_data($id, $data);
+       */
       return $id;
     }
   }
