@@ -27,7 +27,16 @@ class BioController extends Controller
     $this->smarty->assign('user_id', $this->user_id);
     $this->smarty->assign('username', $this->username);
     $this->smarty->assign('user_type', $this->user_type);
+
     $this->smarty->load_scripts(JSON_SCRIPT, SESSION_SCRIPT);
+  }
+
+  function use_paging_size()
+  {
+    if($this->logged_in) {
+      $this->load->model('configuration_model');
+      $this->smarty->assign('paging_size', $this->configuration_model->get_paging_size());
+    }
   }
 
   function set_form_error($what, $msg)
