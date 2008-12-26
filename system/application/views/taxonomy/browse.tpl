@@ -7,23 +7,17 @@
 $(document).ready(function () {
 
   var base_site = "{/literal}{site}{literal}/taxonomy/";
+  var paging_size = {/literal}{$paging_size}{literal};
+  var total = 0;
+  var changed = true;
 
-  function when_submit()
+  function get_results(start)
   {
-    var rank = $('#rank').val();
-    var name = $('#name').val();
-
     var url = base_site + 'search/';
-    var url_total = base_site + 'search_total/';
-    var params = {name: name, rank: rank};
 
     show_load();
 
-    $.post(url_total, params, function(data) {
-      $('#total_results').text(data);
-    });
-
-    $.post(url, params,
+    $.post(url, get_params(start),
       function(data) {
         hide_load();
 
@@ -65,6 +59,12 @@ $(document).ready(function () {
           }
           ]
         );
+
+        var navigation = $('#navigation');
+
+        if(navigation.is(':hidden')) {
+          navigation.slideDown("slow");
+        }
 
         var rows = $.evalJSON(data);
 
@@ -118,6 +118,42 @@ $(document).ready(function () {
           ]);
         }
 
+        var next = $('#nav_next');
+        var next_start = start + paging_size;
+        var previous = $('#nav_previous');
+        var previous_start = start - paging_size;
+
+        next.unbind();
+        previous.unbind();
+
+        if(next_start < total) {
+          if(next.is(':hidden')) {
+            next.fadeIn();
+          }
+
+          next.click(function () {
+            get_results(next_start);
+          });
+        } else {
+          if(!next.is(':hidden')) {
+            next.fadeOut();
+          }
+        }
+
+        if(previous_start >= 0) {
+          if(previous.is(':hidden')) {
+            previous.fadeIn();
+          }
+
+          previous.click(function () {
+            get_results(previous_start);
+          });
+        } else {
+          if(!previous.is(':hidden')) {
+            previous.fadeOut();
+          }
+        }
+
         $('#table').fadeIn();
 
         $('.deletable').click(function() {
@@ -137,6 +173,44 @@ $(document).ready(function () {
       }
     );
   }
+
+  function get_params(start)
+  {
+    var rank = $('#rank').val();
+    var name = $('#name').val();
+
+    return {name: name, rank: rank, start: start, size: paging_size};
+  }
+
+  function get_simple_params()
+  {
+    return {name: $('#name').val(), rank: $('#rank').val()};
+  }
+
+  function when_submit()
+  {
+    var url_total = base_site + 'search_total/';
+
+    if(changed) {
+      // input changed or is a new text
+      show_load();
+
+      $.post(url_total, get_simple_params(), function(data) {
+        $('#total_results').text(data);
+        total = parseInt(data);
+        changed = false;
+        get_results(0);
+      });
+    }
+  }
+
+  function when_changing()
+  {
+    changed = true;
+  }
+
+  $('#name, #rank').change(when_changing);
+  $('#navigation').hide();
 
   $("#form_search").validate({
     rules: {
@@ -171,6 +245,10 @@ $(document).ready(function () {
 <p>
 <div id="table_data">
   
+</div>
+<div id="navigation" class="navigation">
+<a href="#" id="nav_previous">&lt;&lt; Previous</a>
+<a href="#" id="nav_next">Next &gt;&gt;</a>
 </div>
 </p>
 
