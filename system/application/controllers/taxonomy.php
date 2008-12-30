@@ -140,6 +140,7 @@ class Taxonomy extends BioController {
   function _browse($title)
   {
     $this->use_paging_size();
+    $this->use_autocomplete();
 
     $this->smarty->assign('title', 'Browse taxonomies');
     $this->smarty->assign('subtitle', $title);
@@ -210,6 +211,20 @@ class Taxonomy extends BioController {
     $this->load->model('taxonomy_model');
 
     echo $this->taxonomy_model->search_total($name, $rank);
+  }
+
+  function search_autocomplete($what, $limit, $timestamp, $rank)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('taxonomy_model');
+    $result = $this->taxonomy_model->search_field('name', $what, intval($rank), 0, intval($limit));
+
+    foreach($result as $item) {
+      echo $item['name'] . "\n";
+    }
   }
 
   function _delete($id)

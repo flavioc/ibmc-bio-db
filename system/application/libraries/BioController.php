@@ -39,6 +39,12 @@ class BioController extends Controller
     }
   }
 
+  function use_autocomplete()
+  {
+    $this->smarty->load_scripts(AUTOCOMPLETE_SCRIPT);
+    $this->smarty->load_stylesheets(AUTOCOMPLETE_THEME);
+  }
+
   function set_form_error($what, $msg)
   {
     $error_str = build_error_name($what);

@@ -117,6 +117,15 @@ ORDER BY name";
     return $data;
   }
 
+  function search_field($field, $name, $rank, $start = null, $size = null)
+  {
+    $query = $this->db->query("SELECT $field " . $this->_get_search_sql($name, $rank, $start, $size));
+
+    $data = $query->result_array();
+
+    return $data;
+  }
+
   function search_total($name, $rank)
   {
     $query = $this->db->query('SELECT count(id) AS total' . $this->_get_search_sql($name, $rank));
