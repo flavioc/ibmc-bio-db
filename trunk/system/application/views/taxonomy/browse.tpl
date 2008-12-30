@@ -219,6 +219,9 @@ $(document).ready(function () {
   }
 
   $('#name, #rank').change(when_changing);
+
+  $('#rank').change(activate_autocomplete);
+
   $('#navigation').hide();
 
   $("#form_search").validate({
@@ -235,6 +238,20 @@ $(document).ready(function () {
     submitHandler: when_submit,
     errorPlacement: basicErrorPlacement
   });
+
+  function activate_autocomplete()
+  {
+    $("#name").unbind('autocomplete').autocomplete(base_site + "search_autocomplete", {
+      width: 260,
+      minChars: 2,
+      delay: 1500,
+      scroll: true,
+      selectFirst: false,
+      extraParams: { rank: function() { return $('#rank').val(); } }
+    });
+  }
+
+  activate_autocomplete();
 });
 {/literal}
 </script>
