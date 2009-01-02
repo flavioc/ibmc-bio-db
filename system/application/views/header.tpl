@@ -27,6 +27,7 @@
     toggle_menu('taxonomy');
     toggle_menu('sequence');
     toggle_menu('label');
+    toggle_menu('user');
   });
   {/literal}
   </script>
@@ -48,9 +49,15 @@
       <li><a href="{site}/label/add">Add new</a></li>
       <li><a href="{site}/label/browse">List</a></li>
     </ul>
+    <li id="user_menu"><a href="#">Users</a></li>
+    <ul id="user_id">
+      <li><a href="{site}/profile/edit">Edit profile</a></li>
+      <li><a href="{site}/profile/settings">Settings</a></li>
     {if $logged_in && ($user_type == 'admin')}
-      <li><a href="{site}/profile/list_all">Utilizadores</a></li>
+      <li><a href="{site}/profile/list_all">List</a></li>
+      <li><a href="{site}/profile/register">Register</a></li>
     {/if}
+    </ul>
   </ul>
 
   Logged as: <a href="{site}/profile/view/{$user_id}">{$username}</a> ({$user_type})
@@ -87,7 +94,7 @@
 
 {form_submit name=login msg=Login} 
 
-<p>{anchor to="profile/register" msg=Register}</p>
+<!-- <p>{anchor to="profile/register" msg=Register}</p>-->
 
 {/if}
 
