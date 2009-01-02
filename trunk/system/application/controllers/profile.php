@@ -23,7 +23,7 @@ class Profile extends BioController {
       $this->smarty->assign('title', 'Invalid user');
     }
 
-    $this->smarty->view('view_user');
+    $this->smarty->view('user/view');
   }
 
   function list_all()
@@ -138,6 +138,13 @@ class Profile extends BioController {
       redirect('');
     }
   }
+
+  function settings()
+  {
+    $this->smarty->assign('title', 'Edit settings');
+
+    $this->smarty->view('user/settings');
+  }
 	
 	function register()
   {
@@ -154,7 +161,7 @@ class Profile extends BioController {
     $this->smarty->fetch_form_row('password2');
     $this->smarty->fetch_form_row('image');
 
-    $this->smarty->view('register');
+    $this->smarty->view('user/register');
 	}
 
   function _get_upload_config()
