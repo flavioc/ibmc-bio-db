@@ -45,7 +45,7 @@
 {/literal}
 </script>
 {form_row name=old_password msg='Current password:' type=password}
-{include file="user_form.tpl"}
+{include file=profile/form.tpl}
 </fieldset>
 {form_submit name=submit msg='Do edit'}
 {form_end}

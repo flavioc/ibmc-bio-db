@@ -44,7 +44,7 @@
 {/literal}
 </script>
 
-{include file="user_form.tpl" with_username=true}
+{include file=profile/form.tpl with_username=true}
 </fieldset>
 {form_submit name=submit msg='Do register'}
 {form_end}

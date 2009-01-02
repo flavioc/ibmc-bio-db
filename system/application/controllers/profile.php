@@ -51,7 +51,7 @@ class Profile extends BioController {
     $users = $this->user_model->get_users();
 
     $this->smarty->assign('users', $users);
-    $this->smarty->view('user_list');
+    $this->smarty->view('profile/list');
   }
 
   function do_delete($id)
@@ -86,7 +86,7 @@ class Profile extends BioController {
     $this->smarty->fetch_form_row('password2');
     $this->smarty->fetch_form_row('image');
 
-    $this->smarty->view('edit_user');
+    $this->smarty->view('profile/edit');
   }
 
   function do_edit()
