@@ -18,7 +18,7 @@ class Rank extends BioController {
     $ranks = $this->taxonomy_rank_model->get_ranks();
 
     $this->smarty->assign('ranks', $ranks);
-    $this->smarty->view('ranks');
+    $this->smarty->view('taxonomy/ranks');
   }
 
   function edit() {
