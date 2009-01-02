@@ -12,7 +12,7 @@ function convert_html_date_to_sql($date)
   $month = $vec[1];
   $year = $vec[2];
 
-  return $year . '-' . $day . '-' . $month;
+  return $year . '-' . $month . '-' . $day;
 }
 
 function convert_sql_date_to_html($date)
@@ -24,8 +24,8 @@ function convert_sql_date_to_html($date)
   }
 
   $year = $vec[0];
-  $day = $vec[1];
-  $month = $vec[2];
+  $month = $vec[1];
+  $day = $vec[2];
 
   return $day . '-' . $month . '-' . $year;
 }
