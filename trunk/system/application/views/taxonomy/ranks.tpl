@@ -1,5 +1,3 @@
-
-{include file=header.tpl}
 <h2>Rank list</h2>
 <p>
 <table class="data" id="table">
@@ -141,5 +139,3 @@
 <br />
 {form_submit name=submit_add msg=Add}
 {form_end}
-
-{include file=footer.tpl}

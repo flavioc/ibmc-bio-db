@@ -1,5 +1,3 @@
-{include file=header.tpl}
-
 <h2>{$subtitle}</h2>
 
 <script>
@@ -281,5 +279,3 @@ $(document).ready(function () {
 {if $child_id}
 <p>Search for the parent's taxonomy name and then click on the name to apply changes</p>
 {/if}
-
-{include file=footer.tpl}

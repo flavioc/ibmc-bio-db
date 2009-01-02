@@ -1,4 +1,3 @@
-{include file="header.tpl"}
 <h2>Register user</h2>
 
 {form_open to='profile/do_register' name=register_form multipart=yes}
@@ -48,5 +47,3 @@
 </fieldset>
 {form_submit name=submit msg='Do register'}
 {form_end}
-
-{include file="footer.tpl"}

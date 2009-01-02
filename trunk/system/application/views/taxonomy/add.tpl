@@ -1,5 +1,3 @@
-{include file="header.tpl"}
-
 <h2>Add taxonomy</h2>
 <script>
 {literal}
@@ -28,5 +26,3 @@
 </fieldset>
 {form_submit name=submit msg='Add'}
 {form_end}
-
-{include file="footer.tpl"}

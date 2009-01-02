@@ -1,5 +1,3 @@
-{include file="header.tpl"}
-
 <h2>View taxonomy</h2>
 
 <script>
@@ -211,5 +209,3 @@ $(document).ready(function() {
 {form_end}
 
 </p>
-
-{include file="footer.tpl"}

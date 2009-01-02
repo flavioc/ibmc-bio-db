@@ -514,7 +514,15 @@ class BioSmarty extends Smarty
     		// URL helper required
 			$this->assign("site_url", site_url()); // so we can get the full path to CI easily
 		}
-	}
+
+    $this->header = 'header.tpl';
+    $this->footer = 'footer.tpl';
+  }
+
+  function __build_template_path($file)
+  {
+    return $this->template_dir . $file;
+  }
 	
 	function view($resource_name, $params = array())   {
 		if (strpos($resource_name, '.') === false) {
@@ -531,8 +539,12 @@ class BioSmarty extends Smarty
 		if (!is_file($this->template_dir . $resource_name)) {
 			show_error("template: [$resource_name] cannot be found.");
 		}
-		
-		return parent::display($resource_name);
+
+    parent::display($this->header);
+    $ret = parent::display($resource_name);
+    parent::display($this->footer);
+
+    return $ret;
   }
 
   function set_controller($what)

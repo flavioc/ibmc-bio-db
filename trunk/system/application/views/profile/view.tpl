@@ -1,4 +1,3 @@
-{include file="header.tpl"}
 {if $user}
 <h2>User {$user.name}</h2>
 
@@ -18,5 +17,3 @@
 {else}
 <p>Invalid user id</p>
 {/if}
-
-{include file="footer.tpl"}

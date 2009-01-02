@@ -1,5 +1,3 @@
-{include file="header.tpl"}
-
 <h2>View label</h2>
 
 {assign var=label_id value=$label.id}
@@ -77,5 +75,3 @@ $(document).ready(function() {
 {form_end}
 
 {/if}
-
-{include file="footer.tpl"}

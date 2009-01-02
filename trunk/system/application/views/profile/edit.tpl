@@ -1,4 +1,3 @@
-{include file="header.tpl"}
 <h2>Edit user</h2>
 
 {form_open to='profile/do_edit' name=edit_form multipart=yes}
@@ -49,5 +48,3 @@
 </fieldset>
 {form_submit name=submit msg='Do edit'}
 {form_end}
-
-{include file="footer.tpl"}

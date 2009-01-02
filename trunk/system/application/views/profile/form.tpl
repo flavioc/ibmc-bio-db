@@ -1,4 +1,3 @@
-
 {if $with_username}
   {form_row name=username msg='Username:'}
 {/if}
@@ -28,4 +27,3 @@ $(document).ready(function() {
 {form_row name=password1 msg='Password:' type=password}
 {form_row name=password2 msg='Retype password:' type=password}
 {form_row name=image msg="User image:" type=upload}
-
