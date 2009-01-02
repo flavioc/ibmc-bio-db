@@ -1,5 +1,3 @@
-{include file=header.tpl}
-
 <h2>Label list</h2>
 <p>
 <table class="data">
@@ -54,5 +52,3 @@
 {/foreach}
 </table>
 </p>
-
-{include file=footer.tpl}

@@ -261,19 +261,5 @@ class Taxonomy extends BioController {
     $this->taxonomy_model->edit_parent($tax_id, $parent_id);
     redirect('taxonomy/view/' . $tax_id);
   }
-
-  function sync()
-  {
-    $this->smarty->assign('title', 'Sync taxonomy data');
-
-    $this->load->helper('tax_sync');
-
-    $this->load->model('taxonomy_rank_model');
-
-    $ranks = read_ranks('/home/flavio/projects/ibmc/taxdump/nodes.dmp');
-    $this->taxonomy_rank_model->add_array($ranks);
-
-    $this->smarty->view('taxonomy/sync');
-  }
 }
 

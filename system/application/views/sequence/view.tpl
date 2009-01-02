@@ -1,5 +1,3 @@
-{include file="header.tpl"}
-
 <h2>View sequence</h2>
 
 {assign var=seq_id value=$sequence.id}
@@ -43,5 +41,3 @@ $(document).ready(function() {
 {form_open name=form_delete to="sequence/delete/$seq_id"}
 {form_submit name=submit_delete msg=Delete}
 {form_end}
-
-{include file="footer.tpl"}
