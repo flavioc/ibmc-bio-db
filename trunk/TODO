@@ -1,0 +1,5 @@
+
+- Criar plugin jQuery com paginacao + sorting
+- Usa-lo nos rankings e pesquisa de taxonomias
+- Criar vista em arvore de taxonomias
+- Criar arquitectura de funcoes para labels
