@@ -75,6 +75,13 @@ class Configuration_model extends BioModel
     return true;
   }
 
+  function set_paging_size($size)
+  {
+    $this->set_key('paging-size', $size);
+
+    return $size;
+  }
+
   function get_paging_size()
   {
     $current = $this->get_key('paging-size');

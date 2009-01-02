@@ -10,7 +10,7 @@
   {if $user.birthday}
     <li>Birthday: {$user.birthday}</li>
   {/if}
-  <li>User type: {if $user.type == 'admin'}Administrador{else}Normal{/if}</li>
+  <li>User type: {if $user.user_type == 'admin'}Administrador{else}Normal{/if}</li>
 </ul>
 {if $user.id == $user_id}
 <p><a href="{site}/profile/edit">Edit profile</a></p>
