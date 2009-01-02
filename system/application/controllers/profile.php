@@ -8,12 +8,8 @@ class Profile extends BioController {
     $this->load->model('user_model');
   }
 
-  function view($id)
+  function __view($id)
   {
-    if(!$this->logged_in) {
-      return;
-    }
-
     $user = $this->user_model->get_user_by_id($id);
     $this->smarty->assign('user', $user);
 
@@ -23,7 +19,25 @@ class Profile extends BioController {
       $this->smarty->assign('title', 'Invalid user');
     }
 
-    $this->smarty->view('user/view');
+    $this->smarty->view('profile/view');
+  }
+
+  function view($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->__view($id);
+  }
+
+  function view_self()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->__view($this->user_id);
   }
 
   function list_all()
@@ -53,6 +67,10 @@ class Profile extends BioController {
 
   function edit()
   {
+    if(!$this->logged_in) {
+      return;
+    }
+
     $this->smarty->assign('title', 'Edit profile');
 
     $this->smarty->load_scripts(DATEPICKER_SCRIPT, VALIDATE_SCRIPT);
@@ -73,6 +91,10 @@ class Profile extends BioController {
 
   function do_edit()
   {
+    if(!$this->logged_in) {
+      return;
+    }
+
     $errors = false;
 
     $this->load->library('input');
@@ -135,19 +157,68 @@ class Profile extends BioController {
       $this->user_model->edit_user($this->user_id, $complete_name,
         $email, $birthday, $imagecontent, $new_password);
 
-      redirect('');
+      redirect('profile/view_self');
     }
   }
 
   function settings()
   {
-    $this->smarty->assign('title', 'Edit settings');
+    if(!$this->logged_in) {
+      return;
+    }
 
-    $this->smarty->view('user/settings');
+    $this->smarty->assign('title', 'Edit settings');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->load->model('configuration_model');
+
+    $this->smarty->fetch_form_row('paging_size', $this->configuration_model->get_paging_size());
+
+    $this->smarty->view('profile/settings');
+  }
+
+  function edit_settings()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $errors = false;
+
+    $this->load->library('input');
+    $this->load->library('form_validation');
+    $this->load->model('configuration_model');
+
+    $this->form_validation->set_rules('paging_size', 'Paging size', 'trim|required|numeric');
+
+    if($this->form_validation->run() == FALSE) {
+      $errors = true;
+      $this->assign_row_data('paging_size');
+    }
+
+    $paging_size = intval($this->get_post('paging_size'));
+
+    if(!$errors) {
+      if($paging_size < 1 || $paging_size > 1000) {
+        $this->set_form_error('paging_size', 'Paging size must be between 1 and 1000');
+        $errors = true;
+      }
+    }
+
+    if($errors) {
+      redirect('profile/settings');
+    } else {
+      $this->configuration_model->set_paging_size($paging_size);
+
+      redirect('profile/view_self');
+    }
   }
 	
 	function register()
   {
+    if(!$this->logged_in && !$this->is_admin) {
+      return;
+    }
+
     $this->smarty->assign('title', 'Register');
 
     $this->smarty->load_scripts(DATEPICKER_SCRIPT, VALIDATE_SCRIPT);
@@ -161,7 +232,7 @@ class Profile extends BioController {
     $this->smarty->fetch_form_row('password2');
     $this->smarty->fetch_form_row('image');
 
-    $this->smarty->view('user/register');
+    $this->smarty->view('profile/register');
 	}
 
   function _get_upload_config()
@@ -179,6 +250,10 @@ class Profile extends BioController {
 
   function do_register()
   {
+    if(!$this->logged_in && !$this->is_admin) {
+      return;
+    }
+
     $errors = false;
 
     $this->load->library('input');
