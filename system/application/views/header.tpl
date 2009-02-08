@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="{top_dir}/scripts/jquery-1.2.6.min.js"></script>
+<script type="text/javascript" src="{top_dir}/scripts/jquery-1.3.1.js"></script>
 <script type="text/javascript" src="{top_dir}/scripts/custom-jquery.js"></script>
 <script type="text/javascript" src="{top_dir}/scripts/functions.js"></script>
 {foreach from=$scripts item=script}
