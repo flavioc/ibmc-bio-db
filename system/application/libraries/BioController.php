@@ -45,6 +45,11 @@ class BioController extends Controller
     $this->smarty->load_stylesheets(AUTOCOMPLETE_THEME);
   }
 
+  function use_thickbox()
+  {
+    $this->smarty->load_scripts(THICKBOX_SCRIPT);
+  }
+
   function set_form_error($what, $msg)
   {
     $error_str = build_error_name($what);
