@@ -11,4 +11,5 @@ define('SESSION_SCRIPT', 'jquery.session.js');
 define('APPENDDOM_SCRIPT', 'jquery.appendDom.js');
 define('AUTOCOMPLETE_SCRIPT', 'jquery.autocomplete.js');
 define('AUTOCOMPLETE_THEME', 'jquery.autocomplete.css');
+define('THICKBOX_SCRIPT', 'jquery.thickbox.js');
 
