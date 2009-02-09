@@ -34,7 +34,18 @@ $(document).ready(function() {
     submit: "OK",
     cancel: "cancel",
     style: "inherit",
-    cols: 45,
+    cols: 50,
+    rows: 5,
+    submitdata: labeldata
+  });
+
+  $('#labelcode').editable(base_site + 'edit_code', {
+    select: true,
+    type: 'textarea',
+    submit: "OK",
+    cancel: "cancel",
+    style: "inherit",
+    cols: 50,
     rows: 5,
     submitdata: labeldata
   });
@@ -112,6 +123,11 @@ $(document).ready(function() {
   </p>
 
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
+
+  <p><span class="desc">Code: </span>
+    <span id="labelcode">{if $label.code}{$label.code}{else}---{/if}</span>
+  </p>
+
   <p><span class="desc">Comment: </span>
      <span class="comment" id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</span>
   </p>
