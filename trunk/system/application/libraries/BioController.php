@@ -28,6 +28,16 @@ class BioController extends Controller
     $this->smarty->assign('username', $this->username);
     $this->smarty->assign('user_type', $this->user_type);
 
+    $error_msg = $this->session->flashdata('error_msg');
+    if($error_msg) {
+      $this->smarty->assign('error_msg', $error_msg);
+    }
+
+    $info_msg = $this->session->flashdata('info_msg');
+    if($info_msg) {
+      $this->smarty->assign('info_msg', $info_msg);
+    }
+
     $this->smarty->load_scripts(JSON_SCRIPT, SESSION_SCRIPT);
   }
 
@@ -90,5 +100,10 @@ class BioController extends Controller
     if($with_initial) {
       $this->set_form_value($what);
     }
+  }
+
+  function set_error_message($msg)
+  {
+    $this->session->set_flashdata('error_msg', $msg);
   }
 }
