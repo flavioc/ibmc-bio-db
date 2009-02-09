@@ -54,6 +54,7 @@ $(document).ready(function() {
   enable_edit_checkbox("#autoadd", "autoadd");
   enable_edit_checkbox("#mustexist", "mustexist");
   enable_edit_checkbox("#auto_on_creation", "auto_on_creation");
+  enable_edit_checkbox("#auto_on_modification", "auto_on_modification");
 
 });
 {/literal}
@@ -93,6 +94,18 @@ $(document).ready(function() {
     {else}
       {form_open name=form_auto_on_creation}
         {form_checkbox name=auto_on_creation checked=$label.auto_on_creation}
+      {form_end}
+    {/if}
+    </span>
+  </p>
+
+  <p><span class="desc">Generate on modification: </span>
+    <span id="labelauto_on_modification">
+    {if $label.default}
+      {boolean value=$label.default}
+    {else}
+      {form_open name=form_auto_on_modification}
+        {form_checkbox name=auto_on_modification checked=$label.auto_on_modification}
       {form_end}
     {/if}
     </span>
