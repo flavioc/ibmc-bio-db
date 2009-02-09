@@ -125,7 +125,7 @@ $(document).ready(function() {
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
 
   <p><span class="desc">Code: </span>
-    <span id="labelcode">{if $label.code}{$label.code}{else}---{/if}</span>
+    <span class="code" id="labelcode">{if $label.code}{$label.code}{else}---{/if}</span>
   </p>
 
   <p><span class="desc">Comment: </span>
