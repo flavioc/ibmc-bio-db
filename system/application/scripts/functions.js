@@ -56,3 +56,20 @@ function is_yes(data)
 {
   return data == 'yes';
 }
+
+function enable_error_messages()
+{
+  var obj = $(".hide_box");
+
+  var fun = function (event) {
+    $(event.target).parent().fadeOut("slow");
+  }
+
+  obj.unbind("click").click(fun);
+}
+
+function add_new_error_message(msg)
+{
+  $("#content").prepend("<div class=\"error_msg\"><img src=\"../images/error.png\"></img>" + msg + "<a class=\"hide_box\" href=\"#\">Hide</a></div>");
+  enable_error_messages();
+}
