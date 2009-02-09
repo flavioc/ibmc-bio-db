@@ -63,6 +63,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('type');
     $this->smarty->fetch_form_row('autoadd');
     $this->smarty->fetch_form_row('mustexist');
+    $this->smarty->fetch_form_row('auto_on_creation');
     $this->smarty->fetch_form_row('comment');
 
     $this->__assign_types();
@@ -103,18 +104,22 @@ class Label extends BioController {
       $this->assign_row_data('type');
       $this->assign_row_data('autoadd');
       $this->assign_row_data('mustexist');
+      $this->assign_row_data('auto_on_creation');
 
       redirect('label/add');
     } else {
       $type = $this->get_post('type');
       $autoadd = $this->get_post('autoadd');
       $mustexist = $this->get_post('mustexist');
+      $auto_on_creation = $this->get_post('auto_on_creation');
       $comment = $this->get_post('comment');
 
       $autoadd = ($autoadd ? TRUE : FALSE);
       $mustexist = ($mustexist ? TRUE : FALSE);
+      $auto_on_creation = ($auto_on_creation ? TRUE : FALSE);
 
-      $id = $this->label_model->add($name, $type, $autoadd, $mustexist, $comment);
+      $id = $this->label_model->add($name, $type, $autoadd,
+        $mustexist, $auto_on_creation, $comment);
 
       redirect('label/view/' . $id);
     }
@@ -226,6 +231,19 @@ class Label extends BioController {
     $this->load->model('label_model');
 
     $this->label_model->edit_mustexist($id, $value);
+  }
+
+  function edit_auto_on_creation($id, $yes)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $value = parse_yes($yes);
+
+    $this->load->model('label_model');
+
+    $this->label_model->edit_auto_on_creation($id, $value);
   }
 
   function edit_comment()
