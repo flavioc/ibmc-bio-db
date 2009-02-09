@@ -53,6 +53,7 @@ $(document).ready(function() {
   // checkbox for autoadd
   enable_edit_checkbox("#autoadd", "autoadd");
   enable_edit_checkbox("#mustexist", "mustexist");
+  enable_edit_checkbox("#auto_on_creation", "auto_on_creation");
 
 });
 {/literal}
@@ -84,6 +85,19 @@ $(document).ready(function() {
     {/if}
     </span>
   </p>
+
+  <p><span class="desc">Generate on creation: </span>
+    <span id="labelauto_on_creation">
+    {if $label.default}
+      {boolean value=$label.default}
+    {else}
+      {form_open name=form_auto_on_creation}
+        {form_checkbox name=auto_on_creation checked=$label.auto_on_creation}
+      {form_end}
+    {/if}
+    </span>
+  </p>
+
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
   <p><span class="desc">Comment: </span><span id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</span></p>
 </div>
