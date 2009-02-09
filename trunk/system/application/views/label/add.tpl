@@ -26,6 +26,7 @@
 {form_row type=checkbox name=autoadd msg='Auto add:'}
 {form_row type=checkbox name=mustexist msg='Must exist:'}
 {form_row type=checkbox name=auto_on_creation msg='Generate on creation:'}
+{form_row type=checkbox name=auto_on_modification msg='Generate on modification:'}<br />
 {form_row type=textarea name=comment msg='Comment:' cols=50 rows=5}
 </fieldset>
 {form_submit name=submit msg='Add'}

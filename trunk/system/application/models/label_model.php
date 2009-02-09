@@ -12,7 +12,7 @@ class Label_model extends BioModel
   }
 
   function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
-    $comment)
+    $auto_on_modification, $comment)
   {
     $data = array(
       'name' => $name,
@@ -20,6 +20,7 @@ class Label_model extends BioModel
       'autoadd' => $autoadd,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
+      'auto_on_modification' => $auto_on_modification,
       'comment' => $comment,
     );
 
@@ -92,6 +93,16 @@ class Label_model extends BioModel
 
     $this->update_history($id);
     $this->edit_field($id, 'auto_on_creation', $auto_on_creation);
+
+    $this->db->trans_complete();
+  }
+
+  function edit_auto_on_modification($id, $auto_on_modification)
+  {
+    $this->db->trans_start();
+
+    $this->update_history($id);
+    $this->edit_field($id, 'auto_on_modification', $auto_on_modification);
 
     $this->db->trans_complete();
   }
