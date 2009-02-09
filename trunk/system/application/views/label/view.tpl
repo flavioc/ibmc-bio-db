@@ -39,13 +39,20 @@ $(document).ready(function() {
     submitdata: labeldata
   });
 
-  // checkbox for autoadd
+  function enable_edit_checkbox(dom, what)
+  {
+    var obj = $(dom);
 
-  var autoadd = $("#autoadd");
-  autoadd.click(function(){
-    var url = base_site + "edit_autoadd/" + label_id + "/" + (autoadd.is(":checked") ? "yes" : "no");
-    $.post(url);
-  });
+    obj.click(function() {
+      var url = base_site + "edit_" + what + "/" + label_id + "/" +
+            (obj.is(":checked") ? "yes" : "no");
+      $.post(url);
+    });
+  }
+
+  // checkbox for autoadd
+  enable_edit_checkbox("#autoadd", "autoadd");
+  enable_edit_checkbox("#mustexist", "mustexist");
 
 });
 {/literal}
@@ -55,12 +62,25 @@ $(document).ready(function() {
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="labelname">{$label.name}</span></p>
   <p><span class="desc">Type: </span><span id="labeltype">{$label.type}</span></p>
+
   <p><span class="desc">Auto Add: </span>
     <span id="labelautoadd">
     {if $label.default}
       {boolean value=$label.default}
     {else}
       {form_open name=form_autoadd}{form_checkbox name=autoadd checked=$label.autoadd}{form_end}
+    {/if}
+    </span>
+  </p>
+
+  <p><span class="desc">Must Exist: </span>
+    <span id="labelmustexist">
+    {if $label.default}
+      {boolean value=$label.default}
+    {else}
+      {form_open name=form_mustexist}
+        {form_checkbox name=mustexist checked=$label.must_exist}
+      {form_end}
     {/if}
     </span>
   </p>
