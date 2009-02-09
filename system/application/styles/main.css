@@ -143,3 +143,12 @@ body>div#content div.navigation a:hover {
   border: 1px dashed black;
 }
 
+body>div#content p.help {
+  font-size: 80%;
+  text-decoration: underline;
+}
+
+body>div#content span.comment {
+  font-style: italic;
+}
+
