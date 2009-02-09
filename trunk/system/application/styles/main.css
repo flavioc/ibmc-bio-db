@@ -152,3 +152,7 @@ body>div#content span.comment {
   font-style: italic;
 }
 
+body>div#content span.code {
+  font-family: "courier";
+}
+
