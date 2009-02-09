@@ -523,16 +523,13 @@ class BioSmarty extends Smarty
   {
     return $this->template_dir . $file;
   }
-	
-	function view($resource_name, $params = array())   {
+
+  function __get_resource_name($name)
+  {
+    $resource_name = $name;
+
 		if (strpos($resource_name, '.') === false) {
 			$resource_name .= '.tpl';
-		}
-		
-		if (is_array($params) && count($params)) {
-			foreach ($params as $key => $value) {
-				$this->assign($key, $value);
-			}
 		}
 		
 		// check if the template file exists.
@@ -540,11 +537,20 @@ class BioSmarty extends Smarty
 			show_error("template: [$resource_name] cannot be found.");
 		}
 
+    return $resource_name;
+  }
+
+	function view($resource_name)   {
     parent::display($this->header);
-    $ret = parent::display($resource_name);
+    $ret = parent::display($this->__get_resource_name($resource_name));
     parent::display($this->footer);
 
     return $ret;
+  }
+
+  function view_s($resource_name)
+  {
+    return parent::display($this->__get_resource_name($resource_name));
   }
 
   function set_controller($what)
