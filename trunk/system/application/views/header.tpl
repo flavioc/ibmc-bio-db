@@ -103,3 +103,14 @@
 </div>
 
 <div id="content">
+
+{if $error_msg}
+<script>
+{literal}
+  $().ready(function () {
+    add_new_error_message("{/literal}{$error_msg}{literal}");
+  });
+{/literal}
+</script>
+{/if}
+
