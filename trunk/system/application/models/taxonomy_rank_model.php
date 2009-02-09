@@ -9,6 +9,7 @@ class Taxonomy_rank_model extends BioModel
 
   function get_ranks()
   {
+    $this->db->order_by('name');
     return $this->get_all();
   }
 
