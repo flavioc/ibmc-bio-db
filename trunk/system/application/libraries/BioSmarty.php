@@ -250,7 +250,7 @@ function smarty_function_form_select($params, &$smarty)
   }
 
   $start = $params['start'];
-  if(!$start) {
+  if($start == null && $start != "0" && $start != 0) {
     $start = '1';
   }
 
