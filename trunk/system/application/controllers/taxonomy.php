@@ -148,7 +148,7 @@ class Taxonomy extends BioController {
 
     $this->smarty->assign('title', 'Browse taxonomies');
     $this->smarty->assign('subtitle', $title);
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, APPENDDOM_SCRIPT, CONFIRM_SCRIPT);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, APPENDDOM_SCRIPT, CONFIRM_SCRIPT, MYGRID_SCRIPT);
 
     $this->load->model('taxonomy_rank_model');
     $ranks = $this->taxonomy_rank_model->get_ranks();
@@ -180,12 +180,10 @@ class Taxonomy extends BioController {
       return;
     }
 
-    $this->load->library('input');
-
-    $name = $this->input->post('name');
-    $rank = $this->input->post('rank');
-    $start = $this->input->post('start');
-    $size = $this->input->post('size');
+    $name = $this->get_parameter('name');
+    $rank = $this->get_parameter('rank');
+    $start = $this->get_parameter('start');
+    $size = $this->get_parameter('size');
 
     if($rank == '0') {
       $rank = null;
@@ -203,10 +201,8 @@ class Taxonomy extends BioController {
       return;
     }
 
-    $this->load->library('input');
-
-    $name = $this->input->post('name');
-    $rank = $this->input->post('rank');
+    $name = $this->get_parameter('name');
+    $rank = $this->get_parameter('rank');
 
     if($rank == '0') {
       $rank = null;
