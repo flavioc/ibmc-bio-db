@@ -19,14 +19,6 @@ function build_tr_id(id) {
   return 'tr_' + id;
 }
 
-function show_load() {
-  $('#loader').show();
-}
-
-function hide_load() {
-  $('#loader').hide();
-}
-
 function toggle_menu(what) {
   var id = what + '_id';
   var menu = what + '_menu';
