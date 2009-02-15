@@ -139,6 +139,10 @@ class Taxonomy extends BioController {
 
   function _browse($title)
   {
+    if(!$this->logged_in) {
+      return;
+    }
+
     $this->use_paging_size();
     $this->use_autocomplete();
 
@@ -213,13 +217,19 @@ class Taxonomy extends BioController {
     echo $this->taxonomy_model->search_total($name, $rank);
   }
 
-  function search_autocomplete($what, $limit, $timestamp, $rank)
+  function search_autocomplete()
   {
     if(!$this->logged_in) {
       return;
     }
 
+    $what = $this->get_parameter('q');
+    $limit = $this->get_parameter('limit');
+    $timestamp = $this->get_parameter('timestamp');
+    $rank = $this->get_parameter('rank');
+
     $this->load->model('taxonomy_model');
+
     $result = $this->taxonomy_model->search_field('name', $what, intval($rank), 0, intval($limit));
 
     foreach($result as $item) {
@@ -241,6 +251,7 @@ class Taxonomy extends BioController {
     }
 
     $this->_delete($id);
+
     echo build_ok();
   }
 
@@ -257,8 +268,13 @@ class Taxonomy extends BioController {
 
   function set_parent($tax_id, $parent_id)
   {
+    if(!$this->logged_in) {
+      return;
+    }
+
     $this->load->model('taxonomy_model');
     $this->taxonomy_model->edit_parent($tax_id, $parent_id);
+
     redirect('taxonomy/view/' . $tax_id);
   }
 }
