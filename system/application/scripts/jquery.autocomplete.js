@@ -310,17 +310,6 @@ $.Autocompleter = function(input, options) {
 			$.Autocompleter.Selection(input, input.value.length, input.value.length);
 	};
 
-  function expandParams(params)
-  {
-    var ret = "";
-
-    $.each(params, function(key, value) {
-      ret += "/" + value;
-    });
-
-    return ret;
-  }
-
 	function receiveData(q, data) {
 		if ( data && data.length && hasFocus ) {
 			stopLoading();
@@ -348,14 +337,18 @@ $.Autocompleter = function(input, options) {
 			$.each(options.extraParams, function(key, param) {
 				extraParams[key] = typeof param == "function" ? param() : param;
 			});
-
+			
 			$.ajax({
 				// try to leverage ajaxQueue plugin to abort previous requests
 				mode: "abort",
 				// limit abortion to this input
 				port: "autocomplete" + input.name,
 				dataType: options.dataType,
-				url: options.url + "/" + lastWord(term) + "/" + options.max + expandParams(extraParams),
+				url: options.url,
+				data: $.extend({
+					q: lastWord(term),
+					limit: options.max
+				}, extraParams),
 				success: function(data) {
 					var parsed = options.parse && options.parse(data) || parse(data);
 					cache.add(term, parsed);
