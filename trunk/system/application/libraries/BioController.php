@@ -7,6 +7,8 @@ class BioController extends Controller
   function BioController()
   {
     parent::__construct();
+    parse_str($_SERVER['QUERY_STRING'], $_GET);
+
     $this->logged_in = $this->session->userdata('logged_in');
     $this->username = $this->session->userdata('username');
     $this->user_type = $this->session->userdata('user_type');
@@ -105,5 +107,14 @@ class BioController extends Controller
   function set_error_message($msg)
   {
     $this->session->set_flashdata('error_msg', $msg);
+  }
+
+  function get_parameter($what)
+  {
+    if(array_key_exists($what, $_GET)) {
+      return $_GET[$what];
+    } else {
+      return null;
+    }
   }
 }
