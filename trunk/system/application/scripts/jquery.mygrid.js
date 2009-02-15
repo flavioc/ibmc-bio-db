@@ -11,6 +11,10 @@
     $('img[@class=loader]', obj).hide();
   }
 
+  function set_results(obj, total) {
+    $('span[@class=total_results]', obj).text(total);
+  }
+
   function get_table_headers(opts) {
     var names = opts.fieldNames;
     var ret = new Array(names.length);
@@ -27,14 +31,20 @@
 
     show_loading(obj);
 
+    var params = opts.params;
+
+    if(opts.paginate) {
+      params = $.extend({
+        start: start,
+        size: opts.size
+      }, params);
+    }
+
     $.ajax({
       mode: "abort",
       port: "grid" + this.id,
       url: data_url,
-      data: $.extend({
-        start: start,
-        size: opts.size
-      }, opts.params),
+      data: params,
       success: function(data) {
         hide_loading(obj);
 
@@ -68,6 +78,11 @@
         var links = opts.links;
         var rowId = opts.rowId;
         var table = $('table[@class=data]', data_place);
+
+        if(!opts.paginate) {
+          total = rows.length;
+          set_results(obj, total);
+        }
 
         table.hide();
 
@@ -111,54 +126,56 @@
           table.appendDom([row_tag]);
         }
 
-        var next = $('a[@class=nav_next]', obj);
-        var next_start = start + opts.size;
-        var previous = $('a[@class=nav_previous]', obj);
-        var previous_start = start - opts.size;
-        var has_next = (next_start < total);
-        var has_previous = (previous_start >= 0);
+        if(opts.paginate) {
+          var next = $('a[@class=nav_next]', obj);
+          var next_start = start + opts.size;
+          var previous = $('a[@class=nav_previous]', obj);
+          var previous_start = start - opts.size;
+          var has_next = (next_start < total);
+          var has_previous = (previous_start >= 0);
 
-        next.unbind();
-        previous.unbind();
+          next.unbind();
+          previous.unbind();
 
-        if(has_next) {
-          if(next.is(':hidden')) {
-            next.fadeIn();
+          if(has_next) {
+            if(next.is(':hidden')) {
+              next.fadeIn();
+            }
+
+            next.click(function () {
+                get_results(obj, opts, total, next_start);
+            });
+          } else {
+            if(!next.is(':hidden')) {
+              next.fadeOut();
+            }
           }
 
-          next.click(function () {
-              get_results(obj, opts, total, next_start);
-          });
-        } else {
-          if(!next.is(':hidden')) {
-            next.fadeOut();
-          }
-        }
+          if(has_previous) {
+            if(previous.is(':hidden')) {
+              previous.fadeIn();
+            }
 
-        if(has_previous) {
-          if(previous.is(':hidden')) {
-            previous.fadeIn();
+            previous.click(function() {
+                get_results(obj, opts, total, previous_start);
+            });
+          } else {
+            if(!previous.is(':hidden')) {
+              previous.fadeOut();
+            }
           }
 
-          previous.click(function() {
-              get_results(obj, opts, total, previous_start);
-          });
-        } else {
-          if(!previous.is(':hidden')) {
-            previous.fadeOut();
-          }
-        }
+          var navigation = $('div[@class=navigation]', obj);
+          var has_nav = (has_next || has_previous);
 
-        var navigation = $('div[@class=navigation]', obj);
-        var has_nav = (has_next || has_previous);
-
-        if(has_nav) {
-          if(navigation.is(':hidden')) {
-            navigation.slideDown('slow');
-          }
-        } else {
-          if(!navigation.is(':hidden')) {
-            navigation.slideUp('slow');
+          if(has_nav) {
+            if(navigation.is(':hidden')) {
+              navigation.slideDown('slow');
+            }
+          } else {
+            if(!navigation.is(':hidden')) {
+              navigation.slideUp('slow');
+            }
           }
         }
 
@@ -172,45 +189,63 @@
 
     return this.each(function() {
       $this = $(this);
+
       var url_total = opts.url + '/' + opts.total;
+
+      if(this.paginate != null) {
+        opts.paginate = this.paginate;
+      }
 
       show_loading($this);
 
-      $.ajax({
-        mode: "abort",
-        port: "grid" + this.id,
-        url: url_total,
-        data: opts.params,
-        success: function (data) {
-          var total = parseInt(data);
+      if(opts.paginate) {
+        $.ajax({
+          mode: "abort",
+          port: "grid" + this.id,
+          url: url_total,
+          data: opts.params,
+          success: function (data) {
+            var total = parseInt(data);
 
-          $('span[@class=total_results]', $this).text(data);
-          get_results($this, opts, total, 0);
-        }
-      });
+            set_results($this, data);
+            get_results($this, opts, total, 0);
+          }
+        });
+      } else {
+        get_results($this, opts, null, 0);
+      }
     });
   }
 
   $.fn.gridEnable = function(options) {
+    var opts = $.extend({}, $.fn.gridEnable.defaults, options);
+
     return this.each(function() {
       $this = $(this);
       var results_tag = '<h3>Results (<span class="total_results">-</span>)</h3>';
       var img_tag = '<img src="' + get_images_url() + '/loading.gif" class="loader"></img>';
-      var previous_tag = '<a href="#" class="nav_previous">&lt;&lt; Previous</a>';
-      var next_tag = '<a href="#" class="nav_next">Next &gt;&gt;</a>';
       var data_tag = '<div class="data_place"></div>';
-      var navigation_tag = '<div class="navigation">' +
-          previous_tag + next_tag + '</div>';
 
       $this.append(results_tag);
       $this.append(img_tag);
       $this.append(data_tag);
-      $this.append(navigation_tag);
+
+      if(opts.paginate) {
+        var previous_tag = '<a href="#" class="nav_previous">&lt;&lt; Previous</a>';
+        var next_tag = '<a href="#" class="nav_next">Next &gt;&gt;</a>';
+        var navigation_tag = '<div class="navigation">' +
+            previous_tag + next_tag + '</div>';
+
+        $this.append(navigation_tag);
+
+        $('div[@class=navigation]', $this).hide();
+      }
 
       $('div[@class=data_place]', $this).hide();
-      $('div[@class=navigation]', $this).hide();
       $('img[@class=loader]', $this).hide();
       $('h3', $this).hide();
+
+      this.paginate = opts.paginate;
     });
   }
 
@@ -225,7 +260,12 @@
     params: {},
     dataTransform: {},
     links: {},
-    rowId: null
+    rowId: null,
+    paginate: true
   }
+
+  $.fn.gridEnable.defaults = {
+    paginate: true
+  };
 
  })(jQuery);
