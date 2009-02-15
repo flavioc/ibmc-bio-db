@@ -73,3 +73,34 @@ function add_new_error_message(msg)
   $("#content").prepend("<div class=\"error_msg\"><img src=\"../images/error.png\"></img>" + msg + "<a class=\"hide_box\" href=\"#\">Hide</a></div>");
   enable_error_messages();
 }
+
+function get_base_url()
+{
+  var url = window.location.href;
+  var vec = url.split("/");
+  var ret = "";
+
+  for(var i = 0; i < vec.length; ++i) {
+      if(vec[i] == "index.php") {
+        return ret;
+      } else {
+        if(ret != "") {
+          ret += "/";
+        }
+
+        ret += vec[i];
+      }
+  }
+
+  return url;
+}
+
+function get_images_url()
+{
+  return get_base_url() + "/images";
+}
+
+function get_app_url()
+{
+  return get_base_url() + "/index.php";
+}
