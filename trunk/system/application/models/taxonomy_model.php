@@ -68,7 +68,7 @@ class Taxonomy_model extends BioModel
     $this->db->trans_complete();
   }
 
-  function _get_search_sql($name, $rank, $start = null, $size = null)
+  function _get_search_sql($name, $rank, $start = 0, $size = null)
   {
     $nocase = false;
 
@@ -100,17 +100,26 @@ class Taxonomy_model extends BioModel
 
     $sql .= " LIKE '$lower_name%') AS c
 ORDER BY name";
+
+    if($start == null) {
+      $start = 0;
+    }
   
-    if($start != null && $size != null) {
+    if($size != null) {
       $sql .= " LIMIT $start, $size";
     }
 
     return $sql;
   }
 
+  function _search_query($name, $rank, $start = null, $size = null)
+  {
+    return $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank, $start, $size));
+  }
+
   function search($name, $rank, $start = null, $size = null)
   {
-    $query = $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank, $start, $size));
+    $query = $this->_search_query($name, $rank, $start, $size);
 
     $data = $query->result_array();
 
@@ -128,11 +137,9 @@ ORDER BY name";
 
   function search_total($name, $rank)
   {
-    $query = $this->db->query('SELECT count(id) AS total' . $this->_get_search_sql($name, $rank));
+    $query = $this->_search_query($name, $rank);
 
-    $data = $query->row_array();
-
-    return $data['total'];
+    return $query->num_rows();
   }
 
   function delete($id)
@@ -142,6 +149,19 @@ ORDER BY name";
     $this->delete_by_field('tax_id', $id, 'taxonomy_name');
     $this->delete_id($id);
     $this->db->trans_complete();
+  }
+
+  function get_root_id()
+  {
+    return $this->get_id_by_field('name', 'root');
+  }
+
+  function get_childs($id)
+  {
+    $this->db->where('id != parent_id');
+    $query = $this->db->get_where($this->table, array('parent_id' => $id));
+
+    return $query->result_array();
   }
 
   function get_import_id($id)
