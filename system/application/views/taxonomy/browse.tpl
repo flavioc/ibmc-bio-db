@@ -17,17 +17,17 @@ $(document).ready(function () {
         retrieve: 'search',
         size: paging_size,
         params: {
-          name: function() { return $('#name').val(); },
-          rank: function() { return $('#rank').val(); }
+          name: function () { return $('#name').val(); },
+          rank: function () { return $('#rank').val(); }
         },
         fieldNames: ['Name', 'Rank', 'Parent'],
         fields: ['name', 'rank_name', 'parent_name'],
         links: { name: function(row) {
           {/literal}
           {if $child_id}
-          return base_site + 'set_parent/{$child_id}/' + row.id;
+            return base_site + 'set_parent/{$child_id}/' + row.id;
           {else}
-          return base_site + 'view/' + row.id;
+            return base_site + 'view/' + row.id;
           {/if}
           {literal}
           },
@@ -59,8 +59,6 @@ $(document).ready(function () {
 
   $('#rank').change(activate_autocomplete);
 
-  $('#navigation').hide();
-
   $("#form_search").validate({
     rules: {
       name: {
@@ -84,7 +82,9 @@ $(document).ready(function () {
       delay: 3000,
       scroll: true,
       selectFirst: false,
-      extraParams: { rank: function() { return $('#rank').val(); } }
+      extraParams: {
+        rank: function() { return $('#rank').val(); }
+      }
     });
   }
 
@@ -103,9 +103,9 @@ $(document).ready(function () {
 {form_end}
 </p>
 
-<div id="show_data">
-</div>
+<div id="show_data"></div>
 
 {if $child_id}
 <p>Search for the parent's taxonomy name and then click on the name to apply changes</p>
 {/if}
+
