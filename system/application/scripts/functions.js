@@ -1,6 +1,8 @@
 
 function parse_id(str) {
-  return str.split('_')[1];
+  var vec = str.split('_');
+
+  return vec[vec.length-1];
 }
 
 function is_ok(data) {
@@ -96,3 +98,4 @@ function get_app_url()
 {
   return get_base_url() + "/index.php";
 }
+
