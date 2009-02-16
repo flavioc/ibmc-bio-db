@@ -47,11 +47,20 @@ class Profile extends BioController {
     }
 
     $this->smarty->assign('title', 'User list');
-    $this->smarty->load_scripts(CONFIRM_SCRIPT);
+    $this->use_mygrid();
+
+    $this->smarty->view('profile/list');
+  }
+
+  function get_all()
+  {
+    if(!$this->is_admin) {
+      return;
+    }
+
     $users = $this->user_model->get_users();
 
-    $this->smarty->assign('users', $users);
-    $this->smarty->view('profile/list');
+    echo json_encode($users);
   }
 
   function do_delete($id)
@@ -62,7 +71,7 @@ class Profile extends BioController {
 
     $this->user_model->delete_user($id);
 
-    echo build_ok();
+    echo json_encode(true);
   }
 
   function edit()
