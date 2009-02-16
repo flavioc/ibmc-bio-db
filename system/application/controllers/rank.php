@@ -13,15 +13,22 @@ class Rank extends BioController {
     }
 
     $this->smarty->assign('title', 'Edit ranks');
-    $this->smarty->load_scripts(CONFIRM_SCRIPT, JEDITABLE_SCRIPT, VALIDATE_SCRIPT, APPENDDOM_SCRIPT);
+    $this->smarty->load_scripts(CONFIRM_SCRIPT, JEDITABLE_SCRIPT, VALIDATE_SCRIPT, APPENDDOM_SCRIPT, MYGRID_SCRIPT, JSON_SCRIPT);
 
-    $ranks = $this->taxonomy_rank_model->get_ranks();
-
-    $this->smarty->assign('ranks', $ranks);
     $this->smarty->view('taxonomy/ranks');
   }
 
-  function edit() {
+  function get_all() {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $ranks = $this->taxonomy_rank_model->get_ranks();
+
+    echo json_encode($ranks);
+  }
+
+  function edit_name() {
     if(!$this->logged_in) {
       return;
     }
@@ -43,6 +50,18 @@ class Rank extends BioController {
     }
   }
 
+  function total_taxonomies($rank)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('taxonomy_model');
+    $total = $this->taxonomy_model->count_rank($rank);
+
+    echo $total;
+  }
+
   function delete($id) {
     if(!$this->logged_in) {
       return;
@@ -59,10 +78,11 @@ class Rank extends BioController {
     }
 
     if($this->taxonomy_rank_model->has_name($name)) {
-      echo "$name is already on the database";
+      echo "null";
     } else {
       $id = $this->taxonomy_rank_model->add($name);
-      echo build_ok_id($id);
+      $data = $this->taxonomy_rank_model->get_id($id);
+      echo json_encode($data);
     }
   }
 }
