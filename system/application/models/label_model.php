@@ -12,7 +12,7 @@ class Label_model extends BioModel
   }
 
   function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
-    $auto_on_modification, $code, $comment)
+    $auto_on_modification, $deletable, $code, $comment)
   {
     $data = array(
       'name' => $name,
@@ -21,6 +21,7 @@ class Label_model extends BioModel
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
       'auto_on_modification' => $auto_on_modification,
+      'deletable' => $deletable,
       'code' => $code,
       'comment' => $comment,
     );
@@ -35,7 +36,15 @@ class Label_model extends BioModel
 
   function delete($id)
   {
-    $this->delete_id($id);
+    $deletable = $this->get_field($id, 'deletable');
+    $default = $this->get_field($id, 'default');
+
+    if(!$deletable || $default) {
+      return false;
+    } else {
+      $this->delete_id($id);
+      return true;
+    }
   }
 
   function is_default($id)
@@ -104,6 +113,16 @@ class Label_model extends BioModel
 
     $this->update_history($id);
     $this->edit_field($id, 'auto_on_modification', $auto_on_modification);
+
+    $this->db->trans_complete();
+  }
+
+  function edit_deletable($id, $deletable)
+  {
+    $this->db->trans_start();
+
+    $this->update_history($id);
+    $this->edit_field($id, 'deletable', $deletable);
 
     $this->db->trans_complete();
   }
