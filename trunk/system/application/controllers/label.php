@@ -85,6 +85,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('mustexist');
     $this->smarty->fetch_form_row('auto_on_creation');
     $this->smarty->fetch_form_row('auto_on_modification');
+    $this->smarty->fetch_form_row('deletable');
     $this->smarty->fetch_form_row('code');
     $this->smarty->fetch_form_row('comment');
 
@@ -128,6 +129,7 @@ class Label extends BioController {
       $this->assign_row_data('mustexist');
       $this->assign_row_data('auto_on_creation');
       $this->assign_row_data('auto_on_modification');
+      $this->assign_row_data('deletable');
       $this->assign_row_data('code');
       $this->assign_row_data('comment');
 
@@ -138,6 +140,7 @@ class Label extends BioController {
       $mustexist = $this->get_post('mustexist');
       $auto_on_creation = $this->get_post('auto_on_creation');
       $auto_on_modification = $this->get_post('auto_on_modification');
+      $deletable = $this->get_post('deletable');
       $code = $this->get_post('code');
       $comment = $this->get_post('comment');
 
@@ -145,12 +148,14 @@ class Label extends BioController {
       $mustexist = ($mustexist ? TRUE : FALSE);
       $auto_on_creation = ($auto_on_creation ? TRUE : FALSE);
       $auto_on_modification = ($auto_on_modification ? TRUE : FALSE);
+      $deletable = ($deletable ? TRUE : FALSE);
 
       $id = $this->label_model->add($name, $type, $autoadd,
-        $mustexist, $auto_on_creation, $auto_on_modification,
+        $mustexist, $auto_on_creation,
+        $auto_on_modification, $deletable,
         $code, $comment);
 
-      redirect('label/view/' . $id);
+      redirect("label/view/$id");
     }
   }
 
@@ -166,9 +171,7 @@ class Label extends BioController {
       return;
     }
 
-    $this->label_model->delete($id);
-
-    echo build_ok();
+    echo json_encode($this->label_model->delete($id));
   }
 
   function delete_redirect($id)
@@ -284,6 +287,18 @@ class Label extends BioController {
     $this->load->model('label_model');
 
     $this->label_model->edit_auto_on_modification($id,
+      parse_yes($yes));
+  }
+
+  function edit_deletable($id, $yes)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+
+    $this->label_model->edit_deletable($id,
       parse_yes($yes));
   }
 
