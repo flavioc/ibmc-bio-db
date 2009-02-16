@@ -156,3 +156,28 @@ body>div#content span.code {
   font-family: "courier";
 }
 
+body>div#content div.error_msg {
+  font-size: 95%;
+  font-weight: bold;
+  border: 3px solid red;
+  margin: 5px;
+  margin-top: 10px;
+  width: 70%;
+  padding-top: 5px;
+  padding-bottom: 19px;
+  padding-left: 10px;
+}
+
+body>div#content div.error_msg img {
+  float: left;
+  margin-right: 10px;
+}
+
+body>div#content div.error_msg a.hide_box {
+  font-size: 70%;
+  text-decoration: underline;
+}
+
+body>div#content img.loader {
+  margin-bottom: 10px;
+}
