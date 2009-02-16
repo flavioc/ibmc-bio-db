@@ -147,7 +147,7 @@ $(document).ready(function() {
   </p>
 </div>
 
-{if !$label.default}
+{if !$label.default && $label.deletable}
 
 {form_open name=form_delete to="label/delete_redirect/$label_id"}
 {form_submit name=submit_delete msg=Delete}
