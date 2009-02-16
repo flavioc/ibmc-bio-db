@@ -142,6 +142,14 @@ ORDER BY name";
     return $query->num_rows();
   }
 
+  function count_rank($rank)
+  {
+    $this->db->from($this->table);
+    $this->db->where('rank_id', $rank);
+
+    return $this->db->count_all_results();
+  }
+
   function delete($id)
   {
     // delete all names
