@@ -13,7 +13,8 @@ class Rank extends BioController {
     }
 
     $this->smarty->assign('title', 'Edit ranks');
-    $this->smarty->load_scripts(CONFIRM_SCRIPT, JEDITABLE_SCRIPT, VALIDATE_SCRIPT, APPENDDOM_SCRIPT, MYGRID_SCRIPT, JSON_SCRIPT);
+    $this->use_mygrid();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
 
     $this->smarty->view('taxonomy/ranks');
   }
