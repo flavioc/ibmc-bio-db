@@ -62,7 +62,7 @@ class Label extends BioController {
 
   function __get_types()
   {
-    return build_data_array(array('integer', 'text', 'obj', 'position', 'ref', 'tax'));
+    return build_data_array(array('integer', 'text', 'obj', 'position', 'ref', 'tax', 'url'));
   }
 
   function __assign_types()
