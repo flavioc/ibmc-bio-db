@@ -270,16 +270,10 @@ class Profile extends BioController {
 
     if($this->form_validation->run() == FALSE) {
       $errors = true;
-      $this->assign_row_data('username');
-      $this->assign_row_data('complete_name');
-      $this->assign_row_data('email');
-      $this->assign_row_data('birthday');
-      $this->assign_row_data('password1', false);
-      $this->assign_row_data('password2', false);
     }
 
     $username = $this->get_post('username');
-    if($this->user_model->user_exists($username)) {
+    if($this->user_model->username_used($username)) {
       $this->set_form_error('username', 'Username ' . $username . ' is already taken.');
       $errors = true;
     }
@@ -299,6 +293,12 @@ class Profile extends BioController {
     }
 
     if($errors) {
+      $this->assign_row_data('username');
+      $this->assign_row_data('complete_name');
+      $this->assign_row_data('email');
+      $this->assign_row_data('birthday');
+      $this->assign_row_data('password1', false);
+      $this->assign_row_data('password2', false);
       redirect('profile/register');
     } else {
       $complete_name = $this->get_post('complete_name');

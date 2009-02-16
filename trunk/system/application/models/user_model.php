@@ -9,7 +9,7 @@ class User_model extends Model
 
   function validate($name, $pwd)
   {
-    $query = $this->db->get_where('user', array('name' => $name));
+    $query = $this->db->get_where('user', array('name' => $name, 'enabled' => TRUE));
 
     if($query->num_rows() != 1) {
       return false;
@@ -22,7 +22,7 @@ class User_model extends Model
 
   function _get_user($key, $value)
   {
-    $query = $this->db->get_where('user', array($key => $value));
+    $query = $this->db->get_where('user', array($key => $value, 'enabled' => TRUE));
 
     if($query->num_rows() != 1) {
       return null;
@@ -55,6 +55,7 @@ class User_model extends Model
     $this->db->select('image');
     $this->db->where('image IS NOT NULL');
     $this->db->where($key, $value);
+    $this->db->where('enabled', TRUE);
     $query = $this->db->get('user');
 
     if($query->num_rows() != 1) {
@@ -78,9 +79,15 @@ class User_model extends Model
 
   function user_exists($name)
   {
-    $result = $this->get_user_by_name($name);
+    return $this->get_user_by_name($name) != null;
+  }
 
-    return $result != null;
+  function username_used($name)
+  {
+    $this->db->where('name', $name);
+    $query = $this->db->get('user');
+
+    return ($query->num_rows() == 1);
   }
 
   function new_user($name, $complete_name, $email,
@@ -130,6 +137,7 @@ Cumprimentos.");
     $imagecontent, $new_password)
   {
     $this->db->where('id', $id);
+    $this->db->where('enabled', TRUE);
     $data = array(
       'complete_name' => $complete_name,
       'email' => $email,
@@ -154,12 +162,15 @@ Cumprimentos.");
   function get_users()
   {
     $this->db->where('user_type', 'user');
+    $this->db->where('enabled', TRUE);
 
     return $this->db->get('user', 10)->result_array();
   }
 
   function delete_user($id)
   {
-    $this->db->delete('user', array('id' => $id)); 
+    $this->db->where('id', $id);
+    $this->db->where('enabled', TRUE);
+    $this->db->update('user', array('enabled' => FALSE));
   }
 }
