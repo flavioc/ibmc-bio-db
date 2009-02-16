@@ -37,6 +37,7 @@
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
       <li><a href="{site}/rank">Ranks</a></li>
+      <li><a href="{site}/tree">Trees</a></li>
       <li><a href="{site}/taxonomy/sync">Sync</a></li>
     </ul>
     <li id="sequence_menu"><a href="#">Sequences</a></li>
