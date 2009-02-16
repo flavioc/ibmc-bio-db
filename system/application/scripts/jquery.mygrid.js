@@ -15,11 +15,28 @@
     $('span[@class=total_results]', obj).text(total);
   }
 
+  function get_results_count(obj) {
+    return parseInt($('span[@class=total_results]', obj).text());
+  }
+
+  function increment_results(obj) {
+    var results = get_results_count(obj);
+
+    set_results(obj, results + 1);
+  }
+
+  function decrement_results(obj) {
+    var results = get_results_count(obj);
+
+    set_results(obj, results - 1);
+  }
+
   function create_row_dom(row, opts, obj) {
     var fields = opts.fields;
     var transforms = opts.dataTransform;
     var editables = opts.editables;
     var links = opts.links;
+    var types = opts.types;
     var row_tag = {tagName: 'tr'};
 
     row_tag.id = "row_" + obj[0].id + "_" +
@@ -40,9 +57,20 @@
       var link_fun = links[field_name];
       var field_data = row[field_name];
       var has_link = (link_fun != null);
+      var type = types[field_name];
 
       if(trans_fun != null) {
         field_data = trans_fun(row);
+      }
+
+      if(type) {
+        if(type == 'boolean') {
+          if(field_data == '1') {
+            field_data = 'Yes';
+          } else if (field_data == '0') {
+            field_data = 'No';
+          }
+        }
       }
 
       if(has_link) {
@@ -65,21 +93,31 @@
     }
 
     if(opts.enableRemove) {
-      var delete_id = 'delete_' + obj[0].id + '_' + row.id;
+      var removeFun = opts.enableRemoveFun;
 
-      row_tag.childNodes[fields_length-1] = {
+      if(removeFun == null || removeFun(row)) {
+        var delete_id = 'delete_' + obj[0].id + '_' + row.id;
+
+        row_tag.childNodes[fields_length-1] = {
+            tagName: 'td',
+            class: 'deletable_column',
+            childNodes: [
+              {
+                tagName: 'a',
+                class: 'deletable',
+                href: '#' + delete_id,
+                id: delete_id,
+                innerHTML: 'Delete'
+               }
+             ]
+           }
+      } else {
+        row_tag.childNodes[fields_length-1] = {
           tagName: 'td',
           class: 'deletable_column',
-          childNodes: [
-            {
-              tagName: 'a',
-              class: 'deletable',
-              href: '#' + delete_id,
-              id: delete_id,
-              innerHTML: 'Delete'
-             }
-           ]
-         }
+          innerHTML: '---'
+        }
+      }
     }
 
     return row_tag;
@@ -124,6 +162,7 @@
                     var tr_id = "row_" + obj[0].id + "_" + id;
 
                     $('#' + tr_id).fadeOut('slow');
+                    decrement_results(obj);
                   } else {
                     alert('Error deleting item: ' + id);
                   }
@@ -290,6 +329,7 @@ $.fn.gridAdd = function(data) {
       table.appendDom([row_tag]);
       table.appendDom([{tagName: 'tr'}]);
       activate_edition(opts, $this, table);
+      increment_results($this);
   });
 }
 
@@ -377,7 +417,9 @@ $.fn.grid.defaults = {
   countRemove: null,
   what: null,
   removeAssociated: null,
-  enableRemove: false
+  enableRemove: false,
+  types: {},
+  enableRemoveFun: null
 }
 
 $.fn.gridEnable.defaults = {
