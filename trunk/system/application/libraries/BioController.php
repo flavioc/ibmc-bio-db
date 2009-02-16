@@ -62,6 +62,12 @@ class BioController extends Controller
     $this->smarty->load_scripts(THICKBOX_SCRIPT);
   }
 
+  function use_mygrid()
+  {
+    $this->smarty->load_scripts(JSON_SCRIPT, APPENDDOM_SCRIPT,
+      CONFIRM_SCRIPT, JEDITABLE_SCRIPT, MYGRID_SCRIPT);
+  }
+
   function set_form_error($what, $msg)
   {
     $error_str = build_error_name($what);
