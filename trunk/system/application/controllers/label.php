@@ -15,12 +15,32 @@ class Label extends BioController {
 
     $this->load->model('label_model');
 
+    $this->use_mygrid();
+    $this->smarty->assign('title', 'View labels');
+    $this->smarty->view('label/list');
+  }
+
+  function get_all()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+
     $labels = $this->label_model->get_all();
 
-    $this->smarty->load_scripts(CONFIRM_SCRIPT);
-    $this->smarty->assign('title', 'View labels');
-    $this->smarty->assign('labels', $labels);
-    $this->smarty->view('label/list');
+    echo json_encode($labels);
+  }
+
+  function total_sequences($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    // FIXME
+    echo json_encode(4);
   }
 
   function view($id)
