@@ -99,7 +99,7 @@ jQuery.fn.confirm = function(options) {
     }
 
     var $dialog = jQuery(options.wrapper)
-    .append(options.msg)
+    .append('<span class="confirm_message">' + ($.isFunction(options.msg) ? "" : options.msg) + '</span>')
     .append($ok)
     .append(options.buttons.separator)
     .append($cancel);
@@ -113,6 +113,13 @@ jQuery.fn.confirm = function(options) {
       }
 
       $dialog.insertBefore(this);
+
+      if($.isFunction(options.msg)) {
+        var obj = jQuery('span[@class=confirm_message]', $dialog);
+
+        options.msg(target, obj);
+      }
+
       // Display the dialog.
       $dialog[options.dialogShow](options.dialogSpeed);
       if (options.timeout != 0) {
