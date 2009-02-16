@@ -472,6 +472,26 @@ function smarty_function_boolean($params, &$smarty)
   }
 }
 
+function smarty_function_random($params, &$smarty)
+{
+  srand((double)microtime() * 1000000);
+
+  $min = $params['min'];
+  $max = $params['max'];
+
+  if(!$min) {
+    $min = 0;
+  }
+
+  if(!$max) {
+    $max = 32768;
+  }
+
+  $random_number = rand($max, $min);
+
+  return $random_number;
+}
+
 class BioSmarty extends Smarty
 {
   var $controller;
@@ -501,6 +521,7 @@ class BioSmarty extends Smarty
     $this->register_function('encode_json_data', 'smarty_function_encode_json_data');
     $this->register_function('loader_pic', 'smarty_function_loader_pic');
     $this->register_function('boolean', 'smarty_function_boolean');
+    $this->register_function('random', 'smarty_function_random');
 
 		$config =& get_config();
 		
