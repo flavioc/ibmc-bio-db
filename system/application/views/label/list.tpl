@@ -8,8 +8,8 @@ $(document).ready(function () {
   .grid({
     url: get_app_url() + '/label',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Type', 'Auto Add', 'Must Exist', 'Generate on creation', 'Generate on modification'],
-    fields: ['name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification'],
+    fieldNames: ['Name', 'Type', 'Auto Add', 'Must Exist', 'Generate on creation', 'Generate on modification', 'Deletable'],
+    fields: ['name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable'],
     countRemove: 'total_sequences',
     what: 'label',
     removeAssociated: 'sequences',
@@ -23,10 +23,11 @@ $(document).ready(function () {
       autoadd: 'boolean',
       must_exist: 'boolean',
       auto_on_creation: 'boolean',
-      auto_on_modification: 'boolean'
+      auto_on_modification: 'boolean',
+      deletable: 'boolean'
     },
     enableRemoveFun: function (row) {
-      return row.default == '0';
+      return row.default == '0' && row.deletable == '1';
     }
   });
 });
