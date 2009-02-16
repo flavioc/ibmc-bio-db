@@ -11,6 +11,12 @@ class Label_model extends BioModel
     return $this->get_id($id);
   }
 
+  function get_all()
+  {
+    $this->db->order_by('name');
+    return parent::get_all();
+  }
+
   function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable, $code, $comment)
   {
