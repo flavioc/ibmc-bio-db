@@ -121,6 +121,7 @@ $(document).ready(function() {
     {/if}
     </span>
   </p>
+  <br />
 
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
 
