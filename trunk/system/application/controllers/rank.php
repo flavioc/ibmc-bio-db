@@ -69,7 +69,7 @@ class Rank extends BioController {
 
     $this->taxonomy_rank_model->delete_id($id);
 
-    echo build_ok();
+    echo json_encode(true);
   }
 
   function add($name) {
