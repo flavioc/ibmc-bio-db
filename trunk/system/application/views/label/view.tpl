@@ -66,6 +66,7 @@ $(document).ready(function() {
   enable_edit_checkbox("#mustexist", "mustexist");
   enable_edit_checkbox("#auto_on_creation", "auto_on_creation");
   enable_edit_checkbox("#auto_on_modification", "auto_on_modification");
+  enable_edit_checkbox("#deletable", "deletable");
 
 });
 {/literal}
@@ -122,6 +123,18 @@ $(document).ready(function() {
     </span>
   </p>
   <br />
+
+  <p><span class="desc">Deletable: </span>
+    <span id="labeldeletable">
+    {if $label.default}
+      {boolean value=!$label.default}
+    {else}
+      {form_open name=form_deletable}
+        {form_checkbox name=deletable checked=$label.deletable}
+      {form_end}
+    {/if}
+    </span>
+  </p>
 
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
 
