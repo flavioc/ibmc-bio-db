@@ -158,7 +158,9 @@
               var url = opts.url + '/' + opts.remove + '/' + id;
 
               $.post(url, function (data) {
-                  if(is_ok(data)) {
+                  var resp = $.evalJSON(data);
+
+                  if(resp) {
                     var tr_id = "row_" + obj[0].id + "_" + id;
 
                     $('#' + tr_id).fadeOut('slow');
