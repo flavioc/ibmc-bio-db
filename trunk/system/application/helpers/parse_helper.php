@@ -4,11 +4,7 @@ function parse_id($str)
 {
   $id_vec = explode('_', $str);
 
-  if(count($id_vec) != 2) {
-    return null;
-  }
-
-  $id = intval($id_vec[1]);
+  $id = intval($id_vec[count($id_vec)-1]);
 
   return $id;
 }
