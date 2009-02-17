@@ -39,8 +39,9 @@ class Label extends BioController {
       return;
     }
 
-    // FIXME
-    echo json_encode(4);
+    $this->load->model('label_sequence_model');
+
+    echo json_encode($this->label_sequence_model->total_label($id));
   }
 
   function view($id)
