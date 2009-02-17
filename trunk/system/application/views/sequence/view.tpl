@@ -27,6 +27,78 @@ $(document).ready(function() {
     submitdata: seqdata
   });
 
+  $('#labels_list')
+  .gridEnable({paginate: false})
+  .grid({
+    url: get_app_url() + '/sequence',
+    retrieve: 'get_labels/' + seq_id,
+    fieldNames: ['Name', 'Subname', 'Type', 'Data'],
+    fieldGenerator: function (row) {
+      var fields = ['name', 'subname', 'type'];
+
+      switch(row.type) {
+        case 'integer':
+          fields.push('int_data');
+          break;
+        case 'text':
+          fields.push('text_data');
+          break;
+        case 'url':
+          fields.push('url_data');
+          break;
+        case 'ref':
+          fields.push('ref_data');
+          break;
+        case 'tax':
+          fields.push('taxonomy_data');
+          break;
+        case 'position':
+          fields.push('position_a_data');
+          break;
+        default:
+          fields.push('int_data');
+          break;
+      }
+
+      return fields;
+    },
+    links: {
+      name: function (row) {
+        return get_app_url() + '/label/view/' + row.label_id;
+      },
+      url_data: function (row) {
+        return row.url_data;
+      },
+      ref_data: function (row) {
+        return get_app_url() + '/sequence/view/' + row.ref_data;
+      },
+      taxonomy_data: function (row) {
+        return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
+      }
+    },
+    dataTransform: {
+      subname: function (row) {
+        if(row.subname == null) {
+          return '---';
+        } else {
+          return row.subname;
+        }
+      },
+      position_a_data: function (row) {
+        return row.position_a_data + ' ' + row.position_b_data;
+      }
+    },
+    editables: {
+      subname: {
+        select: true,
+        submit: 'OK',
+        cancel: 'cancel',
+        cssclass: 'editable',
+        width: '150px'
+      }
+    }
+  });
+
 });
 {/literal}
 </script>
@@ -41,3 +113,8 @@ $(document).ready(function() {
 {form_open name=form_delete to="sequence/delete/$seq_id"}
 {form_submit name=submit_delete msg=Delete}
 {form_end}
+
+<p>
+<div id="labels_list">
+</div>
+</p>
