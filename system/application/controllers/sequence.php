@@ -17,15 +17,30 @@ class Sequence extends BioController
     $this->smarty->assign('types', $this->__get_types());
   }
 
-  function browse() {
+  function browse()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
     $this->smarty->assign('title', 'Browse sequences');
 
-    $this->smarty->assign('sequences', $this->sequence_model->get_all());
-    
+    $this->use_mygrid();
+
     $this->smarty->view('sequence/list');
   }
 
-  function view($id) {
+  function get_all()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    echo json_encode($this->sequence_model->get_all());
+  }
+
+  function view($id)
+  {
     if(!$this->logged_in) {
       return;
     }
@@ -40,7 +55,8 @@ class Sequence extends BioController
     $this->smarty->view('sequence/view');
   }
 
-  function add() {
+  function add()
+  {
     $this->smarty->assign('title', 'Add sequence');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
     $this->__assign_types();
@@ -51,6 +67,14 @@ class Sequence extends BioController
     $this->smarty->fetch_form_row('accession');
 
     $this->smarty->view('sequence/add');
+  }
+
+  function _add_labels($id)
+  {
+    // add auto labels
+    $this->load->model('label_model');
+    $labels = $this->label_model->get_to_add();
+    print_r($labels);
   }
 
   function do_add()
@@ -88,11 +112,14 @@ class Sequence extends BioController
 
       $id = $this->sequence_model->add($name, $accession, $type, $content);
 
+      $this->_add_labels($id);
+
       redirect("sequence/view/$id");
     }
   }
 
-  function download($id) {
+  function download($id)
+  {
     if(!$this->logged_in) {
       return;
     }
@@ -100,7 +127,8 @@ class Sequence extends BioController
     echo $this->sequence_model->get_content($id);
   }
 
-  function delete($id) {
+  function delete($id)
+  {
     if(!$this->logged_in) {
       return;
     }
