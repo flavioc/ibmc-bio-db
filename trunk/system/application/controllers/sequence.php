@@ -60,6 +60,7 @@ class Sequence extends BioController
 
     $this->smarty->assign('title', 'View sequence');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
+    $this->use_mygrid();
 
     $this->__assign_types();
 
@@ -196,6 +197,24 @@ class Sequence extends BioController
     $value = $this->input->post('value');
 
     $this->sequence_model->edit_accession($id, $value);
+
+    echo $value;
+  }
+
+  function edit_subname() {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->library('input');
+
+    $id_str = $this->input->post('id');
+    $id = parse_id($id_str);
+    $value = $this->input->post('value');
+
+    $this->load->model('label_sequence_model');
+
+    $this->label_sequence_model->edit_subname($id, $value);
 
     echo $value;
   }

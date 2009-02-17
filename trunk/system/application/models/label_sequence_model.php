@@ -83,6 +83,16 @@ class Label_sequence_model extends BioModel
     return $this->count_total();
   }
 
+  function edit_subname($id, $subname)
+  {
+    $this->db->trans_start();
+
+    $this->update_history($id);
+    $this->edit_field($id, 'subname', $subname);
+
+    $this->db->trans_complete();
+  }
+
   function __get_data_fields($type)
   {
     switch($type) {
