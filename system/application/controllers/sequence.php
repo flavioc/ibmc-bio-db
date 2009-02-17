@@ -68,6 +68,18 @@ class Sequence extends BioController
     $this->smarty->view('sequence/view');
   }
 
+  function get_labels($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_sequence_model');
+    $labels = $this->label_sequence_model->get_sequence($id);
+
+    echo json_encode($labels);
+  }
+
   function add()
   {
     $this->smarty->assign('title', 'Add sequence');
