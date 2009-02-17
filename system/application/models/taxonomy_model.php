@@ -7,11 +7,12 @@ class Taxonomy_model extends BioModel
     parent::BioModel('taxonomy');
   }
 
-  function add($name, $rank)
+  function add($name, $rank, $tree)
   {
     $data = array(
       'name' => $name,
       'rank_id' => $rank,
+      'tree_id' => $tree
     );
 
     return $this->insert_data_with_history($data);
@@ -19,13 +20,7 @@ class Taxonomy_model extends BioModel
 
   function get($id)
   {
-    $query = $this->db->query('SELECT id, name, rank_id, taxonomy.tree_id, parent_id, rank_name, tree_name
-                              FROM taxonomy NATURAL JOIN (SELECT name AS rank_name, id AS rank_id
-                                                          FROM taxonomy_rank) t2
-                                           LEFT JOIN (SELECT name AS tree_name, id AS tree_id
-                                           FROM taxonomy_tree) t3
-                                           ON (taxonomy.tree_id = t3.tree_id)
-                              WHERE id = ' . $id);
+    $query = $this->db->get_where('taxonomy_info', array('id' => $id));
 
     if(!$query || $query->num_rows() != 1) {
       return null;
@@ -84,7 +79,7 @@ class Taxonomy_model extends BioModel
     $this->db->trans_complete();
   }
 
-  function _get_search_sql($name, $rank, $start = 0, $size = null)
+  function _get_search_sql($name, $rank, $tree, $start = 0, $size = null)
   {
     $nocase = false;
 
@@ -95,10 +90,15 @@ class Taxonomy_model extends BioModel
     }
 
     $sql = " FROM (SELECT *
-                  FROM taxonomy_parent_rank ";
+      FROM taxonomy_info
+      WHERE 1";
+
+    if($tree) {
+      $sql .= " AND tree_id = $tree";
+    }
 
     if($rank) {
-      $sql .= "WHERE rank_id = $rank";
+      $sql .= " AND rank_id = $rank";
     }
 
     $sql .= ") AS a";
@@ -128,32 +128,33 @@ ORDER BY name";
     return $sql;
   }
 
-  function _search_query($name, $rank, $start = null, $size = null)
+  function _search_query($name, $rank, $tree, $start = null, $size = null)
   {
-    return $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank, $start, $size));
+    return $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank, $tree, $start, $size));
   }
 
-  function search($name, $rank, $start = null, $size = null)
+  function search($name, $rank, $tree, $start = null, $size = null)
   {
-    $query = $this->_search_query($name, $rank, $start, $size);
+    $query = $this->_search_query($name, $rank, $tree, $start, $size);
 
     $data = $query->result_array();
 
     return $data;
   }
 
-  function search_field($field, $name, $rank, $start = null, $size = null)
+  function search_field($field, $name, $rank, $tree, $start = null, $size = null)
   {
-    $query = $this->db->query("SELECT $field " . $this->_get_search_sql($name, $rank, $start, $size));
+    $query = $this->db->query("SELECT $field " . $this->_get_search_sql($name, $rank,
+      $tree, $start, $size));
 
     $data = $query->result_array();
 
     return $data;
   }
 
-  function search_total($name, $rank)
+  function search_total($name, $rank, $tree)
   {
-    $query = $this->_search_query($name, $rank);
+    $query = $this->_search_query($name, $rank, $tree);
 
     return $query->num_rows();
   }

@@ -18,10 +18,11 @@ $(document).ready(function () {
         size: paging_size,
         params: {
           name: function () { return $('#name').val(); },
-          rank: function () { return $('#rank').val(); }
+          rank: function () { return $('#rank').val(); },
+          tree: function () { return $('#tree').val(); }
         },
-        fieldNames: ['Name', 'Rank', 'Parent'],
-        fields: ['name', 'rank_name', 'parent_name'],
+        fieldNames: ['Name', 'Rank', 'Tree', 'Parent'],
+        fields: ['name', 'rank_name', 'tree_name', 'parent_name'],
         links: { name: function(row) {
           {/literal}
           {if $child_id}
@@ -83,7 +84,8 @@ $(document).ready(function () {
       scroll: true,
       selectFirst: false,
       extraParams: {
-        rank: function() { return $('#rank').val(); }
+        rank: function() { return $('#rank').val(); },
+        tree: function() { return $('#tree').val(); }
       }
     });
   }
