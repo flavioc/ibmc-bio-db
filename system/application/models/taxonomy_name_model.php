@@ -12,6 +12,11 @@ class Taxonomy_name_model extends BioModel
     return $this->get_id($id);
   }
 
+  function get_name_and_type($id)
+  {
+    return $this->get_id($id, 'taxonomy_name_and_type');
+  }
+
   function get_tax($tax_id)
   {
     return $this->get_all_by_field('tax_id', $tax_id, 'taxonomy_name_and_type');
