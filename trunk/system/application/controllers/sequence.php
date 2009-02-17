@@ -201,6 +201,22 @@ class Sequence extends BioController
     echo $value;
   }
 
+  function edit_content()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('seq');
+    $value = $this->input->post('value');
+
+    $this->sequence_model->edit_content($id, $value);
+
+    echo $value;
+  }
+
   function edit_subname() {
     if(!$this->logged_in) {
       return;
