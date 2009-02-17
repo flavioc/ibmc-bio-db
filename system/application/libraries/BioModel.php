@@ -149,6 +149,16 @@ class BioModel extends Model
     return $this->db->get($table)->result_array();
   }
 
+  function count_total($table = null)
+  {
+    if($table == null) {
+      $table = $this->table;
+    }
+
+    $this->db->from($table);
+    return intval($this->db->count_all_results());
+  }
+
   function delete_id($id, $table = null)
   {
     $this->delete_by_field('id', $id, $table);
