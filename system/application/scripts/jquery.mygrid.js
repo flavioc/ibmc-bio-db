@@ -2,7 +2,7 @@
 (function ($) {
 
   function show_loading(obj) {
-    $('h3', obj).show();
+    $('h4', obj).show();
     $('div[@class=navigation]', obj).hide();
     $('img[@class=loader]', obj).show().text('-');
   }
@@ -379,7 +379,7 @@ $.fn.gridEnable = function(options) {
 
   return this.each(function() {
     $this = $(this);
-    var results_tag = '<h3>Results (<span class="total_results">-</span>)</h3>';
+    var results_tag = '<h4>Results (<span class="total_results">-</span>)</h4>';
     var img_tag = '<img src="' + get_images_url() + '/loading.gif" class="loader"></img>';
     var data_tag = '<div class="data_place"></div>';
 
@@ -400,7 +400,7 @@ $.fn.gridEnable = function(options) {
 
     $('div[@class=data_place]', $this).hide();
     $('img[@class=loader]', $this).hide();
-    $('h3', $this).hide();
+    $('h4', $this).hide();
 
     this.paginate = opts.paginate;
   });

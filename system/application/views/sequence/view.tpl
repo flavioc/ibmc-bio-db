@@ -132,6 +132,7 @@ $(document).ready(function() {
 {form_end}
 
 <p>
+<h3>Associated labels</h3>
 <div id="labels_list">
 </div>
 </p>
