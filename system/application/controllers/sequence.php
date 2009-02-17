@@ -84,10 +84,8 @@ class Sequence extends BioController
 
   function _add_labels($id)
   {
-    // add auto labels
-    $this->load->model('label_model');
-    $labels = $this->label_model->get_to_add();
-    print_r($labels);
+    $this->load->model('label_sequence_model');
+    $this->label_sequence_model->add_initial_labels($id);
   }
 
   function do_add()
