@@ -95,6 +95,12 @@ $(document).ready(function() {
           return row.subname;
         }
       },
+      ref_data: function (row) {
+        return row.sequence_name;
+      },
+      taxonomy_data: function (row) {
+        return row.taxonomy_name;
+      },
       position_a_data: function (row) {
         return row.position_a_data + ' ' + row.position_b_data;
       }

@@ -12,4 +12,3 @@ function basicErrorPlacement(error, element)
 {
   error.appendTo(element.next());
 }
-
