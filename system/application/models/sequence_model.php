@@ -6,6 +6,22 @@ class Sequence_model extends BioModel
     parent::BioModel('sequence');
   }
 
+  function get_all($start = null, $size = null)
+  {
+    $this->db->order_by('name');
+
+    if($start != null && $size != null) {
+      $this->db->limit($size, $start);
+    }
+
+    return parent::get_all();
+  }
+
+  function get_total()
+  {
+    return $this->count_total();
+  }
+
   function add($name, $accession, $type, $content) {
     $data = array(
       'name' => $name,
