@@ -298,7 +298,7 @@ function get_results(obj, opts, total, start) {
   if(opts.paginate) {
     params = $.extend({
       start: start,
-      size: opts.size
+      size: Math.min(opts.size, total - start)
     }, params);
   }
 
