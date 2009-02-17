@@ -42,6 +42,10 @@
     row_tag.id = "row_" + obj[0].id + "_" +
       (row.id == null ? i : row.id);
 
+    if(opts.fieldGenerator) {
+      fields = opts.fieldGenerator(row);
+    }
+
     var fields_length = fields.length;
 
     if(opts.enableRemove) {
@@ -409,6 +413,7 @@ $.fn.grid.defaults = {
   retrieve: 'get',
   fields: [],
   fieldNames: [],
+  fieldGenerator: null,
   url: '',
   params: {},
   dataTransform: {},
