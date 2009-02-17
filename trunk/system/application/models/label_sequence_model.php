@@ -70,6 +70,13 @@ class Label_sequence_model extends BioModel
     $this->add($id, $label['id'], $label['type'], null, $data1, $data2);
   }
 
+  function total_label($id)
+  {
+    $this->db->where('label_id', $id);
+
+    return $this->count_total();
+  }
+
   function __get_data_fields($type)
   {
     switch($type) {
@@ -84,7 +91,7 @@ class Label_sequence_model extends BioModel
     case "ref":
       return "ref_data";
     case "tax":
-      return "tax_data";
+      return "taxonomy_data";
     case "url":
       return "url_data";
     }
