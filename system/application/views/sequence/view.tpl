@@ -5,11 +5,11 @@
 <script>
 {literal}
 $(document).ready(function() {
-  var base_site = "{/literal}{site}{literal}/sequence/";
+  var base_site = get_app_url() + '/sequence';
   var seq_id = "{/literal}{$seq_id}{literal}";
   var seqdata = {seq: seq_id};
 
-  $('#seqname').editable(base_site + 'edit_name', {
+  $('#seqname').editable(base_site + '/edit_name', {
     select: true,
     submit: 'OK',
     cancel: 'cancel',
@@ -18,19 +18,30 @@ $(document).ready(function() {
     submitdata: seqdata
   });
 
-  $('#seqaccession').editable(base_site + 'edit_accession', {
+  $('#seqaccession').editable(base_site + '/edit_accession', {
     select: true,
     submit: 'OK',
     cancel: 'cancel',
     width: "150px",
     style: "inherit",
+    submitdata: seqdata
+  });
+
+  $('#seqcontent').editable(base_site + '/edit_content', {
+    select: true,
+    type: 'textarea',
+    submit: "OK",
+    cancel: "cancel",
+    style: "inherit",
+    cols: 50,
+    rows: 5,
     submitdata: seqdata
   });
 
   $('#labels_list')
   .gridEnable({paginate: false})
   .grid({
-    url: get_app_url() + '/sequence',
+    url: base_site,
     retrieve: 'get_labels/' + seq_id,
     fieldNames: ['Name', 'Subname', 'Type', 'Data'],
     fieldGenerator: function (row) {
@@ -107,7 +118,7 @@ $(document).ready(function() {
   <p><span class="desc">Name: </span><span id="seqname">{$sequence.name}</span></p>
   <p><span class="desc">Type: </span><span id="seqtype">{$sequence.type}</span></p>
   <p><span class="desc">Accession Number: </span><span id="seqaccession">{$sequence.accession}</span></p>
-  <p><span class="desc">Content: </span><a href="{site}/sequence/download/{$sequence.id}">Click</a></p>
+  <p><span class="desc">Content: </span><span id="seqcontent">{$sequence.content}</span></p>
 </div>
 
 {form_open name=form_delete to="sequence/delete/$seq_id"}

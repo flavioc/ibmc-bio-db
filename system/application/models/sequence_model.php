@@ -35,15 +35,7 @@ class Sequence_model extends BioModel
 
   function get($id)
   {
-    $this->db->select('id, name, accession, type');
-
-    $query = $this->db->get_where($this->table, array('id' => $id));
-
-    if($query == null || $query->num_rows() != 1) {
-      return null;
-    }
-
-    return $query->row_array();
+    return $this->get_id($id);
   }
 
   function delete($id)
@@ -77,6 +69,16 @@ class Sequence_model extends BioModel
 
     $this->update_history($id);
     $this->edit_field($id, 'accession', $accession);
+
+    $this->db->trans_complete();
+  }
+
+  function edit_content($id, $content)
+  {
+    $this->db->trans_start();
+
+    $this->update_history($id);
+    $this->edit_field($id, 'content', $content);
 
     $this->db->trans_complete();
   }
