@@ -4,11 +4,15 @@
 <script>
 $(document).ready(function () {
 
+  var paging_size = {/literal}{$paging_size}{literal};
+
   $('#show_sequences')
-  .gridEnable({paginate: false})
+  .gridEnable()
   .grid({
     url: get_app_url() + '/sequence',
     retrieve: 'get_all',
+    total: 'get_total',
+    size: paging_size,
     fieldNames: ['Name', 'Type', 'Accession Number'],
     fields: ['name', 'type', 'accession'],
     links: {
