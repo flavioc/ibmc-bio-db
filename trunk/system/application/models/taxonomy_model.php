@@ -19,9 +19,12 @@ class Taxonomy_model extends BioModel
 
   function get($id)
   {
-    $query = $this->db->query('SELECT id, name, rank_id, parent_id, rank_name
-                              FROM taxonomy NATURAL JOIN (SELECT name as rank_name, id as rank_id
+    $query = $this->db->query('SELECT id, name, rank_id, taxonomy.tree_id, parent_id, rank_name, tree_name
+                              FROM taxonomy NATURAL JOIN (SELECT name AS rank_name, id AS rank_id
                                                           FROM taxonomy_rank) t2
+                                           LEFT JOIN (SELECT name AS tree_name, id AS tree_id
+                                           FROM taxonomy_tree) t3
+                                           ON (taxonomy.tree_id = t3.tree_id)
                               WHERE id = ' . $id);
 
     if(!$query || $query->num_rows() != 1) {
@@ -54,6 +57,19 @@ class Taxonomy_model extends BioModel
 
     $this->update_history($id);
     $this->edit_field($id, 'rank_id', $rank_id);
+
+    $this->db->trans_complete();
+  }
+
+  function edit_tree($id, $tree_id)
+  {
+    $this->db->trans_start();
+
+    $this->update_history($id);
+
+    $this->edit_field($id, 'tree_id', $tree_id);
+    // reset parent field
+    $this->edit_field($id, 'parent_id', NULL);
 
     $this->db->trans_complete();
   }
