@@ -6,7 +6,19 @@ class Taxonomy_name extends BioController {
     parent::BioController();
   }
 
-  function edit_type()
+  function list_all($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('taxonomy_name_model');
+    $names = $this->taxonomy_name_model->get_tax($id);
+
+    echo json_encode($names);
+  }
+
+  function edit_type_name()
   {
     if(!$this->logged_in) {
       return;
@@ -65,7 +77,7 @@ class Taxonomy_name extends BioController {
 
     $id = $this->taxonomy_name_model->add(intval($tax), $name, intval($type));
 
-    echo build_ok_id($id);
+    echo json_encode($this->taxonomy_name_model->get_name_and_type($id));
   }
 
   function delete($id)
@@ -78,6 +90,6 @@ class Taxonomy_name extends BioController {
 
     $this->taxonomy_name_model->delete(intval($id));
 
-    echo build_ok();
+    echo json_encode(true);
   }
 }
