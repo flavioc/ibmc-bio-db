@@ -6,6 +6,12 @@ class Label_sequence_model extends BioModel
     parent::BioModel('label_sequence');
   }
 
+  function get_sequence($id)
+  {
+    $this->db->where('seq_id', $id);
+    return $this->get_all('label_sequence_info');
+  }
+
   function add($seq, $label, $type, $subname, $data1 = null, $data2 = null)
   {
     $data = array(
