@@ -13,10 +13,12 @@ class Taxonomy extends BioController {
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
 
     $this->load->model('taxonomy_rank_model');
-
     $ranks = $this->taxonomy_rank_model->get_ranks();
-
     $this->smarty->assign('ranks', $ranks);
+
+    $this->load->model('taxonomy_tree_model');
+    $trees = $this->taxonomy_tree_model->get_trees();
+    $this->smarty->assign('trees', $trees);
 
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('rank');
@@ -67,16 +69,19 @@ class Taxonomy extends BioController {
   function view($id)
   {
     $this->smarty->assign('title', 'View taxonomy');
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, JEDITABLE_SCRIPT, CONFIRM_SCRIPT, APPENDDOM_SCRIPT);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->use_mygrid();
+
     $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_name_model');
     $this->load->model('taxonomy_name_type_model');
     $this->load->model('taxonomy_rank_model');
+    $this->load->model('taxonomy_tree_model');
 
     $types = $this->taxonomy_name_type_model->get_all();
     $taxonomy = $this->taxonomy_model->get($id);
-    $names = $this->taxonomy_name_model->get_tax($id);
     $ranks = $this->taxonomy_rank_model->get_ranks();
+    $trees = $this->taxonomy_tree_model->get_trees();
 
     $parent_id = $taxonomy['parent_id'];
     if($parent_id) {
@@ -86,8 +91,8 @@ class Taxonomy extends BioController {
 
     $this->smarty->assign('types', $types);
     $this->smarty->assign('taxonomy', $taxonomy);
-    $this->smarty->assign('names', $names);
     $this->smarty->assign('ranks', $ranks);
+    $this->smarty->assign('trees', $trees);
 
     $this->smarty->view('taxonomy/view');
   }
@@ -137,6 +142,26 @@ class Taxonomy extends BioController {
     echo $this->taxonomy_rank_model->get_name($value);
   }
 
+  function edit_tree()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('tax');
+    $value = $this->input->post('value');
+
+    $this->load->model('taxonomy_model');
+
+    $this->taxonomy_model->edit_tree($id, $value);
+
+    $this->load->model('taxonomy_tree_model');
+
+    echo $this->taxonomy_tree_model->get_name($value);
+  }
+
   function _browse($title)
   {
     if(!$this->logged_in) {
@@ -148,12 +173,17 @@ class Taxonomy extends BioController {
 
     $this->smarty->assign('title', 'Browse taxonomies');
     $this->smarty->assign('subtitle', $title);
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, APPENDDOM_SCRIPT, CONFIRM_SCRIPT, MYGRID_SCRIPT);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->use_mygrid();
 
     $this->load->model('taxonomy_rank_model');
     $ranks = $this->taxonomy_rank_model->get_ranks();
 
+    $this->load->model('taxonomy_tree_model');
+    $trees = $this->taxonomy_tree_model->get_trees();
+
     $this->smarty->assign('ranks', $ranks);
+    $this->smarty->assign('trees', $trees);
 
     $this->smarty->view('taxonomy/browse');
   }
