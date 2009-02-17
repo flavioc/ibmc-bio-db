@@ -152,4 +152,11 @@ class Label_model extends BioModel
 
     $this->db->trans_complete();
   }
+
+  function get_to_add()
+  {
+    $this->db->where('default', TRUE);
+    $this->db->or_where('autoadd', TRUE);
+    return parent::get_all();
+  }
 }
