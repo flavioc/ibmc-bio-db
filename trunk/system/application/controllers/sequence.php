@@ -26,6 +26,7 @@ class Sequence extends BioController
     $this->smarty->assign('title', 'Browse sequences');
 
     $this->use_mygrid();
+    $this->use_paging_size();
 
     $this->smarty->view('sequence/list');
   }
@@ -36,7 +37,19 @@ class Sequence extends BioController
       return;
     }
 
-    echo json_encode($this->sequence_model->get_all());
+    $start = $this->get_parameter('start');
+    $size = $this->get_parameter('size');
+
+    echo json_encode($this->sequence_model->get_all($start, $size));
+  }
+
+  function get_total()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    echo json_encode($this->sequence_model->get_total());
   }
 
   function view($id)
