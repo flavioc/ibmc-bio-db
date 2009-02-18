@@ -29,6 +29,10 @@
     <span id="labeleditable">{boolean value=$label.editable}</span>
   </p>
 
+  <p><span class="desc">Multiple: </span>
+    <span id="labelmultiple">{boolean value=$label.multiple}</span>
+  </p>
+
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>
 
   <p><span class="desc">Code: </span>

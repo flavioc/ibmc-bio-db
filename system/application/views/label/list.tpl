@@ -8,8 +8,8 @@ $(document).ready(function () {
   .grid({
     url: get_app_url() + '/label',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Type', 'Auto Add', 'Must Exist', 'Gen creation', 'Gen modification', 'Deletable', 'Editable'],
-    fields: ['name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable'],
+    fieldNames: ['Name', 'Type', 'Auto Add', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+    fields: ['name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
     countRemove: 'total_sequences',
     what: 'label',
     removeAssociated: 'sequences',
@@ -25,7 +25,8 @@ $(document).ready(function () {
       auto_on_creation: 'boolean',
       auto_on_modification: 'boolean',
       deletable: 'boolean',
-      editable: 'boolean'
+      editable: 'boolean',
+      multiple: 'boolean'
     },
     enableRemoveFun: function (row) {
       return row.default == '0';
