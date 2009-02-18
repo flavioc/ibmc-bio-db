@@ -175,7 +175,18 @@ class Taxonomy extends BioController {
     echo $this->taxonomy_tree_model->get_name($value);
   }
 
-  function tree_childs($tree)
+  function get_taxonomy($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('taxonomy_model');
+
+    echo json_encode($this->taxonomy_model->get($id));
+  }
+
+  function taxonomy_childs($tax, $tree)
   {
     if(!$this->logged_in) {
       return;
@@ -185,15 +196,19 @@ class Taxonomy extends BioController {
 
     if($tree == '0') {
       $tree = NULL;
+    }
+
+    if($tax == '0') {
+      $tax = NULL;
     }
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
 
-    echo json_encode($this->taxonomy_model->get_tree_childs($tree, $start, $size));
+    echo json_encode($this->taxonomy_model->get_taxonomy_childs($tax, $tree, $start, $size));
   }
 
-  function total_tree_childs($tree)
+  function total_taxonomy_childs($tax, $tree)
   {
     if(!$this->logged_in) {
       return;
@@ -205,7 +220,11 @@ class Taxonomy extends BioController {
       $tree = NULL;
     }
 
-    echo json_encode($this->taxonomy_model->count_tree_childs($tree));
+    if($tax == '0') {
+      $tax = NULL;
+    }
+
+    echo json_encode($this->taxonomy_model->count_taxonomy_childs($tax, $tree));
   }
 
   function tree_browse()

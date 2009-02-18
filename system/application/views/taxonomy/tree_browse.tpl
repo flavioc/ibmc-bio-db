@@ -6,18 +6,14 @@ $(document).ready(function () {
 
   var base_site = get_app_url() + "/taxonomy/";
   var paging_size = {/literal}{$paging_size}{literal};
+  var parents = {};
 
-  function when_submit()
+  function reload_grid(obj, tree, tax, name)
   {
-    var tree = $('#tree').val();
-    var obj = $('#show_data');
-
-    obj[0].tree = tree;
-
     obj.grid({
       url: get_app_url() + '/taxonomy',
-      total: 'total_tree_childs/' + tree,
-      retrieve: 'tree_childs/' + tree,
+      total: 'total_taxonomy_childs/' + tax + '/' + tree,
+      retrieve: 'taxonomy_childs/' + tax + '/' + tree,
       size: paging_size,
       fieldNames: ['Select', 'Name', 'Rank', 'Tree'],
       fields: ['select', 'name', 'rank_name', 'tree_name'],
@@ -35,17 +31,60 @@ $(document).ready(function () {
         }
       },
       finishedFun: function (opts) {
+        var childs_name = $('#childs_name');
+        var go_up = $('#go_up');
+
+        if(tax == 0) {
+          childs_name.text('Roots for tree ' + name);
+          go_up.hide();
+        } else {
+          childs_name.html('Children of taxonomy <a href="' + get_app_url() + '/taxonomy/view/' + tax + '">' + name + '</a>');
+
+          // get parent info
+          var parent_info = parents[tax];
+          var parent_tax = parent_info.id;
+          var parent_name = parent_info.name;
+
+          $('#go_up_what').text(parent_name);
+          go_up
+          .unbind('click')
+          .click(function () {
+            reload_grid(obj, tree, parent_tax, parent_name);
+          });
+          go_up.show();
+        }
+
+        childs_name.show();
+
         $('a[@class=select_child]', obj).click(function (e) {
           // get row id that contains taxonomy ID
           var tr_id = $(e.target).parent().parent()[0].id;
           var id = parse_id(tr_id);
 
-          alert(id);
+          // get taxonomy name
+          var new_name = $(e.target).parent().next().children()[0].innerHTML;
+
+          parents[id] = {id: tax, name: name};
+
+          reload_grid(obj, tree, id, new_name);
         });
       }
     });
   }
 
+  function when_submit()
+  {
+    var tree_dom = $('#tree');
+    var tree = tree_dom.val();
+    var tree_name = $('#tree :selected').text();
+    var obj = $('#show_data');
+    var tax = 0;
+
+    reload_grid(obj, tree, tax, tree_name);
+  }
+
+  $('#childs_name').hide();
+  $('#go_up').hide();
   $("#form_search").validate({submitHandler: when_submit});
   $('#show_data').gridEnable({paginate: true});
 });
@@ -59,5 +98,7 @@ $(document).ready(function () {
 {form_end}
 </p>
 
+<h3 id="childs_name"></h3>
+<a id="go_up" href="#">Go up <span id="go_up_what"></span></a>
 <div id="show_data"></div>
 
