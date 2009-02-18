@@ -79,6 +79,8 @@ class Sequence_model extends BioModel
 
     $this->update_history($id);
     $this->edit_field($id, 'content', $content);
+    $label_sequence = $this->load_model('label_sequence_model');
+    $label_sequence->regenerate_labels($id);
 
     $this->db->trans_complete();
   }

@@ -117,8 +117,8 @@ class Label_model extends BioModel
 
   function get_to_add()
   {
-    $this->db->where('default', TRUE);
-    $this->db->or_where('autoadd', TRUE);
+    $this->db->where('autoadd', TRUE);
+
     return parent::get_all();
   }
 }
