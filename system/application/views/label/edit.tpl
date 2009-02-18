@@ -19,6 +19,7 @@ validate_label_form('#edit_form');
 <br />
 
 {form_row type=checkbox name=deletable msg='Deletable:' checked=$label.deletable}
+{form_row type=checkbox name=editable msg='Editable:' checked=$label.editable}
 {form_row type=textarea name=code msg='Code:' cols=50 rows=5 value=$label.code}
 {form_row type=textarea name=comment msg='Comment:' cols=50 rows=5 value=$label.comment}
 
