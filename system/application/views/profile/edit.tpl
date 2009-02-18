@@ -1,9 +1,5 @@
 <h2>Edit user</h2>
 
-{form_open to='profile/do_edit' name=edit_form multipart=yes}
-
-<fieldset>
-
 <script>
 {literal}
   $(document).ready(function() {
@@ -43,6 +39,9 @@
   });
 {/literal}
 </script>
+
+{form_open to='profile/do_edit' name=edit_form multipart=yes}
+<fieldset>
 {form_row name=old_password msg='Current password:' type=password}
 {include file=profile/form.tpl}
 </fieldset>

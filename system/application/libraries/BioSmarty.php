@@ -180,6 +180,14 @@ function smarty_function_form_textarea($params, &$smarty)
   return form_textarea($data);
 }
 
+function smarty_function_form_hidden($params, &$smarty)
+{
+  $name = $params['name'];
+  $value = $params['value'];
+
+  return form_hidden($name, $value);
+}
+
 function smarty_function_form_checkbox($params, &$smarty)
 {
   $data = array();
@@ -368,10 +376,16 @@ function smarty_function_form_row($params, &$smarty)
 
     $ret .= smarty_function_form_select($select_data, &$smarty);
   } else {
+    $value = $params['value'];
+
+    if(!$value) {
+      $value = $smarty->get_template_vars(build_initial_name($what));
+    }
+
     $input_data = array(
       'name' => $what,
       'id' => $id,
-      'value' => $smarty->get_template_vars(build_initial_name($what)),
+      'value' => $value,
       'size' => $size,
       'class' => $class,
       'cols' => $params['cols'],
@@ -511,6 +525,7 @@ class BioSmarty extends Smarty
     $this->register_function('form_textarea', 'smarty_function_form_textarea');
     $this->register_function('form_input', 'smarty_function_form_input');
     $this->register_function('form_select', 'smarty_function_form_select');
+    $this->register_function('form_hidden', 'smarty_function_form_hidden');
     $this->register_function('form_row', 'smarty_function_form_row');
     $this->register_function('anchor', 'smarty_function_anchor');
     $this->register_function('top_dir', 'smarty_function_top_dir');
