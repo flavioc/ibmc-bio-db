@@ -10,14 +10,17 @@ $(document).ready(function () {
   function when_submit()
   {
     var tree = $('#tree').val();
+    var obj = $('#show_data');
 
-    $('#show_data').grid({
+    obj.tree = tree;
+
+    obj.grid({
       url: get_app_url() + '/taxonomy',
       total: 'total_tree_childs/' + tree,
       retrieve: 'tree_childs/' + tree,
       size: paging_size,
-      fieldNames: ['Name', 'Rank', 'Tree'],
-      fields: ['name', 'rank_name', 'tree_name'],
+      fieldNames: ['Select', 'Name', 'Rank', 'Tree'],
+      fields: ['select', 'name', 'rank_name', 'tree_name'],
       links: {
         name: function(row) {
             return base_site + 'view/' + row.id;
@@ -26,6 +29,9 @@ $(document).ready(function () {
       dataTransform: {
         tree_name: function (row) {
           return row.tree_name == null ? "---" : row.tree_name;
+        },
+        select: function (row) {
+          return '<a href="#" class="select_child">Go</a>';
         }
       }
     });
