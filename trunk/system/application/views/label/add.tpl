@@ -1,35 +1,7 @@
 <h2>Add label</h2>
+
 <script>
-{literal}
-  $(document).ready(function() {
-    var auto_on_creation = $("#auto_on_creation");
-    var auto_on_modification = $("#auto_on_modification");
-
-    function code_is_required() {
-      var checked_creation = auto_on_creation.is(":checked");
-      var checked_modification = auto_on_modification.is(":checked");
-
-      return checked_creation || checked_modification;
-    }
-
-    $("#add_form").validate({
-      rules: {
-        name: {
-          required: true,
-          minlength: 2,
-          maxlength: 255
-        },
-        type: {
-          required: true
-        },
-        code: {
-          required: code_is_required
-        }
-      },
-      errorPlacement: basicErrorPlacement
-    });
-  });
-{/literal}
+validate_label_form('#add_form');
 </script>
 
 {form_open to='label/do_add' name=add_form}

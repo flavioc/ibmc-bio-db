@@ -71,6 +71,55 @@ class Label extends BioController {
     $this->smarty->assign('types', $this->__get_types());
   }
 
+  function edit($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->smarty->assign('title', 'Edit label');
+    $this->__assign_types();
+    $this->load->model('label_model');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');
+
+    $label = $this->label_model->get($id);
+
+    $this->smarty->fetch_form_row('name', $label['name']);
+    $this->smarty->fetch_form_row('type', $label['type']);
+    $this->smarty->fetch_form_row('autoadd', $label['autoadd']);
+    $this->smarty->fetch_form_row('must_exist', $label['must_exist']);
+    $this->smarty->fetch_form_row('auto_on_creation', $label['auto_on_creation']);
+    $this->smarty->fetch_form_row('auto_on_modification', $label['auto_on_modification']);
+    $this->smarty->fetch_form_row('deletable', $label['deletable']);
+    $this->smarty->fetch_form_row('code', $label['code']);
+    $this->smarty->fetch_form_row('comment', $label['comment']);
+
+    $this->smarty->assign('label', $label);
+
+    $this->smarty->view('label/edit');
+  }
+
+  function do_edit($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $result = $this->__form_validation(1);
+
+    if(is_array($result)) {
+      $this->load->model('label_model');
+      $this->label_model->edit($id, $result['name'], $result['type'],
+        $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
+        $result['auto_on_modification'], $result['deletable'],
+        $result['code'], $result['comment']);
+
+      redirect("label/view/$id");
+    } else {
+      redirect("label/edit/$id");
+    }
+  }
+
   function add()
   {
     if(!$this->logged_in) {
@@ -78,7 +127,7 @@ class Label extends BioController {
     }
 
     $this->smarty->assign('title', 'Add label');
-    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');
 
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('type');
@@ -95,12 +144,8 @@ class Label extends BioController {
     $this->smarty->view('label/add');
   }
 
-  function do_add()
+  function __form_validation($max_names)
   {
-    if(!$this->logged_in) {
-      return;
-    }
-
     $errors = false;
 
     $this->load->library('input');
@@ -117,9 +162,31 @@ class Label extends BioController {
       $this->load->model('label_model');
       $name = $this->get_post('name');
 
-      if($this->label_model->has($name)) {
+      if($this->label_model->count_names($name) > $max_names) {
         $this->set_form_error('name', "Name is already being used.");
         $errors = true;
+      }
+
+      $autoadd = $this->get_post('autoadd');
+      $autoadd = ($autoadd ? TRUE : FALSE);
+      $auto_on_creation = $this->get_post('auto_on_creation');
+      $auto_on_creation = ($auto_on_creation ? TRUE : FALSE);
+      $auto_on_modification = $this->get_post('auto_on_modification');
+      $auto_on_modification = ($auto_on_modification ? TRUE : FALSE);
+      $code = $this->get_post('code');
+
+      if($auto_on_creation) {
+        if(!$autoadd) {
+          $this->set_form_error('autoadd', 'This must be set to true');
+          $errors = true;
+        }
+      }
+
+      if($auto_on_creation || $auto_on_modification) {
+        if(!$code || strlen($code) == 0) {
+          $this->set_form_error('code', 'Code must be defined');
+          $errors = true;
+        }
       }
     }
 
@@ -134,29 +201,46 @@ class Label extends BioController {
       $this->assign_row_data('code');
       $this->assign_row_data('comment');
 
-      redirect('label/add');
+      return null;
     } else {
       $type = $this->get_post('type');
-      $autoadd = $this->get_post('autoadd');
       $mustexist = $this->get_post('mustexist');
-      $auto_on_creation = $this->get_post('auto_on_creation');
-      $auto_on_modification = $this->get_post('auto_on_modification');
       $deletable = $this->get_post('deletable');
-      $code = $this->get_post('code');
       $comment = $this->get_post('comment');
 
-      $autoadd = ($autoadd ? TRUE : FALSE);
       $mustexist = ($mustexist ? TRUE : FALSE);
-      $auto_on_creation = ($auto_on_creation ? TRUE : FALSE);
-      $auto_on_modification = ($auto_on_modification ? TRUE : FALSE);
       $deletable = ($deletable ? TRUE : FALSE);
 
-      $id = $this->label_model->add($name, $type, $autoadd,
-        $mustexist, $auto_on_creation,
-        $auto_on_modification, $deletable,
-        $code, $comment);
+      return array('name' => $name,
+                   'type' => $type,
+                   'autoadd' => $autoadd,
+                   'must_exist' => $mustexist,
+                   'auto_on_creation' => $auto_on_creation,
+                   'auto_on_modification' => $auto_on_modification,
+                   'deletable' => $deletable,
+                   'code' => $code,
+                   'comment' => $comment);
+    }
+  }
+
+  function do_add()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $result = $this->__form_validation(0);
+
+    if(is_array($result)) {
+      $this->load->model('label_model');
+      $id = $this->label_model->add($result['name'], $result['type'],
+        $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
+        $result['auto_on_modification'], $result['deletable'],
+        $result['code'], $result['comment']);
 
       redirect("label/view/$id");
+    } else {
+      redirect('label/add');
     }
   }
 
@@ -190,152 +274,5 @@ class Label extends BioController {
     $this->label_model->delete($id);
 
     redirect('label/browse');
-  }
-
-  function edit_name()
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
-
-    $this->load->model('label_model');
-
-    $size = strlen($value);
-    if($size < 3 || $size > 255) {
-      $name = $this->label_model->get_name($id);
-      echo $name;
-      return;
-    }
-
-    if($this->label_model->has($value)) {
-      echo $this->label_model->get_name($id);
-      return;
-    }
-
-    $this->label_model->edit_name($id, $value);
-
-    echo $value;
-  }
-
-  function edit_type()
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_type($id, $value);
-
-    echo $value;
-  }
-
-  function edit_autoadd($id, $yes)
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $value = parse_yes($yes);
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_autoadd($id, $value);
-  }
-
-  function edit_mustexist($id, $yes)
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $value = parse_yes($yes);
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_mustexist($id, $value);
-  }
-
-  function edit_auto_on_creation($id, $yes)
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $value = parse_yes($yes);
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_auto_on_creation($id, $value);
-  }
-
-  function edit_auto_on_modification($id, $yes)
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_auto_on_modification($id,
-      parse_yes($yes));
-  }
-
-  function edit_deletable($id, $yes)
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_deletable($id,
-      parse_yes($yes));
-  }
-
-  function edit_comment()
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->load->library('input');
-
-    $id = $this->get_post('label');
-    $value = $this->input->post('value');
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_comment($id, $value);
-
-    echo $value;
-  }
-
-  function edit_code()
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->load->library('input');
-
-    $id = $this->get_post('label');
-    $value = $this->input->post('value');
-
-    $this->load->model('label_model');
-
-    $this->label_model->edit_code($id, $value);
-
-    echo $value;
   }
 }

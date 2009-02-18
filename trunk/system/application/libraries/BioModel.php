@@ -192,6 +192,18 @@ class BioModel extends Model
     $this->db->update($table, $data);
   }
 
+  function edit_data_with_history($id, $data, $table = null)
+  {
+    $this->db->trans_start();
+
+    $ret = $this->edit_data($id, $data, $table);
+    $this->update_history($id, $table);
+
+    $this->db->trans_complete();
+
+    return $ret;
+  }
+
   function insert_data_with_history($data, $table = null)
   {
     if($table == null) {
