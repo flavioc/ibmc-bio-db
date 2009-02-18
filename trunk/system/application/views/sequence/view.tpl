@@ -133,9 +133,35 @@ $(document).ready(function() {
   });
   }
 
+  function load_missing_list()
+  {
+    $('#missing_list')
+    .grid({
+      url: get_app_url() + '/sequence',
+      retrieve: 'get_missing_labels/' + seq_id,
+      fieldNames: ['Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+      fields: ['name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+      links: {
+        name: function (row) {
+          return get_app_url() + '/label/view/' + row.id;
+        }
+      },
+      types: {
+        autoadd: 'boolean',
+        auto_on_creation: 'boolean',
+        auto_on_modification: 'boolean',
+        deletable: 'boolean',
+        editable: 'boolean',
+        multiple: 'boolean'
+      }
+    });
+  }
+
   $('#labels_list').gridEnable({paginate: false});
+  $('#missing_list').gridEnable({paginate: false});
 
   load_labels_list();
+  load_missing_list();
 });
 {/literal}
 </script>
@@ -154,5 +180,11 @@ $(document).ready(function() {
 <p>
 <h3>Associated labels</h3>
 <div id="labels_list">
+</div>
+</p>
+
+<p>
+<h3>Missing labels</h3>
+<div id="missing_list">
 </div>
 </p>
