@@ -184,23 +184,10 @@ ORDER BY name";
     $this->db->trans_complete();
   }
 
-  function get_root_id()
-  {
-    return $this->get_id_by_field('name', 'root');
-  }
-
-  function get_childs($id)
-  {
-    $this->db->where('id != parent_id');
-    $query = $this->db->get_where($this->table, array('parent_id' => $id));
-
-    return $query->result_array();
-  }
-
-  function get_tree_childs($tree, $start = null, $size = null)
+  function get_taxonomy_childs($tax, $tree, $start = null, $size = null)
   {
     $this->db->where('tree_id', $tree);
-    $this->db->where('parent_id', NULL);
+    $this->db->where('parent_id', $tax);
 
     if($start != null && $size != null) {
       $this->db->limit($size, $start);
@@ -210,10 +197,10 @@ ORDER BY name";
     return $this->get_all('taxonomy_info');
   }
 
-  function count_tree_childs($tree)
+  function count_taxonomy_childs($tax, $tree)
   {
     $this->db->where('tree_id', $tree);
-    $this->db->where('parent_id', NULL);
+    $this->db->where('parent_id', $tax);
 
     return $this->count_total();
   }
