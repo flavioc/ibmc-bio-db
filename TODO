@@ -1,5 +1,8 @@
 
-- Criar plugin jQuery com paginacao + sorting
-- Usa-lo nos rankings e pesquisa de taxonomias
-- Criar vista em arvore de taxonomias
-- Criar arquitectura de funcoes para labels
+- Criar formulario dinamico.
+- Possibilidade de adicionar labels 'a mao.
+- Possibilidade de editar labels 'a mao.
+- Perceber donde vem os leaks de memoria do code igniter ao fazer importacao do NCBI.
+- Interface para sync.
+- Sistema de permissoes.
+- Adicionar sequencias em batch.
