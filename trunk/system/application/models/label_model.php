@@ -101,6 +101,11 @@ class Label_model extends BioModel
     return $this->get_field($id, 'default');
   }
 
+  function is_deletable($id)
+  {
+    return $this->get_field($id, 'deletable');
+  }
+
   function get_name($id)
   {
     return $this->get_field($id, 'name');

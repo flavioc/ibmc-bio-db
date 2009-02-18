@@ -117,6 +117,19 @@ class Label_sequence_model extends BioModel
     $this->db->trans_complete();
   }
 
+  function delete($id)
+  {
+    $info = $this->get_id($id, 'label_sequence_info');
+
+    if($info['default'] || !$info['deletable']) {
+      return false;
+    }
+
+    $this->delete_id($id);
+
+    return true;
+  }
+
   function __get_data_fields($type)
   {
     switch($type) {
