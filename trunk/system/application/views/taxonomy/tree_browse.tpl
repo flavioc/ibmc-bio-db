@@ -12,7 +12,7 @@ $(document).ready(function () {
     var tree = $('#tree').val();
     var obj = $('#show_data');
 
-    obj.tree = tree;
+    obj[0].tree = tree;
 
     obj.grid({
       url: get_app_url() + '/taxonomy',
@@ -33,6 +33,15 @@ $(document).ready(function () {
         select: function (row) {
           return '<a href="#" class="select_child">Go</a>';
         }
+      },
+      finishedFun: function (opts) {
+        $('a[@class=select_child]', obj).click(function (e) {
+          // get row id that contains taxonomy ID
+          var tr_id = $(e.target).parent().parent()[0].id;
+          var id = parse_id(tr_id);
+
+          alert(id);
+        });
       }
     });
   }
