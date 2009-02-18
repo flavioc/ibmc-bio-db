@@ -41,96 +41,96 @@ $(document).ready(function() {
 
   function load_labels_list()
   {
-  $('#labels_list')
-  .grid({
-    url: base_site,
-    retrieve: 'get_labels/' + seq_id,
-    fieldNames: ['Name', 'Subname', 'Type', 'Data'],
-    fieldGenerator: function (row) {
-      var fields = ['name', 'subname', 'type'];
+    $('#labels_list')
+    .grid({
+      url: base_site,
+      retrieve: 'get_labels/' + seq_id,
+      fieldNames: ['Name', 'Subname', 'Type', 'Data'],
+      fieldGenerator: function (row) {
+        var fields = ['name', 'subname', 'type'];
 
-      switch(row.type) {
-        case 'integer':
-          fields.push('int_data');
+        switch(row.type) {
+          case 'integer':
+            fields.push('int_data');
+            break;
+          case 'text':
+            fields.push('text_data');
+            break;
+          case 'url':
+            fields.push('url_data');
+            break;
+          case 'ref':
+            fields.push('ref_data');
+            break;
+          case 'tax':
+            fields.push('taxonomy_data');
+            break;
+          case 'position':
+            fields.push('position_a_data');
           break;
-        case 'text':
-          fields.push('text_data');
-          break;
-        case 'url':
-          fields.push('url_data');
-          break;
-        case 'ref':
-          fields.push('ref_data');
-          break;
-        case 'tax':
-          fields.push('taxonomy_data');
-          break;
-        case 'position':
-          fields.push('position_a_data');
-          break;
-        case 'obj':
-          fields.push('obj_data');
-          break;
-        default:
-          fields.push('int_data');
-          break;
-      }
+          case 'obj':
+            fields.push('obj_data');
+            break;
+          default:
+            fields.push('int_data');
+            break;
+        }
 
-      return fields;
-    },
-    links: {
-      name: function (row) {
-        return get_app_url() + '/label/view/' + row.label_id;
+        return fields;
       },
-      url_data: function (row) {
-        return row.url_data;
-      },
-      ref_data: function (row) {
-        return get_app_url() + '/sequence/view/' + row.ref_data;
-      },
-      taxonomy_data: function (row) {
-        return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
-      },
-      obj_data: function (row) {
-        return get_app_url() + '/sequence/download_label/' + row.id;
-      }
-    },
-    dataTransform: {
-      subname: function (row) {
-        if(row.subname == null) {
-          return '---';
-        } else {
-          return row.subname;
+      links: {
+        name: function (row) {
+          return get_app_url() + '/label/view/' + row.label_id;
+        },
+        url_data: function (row) {
+          return row.url_data;
+        },
+        ref_data: function (row) {
+          return get_app_url() + '/sequence/view/' + row.ref_data;
+        },
+        taxonomy_data: function (row) {
+          return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
+        },
+        obj_data: function (row) {
+          return get_app_url() + '/sequence/download_label/' + row.id;
         }
       },
-      ref_data: function (row) {
-        return row.sequence_name;
+      dataTransform: {
+        subname: function (row) {
+          if(row.subname == null) {
+            return '---';
+          } else {
+            return row.subname;
+          }
+        },
+        ref_data: function (row) {
+          return row.sequence_name;
+        },
+        taxonomy_data: function (row) {
+          return row.taxonomy_name;
+        },
+        position_a_data: function (row) {
+          return row.position_a_data + ' ' + row.position_b_data;
+        },
+        obj_data: function (row) {
+          return row.text_data;
+        }
       },
-      taxonomy_data: function (row) {
-        return row.taxonomy_name;
+      editables: {
+        subname: {
+          select: true,
+          submit: 'OK',
+          cancel: 'cancel',
+          cssclass: 'editable',
+          width: '150px'
+        }
       },
-      position_a_data: function (row) {
-        return row.position_a_data + ' ' + row.position_b_data;
+      enableRemove: true,
+      enableRemoveFun: function (row) {
+        return row.deletable == '1';
       },
-      obj_data: function (row) {
-        return row.text_data;
-      }
-    },
-    editables: {
-      subname: {
-        select: true,
-        submit: 'OK',
-        cancel: 'cancel',
-        cssclass: 'editable',
-        width: '150px'
-      }
-    },
-    enableRemove: true,
-    enableRemoveFun: function (row) {
-      return row.deletable == '1';
-    },
-    remove: 'delete_label'
-  });
+      remove: 'delete_label'
+    });
   }
 
   function load_missing_list()
