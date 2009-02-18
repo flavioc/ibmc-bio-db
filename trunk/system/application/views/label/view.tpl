@@ -5,54 +5,28 @@
   <p><span class="desc">Type: </span><span id="labeltype">{$label.type}</span></p>
 
   <p><span class="desc">Auto Add: </span>
-    <span id="labelautoadd">
-    {if $label.default}
-      {boolean value=$label.default}
-    {else}
-      {boolean value=$label.autoadd}
-    {/if}
-    </span>
+    <span id="labelautoadd">{boolean value=$label.autoadd}</span>
   </p>
 
   <p><span class="desc">Must Exist: </span>
-    <span id="labelmustexist">
-    {if $label.default}
-      {boolean value=$label.default}
-    {else}
-      {boolean value=$label.must_exist}
-    {/if}
-    </span>
+    <span id="labelmustexist">{boolean value=$label.must_exist}</span>
   </p>
 
   <p><span class="desc">Generate on creation: </span>
-    <span id="labelauto_on_creation">
-    {if $label.default}
-      {boolean value=$label.default}
-    {else}
-      {boolean value=$label.auto_on_creation}
-    {/if}
-    </span>
+    <span id="labelauto_on_creation">{boolean value=$label.auto_on_creation}</span>
   </p>
 
   <p><span class="desc">Generate on modification: </span>
-    <span id="labelauto_on_modification">
-    {if $label.default}
-      {boolean value=$label.default}
-    {else}
-      {boolean value=$label.auto_on_modification}
-    {/if}
-    </span>
+    <span id="labelauto_on_modification">{boolean value=$label.auto_on_modification}</span>
   </p>
   <br />
 
   <p><span class="desc">Deletable: </span>
-    <span id="labeldeletable">
-    {if $label.default}
-      {boolean value=!$label.default}
-    {else}
-      {boolean value=$label.deletable}
-    {/if}
-    </span>
+    <span id="labeldeletable">{boolean value=$label.deletable}</span>
+  </p>
+
+  <p><span class="desc">Editable: </span>
+    <span id="labeleditable">{boolean value=$label.editable}</span>
   </p>
 
   <p><span class="desc">Is default: </span><span id="labeldefault">{boolean value=$label.default}</span></p>

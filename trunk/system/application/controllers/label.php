@@ -91,6 +91,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('auto_on_creation', $label['auto_on_creation']);
     $this->smarty->fetch_form_row('auto_on_modification', $label['auto_on_modification']);
     $this->smarty->fetch_form_row('deletable', $label['deletable']);
+    $this->smarty->fetch_form_row('editable', $label['editable']);
     $this->smarty->fetch_form_row('code', $label['code']);
     $this->smarty->fetch_form_row('comment', $label['comment']);
 
@@ -112,7 +113,7 @@ class Label extends BioController {
       $this->label_model->edit($id, $result['name'], $result['type'],
         $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
         $result['auto_on_modification'], $result['deletable'],
-        $result['code'], $result['comment']);
+        $result['editable'], $result['code'], $result['comment']);
 
       redirect("label/view/$id");
     } else {
@@ -136,6 +137,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('auto_on_creation');
     $this->smarty->fetch_form_row('auto_on_modification');
     $this->smarty->fetch_form_row('deletable');
+    $this->smarty->fetch_form_row('editable');
     $this->smarty->fetch_form_row('code');
     $this->smarty->fetch_form_row('comment');
 
@@ -198,6 +200,7 @@ class Label extends BioController {
       $this->assign_row_data('auto_on_creation');
       $this->assign_row_data('auto_on_modification');
       $this->assign_row_data('deletable');
+      $this->assign_row_data('editable');
       $this->assign_row_data('code');
       $this->assign_row_data('comment');
 
@@ -206,10 +209,12 @@ class Label extends BioController {
       $type = $this->get_post('type');
       $mustexist = $this->get_post('mustexist');
       $deletable = $this->get_post('deletable');
+      $editable = $this->get_post('editable');
       $comment = $this->get_post('comment');
 
       $mustexist = ($mustexist ? TRUE : FALSE);
       $deletable = ($deletable ? TRUE : FALSE);
+      $editable = ($editable ? TRUE : FALSE);
 
       return array('name' => $name,
                    'type' => $type,
@@ -218,6 +223,7 @@ class Label extends BioController {
                    'auto_on_creation' => $auto_on_creation,
                    'auto_on_modification' => $auto_on_modification,
                    'deletable' => $deletable,
+                   'editable' => $editable,
                    'code' => $code,
                    'comment' => $comment);
     }
@@ -236,7 +242,7 @@ class Label extends BioController {
       $id = $this->label_model->add($result['name'], $result['type'],
         $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
         $result['auto_on_modification'], $result['deletable'],
-        $result['code'], $result['comment']);
+        $result['editable'], $result['code'], $result['comment']);
 
       redirect("label/view/$id");
     } else {
