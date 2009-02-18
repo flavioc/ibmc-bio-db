@@ -187,6 +187,54 @@ class Label_sequence_model extends BioModel
     return true;
   }
 
+  function get_obligatory($id)
+  {
+    $this->db->distinct();
+    $this->db->select('label_id');
+    $this->db->where('seq_id', $id);
+    $this->db->where('must_exist', TRUE);
+
+    $labels = $this->get_all('label_sequence_info');
+
+    $ret = array();
+
+    foreach($labels as $label) {
+      $ret[] = intval($label['label_id']);
+    }
+
+    return $ret;
+  }
+
+  function get_missing_obligatory_ids($id)
+  {
+    $label_model = $this->load_model('label_model');
+    $all = $label_model->get_obligatory();
+    $exist = $this->get_obligatory($id);
+
+    $ret = array();
+
+    foreach($all as $item) {
+      if(!in_array($item, $exist)) {
+        $ret[] = $item;
+      }
+    }
+
+    return $ret;
+  }
+
+  function get_missing_obligatory($id)
+  {
+    $ids = $this->get_missing_obligatory_ids($id);
+    $label_model = $this->load_model('label_model');
+
+    $ret = array();
+    foreach($ids as $id) {
+      $ret[] = $label_model->get($id);
+    }
+
+    return $ret;
+  }
+
   function __get_data_fields($type)
   {
     switch($type) {

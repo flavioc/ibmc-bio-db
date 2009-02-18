@@ -121,4 +121,19 @@ class Label_model extends BioModel
 
     return parent::get_all();
   }
+
+  function get_obligatory()
+  {
+    $this->db->select('id');
+    $this->db->where('must_exist', TRUE);
+
+    $all = parent::get_all();
+
+    $ret = array();
+    foreach($all as $label) {
+      $ret[] = intval($label['id']);
+    }
+
+    return $ret;
+  }
 }
