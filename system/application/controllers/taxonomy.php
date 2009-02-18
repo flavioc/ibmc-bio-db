@@ -175,6 +175,57 @@ class Taxonomy extends BioController {
     echo $this->taxonomy_tree_model->get_name($value);
   }
 
+  function tree_childs($tree)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('taxonomy_model');
+
+    if($tree == '0') {
+      $tree = NULL;
+    }
+
+    $start = $this->get_parameter('start');
+    $size = $this->get_parameter('size');
+
+    echo json_encode($this->taxonomy_model->get_tree_childs($tree, $start, $size));
+  }
+
+  function total_tree_childs($tree)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('taxonomy_model');
+
+    if($tree == '0') {
+      $tree = NULL;
+    }
+
+    echo json_encode($this->taxonomy_model->count_tree_childs($tree));
+  }
+
+  function tree_browse()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->use_paging_size();
+    $this->smarty->assign('title', 'Browse taxonomies');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->use_mygrid();
+
+    $this->load->model('taxonomy_tree_model');
+    $trees = $this->taxonomy_tree_model->get_trees();
+    $this->smarty->assign('trees', $trees);
+
+    $this->smarty->view('taxonomy/tree_browse');
+  }
+
   function _browse($title)
   {
     if(!$this->logged_in) {

@@ -197,6 +197,27 @@ ORDER BY name";
     return $query->result_array();
   }
 
+  function get_tree_childs($tree, $start = null, $size = null)
+  {
+    $this->db->where('tree_id', $tree);
+    $this->db->where('parent_id', NULL);
+
+    if($start != null && $size != null) {
+      $this->db->limit($size, $start);
+    }
+
+    $this->db->order_by('name');
+    return $this->get_all('taxonomy_info');
+  }
+
+  function count_tree_childs($tree)
+  {
+    $this->db->where('tree_id', $tree);
+    $this->db->where('parent_id', NULL);
+
+    return $this->count_total();
+  }
+
   function get_import_id($id)
   {
     return $this->get_id_by_field('import_id', $id);

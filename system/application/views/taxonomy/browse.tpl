@@ -43,7 +43,10 @@ $(document).ready(function () {
         dataTransform: {
           parent_name: function(row) {
             return row.parent_name == null ? "-" : row.parent_name;
-             }
+          },
+          tree_name: function (row) {
+            return row.tree_name == null ? "---" : row.tree_name;
+          }
         }
       });
 
