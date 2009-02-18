@@ -138,7 +138,7 @@ class Label_sequence_model extends BioModel
     case "text":
       return "text_data";
     case "obj":
-      return "obj_data";
+      return array("text_data", "obj_data");
     case "position":
       return array("position_a_data", "position_b_data");
     case "ref":

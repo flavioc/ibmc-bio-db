@@ -244,4 +244,22 @@ class Sequence extends BioController
 
     echo json_encode($this->label_sequence_model->delete($id));
   }
+
+  function download_label($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_sequence_model');
+
+    $label = $this->label_sequence_model->get_id($id);
+
+    $name = $label['text_data'];
+    $data = $label['obj_data'];
+
+    header("Content-Disposition: attachment; filename=\"$name\"");
+
+    echo stripslashes($label['obj_data']);
+  }
 }

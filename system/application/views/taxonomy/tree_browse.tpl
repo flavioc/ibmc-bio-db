@@ -35,6 +35,9 @@ $(document).ready(function () {
         var go_up = $('#go_up');
 
         if(tax == 0) {
+          if(name == '') {
+            name = '---';
+          }
           childs_name.text('Roots for tree ' + name);
           go_up.hide();
         } else {
