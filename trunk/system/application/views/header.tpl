@@ -35,6 +35,7 @@
     <li id="taxonomy_menu"><a href="#">Taxonomies</a></li>
     <ul id="taxonomy_id">
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
+      <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
       <li><a href="{site}/rank">Ranks</a></li>
       <li><a href="{site}/tree">Trees</a></li>
