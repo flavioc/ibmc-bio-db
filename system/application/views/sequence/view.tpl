@@ -113,7 +113,12 @@ $(document).ready(function() {
         cssclass: 'editable',
         width: '150px'
       }
-    }
+    },
+    enableRemove: true,
+    enableRemoveFun: function (row) {
+      return row.deletable == '1';
+    },
+    remove: 'delete_label'
   });
 
 });
