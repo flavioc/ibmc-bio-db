@@ -66,6 +66,9 @@ $(document).ready(function() {
         case 'position':
           fields.push('position_a_data');
           break;
+        case 'obj':
+          fields.push('obj_data');
+          break;
         default:
           fields.push('int_data');
           break;
@@ -85,6 +88,9 @@ $(document).ready(function() {
       },
       taxonomy_data: function (row) {
         return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
+      },
+      obj_data: function (row) {
+        return get_app_url() + '/sequence/download_label/' + row.id;
       }
     },
     dataTransform: {
@@ -103,6 +109,9 @@ $(document).ready(function() {
       },
       position_a_data: function (row) {
         return row.position_a_data + ' ' + row.position_b_data;
+      },
+      obj_data: function (row) {
+        return row.text_data;
       }
     },
     editables: {

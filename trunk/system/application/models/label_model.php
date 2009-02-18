@@ -88,7 +88,7 @@ class Label_model extends BioModel
     $deletable = $this->get_field($id, 'deletable');
     $default = $this->get_field($id, 'default');
 
-    if(!$deletable || $default) {
+    if($default) {
       return false;
     } else {
       $this->delete_id($id);
