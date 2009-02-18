@@ -270,4 +270,16 @@ class Sequence extends BioController
 
     echo stripslashes($label['obj_data']);
   }
+
+  function get_missing_labels($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_sequence_model');
+    $data = $this->label_sequence_model->get_missing_obligatory($id);
+
+    echo json_encode($data);
+  }
 }

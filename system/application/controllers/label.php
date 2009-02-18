@@ -289,4 +289,13 @@ class Label extends BioController {
 
     redirect('label/browse');
   }
+
+  function ob()
+  {
+    $this->load->model('label_model');
+
+    $ret = $this->label_model->get_obligatory();
+
+    echo json_encode($ret);
+  }
 }
