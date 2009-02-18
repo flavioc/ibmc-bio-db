@@ -217,6 +217,14 @@ class Sequence extends BioController
     echo $value;
   }
 
+  function regenerate($seq)
+  {
+    $this->load->model('label_sequence_model');
+
+    $this->sequence_model->edit_content($seq, 'ABDAD');
+//    $this->label_sequence_model->regenerate_labels($seq);
+  }
+
   function edit_subname() {
     if(!$this->logged_in) {
       return;

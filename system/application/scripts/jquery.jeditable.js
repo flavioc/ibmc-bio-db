@@ -316,6 +316,10 @@
                               if (!$.trim($(self).html())) {
                                   $(self).html(settings.placeholder);
                               }
+
+                              if(settings.finishHook) {
+                                settings.finishHook(str);
+                              }
                           });
                       }
                       
@@ -341,6 +345,7 @@
     $.editable = {
         types: {
             defaults: {
+                finishHook: null,
                 element : function(settings, original) {
                     var input = $('<input type="hidden">');                
                     $(this).append(input);

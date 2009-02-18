@@ -35,11 +35,13 @@ $(document).ready(function() {
     style: "inherit",
     cols: 50,
     rows: 5,
-    submitdata: seqdata
+    submitdata: seqdata,
+    finishHook: load_labels_list
   });
 
+  function load_labels_list()
+  {
   $('#labels_list')
-  .gridEnable({paginate: false})
   .grid({
     url: base_site,
     retrieve: 'get_labels/' + seq_id,
@@ -129,7 +131,11 @@ $(document).ready(function() {
     },
     remove: 'delete_label'
   });
+  }
 
+  $('#labels_list').gridEnable({paginate: false});
+
+  load_labels_list();
 });
 {/literal}
 </script>

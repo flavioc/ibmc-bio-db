@@ -56,6 +56,22 @@ class Label_sequence_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
+  function edit($id, $type, $data1 = null, $data2 = null)
+  {
+    $fields = $this->__get_data_fields($type);
+
+    $data = array();
+
+    if(is_array($fields)) {
+      $data[$fields[0]] = $data1;
+      $data[$fields[1]] = $data2;
+    } else {
+      $data[$fields] = $data1;
+    }
+
+    return $this->edit_data_with_history($id, $data);
+  }
+
   function add_initial_labels($id)
   {
     $label_model = $this->load_model('label_model');
@@ -98,6 +114,47 @@ class Label_sequence_model extends BioModel
     }
 
     $this->add($id, $label['id'], $label['type'], null, $data1, $data2);
+  }
+
+  function get_labels_to_auto_modify($seq)
+  {
+    $this->db->where('auto_on_modification', true);
+    $this->db->where('seq_id', $seq);
+
+    return $this->get_all('label_sequence_info');
+  }
+
+  function regenerate_label($seq, $label)
+  {
+    $id = $label['id'];
+    $type = $label['type'];
+    $code = $label['code'];
+    $value = $this->generate_label_value($seq, $code);
+
+    $data1 = null;
+    $data2 = null;
+
+    if(is_array($value)) {
+      $data1 = $value[0];
+      $data2 = $value[1];
+    } else {
+      $data1 = $value;
+    }
+
+    $this->edit($id, $type, $data1, $data2);
+  }
+
+  function regenerate_labels($seq)
+  {
+    $labels = $this->get_labels_to_auto_modify($seq);
+
+    $this->db->trans_start();
+
+    foreach($labels as $label) {
+      $this->regenerate_label($seq, $label);
+    }
+
+    $this->db->trans_complete();
   }
 
   function total_label($id)
