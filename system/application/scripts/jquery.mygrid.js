@@ -290,6 +290,10 @@
 
     table.fadeIn();
     activate_edition(opts, obj, table);
+
+    if(opts.finishedFun) {
+      opts.finishedFun(opts);
+    }
   }
 
 function get_results(obj, opts, total, start) {
@@ -426,7 +430,8 @@ $.fn.grid.defaults = {
   removeAssociated: null,
   enableRemove: false,
   types: {},
-  enableRemoveFun: null
+  enableRemoveFun: null,
+  finishedFun: null
 }
 
 $.fn.gridEnable.defaults = {
