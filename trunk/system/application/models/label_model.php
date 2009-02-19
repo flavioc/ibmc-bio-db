@@ -6,31 +6,15 @@ class Label_model extends BioModel
     parent::BioModel('label');
   }
 
-  function __process_label(&$label)
-  {
-    return $label;
-  }
-
-  function __process_labels(&$labels)
-  {
-    $ret = array();
-
-    foreach($labels as $label) {
-      $ret[] = $this->__process_label($label);
-    }
-
-    return $ret;
-  }
-
   function get($id)
   {
-    return $this->__process_label($this->get_id($id));
+    return $this->get_id($id);
   }
 
   function get_all()
   {
     $this->db->order_by('name');
-    return $this->__process_labels(parent::get_all());
+    return parent::get_all();
   }
 
   function count_names($name)
