@@ -235,6 +235,26 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
+  function get_addable_labels($id)
+  {
+    $sql = "SELECT *
+      FROM label
+      WHERE multiple IS TRUE OR
+            id NOT IN (SELECT DISTINCT label_id AS id
+                      FROM label_sequence
+                      WHERE seq_id = $id)";
+
+    $query = $this->db->query($sql);
+
+    if(!$query) {
+      return null;
+    }
+
+    $data = $query->result_array();
+
+    return $data;
+  }
+
   function __get_data_fields($type)
   {
     switch($type) {

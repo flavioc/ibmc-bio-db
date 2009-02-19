@@ -282,4 +282,17 @@ class Sequence extends BioController
 
     echo json_encode($data);
   }
+
+  function get_addable_labels($id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_sequence_model');
+
+    $data = $this->label_sequence_model->get_addable_labels($id);
+
+    echo json_encode($data);
+  }
 }

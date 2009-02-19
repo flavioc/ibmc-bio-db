@@ -133,6 +133,19 @@ $(document).ready(function() {
     });
   }
 
+  var nameLink = function (row) {
+    return get_app_url() + '/label/view/' + row.id;
+  }
+
+  var labelTypes = {
+    autoadd: 'boolean',
+    auto_on_creation: 'boolean',
+    auto_on_modification: 'boolean',
+    deletable: 'boolean',
+    editable: 'boolean',
+    multiple: 'boolean'
+  }
+
   function load_missing_list()
   {
     $('#missing_list')
@@ -142,25 +155,41 @@ $(document).ready(function() {
       fieldNames: ['Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
       fields: ['name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
       links: {
-        name: function (row) {
-          return get_app_url() + '/label/view/' + row.id;
+        name: nameLink
+      },
+      types: labelTypes
+    });
+  }
+
+  function load_addable_list()
+  {
+    $('#addable_list')
+    .grid({
+      url: get_app_url() + '/sequence',
+      retrieve: 'get_addable_labels/' + seq_id,
+      fieldNames: ['Add', 'Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+      fields: ['add', 'name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+      links: {
+        name: nameLink,
+        add: function (row) {
+          return '#';
         }
       },
-      types: {
-        autoadd: 'boolean',
-        auto_on_creation: 'boolean',
-        auto_on_modification: 'boolean',
-        deletable: 'boolean',
-        editable: 'boolean',
-        multiple: 'boolean'
+      types: labelTypes,
+      dataTransform: {
+        add: function (row) {
+          return 'Add';
+        }
       }
     });
   }
 
   $('#labels_list').gridEnable({paginate: false});
   $('#missing_list').gridEnable({paginate: false});
+  $('#addable_list').gridEnable({paginate: false});
 
   load_labels_list();
+  load_addable_list();
   load_missing_list();
 });
 {/literal}
@@ -186,5 +215,11 @@ $(document).ready(function() {
 <p>
 <h3>Missing labels</h3>
 <div id="missing_list">
+</div>
+</p>
+
+<p>
+<h3>Addable labels</h3>
+<div id="addable_list">
 </div>
 </p>
