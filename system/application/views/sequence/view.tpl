@@ -143,7 +143,8 @@ $(document).ready(function() {
     auto_on_modification: 'boolean',
     deletable: 'boolean',
     editable: 'boolean',
-    multiple: 'boolean'
+    multiple: 'boolean',
+    must_exist: 'boolean'
   }
 
   function load_missing_list()
@@ -167,8 +168,8 @@ $(document).ready(function() {
     .grid({
       url: get_app_url() + '/sequence',
       retrieve: 'get_addable_labels/' + seq_id,
-      fieldNames: ['Add', 'Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
-      fields: ['add', 'name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+      fieldNames: ['Add', 'Name', 'Type', 'Auto Add', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+      fields: ['add', 'name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
       links: {
         name: nameLink,
         add: function (row) {
