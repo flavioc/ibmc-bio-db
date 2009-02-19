@@ -36,4 +36,8 @@ add_label "position" "refpos" "FALSE" "FALSE" \
 add_label "url" "url" "FALSE" "FALSE" \
 	"FALSE" "FALSE" "" \
 	"TRUE" "TRUE" "TRUE"
+
+add_label "integer" "seqid" "TRUE" "TRUE" \
+	"TRUE" "FALSE" "return \$id;" \
+	"FALSE" "FALSE" "FALSE"
 	
