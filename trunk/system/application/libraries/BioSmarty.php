@@ -622,6 +622,10 @@ class BioSmarty extends Smarty
     $initial_str = build_initial_name($what);
     $initial = $this->controller->session->flashdata($initial_str);
 
+    if(!$initial) {
+      $initial = $this->controller->get_parameter($what);
+    }
+
     if($initial) {
       $this->assign($initial_str, $initial);
     } else if($default) {
