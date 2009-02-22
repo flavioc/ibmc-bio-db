@@ -40,4 +40,3 @@ $(document).ready(function () {
 <div id="label_show">
 </div>
 </p>
-
