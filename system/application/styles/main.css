@@ -119,12 +119,10 @@ table.data td.hed {
 }
 
 body>div#content tr .deletable_column {
-  text-align: center;
 }
 
 body>div#content div.data_show {
   border: dotted 1px black;
-  margin-right: 50px;
 }
 
 body>div#content div.navigation {
@@ -179,4 +177,11 @@ body>div#content div.error_msg a.hide_box {
 
 body>div#content img.loader {
   margin-bottom: 10px;
+}
+
+body>div#content div.grid_box {
+  border-left: 1px dashed black;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  width: 97%;
 }
