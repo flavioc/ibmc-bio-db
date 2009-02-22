@@ -31,7 +31,25 @@
     set_results(obj, results - 1);
   }
 
-  function create_row_dom(row, opts, obj) {
+  function has_delete_row(opts)
+  {
+    if(opts.fields.length != opts.fieldNames.length) {
+      return false;
+    }
+
+    for(var i = 0; i < opts.fields.length; ++i) {
+      if(opts.fields[i] == opts.deleteTag &&
+        opts.fieldNames[i] == opts.deleteTag)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function create_row_dom(row, opts, obj)
+  {
     var fields = opts.fields;
     var transforms = opts.dataTransform;
     var editables = opts.editables;
@@ -46,16 +64,17 @@
       fields = opts.fieldGenerator(row);
     }
 
-    var fields_length = fields.length;
-
-    if(opts.enableRemove) {
-      fields_length++;
-    }
-
-    row_tag.childNodes = new Array(fields_length);
+    row_tag.childNodes = new Array(fields.length);
 
     for(var j = 0; j < fields.length; ++j) {
       var field_name = fields[j];
+
+      if(field_name == opts.deleteTag) {
+        if(opts.enableRemove) {
+          add_remove_column(obj, opts, row, row_tag, j);
+        }
+        continue;
+      }
 
       var trans_fun = transforms[field_name];
       var link_fun = links[field_name];
@@ -96,35 +115,36 @@
       }
     }
 
-    if(opts.enableRemove) {
-      var removeFun = opts.enableRemoveFun;
+    return row_tag;
+  }
 
-      if(removeFun == null || removeFun(row)) {
-        var delete_id = 'delete_' + obj[0].id + '_' + row.id;
+  function add_remove_column(obj, opts, row, row_tag, index)
+  {
+    var removeFun = opts.enableRemoveFun;
 
-        row_tag.childNodes[fields_length-1] = {
-            tagName: 'td',
-            class: 'deletable_column',
-            childNodes: [
-              {
-                tagName: 'a',
-                class: 'deletable',
-                href: '#' + delete_id,
-                id: delete_id,
-                innerHTML: 'Delete'
-               }
-             ]
-           }
-      } else {
-        row_tag.childNodes[fields_length-1] = {
-          tagName: 'td',
-          class: 'deletable_column',
-          innerHTML: '---'
-        }
+    if(removeFun == null || removeFun(row)) {
+      var delete_id = 'delete_' + obj[0].id + '_' + row.id;
+
+      row_tag.childNodes[index] = {
+        tagName: 'td',
+        class: 'deletable_column',
+        childNodes: [
+          {
+            tagName: 'a',
+            class: 'deletable',
+            href: '#' + delete_id,
+            id: delete_id,
+            innerHTML: opts.deleteText
+          }
+        ]
+      }
+    } else {
+      row_tag.childNodes[index] = {
+        tagName: 'td',
+        class: 'deletable_column',
+        innerHTML: '---'
       }
     }
-
-    return row_tag;
   }
 
   function activate_edition(opts, obj, table) {
@@ -179,15 +199,16 @@
 
   function get_table_headers(opts) {
     var names = opts.fieldNames;
-    var length = names.length + (opts.enableRemove ? 1 : 0);
-    var ret = new Array(length);
+    var ret = new Array(names.length);
 
     for(var i = 0; i < names.length; ++i) {
-      ret[i] = {tagName: 'th', innerHTML: names[i]};
-    }
+      var name = names[i];
 
-    if(opts.enableRemove) {
-      ret[names.length] = {tagName: 'th', innerHTML: 'Delete'};
+      if(opts.enableRemove && name == opts.deleteTag) {
+        name = opts.deleteText;
+      }
+
+      ret[i] = {tagName: 'th', innerHTML: name};
     }
 
     return ret;
@@ -350,11 +371,17 @@ $.fn.grid = function(options) {
     $this = $(this);
 
     this.opts = opts;
+    $this.show();
 
     var url_total = opts.url + '/' + opts.total;
 
     if(this.paginate != null) {
       opts.paginate = this.paginate;
+    }
+
+    if(!has_delete_row(opts) && opts.enableRemove) {
+      opts.fields.push(opts.deleteTag);
+      opts.fieldNames(opts.deleteText);
     }
 
     show_loading($this);
@@ -383,6 +410,10 @@ $.fn.gridEnable = function(options) {
 
   return this.each(function() {
     $this = $(this);
+
+    $this.addClass('grid_box');
+    $this.hide();
+
     var results_tag = '<h4>Results (<span class="total_results">-</span>)</h4>';
     var img_tag = '<img src="' + get_images_url() + '/loading.gif" class="loader"></img>';
     var data_tag = '<div class="data_place"></div>';
@@ -431,7 +462,9 @@ $.fn.grid.defaults = {
   enableRemove: false,
   types: {},
   enableRemoveFun: null,
-  finishedFun: null
+  finishedFun: null,
+  deleteTag: '$delete',
+  deleteText: 'Delete'
 }
 
 $.fn.gridEnable.defaults = {
