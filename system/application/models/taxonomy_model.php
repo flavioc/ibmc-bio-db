@@ -95,10 +95,14 @@ class Taxonomy_model extends BioModel
 
     if($tree) {
       $sql .= " AND tree_id = $tree";
+    } else {
+      $sql .= " AND tree_id IS NULL";
     }
 
     if($rank) {
       $sql .= " AND rank_id = $rank";
+    } else {
+      $sql .= " AND rank_id IS NULL";
     }
 
     $sql .= ") AS a";

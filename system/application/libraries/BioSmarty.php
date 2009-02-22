@@ -447,7 +447,18 @@ function smarty_function_encode_json_data($params, &$smarty)
     $value = 'name';
   }
 
+  $addblank = $params['blank'];
+
   $data = $params['data'];
+
+  if($addblank) {
+    $blank = array(
+      $key => '0',
+      $value => '',
+    );
+
+    array_unshift($data, $blank);
+  }
 
   $ret = '"{';
   $first = true;

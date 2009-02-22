@@ -1,4 +1,4 @@
-<h2>View taxonomy</h2>
+<h2>View/Edit taxonomy</h2>
 
 <script>
 {literal}
@@ -17,7 +17,7 @@ $(document).ready(function() {
   });
 
   $('#taxrank').editable(base_site + 'edit_rank', {
-    data: {/literal}{encode_json_data data=$ranks}{literal},
+    data: {/literal}{encode_json_data data=$ranks blank=yes}{literal},
     type: "select",
     submit: "OK",
     cancel: "cancel",
@@ -26,7 +26,7 @@ $(document).ready(function() {
   });
 
   $('#taxtree').editable(base_site + 'edit_tree', {
-    data: {/literal}{encode_json_data data=$trees}{literal},
+    data: {/literal}{encode_json_data data=$trees blank=yes}{literal},
     type: 'select',
     submit: 'OK',
     cancel: 'cancel',
@@ -39,7 +39,7 @@ $(document).ready(function() {
 </script>
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="taxname">{$taxonomy.name}</span></p>
-  <p><span class="desc">Rank: </span><span id="taxrank">{$taxonomy.rank_name}</span></p>
+  <p><span class="desc">Rank: </span><span id="taxrank">{if $taxonomy.rank_name}{$taxonomy.rank_name}{else}---{/if}</span></p>
   <p><span class="desc">Tree: </span><span id="taxtree">{if $taxonomy.tree_name}{$taxonomy.tree_name}{else}---{/if}</span></p>
   <p><span class="desc"><a href="{site}/taxonomy/browse_parent/{$taxonomy.id}">Parent:</a> </span>
   {if $parent}
