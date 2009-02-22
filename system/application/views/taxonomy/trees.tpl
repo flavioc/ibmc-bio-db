@@ -35,16 +35,27 @@
   .grid({
     url: base_site,
     retrieve: 'get_all',
-    fieldNames: ['Name'],
-    fields: ['name'],
-    editables: {name: {
-                        select : true,
-                        submit : 'OK',
-                        cancel : 'cancel',
-                        cssclass : "editable",
-                        width: "200px"
-                        }
-               },
+    fieldNames: ['Name', '$delete', 'Add'],
+    fields: ['name', '$delete', 'add'],
+    editables: {
+      name: {
+        select : true,
+        submit : 'OK',
+        cancel : 'cancel',
+        cssclass : 'editable',
+        width: '200px'
+      }
+    },
+    dataTransform: {
+      add: function (row) {
+        return 'Add';
+      }
+    },
+    links: {
+      add: function (row) {
+        return get_app_url() + '/taxonomy/add?tree=' + row.id;
+      }
+    },
     countRemove: 'total_taxonomies',
     what: 'tree',
     removeAssociated: 'taxonomies',

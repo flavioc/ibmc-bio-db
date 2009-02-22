@@ -22,6 +22,7 @@ class Taxonomy extends BioController {
 
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('rank');
+    $this->smarty->fetch_form_row('tree');
 
     $this->smarty->view('taxonomy/add');
   }
