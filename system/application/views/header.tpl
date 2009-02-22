@@ -11,7 +11,7 @@
 {foreach from=$stylesheets item=stylesheet}
 <link rel="stylesheet" href="{top_dir}/styles/{$stylesheet}" type="text/css" media="screen" />
 {/foreach}
-<link rel="stylesheet" href="{top_dir}/styles/main.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="{top_dir}/styles/main.css?random={random}" type="text/css" charset="utf-8" />
 <title>{$title}</title>
 </head>
 <body>
