@@ -46,6 +46,9 @@ $(document).ready(function () {
           },
           tree_name: function (row) {
             return row.tree_name == null ? "---" : row.tree_name;
+          },
+          rank_name: function (row) {
+            return row.rank_name == null ? "---" : row.rank_name;
           }
         }
       });

@@ -381,7 +381,7 @@ $.fn.grid = function(options) {
 
     if(!has_delete_row(opts) && opts.enableRemove) {
       opts.fields.push(opts.deleteTag);
-      opts.fieldNames(opts.deleteText);
+      opts.fieldNames.push(opts.deleteText);
     }
 
     show_loading($this);

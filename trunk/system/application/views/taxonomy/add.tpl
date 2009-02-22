@@ -22,7 +22,7 @@
 {form_open to='taxonomy/do_add' name=add_form}
 <fieldset>
 {form_row name=name msg='Name:'}
-{form_row type=select data=$ranks name=rank msg='Rank:'}
+{form_row type=select data=$ranks name=rank msg='Rank:' blank=yes start=0}
 {form_row type=select data=$trees name=tree msg='Tree:' blank=yes start=0}
 </fieldset>
 {form_submit name=submit msg='Add'}

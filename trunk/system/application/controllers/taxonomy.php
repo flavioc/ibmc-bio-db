@@ -44,17 +44,20 @@ class Taxonomy extends BioController {
 
     $this->load->model('taxonomy_rank_model');
 
-    $rank = $this->get_post('rank');
+    $rank = intval($this->get_post('rank'));
+    if($rank == 0) {
+      $rank = null;
+    }
 
-    if(!$this->taxonomy_rank_model->has_id($rank)) {
+    if($rank && !$this->taxonomy_rank_model->has_id($rank)) {
       $this->set_form_error('rank', "Rank with id $rank doesn't exist.");
       $errors = true;
     }
 
     $this->load->model('taxonomy_tree_model');
 
-    $tree = $this->get_post('tree');
-    if($tree == '0') {
+    $tree = intval($this->get_post('tree'));
+    if($tree == 0) {
       $tree = null;
     }
 
@@ -145,7 +148,10 @@ class Taxonomy extends BioController {
     $this->load->library('input');
 
     $id = $this->input->post('tax');
-    $value = $this->input->post('value');
+    $value = intval($this->input->post('value'));
+    if($value == 0) {
+      $value = null;
+    }
 
     $this->load->model('taxonomy_model');
 
@@ -153,7 +159,11 @@ class Taxonomy extends BioController {
 
     $this->load->model('taxonomy_rank_model');
 
-    echo $this->taxonomy_rank_model->get_name($value);
+    if($value == null) {
+      echo "---";
+    } else {
+      echo $this->taxonomy_rank_model->get_name($value);
+    }
   }
 
   function edit_tree()
@@ -165,7 +175,10 @@ class Taxonomy extends BioController {
     $this->load->library('input');
 
     $id = $this->input->post('tax');
-    $value = $this->input->post('value');
+    $value = intval($this->input->post('value'));
+    if($value == 0) {
+      $value = null;
+    }
 
     $this->load->model('taxonomy_model');
 
@@ -173,7 +186,12 @@ class Taxonomy extends BioController {
 
     $this->load->model('taxonomy_tree_model');
 
-    echo $this->taxonomy_tree_model->get_name($value);
+
+    if($value == null) {
+      echo "---";
+    } else {
+      echo $this->taxonomy_tree_model->get_name($value);
+    }
   }
 
   function get_taxonomy($id)
@@ -295,16 +313,16 @@ class Taxonomy extends BioController {
     }
 
     $name = $this->get_parameter('name');
-    $rank = $this->get_parameter('rank');
-    $tree = $this->get_parameter('tree');
-    $start = $this->get_parameter('start');
-    $size = $this->get_parameter('size');
+    $rank = intval($this->get_parameter('rank'));
+    $tree = intval($this->get_parameter('tree'));
+    $start = intval($this->get_parameter('start'));
+    $size = intval($this->get_parameter('size'));
 
-    if($rank == '0') {
+    if($rank == 0) {
       $rank = null;
     }
 
-    if($tree == '0') {
+    if($tree == 0) {
       $tree = null;
     }
 
@@ -322,14 +340,14 @@ class Taxonomy extends BioController {
     }
 
     $name = $this->get_parameter('name');
-    $rank = $this->get_parameter('rank');
-    $tree = $this->get_parameter('tree');
+    $rank = intval($this->get_parameter('rank'));
+    $tree = intval($this->get_parameter('tree'));
 
-    if($rank == '0') {
+    if($rank == 0) {
       $rank = null;
     }
 
-    if($tree == '0') {
+    if($tree == 0) {
       $tree = null;
     }
 
