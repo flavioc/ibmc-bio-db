@@ -148,6 +148,8 @@ $(document).ready(function() {
     must_exist: 'boolean'
   }
 
+  var hiddenFields = ['autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'must_exist'];
+
   function reload_missing_list()
   {
     missing_loaded = true;
@@ -161,22 +163,23 @@ $(document).ready(function() {
       links: {
         name: nameLink
       },
-      types: labelTypes
+      types: labelTypes,
+      hiddenFields: hiddenFields
     });
   }
 
   function load_missing_list()
   {
-    if(missing_loaded) {
-      $('#missing_list').fadeIn('slow');
-    } else {
+    if(!missing_loaded) {
       reload_missing_list();
     }
+
+    $('#missing_box').fadeIn('slow');
   }
 
   function hide_missing_list()
   {
-    $('#missing_list').fadeOut('slow');
+    $('#missing_box').fadeOut('slow');
   }
 
   function reload_addable_list()
@@ -207,28 +210,31 @@ $(document).ready(function() {
         },
         type: function (row) {
         }
-      }
+      },
+      hiddenFields: hiddenFields
     });
   }
 
   function hide_addable_list()
   {
-    $('#addable_list').fadeOut('slow');
+    $('#addable_box').fadeOut('slow');
   }
 
   function load_addable_list()
   {
-    if(addable_loaded) {
-      $('#addable_list').fadeIn('slow');
-    } else {
+    if(!addable_loaded) {
       reload_addable_list();
     }
+
+    $('#addable_box').fadeIn('slow');
   }
 
   $('#labels_list').gridEnable({paginate: false});
   $('#missing_list').gridEnable({paginate: false});
   $('#addable_list').gridEnable({paginate: false});
 
+  hide_addable_list();
+  hide_missing_list();
   load_labels_list();
 
   $('#hide').click(function () {
@@ -245,6 +251,32 @@ $(document).ready(function() {
     enabled: false,
     plusEnabled: load_missing_list,
     minusEnabled: hide_missing_list
+  });
+
+  $('#hide_show_missing_details').minusPlus({
+    zoom: 85,
+    enableImage: false,
+    plusEnabled: function () {
+      $('#missing_list').gridShowDefault('fast');
+    },
+    minusEnabled: function () {
+      $('#missing_list').gridHideDefault('fast');
+    },
+    plusText: 'Show details',
+    minusText: 'Hide details'
+  });
+
+  $('#hide_show_addable_details').minusPlus({
+    zoom: 85,
+    enableImage: false,
+    plusEnabled: function () {
+      $('#addable_list').gridShowDefault('fast');
+    },
+    minusEnabled: function () {
+      $('#addable_list').gridHideDefault('fast');
+    },
+    plusText: 'Show details',
+    minusText: 'Hide details'
   });
 
   $('#hide_show_addable').minusPlus({
@@ -279,7 +311,12 @@ $(document).ready(function() {
 
 <p>
 <h3>Missing labels</h3><div id="hide_show_missing"></div>
-<div id="missing_list">
+<div id="missing_box">
+  <div id="missing_list">
+  </div>
+  <br />
+  <div id="hide_show_missing_details">
+  </div>
 </div>
 </p>
 
@@ -287,7 +324,12 @@ $(document).ready(function() {
 
 <p>
 <h3>Addable labels</h3><div id="hide_show_addable"></div>
-<div id="addable_list">
+<div id="addable_box">
+  <div id="addable_list">
+  </div>
+  <br />
+  <div id="hide_show_addable_details">
+  </div>
 </div>
 </p>
 
