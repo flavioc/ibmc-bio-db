@@ -51,6 +51,10 @@ $(document).ready(function () {
 
   function reload_grid(obj, tree, tax, name, path)
   {
+    var add_child = $('#add_child');
+  
+    add_child.hide();
+
     obj.grid({
       url: get_app_url() + '/taxonomy',
       total: 'total_taxonomy_childs/' + tax + '/' + tree,
@@ -81,6 +85,9 @@ $(document).ready(function () {
         var childs_name = $('#childs_name');
         var go_up = $('#go_up');
         var new_path = add_path(path, name, tax, tree);
+
+        add_child.attr('href', get_app_url() + '/taxonomy/add?parent_id=' + tax + '&tree=' + tree);
+        add_child.show();
 
         if(tax == 0) {
           if(name == '') {
@@ -138,6 +145,7 @@ $(document).ready(function () {
 
   $('#childs_name').hide();
   $('#go_up').hide();
+  $('#add_child').hide();
   $('#tax_path').hide();
   $("#form_search").validate({submitHandler: when_submit});
   $('#show_data').gridEnable({paginate: true});
@@ -156,4 +164,5 @@ $(document).ready(function () {
 <p class="path" id="tax_path"></p>
 <a id="go_up" href="#">Go up <span id="go_up_what"></span></a>
 <div id="show_data"></div>
+<a id="add_child" href="#">Add child</a>
 
