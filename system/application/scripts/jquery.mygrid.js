@@ -337,10 +337,7 @@
       }
     }
 
-    $.each(opts.hiddenFields, function (index, field) {
-        obj.gridHideColumn(field);
-    });
-        
+    obj.gridHideDefault();
     table.fadeIn();
     activate_edition(opts, obj, table);
 
