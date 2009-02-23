@@ -17,4 +17,5 @@ define('MYGRID_SCRIPT', 'jquery.mygrid.js');
 define('IMPROMPTU_SCRIPT', 'jquery.impromptu.js');
 define('IMPROMPTU_THEME', 'jquery.impromptu.css');
 define('FORM_SCRIPT', 'jquery.form.js');
+define('PLUSMINUS_SCRIPT', 'jquery.plusminus.js');
 

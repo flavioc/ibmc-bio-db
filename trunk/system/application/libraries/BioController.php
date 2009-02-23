@@ -75,6 +75,11 @@ class BioController extends Controller
       CONFIRM_SCRIPT, JEDITABLE_SCRIPT, MYGRID_SCRIPT);
   }
 
+  function use_plusminus()
+  {
+    $this->smarty->load_scripts(PLUSMINUS_SCRIPT);
+  }
+
   function set_form_error($what, $msg)
   {
     $error_str = build_error_name($what);

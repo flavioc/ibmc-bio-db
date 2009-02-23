@@ -8,6 +8,8 @@ $(document).ready(function() {
   var base_site = get_app_url() + '/sequence';
   var seq_id = "{/literal}{$seq_id}{literal}";
   var seqdata = {seq: seq_id};
+  var missing_loaded = false;
+  var addable_loaded = false;
 
   $('#seqname').editable(base_site + '/edit_name', {
     select: true,
@@ -47,36 +49,34 @@ $(document).ready(function() {
       retrieve: 'get_labels/' + seq_id,
       fieldNames: ['Data', 'Name', 'Subname', 'Type'],
       fieldGenerator: function (row) {
-        var field_to_add = null;
+        var field_to_add = 'data';
 
-        switch(row.type) {
-          case 'integer':
-            field_to_add = 'int_data';
-            break;
-          case 'text':
-            field_to_add = 'text_data';
-            break;
-          case 'url':
-            field_to_add = 'url_data';
-            break;
-          case 'ref':
-            field_to_add = 'ref_data';
-            break;
-          case 'tax':
-            field_to_add = 'taxonomy_data';
-            break;
-          case 'position':
-            field_to_add = 'position_a_data';
-          break;
-          case 'obj':
-            field_to_add = 'obj_data';
-            break;
-          default:
-            field_to_add = 'int_data';
-            break;
+        if(row) {
+          switch(row.type) {
+            case 'integer':
+              field_to_add = 'int_data';
+              break;
+            case 'text':
+              field_to_add = 'text_data';
+              break;
+            case 'url':
+              field_to_add = 'url_data';
+              break;
+            case 'ref':
+              field_to_add = 'ref_data';
+              break;
+            case 'tax':
+              field_to_add = 'taxonomy_data';
+              break;
+            case 'position':
+              field_to_add = 'position_a_data';
+              break;
+            case 'obj':
+              field_to_add = 'obj_data';
+              break;
+          }
         }
 
-        
         return [field_to_add, 'name', 'subname', 'type'];
       },
       links: {
@@ -148,8 +148,10 @@ $(document).ready(function() {
     must_exist: 'boolean'
   }
 
-  function load_missing_list()
+  function reload_missing_list()
   {
+    missing_loaded = true;
+
     $('#missing_list')
     .grid({
       url: get_app_url() + '/sequence',
@@ -163,8 +165,24 @@ $(document).ready(function() {
     });
   }
 
-  function load_addable_list()
+  function load_missing_list()
   {
+    if(missing_loaded) {
+      $('#missing_list').show();
+    } else {
+      reload_missing_list();
+    }
+  }
+
+  function hide_missing_list()
+  {
+    $('#missing_list').hide();
+  }
+
+  function reload_addable_list()
+  {
+    addable_loaded = true;
+
     $('#addable_list')
     .grid({
       url: get_app_url() + '/sequence',
@@ -185,13 +203,26 @@ $(document).ready(function() {
       },
       clickFun: {
         add: function (row) {
-          alert(row.autoadd);
+          tb_show("Coiso", get_app_url() + '/help/settings');
         },
         type: function (row) {
-          alert(row.name);
         }
       }
     });
+  }
+
+  function hide_addable_list()
+  {
+    $('#addable_list').hide();
+  }
+
+  function load_addable_list()
+  {
+    if(addable_loaded) {
+      $('#addable_list').show();
+    } else {
+      reload_addable_list();
+    }
   }
 
   $('#labels_list').gridEnable({paginate: false});
@@ -199,8 +230,27 @@ $(document).ready(function() {
   $('#addable_list').gridEnable({paginate: false});
 
   load_labels_list();
-  load_addable_list();
-  load_missing_list();
+
+  $('#hide').click(function () {
+    $('#labels_list').gridHideColumn('data', 'slow');
+    return false;
+  });
+
+  $('#show').click(function () {
+    $('#labels_list').gridShowColumn('data', 'slow');
+    return false;
+  });
+
+  $('#hide_show_missing').minusPlus({
+    enabled: false,
+    plusEnabled: load_missing_list,
+    minusEnabled: hide_missing_list
+  });
+
+  $('#hide_show_addable').minusPlus({
+    plusEnabled: load_addable_list,
+    minusEnabled: hide_addable_list
+  });
 
 });
 {/literal}
@@ -218,19 +268,21 @@ $(document).ready(function() {
 {form_end}
 
 <p>
+<a id="hide" href="#">Hide this</a>
+<a id="show" href="#">Show this</a>
 <h3>Associated labels</h3>
 <div id="labels_list">
 </div>
 </p>
 
 <p>
-<h3>Missing labels</h3>
+<h3>Missing labels</h3><div id="hide_show_missing"></div>
 <div id="missing_list">
 </div>
 </p>
 
 <p>
-<h3>Addable labels</h3>
+<h3>Addable labels</h3><div id="hide_show_addable"></div>
 <div id="addable_list">
 </div>
 </p>
@@ -239,4 +291,5 @@ $(document).ready(function() {
 <br />
 <a href="{site}/sequence/browse">Sequence List</a>
 </p>
+
 
