@@ -54,7 +54,7 @@ div#clearfooter {
   height: 250px;
 }
 
-body>div#content .desc {
+.desc {
   float:left;
   width: 170px;
   text-align:right;
@@ -62,7 +62,7 @@ body>div#content .desc {
   font-weight: bold;
 }
 
-body>div#content form div.row {
+form div.row {
   margin-top: 2px;
 }
 
@@ -118,14 +118,14 @@ table.data td.hed {
   font-weight: bold;
 }
 
-body>div#content tr .deletable_column {
+tr .deletable_column {
 }
 
-body>div#content div.data_show {
+div.data_show {
   border: dotted 1px black;
 }
 
-body>div#content div.navigation {
+div.navigation {
   margin-top: 7px;
   border: 1px solid black;
   width: 150px;
@@ -134,26 +134,26 @@ body>div#content div.navigation {
   padding: 5px;
 }
 
-body>div#content div.navigation a:hover {
+div.navigation a:hover {
   background: #c00;
   color: white;
   border: 1px dashed black;
 }
 
-body>div#content p.help {
+p.help {
   font-size: 80%;
   text-decoration: underline;
 }
 
-body>div#content span.comment {
+span.comment {
   font-style: italic;
 }
 
-body>div#content span.code {
+span.code {
   font-family: "courier";
 }
 
-body>div#content div.error_msg {
+div.error_msg {
   font-size: 95%;
   font-weight: bold;
   border: 3px solid red;
@@ -165,21 +165,21 @@ body>div#content div.error_msg {
   padding-left: 10px;
 }
 
-body>div#content div.error_msg img {
+div.error_msg img {
   float: left;
   margin-right: 10px;
 }
 
-body>div#content div.error_msg a.hide_box {
+div.error_msg a.hide_box {
   font-size: 70%;
   text-decoration: underline;
 }
 
-body>div#content img.loader {
+img.loader {
   margin-bottom: 10px;
 }
 
-body>div#content div.grid_box {
+div.grid_box {
   border-left: 1px dashed black;
   padding-left: 10px;
   padding-bottom: 10px;
