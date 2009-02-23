@@ -159,5 +159,6 @@ $(document).ready(function () {
 <p class="path" id="tax_path"></p>
 <a id="go_up" href="#">Go up <span id="go_up_what"></span></a>
 <div id="show_data"></div>
+<br />
 <a id="add_child" href="#">Add child</a>
 

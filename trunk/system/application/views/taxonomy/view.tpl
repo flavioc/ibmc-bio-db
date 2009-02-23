@@ -130,3 +130,7 @@ $(document).ready(function() {
 {form_end}
 
 </p>
+
+<p>
+<a href="{site}/taxonomy/browse">List Taxonomies</a>
+</p>
