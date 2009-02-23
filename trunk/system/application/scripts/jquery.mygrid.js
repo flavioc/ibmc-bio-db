@@ -337,6 +337,10 @@
       }
     }
 
+    $.each(opts.hiddenFields, function (index, field) {
+        obj.gridHideColumn(field);
+    });
+        
     table.fadeIn();
     activate_edition(opts, obj, table);
 
@@ -429,12 +433,24 @@ $.fn.gridHideColumn = function(column, type) {
   return this.each(function () {
     var $this = $(this);
     var opts = this.opts;
-
-    if(type == null) {
-      type = 'slow';
+    var obj = $(get_data_column(this, column), $this);
+    
+    if(type) {
+      obj.fadeOut(type);
+    } else {
+      obj.hide();
     }
+  });
+};
 
-    $(get_data_column(this, column), $this).fadeOut(type);
+$.fn.gridHideDefault = function (type) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+
+    $.each(opts.hiddenFields, function (index, field) {
+        $this.gridHideColumn(field, type);
+    });
   });
 };
 
@@ -442,12 +458,24 @@ $.fn.gridShowColumn = function(column, type) {
   return this.each(function () {
     var $this = $(this);
     var opts = this.opts;
-
-    if(type == null) {
-      type = 'slow';
+    var obj = $(get_data_column(this, column), $this);
+    
+    if(type) {
+      obj.fadeIn(type);
+    } else {
+      obj.show();
     }
+  });
+};
 
-    $(get_data_column(this, column), $this).fadeIn(type);
+$.fn.gridShowDefault = function (type) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+
+    $.each(opts.hiddenFields, function (index, field) {
+        $this.gridShowColumn(field, type);
+    });
   });
 };
 
@@ -555,7 +583,8 @@ $.fn.grid.defaults = {
   deleteTag: '$delete',
   deleteText: 'Delete',
   idField: 'id',
-  clickFun: {}
+  clickFun: {},
+  hiddenFields: []
 }
 
 $.fn.gridEnable.defaults = {

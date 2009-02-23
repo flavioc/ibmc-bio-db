@@ -5,10 +5,13 @@ var a_plus = 'a[@class=plus_click]';
 var a_minus = 'a[@class=minus_click]';
 var img_plus = 'img[@class=plus_image]';
 var img_minus = 'img[@class=minus_image]';
+var span_plus = 'span[@class=plus_text]';
+var span_minus = 'span[@class=minus_text]';
 
 var plus = a_plus + ', ' + img_plus;
 var minus = a_minus + ', ' + img_minus;
 var img_all = img_plus + ', ' + img_minus;
+var span_all = span_plus + ', ' + span_minus;
 
 function show_plus(obj)
 {
@@ -39,18 +42,26 @@ $.fn.minusPlus = function(options) {
     $this.addClass('minus_plus_box');
     $this.hide();
 
-    var plus_tag = '<a class="plus_click" href="#"><img class="plus_image" src="' + get_images_url() + '/plus.png" />';
+    var plus_tag = '<a class="plus_click" href="#">';
+
+    if(opts.enableImage) {
+      plus_tag += '<img class="plus_image" src="' + get_images_url() + '/plus.png" />';
+    }
 
     if(opts.enableText) {
-      plus_tag += ' ' + opts.plusText;
+      plus_tag += ' <span class="plus_text">' + opts.plusText + '</span>';
     }
 
     plus_tag += '</a>';
 
-    var minus_tag = '<a class="minus_click" href="#"><img class="minus_image" src="' + get_images_url() + '/minus.png" />';
+    var minus_tag = '<a class="minus_click" href="#">';
+
+    if(opts.enableImage) {
+      minus_tag += '<img class="minus_image" src="' + get_images_url() + '/minus.png" />';
+    }
 
     if(opts.enableText) {
-      minus_tag += ' ' + opts.minusText;
+      minus_tag += ' <span class="minus_text">' + opts.minusText + '</span>';
     }
 
     minus_tag += '</a>';
@@ -59,7 +70,12 @@ $.fn.minusPlus = function(options) {
     
     var zoom = opts.zoom + '%';
 
-    $(img_all, $this).zoom(zoom, zoom);
+    if(opts.enableImage) {
+      $(img_all, $this).zoom(zoom, zoom);
+    }
+    if(opts.enableText) {
+      $(span_all, $this).css('font-size', zoom);
+    }
 
     if(opts.enabled) {
       hide_plus($this);
@@ -95,7 +111,8 @@ $.fn.minusPlus.defaults = {
   minusText: 'Hide',
   enableText: true,
   zoom: 100,
-  enabled: false
+  enabled: false,
+  enableImage: true
 };
 
 })(jQuery);
