@@ -13,11 +13,6 @@ $(document).ready(function () {
     return path.concat([{what: what, tax: tax, tree: tree}]);
   }
 
-  function clone(o)
-  {
-    return eval(uneval(o));
-  }
-
   function show_path(obj, path)
   {
     var dom_path = $('#tax_path');
