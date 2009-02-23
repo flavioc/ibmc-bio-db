@@ -42,26 +42,35 @@
     return false;
   }
 
-  function create_row_dom(row, opts, obj)
+  function get_fields(opts, row)
   {
     var fields = opts.fields;
+
+    if(opts.fieldGenerator) {
+      fields = opts.fieldGenerator(row);
+
+      if(opts.enableRemove &&
+        !has_delete_row(opts.enableRemove, fields, opts.deleteTag))
+      {
+        fields.push(opts.deleteTag);
+      }
+    }
+
+    return fields;
+  }
+
+  function create_row_dom(row, opts, obj)
+  {
+    var fields = get_fields(opts, row);
     var transforms = opts.dataTransform;
     var editables = opts.editables;
     var links = opts.links;
     var types = opts.types;
     var row_tag = {tagName: 'tr'};
+    var id = obj[0].id;
 
-    row_tag.id = "row_" + obj[0].id + "_" +
+    row_tag.id = "row_" + id + "_" +
       (row[opts.idField] == null ? i : row[opts.idField]);
-
-    if(opts.fieldGenerator) {
-      fields = opts.fieldGenerator(row);
-      if(opts.enableRemove &&
-          !has_delete_row(opts.enableRemove, fields, opts.deleteTag))
-      {
-        fields.push(opts.deleteTag);
-      }
-    }
 
     row_tag.childNodes = new Array(fields.length);
 
@@ -104,18 +113,18 @@
       }
 
       if(opts.clickFun[field_name]) {
-        var className = "field_" + obj[0].id + '_' + field_name;
+        var className = "field_" + id + '_' + field_name;
 
         field_data = '<span class="' + className + '">' + field_data + '</span>';
       }
 
       row_tag.childNodes[j] = {
         tagName: 'td',
+        class: 'td_' + id + '_' + opts.originalFields[j],
         innerHTML: field_data
       };
 
       if(editables[field_name]) {
-        row_tag.childNodes[j].class = 'editable_' + field_name;
         row_tag.childNodes[j].id = 'field_' + row_tag.id;
       }
     }
@@ -126,9 +135,10 @@
   function add_remove_column(obj, opts, row, row_tag, index)
   {
     var removeFun = opts.enableRemoveFun;
+    var id = obj[0].id;
 
     if(removeFun == null || removeFun(row)) {
-      var delete_id = 'delete_' + obj[0].id + '_' + row[opts.idField];
+      var delete_id = 'delete_' + id + '_' + row[opts.idField];
 
       row_tag.childNodes[index] = {
         tagName: 'td',
@@ -153,8 +163,12 @@
   }
 
   function activate_edition(opts, obj, table) {
+    var id = obj[0].id;
+
     $.each(opts.editables, function (field, how) {
-        $('td[@class=editable_' + field + ']', table)
+        var className = 'td_' + id + '_' + field;
+
+        $('td[@class='+ className + ']', table)
           .unbind('editable')
           .editable(opts.url + '/edit_' + field, how);
     });
@@ -190,7 +204,7 @@
                   var resp = $.evalJSON(data);
 
                   if(resp) {
-                    var tr_id = "row_" + obj[0].id + "_" + id;
+                    var tr_id = "row_" + id + "_" + id;
 
                     $('#' + tr_id).fadeOut('slow');
                     decrement_results(obj);
@@ -202,9 +216,13 @@
       .confirm(confirm_data);
   }
 
-  function get_table_headers(opts) {
+  function get_table_headers(obj, opts) {
     var names = opts.fieldNames;
+    var fields = get_fields(opts, null);
     var ret = new Array(names.length);
+    var id = obj[0].id;
+
+    opts.originalFields = fields;
 
     for(var i = 0; i < names.length; ++i) {
       var name = names[i];
@@ -213,7 +231,11 @@
         name = opts.deleteText;
       }
 
-      ret[i] = {tagName: 'th', innerHTML: name};
+      ret[i] = {
+        tagName: 'th',
+        class: 'th_' + id + '_' + fields[i],
+        innerHTML: name
+      };
     }
 
     return ret;
@@ -223,6 +245,7 @@
     hide_loading(obj);
 
     var data_place = $('div[@class=data_place]', obj);
+    var id = obj[0].id;
 
     data_place.empty().hide();
 
@@ -236,7 +259,7 @@
             childNodes: [
               {
                 tagName: 'tr',
-                childNodes: get_table_headers(opts)
+                childNodes: get_table_headers(obj, opts)
               }
             ]
           }
@@ -318,9 +341,8 @@
     activate_edition(opts, obj, table);
 
     if(opts.clickFun) {
-      for(var key in opts.clickFun) {
-        var value = opts.clickFun[key];
-        var className = "field_" + obj[0].id + '_' + key;
+      $.each(opts.clickFun, function (key, value) {
+        var className = 'field_' + id + '_' + key;
 
         $('span[@class=' + className + ']', obj).each(function (index) {
             var $this = $(this);
@@ -338,7 +360,7 @@
               });
             }
         });
-      }
+      });
     }
 
     if(opts.finishedFun) {
@@ -387,11 +409,47 @@ $.fn.gridAdd = function(data) {
       var table = $('table[@class=data]', data_place);
 
       table.appendDom([row_tag]);
-      table.appendDom([{tagName: 'tr'}]);
       activate_edition(opts, $this, table);
       increment_results($this);
   });
 }
+
+function get_data_column (obj, column)
+{
+  var td_class = 'td_' + obj.id + '_' + column;
+  var th_class = 'th_' + obj.id + '_' + column;
+  var th_sel = 'th[@class=' + th_class + ']';
+  var td_sel = 'td[@class=' + td_class + ']';
+  var sel = th_sel + ', ' + td_sel;
+
+  return sel;
+}
+
+$.fn.gridHideColumn = function(column, type) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+
+    if(type == null) {
+      type = 'slow';
+    }
+
+    $(get_data_column(this, column), $this).fadeOut(type);
+  });
+};
+
+$.fn.gridShowColumn = function(column, type) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+
+    if(type == null) {
+      type = 'slow';
+    }
+
+    $(get_data_column(this, column), $this).fadeIn(type);
+  });
+};
 
 $.fn.grid = function(options) {
   var opts = $.extend({}, $.fn.grid.defaults, options);
