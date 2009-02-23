@@ -441,7 +441,7 @@ function smarty_function_encode_json_data($params, &$smarty)
   if(!$key) {
     $key = 'id';
   }
-
+  
   $value = $params['value'];
   if(!$value) {
     $value = 'name';

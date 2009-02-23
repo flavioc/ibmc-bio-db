@@ -21,25 +21,30 @@
 
 <div id="leftmenu">
   {if $logged_in}
-  <script>
-  {literal}
+{literal}
+<script>
   $().ready(function() {
     toggle_menu('taxonomy');
     toggle_menu('sequence');
     toggle_menu('label');
     toggle_menu('user');
+    toggle_menu('rank');
   });
-  {/literal}
-  </script>
+</script>
+{/literal}
   <ul>
     <li id="taxonomy_menu"><a href="#">Taxonomies</a></li>
     <ul id="taxonomy_id">
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
-      <li><a href="{site}/rank">Ranks</a></li>
       <li><a href="{site}/tree">Trees</a></li>
       <li><a href="{site}/taxonomy/sync">Sync</a></li>
+    </ul>
+    <li id="rank_menu"><a href="#">Ranks</a></li>
+    <ul id="rank_id">
+      <li><a href="{site}/rank/add">Add</a></li>
+      <li><a href="{site}/rank/list_all">List</a></li>
     </ul>
     <li id="sequence_menu"><a href="#">Sequences</a></li>
     <ul id="sequence_id">

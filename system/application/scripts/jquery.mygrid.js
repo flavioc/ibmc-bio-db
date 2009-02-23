@@ -58,7 +58,7 @@
     var row_tag = {tagName: 'tr'};
 
     row_tag.id = "row_" + obj[0].id + "_" +
-      (row.id == null ? i : row.id);
+      (row[opts.idField] == null ? i : row[opts.idField]);
 
     if(opts.fieldGenerator) {
       fields = opts.fieldGenerator(row);
@@ -123,7 +123,7 @@
     var removeFun = opts.enableRemoveFun;
 
     if(removeFun == null || removeFun(row)) {
-      var delete_id = 'delete_' + obj[0].id + '_' + row.id;
+      var delete_id = 'delete_' + obj[0].id + '_' + row[opts.idField];
 
       row_tag.childNodes[index] = {
         tagName: 'td',
@@ -464,7 +464,8 @@ $.fn.grid.defaults = {
   enableRemoveFun: null,
   finishedFun: null,
   deleteTag: '$delete',
-  deleteText: 'Delete'
+  deleteText: 'Delete',
+  idField: 'id'
 }
 
 $.fn.gridEnable.defaults = {
