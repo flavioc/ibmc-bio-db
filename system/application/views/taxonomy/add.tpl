@@ -24,6 +24,10 @@
 {form_row name=name msg='Name:'}
 {form_row type=select data=$ranks name=rank msg='Rank:' blank=yes start=0 key=rank_id value=rank_name}
 {form_row type=select data=$trees name=tree msg='Tree:' blank=yes start=0}
+{if $parent_name}
+{form_hidden name=parent_id value=$parent_id}
+  <p><span class="desc">Parent: </span><strong>{$parent_name}</strong></p>
+{/if}
 </fieldset>
 {form_submit name=submit msg='Add'}
 {form_end}

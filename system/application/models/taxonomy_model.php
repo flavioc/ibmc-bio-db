@@ -7,12 +7,13 @@ class Taxonomy_model extends BioModel
     parent::BioModel('taxonomy');
   }
 
-  function add($name, $rank, $tree)
+  function add($name, $rank, $tree, $parent = null)
   {
     $data = array(
       'name' => $name,
       'rank_id' => $rank,
-      'tree_id' => $tree
+      'tree_id' => $tree,
+      'parent_id' => $parent,
     );
 
     return $this->insert_data_with_history($data);
@@ -34,6 +35,11 @@ class Taxonomy_model extends BioModel
   function get_name($id)
   {
     return $this->get_field($id, 'name');
+  }
+
+  function get_rank($id)
+  {
+    return $this->get_field($id, 'rank_id');
   }
 
   function edit_name($id, $name)
