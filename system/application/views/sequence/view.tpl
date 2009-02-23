@@ -237,16 +237,6 @@ $(document).ready(function() {
   hide_missing_list();
   load_labels_list();
 
-  $('#hide').click(function () {
-    $('#labels_list').gridHideColumn('data', 'slow');
-    return false;
-  });
-
-  $('#show').click(function () {
-    $('#labels_list').gridShowColumn('data', 'slow');
-    return false;
-  });
-
   $('#hide_show_missing').minusPlus({
     enabled: false,
     plusEnabled: load_missing_list,
@@ -300,8 +290,6 @@ $(document).ready(function() {
 {form_end}
 
 <p>
-<a id="hide" href="#">Hide this</a>
-<a id="show" href="#">Show this</a>
 <h3>Associated labels</h3>
 <div id="labels_list">
 </div>
