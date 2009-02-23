@@ -39,3 +39,6 @@ $(document).ready(function() {
 {form_submit name=submit_delete msg=Delete}
 {form_end}
 
+<p>
+<a href="{site}/rank/list_all">List Ranks</a>
+</p>
