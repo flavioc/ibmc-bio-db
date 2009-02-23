@@ -60,6 +60,13 @@ class BioController extends Controller
   function use_thickbox()
   {
     $this->smarty->load_scripts(THICKBOX_SCRIPT);
+    $this->smarty->load_stylesheets(THICKBOX_THEME);
+  }
+
+  function use_impromptu()
+  {
+    $this->smarty->load_scripts(IMPROMPTU_SCRIPT);
+    $this->smarty->load_stylesheets(IMPROMPTU_THEME);
   }
 
   function use_mygrid()
