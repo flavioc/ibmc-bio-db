@@ -77,7 +77,7 @@ class BioController extends Controller
 
   function use_plusminus()
   {
-    $this->smarty->load_scripts(PLUSMINUS_SCRIPT);
+    $this->smarty->load_scripts(ZOOM_SCRIPT, PLUSMINUS_SCRIPT);
   }
 
   function set_form_error($what, $msg)

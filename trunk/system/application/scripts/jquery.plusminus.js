@@ -8,6 +8,7 @@ var img_minus = 'img[@class=minus_image]';
 
 var plus = a_plus + ', ' + img_plus;
 var minus = a_minus + ', ' + img_minus;
+var img_all = img_plus + ', ' + img_minus;
 
 function show_plus(obj)
 {
@@ -55,6 +56,10 @@ $.fn.minusPlus = function(options) {
     minus_tag += '</a>';
 
     $this.append(plus_tag + minus_tag);
+    
+    var zoom = opts.zoom + '%';
+
+    $(img_all, $this).zoom(zoom, zoom);
 
     if(opts.enabled) {
       hide_plus($this);
@@ -89,6 +94,7 @@ $.fn.minusPlus.defaults = {
   plusText: 'Show',
   minusText: 'Hide',
   enableText: true,
+  zoom: 100,
   enabled: false
 };
 
