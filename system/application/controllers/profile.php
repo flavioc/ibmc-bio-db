@@ -178,6 +178,7 @@ class Profile extends BioController {
 
     $this->smarty->assign('title', 'Edit settings');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->smarty->load_scripts(FORM_SCRIPT);
     $this->use_thickbox();
     $this->load->model('configuration_model');
 

@@ -59,8 +59,10 @@ class Sequence extends BioController
     }
 
     $this->smarty->assign('title', 'View sequence');
-    $this->smarty->load_scripts(JEDITABLE_SCRIPT, IMPROMPTU_SCRIPT);
+    $this->smarty->load_scripts(FORM_SCRIPT);
+    $this->use_thickbox();
     $this->use_mygrid();
+    $this->use_plusminus();
 
     $this->__assign_types();
 
