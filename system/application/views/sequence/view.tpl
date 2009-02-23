@@ -1,4 +1,4 @@
-<h2>View sequence</h2>
+<h2>View/Edit sequence</h2>
 
 {assign var=seq_id value=$sequence.id}
 
@@ -45,38 +45,39 @@ $(document).ready(function() {
     .grid({
       url: base_site,
       retrieve: 'get_labels/' + seq_id,
-      fieldNames: ['Name', 'Subname', 'Type', 'Data'],
+      fieldNames: ['Data', 'Name', 'Subname', 'Type'],
       fieldGenerator: function (row) {
-        var fields = ['name', 'subname', 'type'];
+        var field_to_add = null;
 
         switch(row.type) {
           case 'integer':
-            fields.push('int_data');
+            field_to_add = 'int_data';
             break;
           case 'text':
-            fields.push('text_data');
+            field_to_add = 'text_data';
             break;
           case 'url':
-            fields.push('url_data');
+            field_to_add = 'url_data';
             break;
           case 'ref':
-            fields.push('ref_data');
+            field_to_add = 'ref_data';
             break;
           case 'tax':
-            fields.push('taxonomy_data');
+            field_to_add = 'taxonomy_data';
             break;
           case 'position':
-            fields.push('position_a_data');
+            field_to_add = 'position_a_data';
           break;
           case 'obj':
-            fields.push('obj_data');
+            field_to_add = 'obj_data';
             break;
           default:
-            fields.push('int_data');
+            field_to_add = 'int_data';
             break;
         }
 
-        return fields;
+        
+        return [field_to_add, 'name', 'subname', 'type'];
       },
       links: {
         name: function (row) {
@@ -181,6 +182,14 @@ $(document).ready(function() {
         add: function (row) {
           return 'Add';
         }
+      },
+      clickFun: {
+        add: function (row) {
+          alert(row.autoadd);
+        },
+        type: function (row) {
+          alert(row.name);
+        }
       }
     });
   }
@@ -192,6 +201,7 @@ $(document).ready(function() {
   load_labels_list();
   load_addable_list();
   load_missing_list();
+
 });
 {/literal}
 </script>
@@ -224,3 +234,9 @@ $(document).ready(function() {
 <div id="addable_list">
 </div>
 </p>
+
+<p>
+<br />
+<a href="{site}/sequence/browse">Sequence List</a>
+</p>
+
