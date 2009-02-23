@@ -23,6 +23,25 @@ class Taxonomy extends BioController {
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('rank');
     $this->smarty->fetch_form_row('tree');
+    $this->smarty->fetch_form_row('parent_id');
+
+    $parent_id = $this->smarty->get_initial_var('parent_id');
+    if($parent_id) {
+      $this->load->model('taxonomy_model');
+      $parent_name = $this->taxonomy_model->get_name($parent_id);
+
+      $this->smarty->assign('parent_name', $parent_name);
+      $this->smarty->assign('parent_id', $parent_id);
+    }
+
+    $rank_id = $this->smarty->get_initial_var('rank');
+    if(!$rank_id && $parent_id) {
+      $this->load->model('taxonomy_model');
+      $parent_rank = $this->taxonomy_model->get_rank($parent_id);
+      $child_rank = $this->taxonomy_rank_model->get_child($parent_rank);
+
+      $this->smarty->set_initial_var('rank', $child_rank);
+    }
 
     $this->smarty->view('taxonomy/add');
   }
@@ -42,6 +61,7 @@ class Taxonomy extends BioController {
       $errors = true;
     }
 
+    $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_rank_model');
 
     $rank = intval($this->get_post('rank'));
@@ -66,10 +86,20 @@ class Taxonomy extends BioController {
       $errors = true;
     }
 
+    $parent_id = $this->get_post('parent_id');
+    if($parent_id) {
+      $parent_id = intval($parent_id);
+      if(!$this->taxonomy_model->has_id($parent_id)) {
+        $this->set_form_error('parent_id', "Parent with id $parent_id doesn't exist.");
+        $errors = true;
+      }
+    }
+
     if($errors) {
       $this->assign_row_data('name');
       $this->assign_row_data('rank');
       $this->assign_row_data('tree');
+      $this->assign_row_data('parent_id');
 
       redirect('taxonomy/add');
     } else {
@@ -77,7 +107,7 @@ class Taxonomy extends BioController {
 
       $this->load->model('taxonomy_model');
 
-      $id = $this->taxonomy_model->add($name, $rank, $tree);
+      $id = $this->taxonomy_model->add($name, $rank, $tree, $parent_id);
 
       redirect("taxonomy/view/$id");
     }

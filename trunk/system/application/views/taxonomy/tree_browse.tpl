@@ -56,12 +56,15 @@ $(document).ready(function () {
       total: 'total_taxonomy_childs/' + tax + '/' + tree,
       retrieve: 'taxonomy_childs/' + tax + '/' + tree,
       size: paging_size,
-      fieldNames: ['Select', 'Name', 'Rank', 'Tree'],
-      fields: ['select', 'name', 'rank_name', 'tree_name'],
+      fieldNames: ['Select', 'Name', 'Rank', 'Tree', 'Add Child'],
+      fields: ['select', 'name', 'rank_name', 'tree_name', 'add_child'],
       links: {
         name: function(row) {
-            return base_site + 'view/' + row.id;
+          return base_site + 'view/' + row.id;
         },
+        add_child: function (row) {
+          return base_site + 'add?parent_id=' + row.id + '&tree=' + row.tree_id;
+        }
       },
       dataTransform: {
         tree_name: function (row) {
@@ -69,6 +72,9 @@ $(document).ready(function () {
         },
         select: function (row) {
           return '<a href="#" class="select_child">Go</a>';
+        },
+        add_child: function (row) {
+          return 'Add';
         }
       },
       finishedFun: function (opts) {

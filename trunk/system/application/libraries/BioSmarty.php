@@ -340,7 +340,7 @@ function smarty_function_form_row($params, &$smarty)
     $value = $params['value'];
     $checked = $params['checked'];
 
-    $initial = $smarty->get_template_vars(build_initial_name($what));
+    $initial = $smarty->get_initial_var($what);
     if($initial) {
       $checked = TRUE;
     }
@@ -356,8 +356,7 @@ function smarty_function_form_row($params, &$smarty)
     $ret .= smarty_function_form_checkbox($check_data, &$smarty);
   } else if($type == 'select') {
     $start = $params['start'];
-    $initial_str = build_initial_name($what);
-    $initial = $smarty->get_template_vars($initial_str);
+    $initial = $smarty->get_initial_var($what);
 
     if($initial) {
       $start = $initial;
@@ -379,7 +378,7 @@ function smarty_function_form_row($params, &$smarty)
     $value = $params['value'];
 
     if(!$value) {
-      $value = $smarty->get_template_vars(build_initial_name($what));
+      $value = $smarty->get_initial_var($what);
     }
 
     $input_data = array(
@@ -654,6 +653,18 @@ class BioSmarty extends Smarty
   {
     $this->left_delimiter = $left;
     $this->right_delimiter = $right;
+  }
+
+  function get_initial_var($var)
+  {
+    $var_name = build_initial_name($var);
+    return $this->get_template_vars($var_name);
+  }
+
+  function set_initial_var($var, $value)
+  {
+    $var_name = build_initial_name($var);
+    return $this->assign($var_name, $value);
   }
 }
 

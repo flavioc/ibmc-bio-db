@@ -34,6 +34,11 @@ class Taxonomy_rank_model extends BioModel
     }
   }
 
+  function get_child($id)
+  {
+    return $this->get_field($id, 'parent_id');
+  }
+
   function edit_name($id, $new_name)
   {
     if($this->has_name($new_name)) {
