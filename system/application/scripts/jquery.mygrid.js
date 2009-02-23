@@ -31,16 +31,10 @@
     set_results(obj, results - 1);
   }
 
-  function has_delete_row(opts)
+  function has_delete_row(enableRemove, fields, deleteTag)
   {
-    if(opts.fields.length != opts.fieldNames.length) {
-      return false;
-    }
-
-    for(var i = 0; i < opts.fields.length; ++i) {
-      if(opts.fields[i] == opts.deleteTag &&
-        opts.fieldNames[i] == opts.deleteTag)
-      {
+    for(var i = 0; i < fields.length; ++i) {
+      if(fields[i] == deleteTag) {
         return true;
       }
     }
@@ -62,6 +56,11 @@
 
     if(opts.fieldGenerator) {
       fields = opts.fieldGenerator(row);
+      if(opts.enableRemove &&
+          !has_delete_row(opts.enableRemove, fields, opts.deleteTag))
+      {
+        fields.push(opts.deleteTag);
+      }
     }
 
     row_tag.childNodes = new Array(fields.length);
@@ -379,7 +378,9 @@ $.fn.grid = function(options) {
       opts.paginate = this.paginate;
     }
 
-    if(!has_delete_row(opts) && opts.enableRemove) {
+    if(opts.enableRemove &&
+      !has_delete_row(opts.enableRemove, opts.fields, opts.deleteTag))
+    {
       opts.fields.push(opts.deleteTag);
       opts.fieldNames.push(opts.deleteText);
     }
