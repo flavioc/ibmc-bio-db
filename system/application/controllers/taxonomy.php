@@ -27,11 +27,15 @@ class Taxonomy extends BioController {
 
     $parent_id = $this->smarty->get_initial_var('parent_id');
     if($parent_id) {
-      $this->load->model('taxonomy_model');
-      $parent_name = $this->taxonomy_model->get_name($parent_id);
+      if($parent_id == '0') {
+        $parent_id = null;
+      } else {
+        $this->load->model('taxonomy_model');
+        $parent_name = $this->taxonomy_model->get_name($parent_id);
 
-      $this->smarty->assign('parent_name', $parent_name);
-      $this->smarty->assign('parent_id', $parent_id);
+        $this->smarty->assign('parent_name', $parent_name);
+        $this->smarty->assign('parent_id', $parent_id);
+      }
     }
 
     $rank_id = $this->smarty->get_initial_var('rank');
