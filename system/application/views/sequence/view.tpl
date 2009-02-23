@@ -168,7 +168,7 @@ $(document).ready(function() {
   function load_missing_list()
   {
     if(missing_loaded) {
-      $('#missing_list').show();
+      $('#missing_list').fadeIn('slow');
     } else {
       reload_missing_list();
     }
@@ -176,7 +176,7 @@ $(document).ready(function() {
 
   function hide_missing_list()
   {
-    $('#missing_list').hide();
+    $('#missing_list').fadeOut('slow');
   }
 
   function reload_addable_list()
@@ -213,13 +213,13 @@ $(document).ready(function() {
 
   function hide_addable_list()
   {
-    $('#addable_list').hide();
+    $('#addable_list').fadeOut('slow');
   }
 
   function load_addable_list()
   {
     if(addable_loaded) {
-      $('#addable_list').show();
+      $('#addable_list').fadeIn('slow');
     } else {
       reload_addable_list();
     }
@@ -275,17 +275,23 @@ $(document).ready(function() {
 </div>
 </p>
 
+<hr />
+
 <p>
 <h3>Missing labels</h3><div id="hide_show_missing"></div>
 <div id="missing_list">
 </div>
 </p>
 
+<hr />
+
 <p>
 <h3>Addable labels</h3><div id="hide_show_addable"></div>
 <div id="addable_list">
 </div>
 </p>
+
+<hr />
 
 <p>
 <br />
