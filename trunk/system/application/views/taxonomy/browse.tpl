@@ -21,8 +21,8 @@ $(document).ready(function () {
           rank: function () { return $('#rank').val(); },
           tree: function () { return $('#tree').val(); }
         },
-        fieldNames: ['Name', 'Rank', 'Tree', 'Parent'],
-        fields: ['name', 'rank_name', 'tree_name', 'parent_name'],
+        fieldNames: ['Name', 'Rank', 'Tree', 'Parent', 'Add child'],
+        fields: ['name', 'rank_name', 'tree_name', 'parent_name', 'add_child'],
         links: { name: function(row) {
           {/literal}
           {if $child_id}
@@ -38,6 +38,9 @@ $(document).ready(function () {
             } else {
               return base_site + 'view/' + row.parent_id;
             }
+          },
+          add_child: function (row) {
+            return get_app_url() + '/taxonomy/add?parent_id=' + row.id + '&tree=' + row.tree_id;
           }
         },
         dataTransform: {
@@ -49,6 +52,9 @@ $(document).ready(function () {
           },
           rank_name: function (row) {
             return row.rank_name == null ? "---" : row.rank_name;
+          },
+          add_child: function (row) {
+            return 'Add';
           }
         }
       });
