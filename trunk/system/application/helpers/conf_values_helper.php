@@ -12,6 +12,9 @@ define('APPENDDOM_SCRIPT', 'jquery.appendDom.js');
 define('AUTOCOMPLETE_SCRIPT', 'jquery.autocomplete.js');
 define('AUTOCOMPLETE_THEME', 'jquery.autocomplete.css');
 define('THICKBOX_SCRIPT', 'jquery.thickbox.js');
+define('THICKBOX_THEME', 'jquery.thickbox.css');
 define('MYGRID_SCRIPT', 'jquery.mygrid.js');
 define('IMPROMPTU_SCRIPT', 'jquery.impromptu.js');
+define('IMPROMPTU_THEME', 'jquery.impromptu.css');
+define('FORM_SCRIPT', 'jquery.form.js');
 
