@@ -53,7 +53,7 @@
     </ul>
     <li id="label_menu"><a href="#">Labels</a></li>
     <ul id="label_id">
-      <li><a href="{site}/label/add">Add new</a></li>
+      <li><a href="{site}/label/add">Add</a></li>
       <li><a href="{site}/label/browse">List</a></li>
     </ul>
     <li id="user_menu"><a href="#">Users</a></li>
