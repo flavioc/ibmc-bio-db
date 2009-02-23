@@ -47,9 +47,7 @@
 
 <p>
 <ul>
-{if !$label.default}
 <li><a href="{site}/label/edit/{$label.id}">Edit</a></li>
-{/if}
 <li><a href="{site}/label/browse">List Labels</a></li>
 </ul>
 </p>
