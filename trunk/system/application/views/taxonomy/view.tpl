@@ -1,5 +1,6 @@
 <h2>View/Edit taxonomy</h2>
 
+
 <script>
 {literal}
 $(document).ready(function() {
@@ -17,7 +18,7 @@ $(document).ready(function() {
   });
 
   $('#taxrank').editable(base_site + 'edit_rank', {
-    data: {/literal}{encode_json_data data=$ranks blank=yes}{literal},
+    data: {/literal}{encode_json_data data=$ranks blank=yes key=rank_id value=rank_name}{literal},
     type: "select",
     submit: "OK",
     cancel: "cancel",
