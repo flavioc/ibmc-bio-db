@@ -194,3 +194,12 @@ img.plus_image, img.minus_image {
   border: 0;
 }
 
+body>div#content hr {
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-top: 1px dashed black;
+  width: 97%;
+  margin-top: 5px;
+}
+
