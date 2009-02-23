@@ -103,6 +103,12 @@
         }
       }
 
+      if(opts.clickFun[field_name]) {
+        var className = "field_" + obj[0].id + '_' + field_name;
+
+        field_data = '<span class="' + className + '">' + field_data + '</span>';
+      }
+
       row_tag.childNodes[j] = {
         tagName: 'td',
         innerHTML: field_data
@@ -311,8 +317,32 @@
     table.fadeIn();
     activate_edition(opts, obj, table);
 
+    if(opts.clickFun) {
+      for(var key in opts.clickFun) {
+        var value = opts.clickFun[key];
+        var className = "field_" + obj[0].id + '_' + key;
+
+        $('span[@class=' + className + ']', obj).each(function (index) {
+            var $this = $(this);
+            var found = $('a', $this);
+            var row = rows[index];
+
+            if(found.length == 1) {
+              found.click(function (event) {
+                value(row);
+                return false;
+              });
+            } else {
+              $this.click(function (event) {
+                value(row);
+              });
+            }
+        });
+      }
+    }
+
     if(opts.finishedFun) {
-      opts.finishedFun(opts);
+      opts.finishedFun(opts, rows);
     }
   }
 
@@ -466,7 +496,8 @@ $.fn.grid.defaults = {
   finishedFun: null,
   deleteTag: '$delete',
   deleteText: 'Delete',
-  idField: 'id'
+  idField: 'id',
+  clickFun: {}
 }
 
 $.fn.gridEnable.defaults = {
