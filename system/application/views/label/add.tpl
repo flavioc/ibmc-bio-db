@@ -15,6 +15,7 @@ validate_label_form('#add_form');
 {form_row type=checkbox name=deletable msg='Deletable:'}
 {form_row type=checkbox name=editable msg='Editable:'}
 {form_row type=checkbox name=multiple msg='Multiple:'}
+{form_row type=checkbox name=default msg='Default:'}
 {form_row type=textarea name=code msg='Code:' cols=50 rows=5}
 {form_row type=textarea name=comment msg='Comment:' cols=50 rows=5}
 </fieldset>

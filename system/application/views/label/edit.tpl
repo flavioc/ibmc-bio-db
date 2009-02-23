@@ -6,8 +6,6 @@ validate_label_form('#edit_form');
 
 {assign var=label_id value=$label.id}
 
-{if !$label.default}
-
 {form_open to="label/do_edit/$label_id" name=edit_form}
 <fieldset>
 {form_row name=name msg='Name:'}
@@ -21,6 +19,7 @@ validate_label_form('#edit_form');
 {form_row type=checkbox name=deletable msg='Deletable:' checked=$label.deletable}
 {form_row type=checkbox name=editable msg='Editable:' checked=$label.editable}
 {form_row type=checkbox name=multiple msg='Multiple:' checked=$label.multiple}
+{form_row type=checkbox name=default msg='Default:' checked=$label.default}
 {form_row type=textarea name=code msg='Code:' cols=50 rows=5 value=$label.code}
 {form_row type=textarea name=comment msg='Comment:' cols=50 rows=5 value=$label.comment}
 
@@ -28,6 +27,4 @@ validate_label_form('#edit_form');
 {form_submit name=submit msg='Do edit'}
 {form_end}
 
-{else}
-<p>The label <strong>{$label.name}</strong> is not editable.</p>
-{/if}
+<p>The label <strong>{$label.name}</strong> is a system level label, please be careful.</p>

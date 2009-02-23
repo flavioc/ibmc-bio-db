@@ -26,7 +26,8 @@ class Label_model extends BioModel
 
   function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
-    $editable, $multiple, $code, $comment)
+    $editable, $multiple,
+    $default, $code, $comment)
   {
     $data = array(
       'name' => $name,
@@ -38,6 +39,7 @@ class Label_model extends BioModel
       'deletable' => $deletable,
       'editable' => $editable,
       'multiple' => $multiple,
+      'default' => $default,
       'code' => $code,
       'comment' => $comment,
     );
@@ -47,7 +49,8 @@ class Label_model extends BioModel
 
   function edit($id, $name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
-    $editable, $multiple, $code, $comment)
+    $editable, $multiple,
+    $default, $code, $comment)
   {
     $data = array(
       'name' => $name,
@@ -59,6 +62,7 @@ class Label_model extends BioModel
       'deletable' => $deletable,
       'editable' => $editable,
       'multiple' => $multiple,
+      'default' => $default,
       'code' => $code,
       'comment' => $comment,
     );
