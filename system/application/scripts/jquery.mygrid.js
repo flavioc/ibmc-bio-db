@@ -197,19 +197,19 @@
       .unbind('confirm')
       .unbind('click')
       .click(function() {
-              var id = parse_id($(this).attr('id'));
+              var row_id = parse_id($(this).attr('id'));
               var url = opts.url + '/' + opts.remove + '/' + id;
 
               $.post(url, function (data) {
                   var resp = $.evalJSON(data);
 
                   if(resp) {
-                    var tr_id = "row_" + id + "_" + id;
+                    var tr_id = "row_" + id + "_" + row_id;
 
                     $('#' + tr_id).fadeOut('slow');
                     decrement_results(obj);
                   } else {
-                    alert('Error deleting item: ' + id);
+                    alert('Error deleting item: ' + row_id);
                   }
               });
       })
