@@ -330,6 +330,9 @@ class Sequence extends BioController
         case 'integer':
           $this->smarty->view_s('new_label/integer');
           break;
+        case 'url':
+          $this->smarty->view_s('new_label/url');
+          break;
       }
     } else {
       echo "NOT HANDLED";
@@ -384,6 +387,33 @@ class Sequence extends BioController
         $ret = true;
       } else {
         $ret = "This label has invalid integer type";
+      }
+    }
+
+    echo json_encode($ret);
+  }
+
+  function add_url_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $url = $this->get_post('url');
+
+    $ret = null;
+
+    $this->load->model('label_sequence_model');
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      $ret = self::$label_used_error;
+    } else {
+      if($this->label_sequence_model->add_url_label($seq_id, $label_id, $url)) {
+        $ret = true;
+      } else {
+        $ret = "This label has invalid url type";
       }
     }
 
