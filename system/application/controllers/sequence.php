@@ -2,6 +2,8 @@
 
 class Sequence extends BioController
 {
+  private static $label_used_error = "This label is already being used and cannot be reused";
+
   function Sequence() {
     parent::BioController();
     $this->load->model('sequence_model');
@@ -310,17 +312,24 @@ class Sequence extends BioController
 
     $this->smarty->assign('sequence', $this->sequence_model->get($seq_id));
     $this->smarty->assign('label', $label);
-    //print_r($label);
 
-    if(!$label['editable'] && $label['auto_on_creation']) {
+    $editable = $label['editable'];
+    $auto = $label['auto_on_creation'];
+
+    if(!$editable && $auto) {
       $this->smarty->view_s('new_label/auto');
-    } else if($label['editable'] && $label['auto_on_creation']) {
-//      $this->smarty->viewq_s('new_label/auto_edit');
+    } else if($editable && $auto) {
       echo "NOT AUTO";
-    } else if($label['editable']) {
-      if($label['type'] == 'text')
-      {
-        $this->smarty->view_s('new_label/text');
+    } else if($editable) {
+      $type = $label['type'];
+
+      switch($type) {
+        case 'text':
+          $this->smarty->view_s('new_label/text');
+          break;
+        case 'integer':
+          $this->smarty->view_s('new_label/integer');
+          break;
       }
     } else {
       echo "NOT HANDLED";
@@ -342,12 +351,39 @@ class Sequence extends BioController
     $this->load->model('label_sequence_model');
 
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = "The label " . $label['name'] . " is already being used and cannot be reused";
+      $ret = self::$label_used_error;
     } else {
       if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
         $ret = true;
       } else {
-        $ret = "Label " . $label['name'] . " has invalid text type";
+        $ret = "This label has invalid text type";
+      }
+    }
+
+    echo json_encode($ret);
+  }
+
+  function add_integer_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $int = intval($this->get_post('integer'));
+
+    $ret = null;
+
+    $this->load->model('label_sequence_model');
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      $ret = self::$label_used_error;
+    } else {
+      if($this->label_sequence_model->add_integer_label($seq_id, $label_id, $int)) {
+        $ret = true;
+      } else {
+        $ret = "This label has invalid integer type";
       }
     }
 
@@ -368,7 +404,7 @@ class Sequence extends BioController
     $ret = null;
 
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = "The label " . $label['name'] . " is already being used and cannot be reused.";
+      $ret = self::$label_used_error;
     } else {
       $this->label_sequence_model->add_auto_label_id($seq_id, $label_id);
       $ret = true;

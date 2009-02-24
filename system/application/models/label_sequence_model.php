@@ -154,6 +154,19 @@ class Label_sequence_model extends BioModel
     }
   }
 
+  function add_integer_label($seq_id, $label_id, $int)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($label['type'] == 'integer' && $label['editable']) {
+      $this->add($seq_id, $label_id, 'integer', null, $int);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   function get_labels_to_auto_modify($seq)
   {
     $this->db->where('auto_on_modification', true);

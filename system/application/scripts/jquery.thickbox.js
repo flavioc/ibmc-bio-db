@@ -5,9 +5,7 @@
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
 		  
-var tb_pathToImage = get_images_url() + "/loadingAnimation.gif"
-
-/*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
+var tb_pathToImage = get_images_url() + "/loading.gif"
 
 //on page load call tb_init
 $(document).ready(function(){   
