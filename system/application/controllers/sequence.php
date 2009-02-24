@@ -59,7 +59,8 @@ class Sequence extends BioController
     }
 
     $this->smarty->assign('title', 'View sequence');
-    $this->smarty->load_scripts(FORM_SCRIPT);
+    $this->smarty->load_scripts(JSON_SCRIPT,
+      FORM_SCRIPT, 'sequence_functions.js');
     $this->use_thickbox();
     $this->use_mygrid();
     $this->use_plusminus();
@@ -296,5 +297,83 @@ class Sequence extends BioController
     $data = $this->label_sequence_model->get_addable_labels($id);
 
     echo json_encode($data);
+  }
+
+  function add_label($seq_id, $label_id)
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $this->load->model('label_model');
+    $label = $this->label_model->get($label_id);
+
+    $this->smarty->assign('sequence', $this->sequence_model->get($seq_id));
+    $this->smarty->assign('label', $label);
+    //print_r($label);
+
+    if(!$label['editable'] && $label['auto_on_creation']) {
+      $this->smarty->view_s('new_label/auto');
+    } else if($label['editable'] && $label['auto_on_creation']) {
+//      $this->smarty->viewq_s('new_label/auto_edit');
+      echo "NOT AUTO";
+    } else if($label['editable']) {
+      if($label['type'] == 'text')
+      {
+        $this->smarty->view_s('new_label/text');
+      }
+    } else {
+      echo "NOT HANDLED";
+    }
+  }
+
+  function add_text_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $text = $this->get_post('text');
+
+    $ret = null;
+
+    $this->load->model('label_sequence_model');
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      $ret = "The label " . $label['name'] . " is already being used and cannot be reused";
+    } else {
+      if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
+        $ret = true;
+      } else {
+        $ret = "Label " . $label['name'] . " has invalid text type";
+      }
+    }
+
+    echo json_encode($ret);
+  }
+
+  function add_auto_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+
+    $this->load->model('label_sequence_model');
+
+    $ret = null;
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      $ret = "The label " . $label['name'] . " is already being used and cannot be reused.";
+    } else {
+      $this->label_sequence_model->add_auto_label_id($seq_id, $label_id);
+      $ret = true;
+    }
+
+    echo json_encode($ret);
   }
 }

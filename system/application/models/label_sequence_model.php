@@ -116,6 +116,44 @@ class Label_sequence_model extends BioModel
     $this->add($id, $label['id'], $label['type'], null, $data1, $data2);
   }
 
+  function add_auto_label($seq, $label)
+  {
+    $res = $this->generate_label_value($seq, $label['code']);
+
+    $data1 = null;
+    $data2 = null;
+
+    if(is_array($res)) {
+      $data1 = $res[0];
+      $data2 = $res[1];
+    } else {
+      $data1 = $res;
+    }
+
+    $this->add($seq, $label['id'], $label['type'], null, $data1, $data2);
+  }
+
+  function add_auto_label_id($seq, $label_id)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    return $this->add_auto_label($seq, $label);
+  }
+
+  function add_text_label($seq_id, $label_id, $text)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($label['type'] == 'text' && $label['editable']) {
+      $this->add($seq_id, $label_id, 'text', null, $text);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   function get_labels_to_auto_modify($seq)
   {
     $this->db->where('auto_on_modification', true);
@@ -253,6 +291,16 @@ class Label_sequence_model extends BioModel
     $data = $query->result_array();
 
     return $data;
+  }
+
+  function label_used_up($seq, $label)
+  {
+    $this->db
+      ->where('seq_id', $seq)
+      ->where('label_id', $label)
+      ->where('multiple IS FALSE');
+
+    return $this->count_total('label_sequence_info') > 0;
   }
 
   function __get_data_fields($type)
