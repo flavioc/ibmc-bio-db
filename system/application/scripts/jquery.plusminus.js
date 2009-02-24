@@ -66,7 +66,9 @@ $.fn.minusPlus = function(options) {
 
     minus_tag += '</a>';
 
-    $this.append(plus_tag + minus_tag);
+    var all_tags = plus_tag + minus_tag;
+
+    $this.append(all_tags);
     
     var zoom = opts.zoom + '%';
 

@@ -83,3 +83,18 @@ function get_app_url()
   return get_base_url() + "/index.php";
 }
 
+function get_url_id()
+{
+  var url = window.location.href;
+  var vec = url.split(/\/|#/);
+
+  for(var i = vec.length-1; i >= 0; --i) {
+      var num = parseInt(vec[i]);
+
+      if(num.toString() != "NaN") {
+        return num;
+      }
+  }
+
+  return 0;
+}
