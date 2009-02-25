@@ -333,6 +333,9 @@ class Sequence extends BioController
         case 'url':
           $this->smarty->view_s('new_label/url');
           break;
+        case 'obj':
+          $this->smarty->view_s('new_label/obj');
+          break;
       }
     } else {
       echo "NOT HANDLED";
@@ -393,6 +396,46 @@ class Sequence extends BioController
     echo json_encode($ret);
   }
 
+  function add_obj_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+
+    $this->load->library('upload', $this->_get_upload_config());
+    $upload_ret = $this->upload->do_upload('file');
+    $ret = null;
+
+    if($upload_ret) {
+      $data = $this->upload->data();
+      $this->load->model('label_sequence_model');
+
+      if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+        $ret = self::$label_used_error;
+      } else {
+
+        $this->load->helper('image_utils');
+        $filename = $data['orig_name'];
+        $bytes = read_file_content($data);
+
+        if($this->label_sequence_model->add_obj_label($seq_id,
+          $label_id, $filename, $bytes))
+        {
+          $ret = true;
+        } else {
+          $ret = "This label has invalid object type";
+        }
+      }
+    } else {
+      $ret = $this->upload->display_errors('', '');;
+    }
+
+    echo json_encode($ret);
+  }
+
   function add_url_label()
   {
     if(!$this->logged_in) {
@@ -441,5 +484,15 @@ class Sequence extends BioController
     }
 
     echo json_encode($ret);
+  }
+
+  function _get_upload_config()
+  {
+    $config['upload_path'] = UPLOAD_DIRECTORY;
+    $config['overwrite'] = true;
+    $config['encrypt_name'] = true;
+    $config['allowed_types'] = 'doc|fasta|pdf|xls|docx|xlsx|png|bmp|gif|jpg';
+
+    return $config;
   }
 }
