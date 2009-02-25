@@ -50,20 +50,20 @@ CREATE TABLE `history` (
   KEY `update_user_id` (`update_user_id`),
   CONSTRAINT `history_ibfk_1` FOREIGN KEY (`creation_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `history_ibfk_2` FOREIGN KEY (`update_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='history';
+) ENGINE=InnoDB AUTO_INCREMENT=155 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='history';
 SET character_set_client = @saved_cs_client;
 
 /*!50003 SET @SAVE_SQL_MODE=@@SQL_MODE*/;
 
 DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="NO_AUTO_VALUE_ON_ZERO" */;;
-/*!50003 CREATE */ /*!50003 TRIGGER `add_history_trigger` BEFORE INSERT ON `history` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`flavio`@`localhost` */ /*!50003 TRIGGER `add_history_trigger` BEFORE INSERT ON `history` FOR EACH ROW BEGIN
     SET NEW.`update` = NOW();
     SET NEW.`creation_user_id` = NEW.`update_user_id`;
   END */;;
 
 /*!50003 SET SESSION SQL_MODE="NO_AUTO_VALUE_ON_ZERO" */;;
-/*!50003 CREATE */ /*!50003 TRIGGER `update_history_trigger` BEFORE UPDATE ON `history` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`flavio`@`localhost` */ /*!50003 TRIGGER `update_history_trigger` BEFORE UPDATE ON `history` FOR EACH ROW BEGIN
     set @author = OLD.creation_user_id;
     IF (@author IS NULL) THEN
       SET NEW.creation_user_id = NEW.update_user_id;
@@ -100,7 +100,7 @@ CREATE TABLE `label` (
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
   CONSTRAINT `label_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -120,7 +120,8 @@ DROP TABLE IF EXISTS `label_norm`;
   `auto_on_modification` tinyint(1),
   `code` varchar(16384),
   `deletable` tinyint(1),
-  `editable` tinyint(1)
+  `editable` tinyint(1),
+  `multiple` tinyint(1)
 ) ENGINE=MyISAM */;
 
 --
@@ -155,7 +156,7 @@ CREATE TABLE `label_sequence` (
   CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
   CONSTRAINT `label_sequence_ibfk_4` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`),
   CONSTRAINT `label_sequence_ibfk_5` FOREIGN KEY (`taxonomy_data`) REFERENCES `taxonomy` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -187,7 +188,8 @@ DROP TABLE IF EXISTS `label_sequence_info`;
   `auto_on_modification` tinyint(1),
   `code` varchar(16384),
   `deletable` tinyint(1),
-  `editable` tinyint(1)
+  `editable` tinyint(1),
+  `multiple` tinyint(1)
 ) ENGINE=MyISAM */;
 
 --
@@ -221,7 +223,7 @@ CREATE TABLE `taxonomy` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Key.',
   `name` varchar(512) collate utf8_unicode_ci NOT NULL COMMENT 'Name.',
   `parent_id` int(11) default NULL COMMENT 'Parent taxonomy.',
-  `rank_id` bigint(20) unsigned NOT NULL COMMENT 'Rank.',
+  `rank_id` bigint(20) unsigned default NULL COMMENT 'Rank.',
   `tree_id` bigint(20) unsigned default NULL COMMENT 'Tree ID.',
   `history_id` bigint(20) unsigned default NULL COMMENT 'History.',
   `import_id` bigint(20) unsigned default NULL COMMENT 'Import ID.',
@@ -231,16 +233,16 @@ CREATE TABLE `taxonomy` (
   KEY `history_id` (`history_id`),
   KEY `tree_id` (`tree_id`),
   CONSTRAINT `taxonomy_ibfk_2` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `taxonomy_ibfk_3` FOREIGN KEY (`rank_id`) REFERENCES `taxonomy_rank` (`id`),
-  CONSTRAINT `taxonomy_ibfk_4` FOREIGN KEY (`tree_id`) REFERENCES `taxonomy_tree` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22957 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy table.';
+  CONSTRAINT `taxonomy_ibfk_5` FOREIGN KEY (`rank_id`) REFERENCES `taxonomy_rank` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `taxonomy_ibfk_6` FOREIGN KEY (`tree_id`) REFERENCES `taxonomy_tree` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=22963 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy table.';
 SET character_set_client = @saved_cs_client;
 
 /*!50003 SET @SAVE_SQL_MODE=@@SQL_MODE*/;
 
 DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="NO_AUTO_VALUE_ON_ZERO" */;;
-/*!50003 CREATE */ /*!50003 TRIGGER `drop_history_taxonomy` AFTER DELETE ON `taxonomy` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`flavio`@`localhost` */ /*!50003 TRIGGER `drop_history_taxonomy` AFTER DELETE ON `taxonomy` FOR EACH ROW BEGIN
 delete from history where id = OLD.history_id;
 END */;;
 
@@ -389,23 +391,39 @@ CREATE TABLE `taxonomy_rank` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Key.',
   `name` char(128) collate utf8_unicode_ci NOT NULL COMMENT 'Rank name.',
   `history_id` bigint(20) unsigned default NULL COMMENT 'History.',
+  `parent_id` bigint(20) unsigned default NULL COMMENT 'Parent rank.',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
-  CONSTRAINT `taxonomy_rank_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy ranks.';
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `taxonomy_rank_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `taxonomy_rank_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `taxonomy_rank` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy ranks.';
 SET character_set_client = @saved_cs_client;
 
 /*!50003 SET @SAVE_SQL_MODE=@@SQL_MODE*/;
 
 DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="NO_AUTO_VALUE_ON_ZERO" */;;
-/*!50003 CREATE */ /*!50003 TRIGGER `drop_history_rank` AFTER DELETE ON `taxonomy_rank` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`flavio`@`localhost` */ /*!50003 TRIGGER `drop_history_rank` AFTER DELETE ON `taxonomy_rank` FOR EACH ROW BEGIN
 delete from history where id = OLD.history_id;
 END */;;
 
 DELIMITER ;
 /*!50003 SET SESSION SQL_MODE=@SAVE_SQL_MODE*/;
+
+--
+-- Temporary table structure for view `taxonomy_rank_info`
+--
+
+DROP TABLE IF EXISTS `taxonomy_rank_info`;
+/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_info`*/;
+/*!50001 CREATE TABLE `taxonomy_rank_info` (
+  `rank_id` bigint(20) unsigned,
+  `rank_name` char(128),
+  `rank_parent_id` bigint(20) unsigned,
+  `rank_parent_name` char(128)
+) ENGINE=MyISAM */;
 
 --
 -- Temporary table structure for view `taxonomy_rank_norm`
@@ -415,7 +433,19 @@ DROP TABLE IF EXISTS `taxonomy_rank_norm`;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_rank_norm`*/;
 /*!50001 CREATE TABLE `taxonomy_rank_norm` (
   `rank_id` bigint(20) unsigned,
-  `rank_name` char(128)
+  `rank_name` char(128),
+  `rank_parent_id` bigint(20) unsigned
+) ENGINE=MyISAM */;
+
+--
+-- Temporary table structure for view `taxonomy_rank_parent_norm`
+--
+
+DROP TABLE IF EXISTS `taxonomy_rank_parent_norm`;
+/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_parent_norm`*/;
+/*!50001 CREATE TABLE `taxonomy_rank_parent_norm` (
+  `rank_parent_name` char(128),
+  `rank_parent_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 
 --
@@ -434,7 +464,7 @@ CREATE TABLE `taxonomy_tree` (
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `history_id` (`history_id`),
   CONSTRAINT `taxonomy_tree_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -475,10 +505,10 @@ SET character_set_client = @saved_cs_client;
 
 DELIMITER ;;
 /*!50003 SET SESSION SQL_MODE="NO_AUTO_VALUE_ON_ZERO" */;;
-/*!50003 CREATE */ /*!50003 TRIGGER `user_md5_password_insert` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.password = MD5( NEW.password ) */;;
+/*!50003 CREATE */ /*!50017 DEFINER=`flavio`@`localhost` */ /*!50003 TRIGGER `user_md5_password_insert` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.password = MD5( NEW.password ) */;;
 
 /*!50003 SET SESSION SQL_MODE="NO_AUTO_VALUE_ON_ZERO" */;;
-/*!50003 CREATE */ /*!50003 TRIGGER `user_md5_password_update` BEFORE UPDATE ON `user` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER=`flavio`@`localhost` */ /*!50003 TRIGGER `user_md5_password_update` BEFORE UPDATE ON `user` FOR EACH ROW BEGIN
   IF NEW.password <> OLD.password THEN
     SET NEW.password = MD5( NEW.password );
   END IF;
@@ -494,7 +524,8 @@ DELIMITER ;
 /*!50001 DROP TABLE `label_norm`*/;
 /*!50001 DROP VIEW IF EXISTS `label_norm`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `label_norm` AS select `label`.`id` AS `label_id`,`label`.`type` AS `type`,`label`.`name` AS `name`,`label`.`autoadd` AS `autoadd`,`label`.`default` AS `default`,`label`.`must_exist` AS `must_exist`,`label`.`auto_on_creation` AS `auto_on_creation`,`label`.`auto_on_modification` AS `auto_on_modification`,`label`.`code` AS `code`,`label`.`deletable` AS `deletable`,`label`.`editable` AS `editable` from `label` */;
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `label_norm` AS select `label`.`id` AS `label_id`,`label`.`type` AS `type`,`label`.`name` AS `name`,`label`.`autoadd` AS `autoadd`,`label`.`default` AS `default`,`label`.`must_exist` AS `must_exist`,`label`.`auto_on_creation` AS `auto_on_creation`,`label`.`auto_on_modification` AS `auto_on_modification`,`label`.`code` AS `code`,`label`.`deletable` AS `deletable`,`label`.`editable` AS `editable`,`label`.`multiple` AS `multiple` from `label` */;
 
 --
 -- Final view structure for view `label_sequence_info`
@@ -503,7 +534,8 @@ DELIMITER ;
 /*!50001 DROP TABLE `label_sequence_info`*/;
 /*!50001 DROP VIEW IF EXISTS `label_sequence_info`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `label_sequence_info` AS select `label_sequence`.`label_id` AS `label_id`,`label_sequence`.`id` AS `id`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`subname` AS `subname`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_a_data` AS `position_a_data`,`label_sequence`.`position_b_data` AS `position_b_data`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`autoadd` AS `autoadd`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable` from (`label_sequence` join `label_norm` on((`label_sequence`.`label_id` = `label_norm`.`label_id`))) */;
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `label_sequence_info` AS select `label_sequence`.`label_id` AS `label_id`,`label_sequence`.`id` AS `id`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`subname` AS `subname`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_a_data` AS `position_a_data`,`label_sequence`.`position_b_data` AS `position_b_data`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`autoadd` AS `autoadd`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple` from (`label_sequence` join `label_norm` on((`label_sequence`.`label_id` = `label_norm`.`label_id`))) */;
 
 --
 -- Final view structure for view `taxonomy_all_names`
@@ -512,6 +544,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_all_names`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_all_names`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`flavio`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_all_names` AS select `taxonomy_only_names`.`id` AS `id`,`taxonomy_only_names`.`name` AS `name` from `taxonomy_only_names` union select `taxonomy_name_only_names`.`id` AS `id`,`taxonomy_name_only_names`.`name` AS `name` from `taxonomy_name_only_names` */;
 
 --
@@ -521,7 +554,8 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_info`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_info`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `taxonomy_info` AS select `taxonomy`.`id` AS `id`,`taxonomy`.`name` AS `name`,`taxonomy`.`rank_id` AS `rank_id`,`taxonomy`.`tree_id` AS `tree_id`,`taxonomy`.`parent_id` AS `parent_id`,`taxonomy_parent_norm`.`parent_name` AS `parent_name`,`taxonomy_rank_norm`.`rank_name` AS `rank_name`,`taxonomy_tree_norm`.`tree_name` AS `tree_name` from (((`taxonomy` join `taxonomy_rank_norm` on((`taxonomy`.`rank_id` = `taxonomy_rank_norm`.`rank_id`))) left join `taxonomy_tree_norm` on((`taxonomy`.`tree_id` = `taxonomy_tree_norm`.`tree_id`))) left join `taxonomy_parent_norm` on((`taxonomy`.`parent_id` = `taxonomy_parent_norm`.`parent_id`))) */;
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `taxonomy_info` AS select `taxonomy`.`id` AS `id`,`taxonomy`.`name` AS `name`,`taxonomy`.`rank_id` AS `rank_id`,`taxonomy`.`tree_id` AS `tree_id`,`taxonomy`.`parent_id` AS `parent_id`,`taxonomy_parent_norm`.`parent_name` AS `parent_name`,`taxonomy_rank_norm`.`rank_name` AS `rank_name`,`taxonomy_tree_norm`.`tree_name` AS `tree_name` from (((`taxonomy` left join `taxonomy_rank_norm` on((`taxonomy`.`rank_id` = `taxonomy_rank_norm`.`rank_id`))) left join `taxonomy_tree_norm` on((`taxonomy`.`tree_id` = `taxonomy_tree_norm`.`tree_id`))) left join `taxonomy_parent_norm` on((`taxonomy`.`parent_id` = `taxonomy_parent_norm`.`parent_id`))) */;
 
 --
 -- Final view structure for view `taxonomy_name_info`
@@ -530,6 +564,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_name_info`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_name_info`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_name_info` AS select `taxonomy_name`.`id` AS `id`,`taxonomy_name`.`name` AS `name`,`taxonomy_name`.`tax_id` AS `tax_id`,`taxonomy_name`.`type_id` AS `type_id`,`taxonomy_name_type_norm`.`type_name` AS `type_name` from (`taxonomy_name` join `taxonomy_name_type_norm` on((`taxonomy_name`.`type_id` = `taxonomy_name_type_norm`.`type_id`))) */;
 
 --
@@ -539,6 +574,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_name_only_names`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_name_only_names`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`flavio`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_name_only_names` AS select `taxonomy_name`.`tax_id` AS `id`,`taxonomy_name`.`name` AS `name` from `taxonomy_name` */;
 
 --
@@ -548,6 +584,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_name_type_norm`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_name_type_norm`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_name_type_norm` AS select `taxonomy_name_type`.`id` AS `type_id`,`taxonomy_name_type`.`name` AS `type_name` from `taxonomy_name_type` */;
 
 --
@@ -557,6 +594,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_only_names`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_only_names`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`flavio`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_only_names` AS select `taxonomy`.`id` AS `id`,`taxonomy`.`name` AS `name` from `taxonomy` */;
 
 --
@@ -566,6 +604,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_parent`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_parent`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`flavio`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_parent` AS select `taxonomy`.`id` AS `parent`,`taxonomy`.`name` AS `parent_name` from `taxonomy` */;
 
 --
@@ -575,7 +614,18 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_parent_norm`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_parent_norm`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_parent_norm` AS select `taxonomy`.`id` AS `parent_id`,`taxonomy`.`name` AS `parent_name` from `taxonomy` where (`taxonomy`.`parent_id` <> NULL) */;
+
+--
+-- Final view structure for view `taxonomy_rank_info`
+--
+
+/*!50001 DROP TABLE `taxonomy_rank_info`*/;
+/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_info`*/;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `taxonomy_rank_info` AS select `taxonomy_rank_norm`.`rank_id` AS `rank_id`,`taxonomy_rank_norm`.`rank_name` AS `rank_name`,`taxonomy_rank_norm`.`rank_parent_id` AS `rank_parent_id`,`taxonomy_rank_parent_norm`.`rank_parent_name` AS `rank_parent_name` from (`taxonomy_rank_norm` left join `taxonomy_rank_parent_norm` on((`taxonomy_rank_norm`.`rank_parent_id` = `taxonomy_rank_parent_norm`.`rank_parent_id`))) */;
 
 --
 -- Final view structure for view `taxonomy_rank_norm`
@@ -584,7 +634,18 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_rank_norm`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_rank_norm`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `taxonomy_rank_norm` AS (select `taxonomy_rank`.`id` AS `rank_id`,`taxonomy_rank`.`name` AS `rank_name` from `taxonomy_rank`) */;
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `taxonomy_rank_norm` AS (select `taxonomy_rank`.`id` AS `rank_id`,`taxonomy_rank`.`name` AS `rank_name`,`taxonomy_rank`.`parent_id` AS `rank_parent_id` from `taxonomy_rank`) */;
+
+--
+-- Final view structure for view `taxonomy_rank_parent_norm`
+--
+
+/*!50001 DROP TABLE `taxonomy_rank_parent_norm`*/;
+/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_parent_norm`*/;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `taxonomy_rank_parent_norm` AS select `taxonomy_rank`.`name` AS `rank_parent_name`,`taxonomy_rank`.`id` AS `rank_parent_id` from `taxonomy_rank` */;
 
 --
 -- Final view structure for view `taxonomy_tree_norm`
@@ -593,6 +654,7 @@ DELIMITER ;
 /*!50001 DROP TABLE `taxonomy_tree_norm`*/;
 /*!50001 DROP VIEW IF EXISTS `taxonomy_tree_norm`*/;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_tree_norm` AS select `taxonomy_tree`.`id` AS `tree_id`,`taxonomy_tree`.`name` AS `tree_name` from `taxonomy_tree` */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -604,4 +666,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-02-18 18:17:33
+-- Dump completed on 2009-02-25 16:22:47
