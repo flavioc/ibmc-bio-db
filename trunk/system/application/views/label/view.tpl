@@ -42,8 +42,10 @@
   <p><span class="desc">Comment: </span>
      <span class="comment" id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</span>
   </p>
-</div>
 
+{include file='history/form_view.tpl' data=$label}
+
+</div>
 
 <p>
 <ul>
