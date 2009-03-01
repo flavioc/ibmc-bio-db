@@ -9,6 +9,10 @@ class Taxonomy_model extends BioModel
 
   function add($name, $rank, $tree, $parent = null)
   {
+    if(!$parent) {
+      $parent = null;
+    }
+
     $data = array(
       'name' => $name,
       'rank_id' => $rank,
