@@ -49,6 +49,7 @@ $(document).ready(function() {
     ---
   {/if}
   </p>
+{include file="history/form_view.tpl" data=$taxonomy}
 </div>
 
 {assign var=tax_id value=$taxonomy.id}

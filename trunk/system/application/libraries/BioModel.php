@@ -47,7 +47,7 @@ class BioModel extends Model
     return $this->get_field($id, 'history_id', $table);
   }
 
-  function get_field($id, $field, $table = null)
+  function get_field($id, $field, $table = null, $id_field = 'id')
   {
     if($table == null) {
       $table = $this->table;
@@ -55,7 +55,7 @@ class BioModel extends Model
 
     $this->db->select($field);
 
-    $query = $this->db->get_where($table, array('id' => $id));
+    $query = $this->db->get_where($table, array($id_field => $id));
 
     if($query->num_rows() != 1) {
       return null;
@@ -68,18 +68,15 @@ class BioModel extends Model
 
   function get_id($id, $table = null)
   {
-    return $this->get_row('id', $id, '*', $table);
+    return $this->get_row('id', $id, $table);
   }
 
-  function get_row($field, $data, $select = null, $table = null)
+  function get_row($field, $data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
     }
 
-    if($select != null) {
-      $this->db->select($select);
-    }
     $query = $this->db->get_where($table, array($field => $data));
 
     if($query->num_rows() != 1) {

@@ -25,15 +25,9 @@ class Taxonomy_model extends BioModel
 
   function get($id)
   {
-    $query = $this->db->get_where('taxonomy_info', array('id' => $id));
+    $this->db->select('id, name, rank_id, tree_id, parent_id, parent_name, rank_name, tree_name, update_user_id, update, user_name');
 
-    if(!$query || $query->num_rows() != 1) {
-      return null;
-    }
-
-    $data = $query->row_array();
-
-    return $data;
+    return $this->get_id($id, 'taxonomy_info_history');
   }
 
   function get_name($id)
