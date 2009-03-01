@@ -97,6 +97,10 @@ class Taxonomy extends BioController {
         $this->set_form_error('parent_id', "Parent with id $parent_id doesn't exist.");
         $errors = true;
       }
+
+      if($parent_id == 0) {
+        $parent_id = null;
+      }
     }
 
     if($errors) {
