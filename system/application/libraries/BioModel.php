@@ -246,4 +246,38 @@ class BioModel extends Model
 
     return $data;
   }
+
+  function copy_data(&$dest, $orig, $fields)
+  {
+    foreach($fields as $field) {
+      if(is_array($field)) {
+        $orig_field = $field[0];
+        $dest_field = $field[1];
+        $dest[$dest_field] = $orig[$orig_field];
+      } else {
+        $dest[$field] = $orig[$field];
+      }
+    }
+  }
+
+  function expand_history($data, $id = null)
+  {
+    if($id) {
+      $data['history_id' ] = $id;
+    } else {
+      $id = $data['history_id'];
+    }
+
+    $hist_model = $this->load_model('history_model');
+
+    $hist_row = $hist_model->get($id);
+
+    $this->copy_data($data, $hist_row,
+      array('creation_user_id', 'creation', 'update_user_id',
+        'update', 'user_name', 'complete_name',
+        'creation_date', 'password', 'email', 'user_type',
+        'birthday', 'image', 'enabled'));
+
+    return $data;
+  }
 }

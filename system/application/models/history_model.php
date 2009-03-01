@@ -43,4 +43,15 @@ class History_model extends Model
 
     return $this->db->insert_id();
   }
+
+  function get($id)
+  {
+    $query = $this->db->get_where('history_info', array('id' => $id));
+
+    if($query->num_rows() != 1) {
+      return null;
+    }
+
+    return $query->row_array();
+  }
 }

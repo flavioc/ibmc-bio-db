@@ -29,8 +29,12 @@ $(document).ready(function() {
 </script>
 
 <div class="data_show">
+
   <p><span class="desc">Name: </span><span id="rankname">{$rank.rank_name}</span></p>
   <p><span class="desc">Parent: </span><span id="rankparent">{if $rank.rank_parent_name}{$rank.rank_parent_name}{else}---{/if}</span></p>
+
+{include file='history/form_view.tpl' data=$rank}
+
 </div>
 
 {assign var=rank_id value=$rank.rank_id}

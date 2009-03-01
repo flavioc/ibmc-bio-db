@@ -52,14 +52,21 @@ function add_new_error_message(msg)
   enable_error_messages();
 }
 
+var base_url_cache = null;
+
 function get_base_url()
 {
+  if(base_url_cache != null) {
+    return base_url_cache;
+  }
+
   var url = window.location.href;
   var vec = url.split("/");
   var ret = "";
 
   for(var i = 0; i < vec.length; ++i) {
       if(vec[i] == "index.php") {
+        base_url_cache = ret;
         return ret;
       } else {
         if(ret != "") {

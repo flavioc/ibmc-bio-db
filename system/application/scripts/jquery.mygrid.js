@@ -104,12 +104,16 @@
         }
       }
 
-      if(has_link) {
+      if(has_link && field_data != null) {
         var href = link_fun(row);
 
         if(href != null) {
           field_data = '<a href="' + href + '">' + field_data + '</a>';
         }
+      }
+
+      if(field_data == null) {
+        field_data = '---';
       }
 
       if(opts.clickFun[field_name]) {
