@@ -9,7 +9,7 @@ class Taxonomy_rank_model extends BioModel
 
   function get($id)
   {
-    return $this->get_row('rank_id', $id, '*', 'taxonomy_rank_info');
+    return $this->get_row('rank_id', $id, '*', 'taxonomy_rank_info_history');
   }
 
   function get_ranks($size = null, $start = null)
@@ -19,8 +19,9 @@ class Taxonomy_rank_model extends BioModel
     }
 
     $this->db->order_by('rank_name');
+    $this->db->select('history_id, rank_id, rank_name, rank_parent_id, rank_parent_name, update_user_id, update, user_name');
 
-    return $this->get_all('taxonomy_rank_info');
+    return $this->get_all('taxonomy_rank_info_history');
   }
 
   function get_rank_id($rank)

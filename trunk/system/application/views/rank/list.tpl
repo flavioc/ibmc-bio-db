@@ -12,8 +12,8 @@
   .grid({
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Parent', '$delete', 'Add taxonomy', 'Add child rank'],
-    fields: ['rank_name', 'rank_parent_name', '$delete', 'add', 'add_child'],
+    fieldNames: ['Name', 'Parent', 'Last update', 'User', '$delete', 'Add taxonomy', 'Add child rank'],
+    fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', '$delete', 'add', 'add_child'],
     size: paging_size,
     dataTransform: {
       add: function (row) {
@@ -24,9 +24,23 @@
       },
       rank_parent_name: function (row) {
         if (row.rank_parent_name == null) {
-          return "---";
+          return null;
         } else {
           return row.rank_parent_name;
+        }
+      },
+      last_update: function (row) {
+        if(row.update == null) {
+          return null;
+        } else {
+          return row.update;
+        }
+      },
+      last_user: function (row) {
+        if(row.update_user_id == null) {
+          return null;
+        } else {
+          return row.user_name;
         }
       }
     },
@@ -39,6 +53,9 @@
       },
       add_child: function (row) {
         return get_app_url() + '/rank/add?parent_id=' + row.rank_id;
+      },
+      last_user: function (row) {
+        return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     },
     countRemove: 'total_taxonomies',
