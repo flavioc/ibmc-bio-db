@@ -9,8 +9,9 @@ class Taxonomy_tree_model extends BioModel
 
   function get_trees()
   {
+    $this->db->select('tree_id AS id, tree_name AS name, update, update_user_id, user_name');
     $this->db->order_by('name');
-    return $this->get_all();
+    return $this->get_all('taxonomy_tree_info_history');
   }
 
   function has_name($name)
