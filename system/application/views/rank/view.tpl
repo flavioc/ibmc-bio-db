@@ -30,8 +30,8 @@ $(document).ready(function() {
 
 <div class="data_show">
 
-  <p><span class="desc">Name: </span><span id="rankname">{$rank.rank_name}</span></p>
-  <p><span class="desc">Parent: </span><span id="rankparent">{if $rank.rank_parent_name}{$rank.rank_parent_name}{else}---{/if}</span></p>
+  <p><span class="desc">Name: </span><span id="rankname" class="writeable">{$rank.rank_name}</span></p>
+  <p><span class="desc">Parent: </span><span id="rankparent" class="writeable">{if $rank.rank_parent_name}{$rank.rank_parent_name}{else}---{/if}</span></p>
 
 {include file='history/form_view.tpl' data=$rank}
 
