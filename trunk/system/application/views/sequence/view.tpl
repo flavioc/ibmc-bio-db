@@ -94,6 +94,9 @@ $(document).ready(function() {
   <p><span class="desc">Type: </span><span id="seqtype">{$sequence.type}</span></p>
   <p><span class="desc">Accession Number: </span><span id="seqaccession">{$sequence.accession}</span></p>
   <p><span class="desc">Content: </span><span id="seqcontent">{$sequence.content}</span></p>
+
+{include file='history/form_view.tpl' data=$sequence}
+
 </div>
 
 {form_open name=form_delete to="sequence/delete/$seq_id"}
