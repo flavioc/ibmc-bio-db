@@ -135,4 +135,9 @@ class BioController extends Controller
       return null;
     }
   }
+
+  function return_empty()
+  {
+    echo "---";
+  }
 }

@@ -77,7 +77,13 @@ class Rank extends BioController {
     }
 
     if($parent && !$this->taxonomy_rank_model->has_id($parent)) {
-      $this->set_form_error('rank', "Rank with id $parent doesn't exist.");
+      $this->set_form_error('parent_id',
+        "Rank with id $parent doesn't exist.");
+      $errors = true;
+    }
+
+    if($parent && $this->taxonomy_rank_model->parent_used($parent)) {
+      $this->set_form_error('parent_id', "Rank with id $parent already being used as parent.");
       $errors = true;
     }
 
@@ -147,16 +153,26 @@ class Rank extends BioController {
 
     $id = $this->input->post('rank');
     $value = intval($this->input->post('value'));
+
     if($value == 0) {
       $value = null;
     }
 
-    $this->taxonomy_rank_model->edit_parent($id, $value);
-
-    if($value) {
-      echo $this->taxonomy_rank_model->get_name($value);
+    if($this->taxonomy_rank_model->edit_parent($id, $value)) {
+      if($value) {
+        echo $this->taxonomy_rank_model->get_name($value);
+      } else {
+        $this->return_empty();
+      }
     } else {
-      echo "---";
+      // parent is already being used somewhere else
+      // try to get current parent name
+      $name = $this->taxonomy_rank_model->get_parent_name($id);
+      if($name) {
+        echo $name;
+      } else {
+        $this->return_empty();
+      }
     }
   }
 
