@@ -35,8 +35,8 @@
   .grid({
     url: base_site,
     retrieve: 'get_all',
-    fieldNames: ['Name', '$delete', 'Add'],
-    fields: ['name', '$delete', 'add'],
+    fieldNames: ['Name', 'Last update', 'User', '$delete', 'Add'],
+    fields: ['name', 'update', 'user_name', '$delete', 'add'],
     editables: {
       name: {
         select : true,
@@ -54,6 +54,9 @@
     links: {
       add: function (row) {
         return get_app_url() + '/taxonomy/add?tree=' + row.id;
+      },
+      user_name: function (row) {
+        return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     },
     countRemove: 'total_taxonomies',
