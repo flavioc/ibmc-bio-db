@@ -6,15 +6,22 @@ class Label_model extends BioModel
     parent::BioModel('label');
   }
 
+  function __select()
+  {
+    $this->db->select('label_id AS id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, deletable, editable, multiple, update_user_id, update, user_name, comment');
+  }
+
   function get($id)
   {
-    return $this->get_id($id);
+    $this->__select();
+    return $this->get_id($id, 'label_info_history', 'label_id');
   }
 
   function get_all()
   {
     $this->db->order_by('name');
-    return parent::get_all();
+    $this->__select();
+    return parent::get_all('label_info_history');
   }
 
   function count_names($name)

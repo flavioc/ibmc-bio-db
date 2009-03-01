@@ -66,9 +66,9 @@ class BioModel extends Model
     return $data[$field];
   }
 
-  function get_id($id, $table = null)
+  function get_id($id, $table = null, $id_field = 'id')
   {
-    return $this->get_row('id', $id, $table);
+    return $this->get_row($id_field, $id, $table);
   }
 
   function get_row($field, $data, $table = null)
