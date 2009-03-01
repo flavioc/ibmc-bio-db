@@ -122,15 +122,16 @@
         field_data = '<span class="' + className + '">' + field_data + '</span>';
       }
 
+      if(editables[field_name]) {
+        field_data = '<span class="' + opts.writeableClass + '"><span class="field_' +
+         id + '_' + field_name + '" id="' + field_name + '_' + row[opts.idField] + '" >' + field_data + '</span></span>';
+      }
+
       row_tag.childNodes[j] = {
         tagName: 'td',
         class: 'td_' + id + '_' + opts.originalFields[j],
         innerHTML: field_data
       };
-
-      if(editables[field_name]) {
-        row_tag.childNodes[j].id = 'field_' + row_tag.id;
-      }
     }
 
     return row_tag;
@@ -170,9 +171,9 @@
     var id = obj[0].id;
 
     $.each(opts.editables, function (field, how) {
-        var className = 'td_' + id + '_' + field;
+        var className = 'field_' + id + '_' + field;
 
-        $('td[@class='+ className + ']', table)
+        $('span[@class='+ className + ']', table)
           .unbind('editable')
           .editable(opts.url + '/edit_' + field, how);
     });
@@ -585,7 +586,8 @@ $.fn.grid.defaults = {
   deleteText: 'Delete',
   idField: 'id',
   clickFun: {},
-  hiddenFields: []
+  hiddenFields: [],
+  writeableClass: 'writeable'
 }
 
 $.fn.gridEnable.defaults = {

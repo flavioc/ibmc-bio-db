@@ -207,3 +207,10 @@ body>div#content hr {
   margin-right: 3px;
 }
 
+body>div#content .writeable {
+  background-color: #EEE;
+}
+
+body>div#content .writeable:hover {
+  background-color: #BBB;
+}
