@@ -39,9 +39,9 @@ $(document).ready(function() {
 {/literal}
 </script>
 <div class="data_show">
-  <p><span class="desc">Name: </span><span id="taxname">{$taxonomy.name}</span></p>
-  <p><span class="desc">Rank: </span><span id="taxrank">{if $taxonomy.rank_name}{$taxonomy.rank_name}{else}---{/if}</span></p>
-  <p><span class="desc">Tree: </span><span id="taxtree">{if $taxonomy.tree_name}{$taxonomy.tree_name}{else}---{/if}</span></p>
+  <p><span class="desc">Name: </span><span id="taxname" class="writeable">{$taxonomy.name}</span></p>
+  <p><span class="desc">Rank: </span><span id="taxrank" class="writeable">{if $taxonomy.rank_name}{$taxonomy.rank_name}{else}---{/if}</span></p>
+  <p><span class="desc">Tree: </span><span id="taxtree" class="writeable">{if $taxonomy.tree_name}{$taxonomy.tree_name}{else}---{/if}</span></p>
   <p><span class="desc"><a href="{site}/taxonomy/browse_parent/{$taxonomy.id}">Parent:</a> </span>
   {if $parent}
     <a href="{site}/taxonomy/view/{$parent.id}">{$parent.name}</a>
