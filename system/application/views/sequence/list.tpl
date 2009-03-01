@@ -13,11 +13,14 @@ $(document).ready(function () {
     retrieve: 'get_all',
     total: 'get_total',
     size: paging_size,
-    fieldNames: ['Name', 'Type', 'Accession Number'],
-    fields: ['name', 'type', 'accession'],
+    fieldNames: ['Name', 'Type', 'Accession Number', 'Last update', 'User'],
+    fields: ['name', 'type', 'accession', 'update', 'user_name'],
     links: {
       name: function (row) {
         return get_app_url() + '/sequence/view/' + row.id;
+      },
+      user_name: function (row) {
+        return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     }
   });

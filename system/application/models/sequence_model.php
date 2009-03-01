@@ -6,6 +6,11 @@ class Sequence_model extends BioModel
     parent::BioModel('sequence');
   }
 
+  function __select()
+  {
+    $this->db->select('id, content, accession, type, name, update_user_id, update, user_name');
+  }
+
   function get_all($start = null, $size = null)
   {
     $this->db->order_by('name');
@@ -14,7 +19,9 @@ class Sequence_model extends BioModel
       $this->db->limit($size, $start);
     }
 
-    return parent::get_all();
+    $this->__select();
+
+    return parent::get_all('sequence_info_history');
   }
 
   function get_total()
@@ -35,7 +42,8 @@ class Sequence_model extends BioModel
 
   function get($id)
   {
-    return $this->get_id($id);
+    $this->__select();
+    return $this->get_id($id, 'sequence_info_history');
   }
 
   function delete($id)
