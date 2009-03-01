@@ -90,10 +90,10 @@ $(document).ready(function() {
 </script>
 
 <div class="data_show">
-  <p><span class="desc">Name: </span><span id="seqname">{$sequence.name}</span></p>
+  <p><span class="desc">Name: </span><span id="seqname" class="writeable">{$sequence.name}</span></p>
   <p><span class="desc">Type: </span><span id="seqtype">{$sequence.type}</span></p>
-  <p><span class="desc">Accession Number: </span><span id="seqaccession">{$sequence.accession}</span></p>
-  <p><span class="desc">Content: </span><span id="seqcontent">{$sequence.content}</span></p>
+  <p><span class="desc">Accession Number: </span><span id="seqaccession" class="writeable">{$sequence.accession}</span></p>
+  <p><span class="desc">Content: </span><span class="writeable" id="seqcontent">{$sequence.content}</span></p>
 
 {include file='history/form_view.tpl' data=$sequence}
 
