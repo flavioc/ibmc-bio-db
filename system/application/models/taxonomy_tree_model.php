@@ -7,11 +7,22 @@ class Taxonomy_tree_model extends BioModel
     parent::BioModel('taxonomy_tree');
   }
 
-  function get_trees()
+  function __select()
   {
     $this->db->select('tree_id AS id, tree_name AS name, update, update_user_id, user_name');
+  }
+
+  function get_trees()
+  {
+    $this->__select();
     $this->db->order_by('name');
     return $this->get_all('taxonomy_tree_info_history');
+  }
+
+  function get($id)
+  {
+    $this->__select();
+    return $this->get_id($id, 'taxonomy_tree_info_history', 'tree_id');
   }
 
   function has_name($name)
