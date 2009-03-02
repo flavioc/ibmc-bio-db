@@ -27,4 +27,6 @@ validate_label_form('#edit_form');
 {form_submit name=submit msg='Do edit'}
 {form_end}
 
+{if $label.default}
 <p>The label <strong>{$label.name}</strong> is a system level label, please be careful.</p>
+{/if}

@@ -41,6 +41,9 @@ function reload_labels_list()
           case 'obj':
             field_to_add = 'obj_data';
             break;
+          case 'bool':
+            field_to_add = 'bool_data';
+            break;
         }
       }
 
@@ -66,7 +69,7 @@ function reload_labels_list()
     dataTransform: {
       subname: function (row) {
         if(row.subname == null) {
-          return '---';
+          return null;
         } else {
           return row.subname;
         }
@@ -97,7 +100,10 @@ function reload_labels_list()
     enableRemoveFun: function (row) {
       return row.deletable == '1';
     },
-    remove: 'delete_label'
+    remove: 'delete_label',
+    types: {
+      bool_data: 'boolean'
+    }
   });
 }
 

@@ -336,6 +336,9 @@ class Sequence extends BioController
         case 'obj':
           $this->smarty->view_s('new_label/obj');
           break;
+        case 'bool':
+          $this->smarty->view_s('new_label/bool');
+          break;
       }
     } else {
       echo "NOT HANDLED";
@@ -363,6 +366,35 @@ class Sequence extends BioController
         $ret = true;
       } else {
         $ret = "This label has invalid text type";
+      }
+    }
+
+    echo json_encode($ret);
+  }
+
+  function add_bool_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $bool = $this->get_post('boolean');
+
+    $bool = ($bool ? TRUE : FALSE);
+
+    $ret = null;
+
+    $this->load->model('label_sequence_model');
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      $ret = self::$label_used_error;
+    } else {
+      if($this->label_sequence_model->add_bool_label($seq_id, $label_id, $bool)) {
+        $ret = true;
+      } else {
+        $ret = "This label has invalid integer type";
       }
     }
 

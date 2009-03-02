@@ -167,6 +167,19 @@ class Label_sequence_model extends BioModel
     }
   }
 
+  function add_bool_label($seq_id, $label_id, $bool)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($label['type'] == 'bool' && $label['editable']) {
+      $this->add($seq_id, $label_id, 'bool', null, $bool);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   function add_url_label($seq_id, $label_id, $url)
   {
     $label_model = $this->load_model('label_model');
@@ -359,6 +372,8 @@ class Label_sequence_model extends BioModel
       return "taxonomy_data";
     case "url":
       return "url_data";
+    case "bool":
+      return "bool_data";
     }
 
     return "";
