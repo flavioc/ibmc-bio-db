@@ -14,7 +14,7 @@ function reload_labels_list()
   .grid({
     url: base_site,
     retrieve: 'get_labels/' + seq_id,
-    fieldNames: ['Data', 'Name', 'Subname', 'Type'],
+    fieldNames: ['Name', 'Data', 'Subname', 'Type'],
     fieldGenerator: function (row) {
       var field_to_add = 'data';
 
@@ -47,7 +47,7 @@ function reload_labels_list()
         }
       }
 
-      return [field_to_add, 'name', 'subname', 'type'];
+      return ['name', field_to_add, 'subname', 'type'];
     },
     links: {
       name: function (row) {
