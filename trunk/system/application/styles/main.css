@@ -131,7 +131,7 @@ table.data td.hed {
 tr .deletable_column {
 }
 
-div.data_show {
+div.data_show, fieldset {
   border: dotted 1px black;
   margin-right: 20px;
 }
