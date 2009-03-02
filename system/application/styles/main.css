@@ -1,7 +1,7 @@
 
 body {
   font: 12px/1.2 Verdana, Arial, Helvetica, sans-serif;
-  background: #eee;
+  background: #ddd;
   padding: 0px;
   margin: 0px;
 }
@@ -13,8 +13,8 @@ a {
 }
 
 body>div#leftmenu {
-  margin-left: 6px;
-  margin-top:5px;
+  margin-left: 10px;
+  margin-top: 10px;
   width: 185px;
   background: #fff;
   border: 1px solid #000;
@@ -24,9 +24,9 @@ body>div#leftmenu {
 }
 
 body>div#content {
-  margin-top: 5px;
+  margin-top: 10px;
   background:#fff;
-  margin-left: 205px;
+  margin-left: 21.5%;
   margin-right: 10px;
   border: 1px solid #000;
   padding-top: 5px;
@@ -36,6 +36,9 @@ body>div#content {
 body>div#top {
   background: #fff;
   border: 1px solid #000;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
   voice-family: "\"}\"";
   voice-family: inherit;
   height: 50px;
@@ -46,7 +49,10 @@ body>div#footer {
   height: 50px;
   background-color: white;
   border-top: black 2px solid;
-  margin-top: 4px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-left: 10px;
   padding-top: 10px;
 }
 
@@ -127,6 +133,7 @@ tr .deletable_column {
 
 div.data_show {
   border: dotted 1px black;
+  margin-right: 20px;
 }
 
 div.navigation {
