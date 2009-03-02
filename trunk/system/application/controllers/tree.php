@@ -38,7 +38,7 @@ class Tree extends BioController {
       echo json_encode(null);
     } else {
       $id = $this->taxonomy_tree_model->add($name);
-      $data = $this->taxonomy_tree_model->get_id($id);
+      $data = $this->taxonomy_tree_model->get($id);
 
       echo json_encode($data);
     }
