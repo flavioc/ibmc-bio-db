@@ -13,6 +13,19 @@ var minus = a_minus + ', ' + img_minus;
 var img_all = img_plus + ', ' + img_minus;
 var span_all = span_plus + ', ' + span_minus;
 
+var plus_image = get_images_url() + '/plus.png';
+var minus_image = get_images_url() + '/minus.png';
+
+function preload_image(href)
+{
+  image_obj = new Image();
+  image_obj.src = href;
+}
+
+// preload images
+preload_image(plus_image);
+preload_image(minus_image);
+
 function show_plus(obj)
 {
   $(plus, obj).show();
@@ -45,7 +58,7 @@ $.fn.minusPlus = function(options) {
     var plus_tag = '<a class="plus_click" href="#">';
 
     if(opts.enableImage) {
-      plus_tag += '<img class="plus_image" src="' + get_images_url() + '/plus.png" />';
+      plus_tag += '<img class="plus_image" src="' + plus_image + '" />';
     }
 
     if(opts.enableText) {
@@ -57,7 +70,7 @@ $.fn.minusPlus = function(options) {
     var minus_tag = '<a class="minus_click" href="#">';
 
     if(opts.enableImage) {
-      minus_tag += '<img class="minus_image" src="' + get_images_url() + '/minus.png" />';
+      minus_tag += '<img class="minus_image" src="' + minus_image + '" />';
     }
 
     if(opts.enableText) {
