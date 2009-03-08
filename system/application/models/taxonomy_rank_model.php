@@ -12,6 +12,15 @@ class Taxonomy_rank_model extends BioModel
     return $this->get_row('rank_id', $id, 'taxonomy_rank_info_history');
   }
 
+  function get_simple_all($except = null)
+  {
+    if($except) {
+      $this->db->where("id != $except");
+    }
+
+    return parent::get_all();
+  }
+
   function get_ranks($size = null, $start = null)
   {
     if($start != null && $size != null) {

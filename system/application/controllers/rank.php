@@ -32,7 +32,7 @@ class Rank extends BioController {
     $rank = $this->taxonomy_rank_model->get($id);
     $this->smarty->assign('rank', $rank);
 
-    $ranks = $this->taxonomy_rank_model->get_all();
+    $ranks = $this->taxonomy_rank_model->get_simple_all($id);
     $this->smarty->assign('ranks', $ranks);
 
     $this->smarty->view('rank/view');
