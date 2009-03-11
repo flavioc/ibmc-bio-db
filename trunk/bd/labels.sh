@@ -37,7 +37,7 @@ add_label "url" "url" "FALSE" "FALSE" \
 	"FALSE" "FALSE" "" \
 	"TRUE" "TRUE" "TRUE"
 
-add_label "integer" "seqid" "TRUE" "TRUE" \
+add_label "integer" "internal_id" "TRUE" "TRUE" \
 	"TRUE" "FALSE" "return \$id;" \
 	"FALSE" "FALSE" "FALSE"
 	
