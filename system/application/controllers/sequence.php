@@ -3,6 +3,7 @@
 class Sequence extends BioController
 {
   private static $label_used_error = "This label is already being used and cannot be reused";
+  private static $label_invalid_text_type = "This label has invalid text type";
 
   function Sequence() {
     parent::BioController();
@@ -345,6 +346,13 @@ class Sequence extends BioController
     }
   }
 
+  function __get_generate()
+  {
+    $ret = $this->get_post('generate_check');
+
+    return $ret ? TRUE : FALSE;
+  }
+
   function add_text_label()
   {
     if(!$this->logged_in) {
@@ -354,18 +362,27 @@ class Sequence extends BioController
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
     $text = $this->get_post('text');
+    $generate = $this->__get_generate();
 
     $ret = null;
-
+    
     $this->load->model('label_sequence_model');
 
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
       $ret = self::$label_used_error;
     } else {
-      if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
-        $ret = true;
+      if($generate) {
+        if($this->label_sequence_model->add_generated_text_label($seq_id, $label_id)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_text_type;
+        }
       } else {
-        $ret = "This label has invalid text type";
+        if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_text_type;
+        }
       }
     }
 

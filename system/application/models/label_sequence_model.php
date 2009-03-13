@@ -56,6 +56,23 @@ class Label_sequence_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
+  function add_generated($seq_id, $label)
+  {
+    $data1 = null;
+    $data2 = null;
+
+    $res = $this->generate_label_value($id, $label['code']);
+
+    if(is_array($res)) {
+      $data1 = $res[0];
+      $data2 = $res[1];
+    } else {
+      $data1 = $res;
+    }
+
+    $this->add($id, $label['id'], $label['type'], null, $data1, $data2);
+  }
+
   function edit($id, $type, $data1 = null, $data2 = null)
   {
     $fields = $this->__get_data_fields($type);
@@ -148,6 +165,19 @@ class Label_sequence_model extends BioModel
 
     if($label['type'] == 'text' && $label['editable']) {
       $this->add($seq_id, $label_id, 'text', null, $text);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function add_generated_text_label($seq_id, $label_id)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($label['type'] == 'text' && $label['code']) {
+      $this->add_generated($seq_id, $label);
       return true;
     } else {
       return false;
