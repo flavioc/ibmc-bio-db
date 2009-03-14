@@ -189,13 +189,31 @@ class Label_sequence_model extends BioModel
     }
   }
 
+  function __is_integer($label)
+  {
+    return $label['type'] == 'integer';
+  }
+
   function add_integer_label($seq_id, $label_id, $int)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if($label['type'] == 'integer' && $label['editable']) {
+    if($this->__is_integer($label) && $label['editable']) {
       $this->add($seq_id, $label_id, 'integer', null, $int);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function add_generated_integer_label($seq_id, $label_id)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($this->__is_integer($label) && $label['code']) {
+      $this->add_generated($seq_id, $label);
       return true;
     } else {
       return false;

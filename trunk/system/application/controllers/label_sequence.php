@@ -5,6 +5,7 @@ class Label_Sequence extends BioController {
   private static $label_invalid_text_type = "This label has invalid text type";
   private static $label_invalid_bool_type = "This label has invalid integer type";
   private static $label_invalid_url_type = "This label has invalid url type";
+  private static $label_invalid_integer_type = "This label has invalid integer type";
 
   function Label_Sequence()
   {
@@ -216,16 +217,25 @@ class Label_Sequence extends BioController {
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
     $int = intval($this->get_post('integer'));
+    $generate = $this->__get_generate();
 
     $ret = null;
 
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
       $ret = self::$label_used_error;
     } else {
-      if($this->label_sequence_model->add_integer_label($seq_id, $label_id, $int)) {
-        $ret = true;
+      if($generate) {
+        if($this->label_sequence_model->add_generated_integer_label($seq_id, $label_id)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_integer_type;
+        }
       } else {
-        $ret = "This label has invalid integer type";
+        if($this->label_sequence_model->add_integer_label($seq_id, $label_id, $int)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_integer_type;
+        }
       }
     }
 
