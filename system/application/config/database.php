@@ -39,7 +39,7 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "fdb_app";
-$db['default']['password'] = "fdb_app%#_";
+$db['default']['password'] = "";
 $db['default']['database'] = "FDB";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
