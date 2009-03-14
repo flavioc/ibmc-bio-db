@@ -1,6 +1,11 @@
 <?php
 
 class Label_Sequence extends BioController {
+  private static $label_used_error = "This label is already being used and cannot be reused";
+  private static $label_invalid_text_type = "This label has invalid text type";
+  private static $label_invalid_bool_type = "This label has invalid integer type";
+  private static $label_invalid_url_type = "This label has invalid url type";
+
   function Label_Sequence()
   {
     parent::BioController();
@@ -235,10 +240,10 @@ class Label_Sequence extends BioController {
 
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
+    $ret = null;
 
     $this->load->library('upload', $this->_get_upload_config());
     $upload_ret = $this->upload->do_upload('file');
-    $ret = null;
 
     if($upload_ret) {
       $data = $this->upload->data();
@@ -275,16 +280,25 @@ class Label_Sequence extends BioController {
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
     $url = $this->get_post('url');
+    $generate = $this->__get_generate();
 
     $ret = null;
 
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
       $ret = self::$label_used_error;
     } else {
-      if($this->label_sequence_model->add_url_label($seq_id, $label_id, $url)) {
-        $ret = true;
+      if($generate) {
+        if($this->label_sequence_model->add_generated_url_label($seq_id, $label_id)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_url_type;
+        }
       } else {
-        $ret = "This label has invalid url type";
+        if($this->label_sequence_model->add_url_label($seq_id, $label_id, $url)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_url_type;
+        }
       }
     }
 
