@@ -73,6 +73,19 @@ class Label_sequence_model extends BioModel
     $this->add($seq_id, $label['id'], $label['type'], null, $data1, $data2);
   }
 
+  function add_generated_label($seq_id, $label_id, $type)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($label['type'] == $type && $label['code']) {
+      $this->add_generated($seq_id, $label);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   function edit($id, $type, $data1 = null, $data2 = null)
   {
     $fields = $this->__get_data_fields($type);
@@ -178,15 +191,7 @@ class Label_sequence_model extends BioModel
 
   function add_generated_text_label($seq_id, $label_id)
   {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get($label_id);
-
-    if($this->__is_text($label) && $label['code']) {
-      $this->add_generated($seq_id, $label);
-      return true;
-    } else {
-      return false;
-    }
+    return $this->add_generated_label($seq_id, $label_id, 'text');
   }
 
   function __is_integer($label)
@@ -209,15 +214,7 @@ class Label_sequence_model extends BioModel
 
   function add_generated_integer_label($seq_id, $label_id)
   {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get($label_id);
-
-    if($this->__is_integer($label) && $label['code']) {
-      $this->add_generated($seq_id, $label);
-      return true;
-    } else {
-      return false;
-    }
+    return $this->add_generated_label($seq_id, $label_id, 'integer');
   }
 
   function __is_bool($label)
@@ -240,15 +237,7 @@ class Label_sequence_model extends BioModel
 
   function add_generated_bool_label($seq_id, $label_id)
   {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get($label_id);
-
-    if($this->__is_bool($label) && $label['code']) {
-      $this->add_generated($seq_id, $label);
-      return true;
-    } else {
-      return false;
-    }
+    return $this->add_generated_label($seq_id, $label_id, 'bool');
   }
 
   function __is_url($label)
@@ -271,15 +260,7 @@ class Label_sequence_model extends BioModel
 
   function add_generated_url_label($seq_id, $label_id)
   {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get($label_id);
-
-    if($this->__is_url($label) && $label['code']) {
-      $this->add_generated($seq_id, $label);
-      return true;
-    } else {
-      return false;
-    }
+    return $this->add_generated_label($seq_id, $label_id, 'url');
   }
 
   function __is_obj($label)
@@ -302,15 +283,7 @@ class Label_sequence_model extends BioModel
 
   function add_generated_obj_label($seq_id, $label_id)
   {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get($label_id);
-
-    if($this->__is_obj($label) && $label['code']) {
-      $this->add_generated($seq_id, $label);
-      return true;
-    } else {
-      return false;
-    }
+    return $this->add_generated_label($seq_id, $label_id, 'obj');
   }
 
   function get_labels_to_auto_modify($seq)
