@@ -12,7 +12,7 @@ function reload_labels_list()
 
   $('#labels_list')
   .grid({
-    url: base_site,
+    url: get_app_url() + '/label_sequence',
     retrieve: 'get_labels/' + seq_id,
     fieldNames: ['Name', 'Data', 'Subname', 'Type'],
     fieldGenerator: function (row) {
@@ -143,7 +143,7 @@ function reload_missing_list()
 
   $('#missing_list')
   .grid({
-    url: get_app_url() + '/sequence',
+    url: get_app_url() + '/label_sequence',
     retrieve: 'get_missing_labels/' + seq_id,
     fieldNames: ['Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
     fields: ['name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
@@ -175,7 +175,7 @@ function reload_addable_list()
 
   $('#addable_list')
   .grid({
-    url: get_app_url() + '/sequence',
+    url: get_app_url() + '/label_sequence',
     retrieve: 'get_addable_labels/' + seq_id,
     fieldNames: ['Add', 'Name', 'Type', 'Auto Add', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
     fields: ['add', 'name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
@@ -193,7 +193,7 @@ function reload_addable_list()
     },
     clickFun: {
       add: function (row) {
-        var url = get_app_url() + '/sequence/add_label/' + seq_id + '/' + row.id;
+        var url = get_app_url() + '/label_sequence/add_label/' + seq_id + '/' + row.id;
         tb_show('Add label', url);
       },
       type: function (row) {

@@ -140,4 +140,9 @@ class BioController extends Controller
   {
     echo "---";
   }
+
+  function invalid_permission()
+  {
+    redirect('welcome/index');
+  }
 }
