@@ -61,7 +61,7 @@ class Label_sequence_model extends BioModel
     $data1 = null;
     $data2 = null;
 
-    $res = $this->generate_label_value($id, $label['code']);
+    $res = $this->generate_label_value($seq_id, $label['code']);
 
     if(is_array($res)) {
       $data1 = $res[0];
@@ -70,7 +70,7 @@ class Label_sequence_model extends BioModel
       $data1 = $res;
     }
 
-    $this->add($id, $label['id'], $label['type'], null, $data1, $data2);
+    $this->add($seq_id, $label['id'], $label['type'], null, $data1, $data2);
   }
 
   function edit($id, $type, $data1 = null, $data2 = null)
@@ -197,13 +197,31 @@ class Label_sequence_model extends BioModel
     }
   }
 
+  function __is_bool($label)
+  {
+    return $label['type'] == 'bool';
+  }
+
   function add_bool_label($seq_id, $label_id, $bool)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if($label['type'] == 'bool' && $label['editable']) {
+    if($this->__is_bool($label) && $label['editable']) {
       $this->add($seq_id, $label_id, 'bool', null, $bool);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function add_generated_bool_label($seq_id, $label_id)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($this->__is_bool($label) && $label['code']) {
+      $this->add_generated($seq_id, $label);
       return true;
     } else {
       return false;
