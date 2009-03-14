@@ -321,7 +321,7 @@ class Label_sequence_model extends BioModel
   {
     $info = $this->get_id($id, 'label_sequence_info');
 
-    if($info['default'] || !$info['deletable']) {
+    if(!$info['deletable']) {
       return false;
     }
 

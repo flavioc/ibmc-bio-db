@@ -38,8 +38,8 @@ $active_group = "default";
 $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "flavio";
-$db['default']['password'] = "ibmc";
+$db['default']['username'] = "fdb_app";
+$db['default']['password'] = "fdb_app%#_";
 $db['default']['database'] = "FDB";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";

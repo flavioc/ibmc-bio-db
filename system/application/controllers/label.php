@@ -10,7 +10,7 @@ class Label extends BioController {
   function browse()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('label_model');
@@ -23,7 +23,7 @@ class Label extends BioController {
   function get_all()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('label_model');
@@ -36,7 +36,7 @@ class Label extends BioController {
   function total_sequences($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('label_sequence_model');
@@ -47,7 +47,7 @@ class Label extends BioController {
   function view($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('label_model');
@@ -74,7 +74,7 @@ class Label extends BioController {
   function edit($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Edit label');
@@ -105,7 +105,7 @@ class Label extends BioController {
   function do_edit($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $result = $this->__form_validation(1);
@@ -128,7 +128,7 @@ class Label extends BioController {
   function add()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Add label');
@@ -246,7 +246,7 @@ class Label extends BioController {
   function do_add()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $result = $this->__form_validation(0);
@@ -269,7 +269,7 @@ class Label extends BioController {
   function delete($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('label_model');
@@ -284,7 +284,7 @@ class Label extends BioController {
   function delete_redirect($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('label_model');

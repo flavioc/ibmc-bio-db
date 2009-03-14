@@ -203,7 +203,7 @@
       .unbind('click')
       .click(function() {
               var row_id = parse_id($(this).attr('id'));
-              var url = opts.url + '/' + opts.remove + '/' + id;
+              var url = opts.url + '/' + opts.remove + '/' + row_id;
 
               $.post(url, function (data) {
                   var resp = $.evalJSON(data);
@@ -214,7 +214,7 @@
                     $('#' + tr_id).fadeOut('slow');
                     decrement_results(obj);
                   } else {
-                    alert('Error deleting item: ' + row_id);
+                    alert('Error deleting item: ' + row_id + ' -> ' + data);
                   }
               });
       })

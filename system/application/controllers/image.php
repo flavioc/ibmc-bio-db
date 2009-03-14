@@ -31,7 +31,6 @@ class Image extends BioController {
     $image = $this->user_model->get_user_image_by_name($name);
 
     if($image == null) {
-      // FIXME
       return;
     }
 
