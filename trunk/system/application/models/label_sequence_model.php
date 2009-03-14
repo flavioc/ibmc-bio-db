@@ -282,13 +282,31 @@ class Label_sequence_model extends BioModel
     }
   }
 
+  function __is_obj($label)
+  {
+    return $label['type'] == 'obj';
+  }
+
   function add_obj_label($seq_id, $label_id, $filename, $data)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if($label['type'] == 'obj' && $label['editable']) {
+    if($this->__is_obj($label) && $label['editable']) {
       $this->add($seq_id, $label_id, 'obj', null, $filename, $data);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function add_generated_obj_label($seq_id, $label_id)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($this->__is_obj($label) && $label['code']) {
+      $this->add_generated($seq_id, $label);
       return true;
     } else {
       return false;
