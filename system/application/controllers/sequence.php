@@ -4,6 +4,7 @@ class Sequence extends BioController
 {
   private static $label_used_error = "This label is already being used and cannot be reused";
   private static $label_invalid_text_type = "This label has invalid text type";
+  private static $label_invalid_bool_type = "This label has invalid integer type";
 
   function Sequence() {
     parent::BioController();
@@ -398,6 +399,7 @@ class Sequence extends BioController
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
     $bool = $this->get_post('boolean');
+    $generate = $this->__get_generate();
 
     $bool = ($bool ? TRUE : FALSE);
 
@@ -408,10 +410,18 @@ class Sequence extends BioController
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
       $ret = self::$label_used_error;
     } else {
-      if($this->label_sequence_model->add_bool_label($seq_id, $label_id, $bool)) {
-        $ret = true;
+      if($generate) {
+        if($this->label_sequence_model->add_generated_bool_label($seq_id, $label_id)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_bool_type;
+        }
       } else {
-        $ret = "This label has invalid integer type";
+        if($this->label_sequence_model->add_bool_label($seq_id, $label_id, $bool)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_bool_type;
+        }
       }
     }
 
