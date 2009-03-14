@@ -2,10 +2,6 @@
 
 class Sequence extends BioController
 {
-  private static $label_used_error = "This label is already being used and cannot be reused";
-  private static $label_invalid_text_type = "This label has invalid text type";
-  private static $label_invalid_bool_type = "This label has invalid integer type";
-
   function Sequence() {
     parent::BioController();
     $this->load->model('sequence_model');
