@@ -63,7 +63,7 @@ function reload_labels_list()
         return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
       },
       obj_data: function (row) {
-        return get_app_url() + '/sequence/download_label/' + row.id;
+        return get_app_url() + '/label_sequence/download_label/' + row.id;
       }
     },
     dataTransform: {

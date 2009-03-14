@@ -6,6 +6,7 @@ class Label_Sequence extends BioController {
   private static $label_invalid_bool_type = "This label has invalid integer type";
   private static $label_invalid_url_type = "This label has invalid url type";
   private static $label_invalid_integer_type = "This label has invalid integer type";
+  private static $label_invalid_obj_type = "This label has invalid object type";
 
   function Label_Sequence()
   {
@@ -250,32 +251,41 @@ class Label_Sequence extends BioController {
 
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
+    $generate = $this->__get_generate();
     $ret = null;
 
-    $this->load->library('upload', $this->_get_upload_config());
-    $upload_ret = $this->upload->do_upload('file');
-
-    if($upload_ret) {
-      $data = $this->upload->data();
-
-      if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-        $ret = self::$label_used_error;
+    if($generate) {
+      if($this->label_sequence_model->add_generated_obj_label($seq_id, $label_id)) {
+        $ret = true;
       } else {
-
-        $this->load->helper('image_utils');
-        $filename = $data['orig_name'];
-        $bytes = read_file_content($data);
-
-        if($this->label_sequence_model->add_obj_label($seq_id,
-          $label_id, $filename, $bytes))
-        {
-          $ret = true;
-        } else {
-          $ret = "This label has invalid object type";
-        }
+        $ret = self::$label_invalid_obj_type;
       }
     } else {
-      $ret = $this->upload->display_errors('', '');;
+      $this->load->library('upload', $this->_get_upload_config());
+      $upload_ret = $this->upload->do_upload('file');
+
+      if($upload_ret) {
+        $data = $this->upload->data();
+
+        if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+          $ret = self::$label_used_error;
+        } else {
+
+          $this->load->helper('image_utils');
+          $filename = $data['orig_name'];
+          $bytes = read_file_content($data);
+
+          if($this->label_sequence_model->add_obj_label($seq_id,
+            $label_id, $filename, $bytes))
+          {
+            $ret = true;
+          } else {
+            $ret = self::$label_invalid_obj_type;
+          }
+        }
+      } else {
+        $ret = $this->upload->display_errors('', '');;
+      }
     }
 
     echo json_encode($ret);
@@ -341,7 +351,7 @@ class Label_Sequence extends BioController {
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
     $config['encrypt_name'] = true;
-    $config['allowed_types'] = 'doc|fasta|pdf|xls|docx|xlsx|png|bmp|gif|jpg';
+    $config['allowed_types'] = 'doc|fasta|pdf|xls|docx|xlsx|png|bmp|gif|jpg|hs';
 
     return $config;
   }
