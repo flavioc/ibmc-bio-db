@@ -17,8 +17,6 @@ $(document).ready(function () {
     }
   });
 
-  alert(hide_dom);
-
 });
 </script>
 {/literal}
