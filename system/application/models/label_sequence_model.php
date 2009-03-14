@@ -158,12 +158,17 @@ class Label_sequence_model extends BioModel
     return $this->add_auto_label($seq, $label);
   }
 
+  function __is_text($label)
+  {
+    return $label['type'] == 'text';
+  }
+
   function add_text_label($seq_id, $label_id, $text)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if($label['type'] == 'text' && $label['editable']) {
+    if($this->__is_text($label) && $label['editable']) {
       $this->add($seq_id, $label_id, 'text', null, $text);
       return true;
     } else {
@@ -176,7 +181,7 @@ class Label_sequence_model extends BioModel
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if($label['type'] == 'text' && $label['code']) {
+    if($this->__is_text($label) && $label['code']) {
       $this->add_generated($seq_id, $label);
       return true;
     } else {
