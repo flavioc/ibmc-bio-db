@@ -149,6 +149,7 @@ class BioController extends Controller
   function invalid_permission()
   {
     $url = uri_string();
+    $this->set_error_message("Invalid permission to access $url");
     redirect("welcome/index?redirect=$url");
   }
 }
