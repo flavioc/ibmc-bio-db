@@ -5,6 +5,7 @@ class Label extends BioController {
   function Label()
   {
     parent::BioController();
+    $this->load->model('label_model');
   }
 
   function browse()
@@ -13,9 +14,9 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
 
-    $this->load->model('label_model');
-
     $this->use_mygrid();
+    $this->use_paging_size();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
     $this->smarty->assign('title', 'View labels');
     $this->smarty->view('label/list');
   }
@@ -26,11 +27,26 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
 
-    $this->load->model('label_model');
+    $name = $this->get_parameter('name');
+    $start = intval($this->get_parameter('start'));
+    $size = intval($this->get_parameter('size'));
 
-    $labels = $this->label_model->get_all();
+    $labels = $this->label_model->get_all($name, $start, $size);
 
-    echo json_encode($labels);
+    $this->json_return($labels);
+  }
+
+  function count_total()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $name = $this->get_parameter('name');
+
+    $total = $this->label_model->get_total($name);
+
+    $this->json_return($total);
   }
 
   function total_sequences($id)
@@ -41,7 +57,7 @@ class Label extends BioController {
 
     $this->load->model('label_sequence_model');
 
-    echo json_encode($this->label_sequence_model->total_label($id));
+    $this->json_return($this->label_sequence_model->total_label($id));
   }
 
   function view($id)
@@ -49,8 +65,6 @@ class Label extends BioController {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
-
-    $this->load->model('label_model');
 
     $label = $this->label_model->get($id);
 
@@ -79,7 +93,6 @@ class Label extends BioController {
 
     $this->smarty->assign('title', 'Edit label');
     $this->__assign_types();
-    $this->load->model('label_model');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');
 
     $label = $this->label_model->get($id);
@@ -111,7 +124,6 @@ class Label extends BioController {
     $result = $this->__form_validation(1);
 
     if(is_array($result)) {
-      $this->load->model('label_model');
       $this->label_model->edit($id, $result['name'], $result['type'],
         $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
         $result['auto_on_modification'], $result['deletable'],
@@ -167,7 +179,6 @@ class Label extends BioController {
     }
 
     if(!$errors) {
-      $this->load->model('label_model');
       $name = $this->get_post('name');
 
       if($this->label_model->count_names($name) > $max_names) {
@@ -252,7 +263,6 @@ class Label extends BioController {
     $result = $this->__form_validation(0);
 
     if(is_array($result)) {
-      $this->load->model('label_model');
       $id = $this->label_model->add($result['name'], $result['type'],
         $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
         $result['auto_on_modification'], $result['deletable'],
@@ -272,13 +282,11 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
 
-    $this->load->model('label_model');
-
     if($this->label_model->is_default($id)) {
       return;
     }
 
-    echo json_encode($this->label_model->delete($id));
+    $this->json_return($this->label_model->delete($id));
   }
 
   function delete_redirect($id)
@@ -286,8 +294,6 @@ class Label extends BioController {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
-
-    $this->load->model('label_model');
 
     if($this->label_model->is_default($id)) {
       return;

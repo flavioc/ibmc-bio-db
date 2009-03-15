@@ -63,12 +63,7 @@ $(document).ready(function () {
     }
   }
 
-  function when_changing()
-  {
-    changed = true;
-  }
-
-  $('#name, #rank').change(when_changing);
+  $('#name, #rank').change(function () { changed = true; });
 
   $('#rank').change(activate_autocomplete);
 
