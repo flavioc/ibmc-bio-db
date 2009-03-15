@@ -29,7 +29,7 @@ $(document).ready(function () {
           dom_path.append(' > ');
         }
 
-        dom_path.append('<a href="#">' + elem.what + '</a>');
+        dom_path.append('<a class="clickable" href="#">' + elem.what + '</a>');
       }
 
       $('a', dom_path).each(function (index) {
@@ -157,8 +157,8 @@ $(document).ready(function () {
 
 <h3 id="childs_name"></h3>
 <p class="path" id="tax_path"></p>
-<a id="go_up" href="#">Go up <span id="go_up_what"></span></a>
+<a class="clickable" id="go_up" href="#">Go up <span id="go_up_what"></span></a>
 <div id="show_data"></div>
 <br />
-<a id="add_child" href="#">Add child</a>
+<a class="clickable" id="add_child" href="#">Add child</a>
 
