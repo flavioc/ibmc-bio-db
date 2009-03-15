@@ -71,3 +71,4 @@
 
 <div id="show_ranks"></div>
 
+{button name="add_rank" to="rank/add" msg="Add rank"}
