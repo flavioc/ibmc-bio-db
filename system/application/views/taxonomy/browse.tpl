@@ -1,4 +1,4 @@
-<h2>{$subtitle}</h2>
+<h2>Browse taxonomies</h2>
 
 <script>
 {literal}

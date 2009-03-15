@@ -138,12 +138,26 @@ class Label_Sequence extends BioController {
           $this->smarty->view_s('new_label/ref');
           break;
         case 'tax':
-          $this->smarty->view_s('new_label/tax');
+          $this->__display_tax_form();
           break;
       }
     } else {
       echo "NOT HANDLED";
     }
+  }
+
+  function __display_tax_form()
+  {
+    $this->load->model('taxonomy_rank_model');
+    $ranks = $this->taxonomy_rank_model->get_ranks();
+
+    $this->load->model('taxonomy_tree_model');
+    $trees = $this->taxonomy_tree_model->get_trees();
+
+    $this->smarty->assign('ranks', $ranks);
+    $this->smarty->assign('trees', $trees);
+
+    $this->smarty->view_s('new_label/tax');
   }
 
   function __get_generate()
@@ -355,7 +369,7 @@ class Label_Sequence extends BioController {
 
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
-    $tax = $this->get_post('tax');
+    $tax = $this->get_post('hidden_tax');
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_tax_label($seq_id, $label_id, $tax, $generate));
