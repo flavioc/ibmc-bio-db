@@ -39,6 +39,10 @@
     <span class="code" id="labelcode">{if $label.code}{$label.code}{else}---{/if}</span>
   </p>
 
+  <p><span class="desc">Validation code: </span>
+    <span class="code" id="labelvalidcode">{if $label.valid_code}{$label.valid_code}{else}---{/if}</span>
+  </p>
+
   <p><span class="desc">Comment: </span>
      <span class="comment" id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</span>
   </p>

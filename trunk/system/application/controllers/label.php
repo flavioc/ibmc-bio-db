@@ -109,6 +109,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('multiple', $label['multiple']);
     $this->smarty->fetch_form_row('default', $label['default']);
     $this->smarty->fetch_form_row('code', $label['code']);
+    $this->smarty->fetch_form_row('valid_code', $label['valid_code']);
     $this->smarty->fetch_form_row('comment', $label['comment']);
 
     $this->smarty->assign('label', $label);
@@ -130,7 +131,9 @@ class Label extends BioController {
         $result['auto_on_modification'], $result['deletable'],
         $result['editable'], $result['multiple'],
         $result['default'],
-        $result['code'], $result['comment']);
+        $result['code'],
+        $result['valid_code'],
+        $result['comment']);
 
       redirect("label/view/$id");
     } else {
@@ -158,6 +161,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('multiple');
     $this->smarty->fetch_form_row('default');
     $this->smarty->fetch_form_row('code');
+    $this->smarty->fetch_form_row('valid_code');
     $this->smarty->fetch_form_row('comment');
 
     $this->__assign_types();
@@ -194,6 +198,7 @@ class Label extends BioController {
       $auto_on_modification = $this->get_post('auto_on_modification');
       $auto_on_modification = ($auto_on_modification ? TRUE : FALSE);
       $code = $this->get_post('code');
+      $valid_code = $this->get_post('valid_code');
 
       if($auto_on_creation) {
         if(!$autoadd) {
@@ -222,6 +227,7 @@ class Label extends BioController {
       $this->assign_row_data('multiple');
       $this->assign_row_data('default');
       $this->assign_row_data('code');
+      $this->assign_row_data('valid_code');
       $this->assign_row_data('comment');
 
       return null;
@@ -251,6 +257,7 @@ class Label extends BioController {
                    'multiple' => $multiple,
                    'default' => $default,
                    'code' => $code,
+                   'valid_code' => $valid_code,
                    'comment' => $comment);
     }
   }
@@ -269,7 +276,9 @@ class Label extends BioController {
         $result['auto_on_modification'], $result['deletable'],
         $result['editable'], $result['multiple'],
         $result['default'],
-        $result['code'], $result['comment']);
+        $result['code'],
+        $result['valid_code'],
+        $result['comment']);
 
       redirect("label/view/$id");
     } else {
