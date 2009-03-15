@@ -7,21 +7,25 @@
   {/if}
 </ul>
 
-{literal}
 <script>
+
+{to_js var=label value=$label}
+var validate_new_label_form = null;
+
+{literal}
 $(document).ready(function () {
   function checkResponse(responseText, statusText) {
     var resp = $.evalJSON(responseText);
 
     if(resp == true) {
-      {/literal}
-      {if !$label.multiple}
-      reload_addable_list();
-      {/if}
-      {if $label.must_exist}
-      reload_missing_list();
-      {/if}
-      {literal}
+      if(label.multiple == 0) {
+        reload_addable_list();
+      }
+
+      if(label.must_exist == 1) {
+        reload_missing_list();
+      }
+
       reload_labels_list();
     } else {
       alert(responseText);
@@ -31,8 +35,11 @@ $(document).ready(function () {
   }
 
   $('#form_add_label').ajaxForm({
-    success: checkResponse
+    success: checkResponse,
+    beforeSubmit: function (data, form) {
+      return $(form).valid();
+    }
   });
 });
-</script>
 {/literal}
+</script>
