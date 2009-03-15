@@ -576,6 +576,14 @@ function smarty_function_include_js($params, &$smarty)
   return "<script type=\"text/javascript\" src=\"$top_dir/scripts/$name?random=$random\"></script>";
 }
 
+function smarty_function_to_js($params, &$smarty)
+{
+  $data = $params['value'];
+  $var = $params['var'];
+
+  return "var $var = " . json_encode($data) . ";";
+}
+
 class BioSmarty extends Smarty
 {
   var $controller;
@@ -609,6 +617,7 @@ class BioSmarty extends Smarty
     $this->register_function('boolean', 'smarty_function_boolean');
     $this->register_function('random', 'smarty_function_random');
     $this->register_function('include_js', 'smarty_function_include_js');
+    $this->register_function('to_js', 'smarty_function_to_js');
 
 		$config =& get_config();
 		
