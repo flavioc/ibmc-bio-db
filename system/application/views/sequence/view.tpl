@@ -38,6 +38,7 @@ $(document).ready(function() {
   $('#labels_list').gridEnable({paginate: false});
   $('#missing_list').gridEnable({paginate: false});
   $('#addable_list').gridEnable({paginate: false});
+  $('#validation_list').gridEnable({paginate: false});
 
   hide_addable_list();
   hide_missing_list();
@@ -83,6 +84,11 @@ $(document).ready(function() {
   $('#hide_show_addable').minusPlus({
     plusEnabled: load_addable_list,
     minusEnabled: hide_addable_list
+  });
+
+  $('#hide_show_validation').minusPlus({
+    plusEnabled: load_validation_list,
+    minusEnabled: hide_validation_list
   });
 
 });
@@ -138,6 +144,16 @@ $(document).ready(function() {
 </p>
 
 <hr />
+
+<p>
+<h3>Label validation</h3>
+<div id="hide_show_validation"></div>
+<div id="validation_box">
+  <div id="validation_list">
+  </div>
+  <br />
+</div>
+</p>
 
 <p>
 {button name="browse_seq" msg="Sequence list" to="sequence/browse"}
