@@ -185,7 +185,7 @@ ORDER BY name";
     $this->db->from($this->table);
     $this->db->where('tree_id', $tree);
 
-    return $this->db->count_all_results();
+    return intval($this->db->count_all_results());
   }
 
   function delete($id)
