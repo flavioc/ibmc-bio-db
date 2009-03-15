@@ -6,12 +6,14 @@ var form_tax_dom = null;
 var form_tax_add_child = false;
 var form_tax_field_names = ['Name', 'Rank', 'Tree', 'Parent'];
 var form_tax_fields = ['name', 'rank_name', 'tree_name', 'parent_name'];
+var form_tax_click_fun = null;
 
-function start_tax_search_form(dom, paging_size, put_addchild)
+function start_tax_search_form(dom, paging_size, put_addchild, click_fun)
 {
   form_tax_paging_size = paging_size;
   form_tax_dom = dom;
   form_tax_add_child = put_addchild;
+  form_tax_click_fun = click_fun;
 
   if(form_tax_add_child) {
     form_tax_field_names.push('Add child');
@@ -87,6 +89,7 @@ function form_tax_when_submit()
             return get_app_url() + '/taxonomy/add?parent_id=' + row.id + '&tree=' + row.tree_id;
           }
         },
+        clickFun: form_tax_click_fun,
         dataTransform: {
           parent_name: function(row) {
             return row.parent_name == null ? null : row.parent_name;
@@ -100,7 +103,7 @@ function form_tax_when_submit()
           add_child: function (row) {
             return 'Add';
           }
-        }
+        },
       });
 
       form_tax_changed = false;
