@@ -15,3 +15,22 @@
 
 {form_submit name=submit msg='Add label'}
 {form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+
+  function text_required() {
+    return !checkbox_enabled('#generate_check');
+  }
+
+  $("#form_add_label").validate({
+    rules: {
+      text: {
+        required: text_required
+      }
+    }
+  });
+});
+</script>
+{/literal}
