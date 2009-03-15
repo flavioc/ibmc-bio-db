@@ -9,19 +9,19 @@ class Taxonomy_name extends BioController {
   function list_all($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $this->load->model('taxonomy_name_model');
     $names = $this->taxonomy_name_model->get_tax($id);
 
-    echo json_encode($names);
+    $this->json_return($names);
   }
 
   function edit_type_name()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -44,7 +44,7 @@ class Taxonomy_name extends BioController {
   function edit_name()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -70,26 +70,26 @@ class Taxonomy_name extends BioController {
   function add($tax, $name, $type)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $this->load->model('taxonomy_name_model');
 
     $id = $this->taxonomy_name_model->add(intval($tax), $name, intval($type));
 
-    echo json_encode($this->taxonomy_name_model->get_name_and_type($id));
+    $this->json_return($this->taxonomy_name_model->get_name_and_type($id));
   }
 
   function delete($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $this->load->model('taxonomy_name_model');
 
     $this->taxonomy_name_model->delete(intval($id));
 
-    echo json_encode(true);
+    $this->json_return(true);
   }
 }
