@@ -8,6 +8,7 @@ class Label_Sequence extends BioController {
   private static $label_invalid_integer_type = "This label has invalid integer type";
   private static $label_invalid_obj_type = "This label has invalid object type";
   private static $label_invalid_position_type = "This label has invalid position type";
+  private static $label_invalid_ref_type = "This label has invalid ref type";
 
   function Label_Sequence()
   {
@@ -130,6 +131,9 @@ class Label_Sequence extends BioController {
         case 'position':
           $this->smarty->view_s('new_label/position');
           break;
+        case 'ref':
+          $this->smarty->view_s('new_label/ref');
+          break;
       }
     } else {
       echo "NOT HANDLED";
@@ -143,6 +147,27 @@ class Label_Sequence extends BioController {
     return $ret ? TRUE : FALSE;
   }
 
+  function __add_text_label($seq_id, $label_id, $text, $generate)
+  {
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return self::$label_used_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->add_generated_text_label($seq_id, $label_id)) {
+        return true;
+      }
+
+      return self::$label_invalid_text_type;
+    }
+
+    if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
+      return true;
+    }
+
+    return self::$label_invalid_text_type;
+  }
+
   function add_text_label()
   {
     if(!$this->logged_in) {
@@ -154,27 +179,28 @@ class Label_Sequence extends BioController {
     $text = $this->get_post('text');
     $generate = $this->__get_generate();
 
-    $ret = null;
-    
+    $this->json_return($this->__add_text_label($seq_id, $label_id, $text, $generate));
+  }
+
+  function __add_bool_label($seq_id, $label_id, $bool, $generate)
+  {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = self::$label_used_error;
-    } else {
-      if($generate) {
-        if($this->label_sequence_model->add_generated_text_label($seq_id, $label_id)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_text_type;
-        }
-      } else {
-        if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_text_type;
-        }
-      }
+      return self::$label_used_error;
     }
 
-    echo json_encode($ret);
+    if($generate) {
+      if($this->label_sequence_model->add_generated_bool_label($seq_id, $label_id)) {
+        return true;
+      }
+
+      return self::$label_invalid_bool_type;
+    }
+
+    if($this->label_sequence_model->add_bool_label($seq_id, $label_id, $bool)) {
+      return true;
+    }
+
+    return self::$label_invalid_bool_type;
   }
 
   function add_bool_label()
@@ -190,27 +216,28 @@ class Label_Sequence extends BioController {
 
     $bool = ($bool ? TRUE : FALSE);
 
-    $ret = null;
+    $this->json_return($this->__add_bool_label($seq_id, $label_id, $bool, $generate));
+  }
 
+  function __add_integer_label($seq_id, $label_id, $int, $generate)
+  {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = self::$label_used_error;
-    } else {
-      if($generate) {
-        if($this->label_sequence_model->add_generated_bool_label($seq_id, $label_id)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_bool_type;
-        }
-      } else {
-        if($this->label_sequence_model->add_bool_label($seq_id, $label_id, $bool)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_bool_type;
-        }
-      }
+      return self::$label_used_error;
     }
 
-    echo json_encode($ret);
+    if($generate) {
+      if($this->label_sequence_model->add_generated_integer_label($seq_id, $label_id)) {
+        return true;
+      }
+
+      return self::$label_invalid_integer_type;
+    }
+
+    if($this->label_sequence_model->add_integer_label($seq_id, $label_id, $int)) {
+      return true;
+    } else {
+      return self::$label_invalid_integer_type;
+    }
   }
 
   function add_integer_label()
@@ -224,27 +251,43 @@ class Label_Sequence extends BioController {
     $int = intval($this->get_post('integer'));
     $generate = $this->__get_generate();
 
-    $ret = null;
+    $this->json_return($this->__add_integer_label($seq_id, $label_id, $int, $generate));
+  }
 
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = self::$label_used_error;
-    } else {
-      if($generate) {
-        if($this->label_sequence_model->add_generated_integer_label($seq_id, $label_id)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_integer_type;
-        }
-      } else {
-        if($this->label_sequence_model->add_integer_label($seq_id, $label_id, $int)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_integer_type;
-        }
+  function __add_obj_label($seq_id, $label_id, $generate)
+  {
+    if($generate) {
+      if($this->label_sequence_model->add_generated_obj_label($seq_id, $label_id)) {
+        return true;
       }
+
+      return self::$label_invalid_obj_type;
     }
 
-    echo json_encode($ret);
+    $this->load->library('upload', $this->_get_upload_config());
+    $upload_ret = $this->upload->do_upload('file');
+
+    if(!$upload_ret) {
+      return $this->upload->display_errors('', '');;
+    }
+
+    $data = $this->upload->data();
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return self::$label_used_error;
+    }
+
+    $this->load->helper('image_utils');
+    $filename = $data['orig_name'];
+    $bytes = read_file_content($data);
+
+    if($this->label_sequence_model->add_obj_label($seq_id,
+      $label_id, $filename, $bytes))
+    {
+      return true;
+    } else {
+      return self::$label_invalid_obj_type;
+    }
   }
 
   function add_obj_label()
@@ -256,43 +299,31 @@ class Label_Sequence extends BioController {
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
     $generate = $this->__get_generate();
-    $ret = null;
 
-    if($generate) {
-      if($this->label_sequence_model->add_generated_obj_label($seq_id, $label_id)) {
-        $ret = true;
-      } else {
-        $ret = self::$label_invalid_obj_type;
-      }
-    } else {
-      $this->load->library('upload', $this->_get_upload_config());
-      $upload_ret = $this->upload->do_upload('file');
+    $this->json_return($this->__add_obj_label($seq_id, $label_id, $generate));
+  }
 
-      if($upload_ret) {
-        $data = $this->upload->data();
-
-        if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-          $ret = self::$label_used_error;
-        } else {
-
-          $this->load->helper('image_utils');
-          $filename = $data['orig_name'];
-          $bytes = read_file_content($data);
-
-          if($this->label_sequence_model->add_obj_label($seq_id,
-            $label_id, $filename, $bytes))
-          {
-            $ret = true;
-          } else {
-            $ret = self::$label_invalid_obj_type;
-          }
-        }
-      } else {
-        $ret = $this->upload->display_errors('', '');;
-      }
+  function __add_position_label($seq_id, $label_id, $start, $length, $generate)
+  {
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return self::$label_used_error;
     }
 
-    echo json_encode($ret);
+    if($generate) {
+      if($this->label_sequence_model->add_generated_position_label($seq_id, $label_id)) {
+        return true;
+      }
+
+      return self::$label_invalid_position_type;
+    }
+
+    if($this->label_sequence_model->add_position_label($seq_id, $label_id,
+      intval($start), intval($length)))
+    {
+      return true;
+    } else {
+      return self::$label_invalid_position_type;
+    }
   }
 
   function add_position_label()
@@ -307,29 +338,69 @@ class Label_Sequence extends BioController {
     $length = $this->get_post('length');
     $generate = $this->__get_generate();
 
-    $ret = null;
+    $this->json_return($this->__add_position_label($seq_id, $label_id, $start, $length, $generate));
+  }
 
+  function __add_ref_label($seq_id, $label_id, $ref, $generate)
+  {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = self::$label_used_error;
-    } else {
-      if($generate) {
-        if($this->label_sequence_model->add_generated_position_label($seq_id, $label_id)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_position_type;
-        }
+      return self::$label_used_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->add_generated_ref_label($seq_id, $label_id)) {
+        return true;
       } else {
-        if($this->label_sequence_model->add_position_label($seq_id, $label_id,
-          intval($start), intval($length)))
-        {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_position_type;
-        }
+        return self::$label_invalid_ref_type;
       }
     }
 
-    echo json_encode($ret);
+    $ref = intval($ref);
+
+    if(!$this->sequence_model->has_sequence($ref)) {
+      return "Sequence doesn't exist.";
+    }
+
+    if($this->label_sequence_model->add_ref_label($seq_id, $label_id, $ref)) {
+      return true;
+    } else {
+      return self::$label_invalid_ref_label;
+    }
+  }
+
+  function add_ref_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $ref = $this->get_post('ref');
+    $generate = $this->__get_generate();
+
+    $this->json_return($this->__add_ref_label($seq_id, $label_id, $ref, $generate));
+  }
+
+  function __add_url_label($seq_id, $label_id, $url, $generate)
+  {
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return self::$label_used_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->add_generated_url_label($seq_id, $label_id)) {
+        return true;
+      }
+
+      return self::$label_invalid_url_type;
+    }
+
+    if($this->label_sequence_model->add_url_label($seq_id, $label_id, $url)) {
+      return true;
+    } else {
+      return self::$label_invalid_url_type;
+    }
   }
 
   function add_url_label()
@@ -343,27 +414,17 @@ class Label_Sequence extends BioController {
     $url = $this->get_post('url');
     $generate = $this->__get_generate();
 
-    $ret = null;
+    $this->json_return($this->__add_url_label($seq_id, $label_id, $url, $generate));
+  }
 
+  function __add_auto_label($seq_id, $label_id)
+  {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = self::$label_used_error;
+      return self::$label_used_error;
     } else {
-      if($generate) {
-        if($this->label_sequence_model->add_generated_url_label($seq_id, $label_id)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_url_type;
-        }
-      } else {
-        if($this->label_sequence_model->add_url_label($seq_id, $label_id, $url)) {
-          $ret = true;
-        } else {
-          $ret = self::$label_invalid_url_type;
-        }
-      }
+      $this->label_sequence_model->add_auto_label_id($seq_id, $label_id);
+      return true;
     }
-
-    echo json_encode($ret);
   }
 
   function add_auto_label()
@@ -375,16 +436,7 @@ class Label_Sequence extends BioController {
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
 
-    $ret = null;
-
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      $ret = self::$label_used_error;
-    } else {
-      $this->label_sequence_model->add_auto_label_id($seq_id, $label_id);
-      $ret = true;
-    }
-
-    echo json_encode($ret);
+    $this->json_return($this->__add_auto_label($seq_id, $label_id));
   }
 
   function _get_upload_config()

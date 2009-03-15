@@ -136,6 +136,11 @@ class BioController extends Controller
     }
   }
 
+  function json_return($val)
+  {
+    echo json_encode($val);
+  }
+
   function return_empty()
   {
     echo "---";
