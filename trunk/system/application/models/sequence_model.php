@@ -51,6 +51,11 @@ class Sequence_model extends BioModel
     $this->delete_id($id);
   }
 
+  function has_sequence($id)
+  {
+    return $this->has_id($id);
+  }
+
   function get_content($id)
   {
     return $this->get_field($id, 'content');
