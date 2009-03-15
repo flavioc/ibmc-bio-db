@@ -47,6 +47,14 @@ class Taxonomy extends BioController {
       $this->smarty->set_initial_var('rank', $child_rank);
     }
 
+    $tree_id = $this->smarty->get_initial_var('tree');
+    if(!$tree_id && $parent_id) {
+      $this->load->model('taxonomy_model');
+      $tree_id = $this->taxonomy_model->get_tree($parent_id);
+
+      $this->smarty->set_initial_var('tree', $tree_id);
+    }
+
     $this->smarty->view('taxonomy/add');
   }
 
@@ -129,6 +137,17 @@ class Taxonomy extends BioController {
 
     $this->__assign_search_components();
     $this->use_paging_size();
+
+    $this->load->model('taxonomy_model');
+    $this->load->model('taxonomy_rank_model');
+
+    $taxonomy = $this->taxonomy_model->get($id);
+    $tree = $taxonomy['tree_id'];
+    $rank = intval($taxonomy['rank_id']);
+
+    $this->smarty->set_initial_var('tree', $tree);
+    $this->smarty->set_initial_var('rank', $this->taxonomy_rank_model->get_parent($rank));
+
     $this->smarty->assign('taxonomy', $id);
     $this->smarty->view_s('taxonomy/select_parent');
   }
@@ -431,11 +450,13 @@ class Taxonomy extends BioController {
     $this->taxonomy_model->delete($id);
   }
 
-  function delete_redirect($id)
+  function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
+
+    $id = $this->get_post('id');
 
     $this->_delete($id);
 
