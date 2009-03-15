@@ -25,7 +25,7 @@ class Profile extends BioController {
   function view($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->__view($id);
@@ -34,7 +34,7 @@ class Profile extends BioController {
   function view_self()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->__view($this->user_id);
@@ -43,7 +43,7 @@ class Profile extends BioController {
   function list_all()
   {
     if(!$this->is_admin) {
-      return;
+      return $this->invalid_permission_admin();
     }
 
     $this->smarty->assign('title', 'User list');
@@ -55,29 +55,29 @@ class Profile extends BioController {
   function get_all()
   {
     if(!$this->is_admin) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $users = $this->user_model->get_users();
 
-    echo json_encode($users);
+    $this->json_return($users);
   }
 
   function do_delete($id)
   {
     if(!$this->is_admin) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $this->user_model->delete_user($id);
 
-    echo json_encode(true);
+    $this->json_return(true);
   }
 
   function edit()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Edit profile');
@@ -101,7 +101,7 @@ class Profile extends BioController {
   function do_edit()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $errors = false;
@@ -173,7 +173,7 @@ class Profile extends BioController {
   function settings()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Edit settings');
@@ -190,7 +190,7 @@ class Profile extends BioController {
   function edit_settings()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $errors = false;
@@ -226,8 +226,8 @@ class Profile extends BioController {
 	
 	function register()
   {
-    if(!$this->logged_in && !$this->is_admin) {
-      return;
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $this->smarty->assign('title', 'Register');
@@ -261,8 +261,8 @@ class Profile extends BioController {
 
   function do_register()
   {
-    if(!$this->logged_in && !$this->is_admin) {
-      return;
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $errors = false;
