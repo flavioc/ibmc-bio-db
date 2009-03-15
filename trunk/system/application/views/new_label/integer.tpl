@@ -20,14 +20,10 @@
 <script>
 $(document).ready(function () {
 
-  function number_required() {
-    return !checkbox_enabled('#generate_check');
-  }
-
   $("#form_add_label").validate({
     rules: {
       integer: {
-        required: number_required,
+        required: generate_disabled,
         number: true
       }
     }
