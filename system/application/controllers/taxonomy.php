@@ -302,7 +302,7 @@ class Taxonomy extends BioController {
     $this->smarty->view('taxonomy/tree_browse');
   }
 
-  function _browse($title)
+  function browse()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -312,8 +312,8 @@ class Taxonomy extends BioController {
     $this->use_autocomplete();
 
     $this->smarty->assign('title', 'Browse taxonomies');
-    $this->smarty->assign('subtitle', $title);
-    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->smarty->assign('subtitle', 'Search taxonomies');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'taxonomy_functions.js');
     $this->use_mygrid();
 
     $this->load->model('taxonomy_rank_model');
@@ -326,22 +326,6 @@ class Taxonomy extends BioController {
     $this->smarty->assign('trees', $trees);
 
     $this->smarty->view('taxonomy/browse');
-  }
-
-  function browse()
-  {
-    $this->_browse('Search taxonomies');
-  }
-
-  function browse_parent($id)
-  {
-    $this->smarty->assign('child_id', $id);
-
-    $this->load->model('taxonomy_model');
-
-    $child_name = $this->taxonomy_model->get_name($id);
-
-    $this->_browse('Search parent taxonomy for ' . $child_name);
   }
 
   function search()
