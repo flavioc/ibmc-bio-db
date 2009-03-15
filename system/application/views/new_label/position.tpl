@@ -16,3 +16,21 @@
 
 {form_submit name=submit_file msg='Add label'}
 {form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+
+  $("#form_add_label").validate({
+    rules: {
+      start: {
+        required: generate_disabled
+      },
+      length: {
+        required: generate_disabled
+      }
+    }
+  });
+});
+</script>
+{/literal}
