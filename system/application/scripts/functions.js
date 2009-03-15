@@ -107,3 +107,10 @@ function get_url_id()
 
   return 0;
 }
+
+function checkbox_enabled(dom)
+{
+  var obj = $(dom);
+
+  return obj.size() != 0 && obj.is(":checked");
+}
