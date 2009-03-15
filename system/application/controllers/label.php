@@ -85,12 +85,13 @@ class Label extends BioController {
     $this->smarty->assign('types', $this->__get_types());
   }
 
-  function edit($id)
+  function edit()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
 
+    $id = $this->get_parameter('id');
     $this->smarty->assign('title', 'Edit label');
     $this->__assign_types();
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');

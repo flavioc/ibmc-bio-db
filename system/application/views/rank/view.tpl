@@ -37,12 +37,9 @@ $(document).ready(function() {
 
 </div>
 
-{assign var=rank_id value=$rank.rank_id}
-
-{form_open name=form_delete to="rank/delete_redirect/$rank_id"}
+{form_open name=form_delete to="rank/delete_redirect"}
+{form_hidden name=id value=$rank.rank_id}
 {form_submit name=submit_delete msg=Delete}
 {form_end}
 
-<p>
-<a href="{site}/rank/list_all">List Ranks</a>
-</p>
+{button name="list_ranks" to="rank/list_all" msg="List ranks"}

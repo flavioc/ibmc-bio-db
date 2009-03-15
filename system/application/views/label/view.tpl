@@ -48,9 +48,10 @@
 </div>
 
 <p>
-<ul>
-<li><a href="{site}/label/edit/{$label.id}">Edit</a></li>
-<li><a href="{site}/label/browse">List Labels</a></li>
-</ul>
+{form_open name=form_edit to="label/edit" method=get}
+{form_hidden name=id value=$label.id}
+{form_submit name=submit_edit msg=Edit}
+{form_end}
+{button name="browse_labels" msg="List labels" to="label/browse"}
 </p>
 
