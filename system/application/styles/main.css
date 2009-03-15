@@ -214,10 +214,14 @@ body>div#content hr {
   margin-right: 3px;
 }
 
-body>div#content .writeable {
+.writeable {
   background-color: #EEE;
 }
 
-body>div#content .writeable:hover {
+.writeable:hover {
   background-color: #BBB;
+}
+
+span.minus_text, span.plus_text {
+  text-decoration: underline;
 }
