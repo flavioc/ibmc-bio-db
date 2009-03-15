@@ -4,7 +4,7 @@
 {literal}
 <script>
 $(document).ready(function () {
-  var hide_dom = '#' + "{/literal}{$to_hide}{literal}";
+  var hide_dom = "{/literal}{$to_hide}{literal}";
   var hide_obj = $(hide_dom);
   var hide_node = hide_obj[0];
   var checkbox = $('#generate_check');

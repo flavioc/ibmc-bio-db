@@ -164,6 +164,11 @@ function smarty_function_form_input($params, &$smarty)
     $data['size'] = $size;
   }
 
+  $readonly = $params['readonly'];
+  if($readonly) {
+    $data['readonly'] = $readonly;
+  }
+
   return form_input($data);
 }
 
@@ -396,6 +401,7 @@ function smarty_function_form_row($params, &$smarty)
       'cols' => $params['cols'],
       'rows' => $params['rows'],
       'maxlength' => $params['maxlength'],
+      'readonly' => $params['readonly']
     );
 
     if($type == 'textarea') {

@@ -101,6 +101,7 @@ class Label_Sequence extends BioController {
 
     $label = $this->label_model->get($label_id);
 
+    $this->use_paging_size();
     $this->smarty->assign('sequence', $this->sequence_model->get($seq_id));
     $this->smarty->assign('label', $label);
 
@@ -423,7 +424,7 @@ class Label_Sequence extends BioController {
 
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
-    $ref = $this->get_post('ref');
+    $ref = $this->get_post('hidden_ref');
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_ref_label($seq_id, $label_id, $ref, $generate));
