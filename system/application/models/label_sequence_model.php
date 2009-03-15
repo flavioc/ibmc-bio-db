@@ -494,6 +494,79 @@ class Label_sequence_model extends BioModel
     return $data;
   }
 
+  function __get_validation_status($label, $sequence, $valid_code, $data1, $data2)
+  {
+    $content = $sequence['content'];
+    $name = $sequence['name'];
+    $data = $data1;
+
+    $ret = eval($valid_code);
+
+    if($ret) {
+      return 'valid';
+    } else {
+      return 'invalid';
+    }
+  }
+
+  function get_validation_status($label_id, $sequence, $data1, $data2)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    $valid_code = $label['valid_code'];
+
+    if(!$valid_code) {
+      return 'no validation';
+    }
+
+    return $this->__get_validation_status($label, $sequence, $valid_code, $data1, $data2);
+  }
+
+  function get_validation_label($sequence, $label)
+  {
+    $ret = $label;
+
+    $label_id = $label['label_id'];
+
+    $field1 = null;
+    $field2 = null;
+
+    $fields = $this->__get_data_fields($label['type']);
+    if(is_array($fields)) {
+      $field1 = $fields[0];
+      $field2 = $fields[1];
+    } else {
+      $field1 = $fields;
+    }
+
+    $data1 = $label[$field1];
+    $data2 = null;
+    if($field2) {
+      $data2 = $label[$field2];
+    }
+
+    $ret['status'] = $this->get_validation_status($label_id, $sequence, $data1, $data2);
+
+    return $ret;
+  }
+
+  function get_validation_labels($id)
+  {
+    $sequence_model = $this->load_model('sequence_model');
+    $sequence = $sequence_model->get($id);
+
+    $labels = $this->get_sequence($id);
+
+    $ret = array();
+
+    foreach($labels as $label) {
+      $ret[] = $this->get_validation_label($sequence, $label);
+    }
+
+    return $ret;
+  }
+
   function label_used_up($seq, $label)
   {
     $this->db
