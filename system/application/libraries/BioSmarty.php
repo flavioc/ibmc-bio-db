@@ -90,6 +90,12 @@ function smarty_function_form_open($params, &$smarty)
     $to = '#';
   }
 
+  $method = $params['method'];
+  if(!$method) {
+    $method = 'post';
+  }
+  $data['method'] = $method;
+
   if($multipart) {
     return form_open_multipart($to, $data, '');
   } else {
@@ -408,6 +414,35 @@ function smarty_function_form_row($params, &$smarty)
   return $ret;
 }
 
+function smarty_function_button($params, &$smarty)
+{
+  $name = $params['name'];
+  $method = $params['method'];
+
+  if(!$method) {
+    $method = 'get';
+  }
+
+  $form_name = "form_$name";
+
+  $form_open_params = array(
+    'name' => $form_name,
+    'to' => $params['to'],
+    'method' => $method,
+  );
+
+  $form_submit_params = array(
+    'name' => $name,
+    'msg' => $params['msg'],
+  );
+
+  $form_end_params = array();
+
+  return smarty_function_form_open($form_open_params, &$smarty) .
+    smarty_function_form_submit($form_submit_params, &$smarty) .
+    smarty_function_form_end($form_end_params, &$smarty);
+}
+
 function smarty_function_assign_id($params, &$smarty)
 {
   $var = $params['var'];
@@ -537,6 +572,7 @@ class BioSmarty extends Smarty
     $this->register_function('form_select', 'smarty_function_form_select');
     $this->register_function('form_hidden', 'smarty_function_form_hidden');
     $this->register_function('form_row', 'smarty_function_form_row');
+    $this->register_function('button', 'smarty_function_button');
     $this->register_function('anchor', 'smarty_function_anchor');
     $this->register_function('top_dir', 'smarty_function_top_dir');
     $this->register_function('site', 'smarty_function_site');
