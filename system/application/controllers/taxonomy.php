@@ -155,7 +155,7 @@ class Taxonomy extends BioController {
   function edit_name()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -180,7 +180,7 @@ class Taxonomy extends BioController {
   function edit_rank()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -198,7 +198,7 @@ class Taxonomy extends BioController {
     $this->load->model('taxonomy_rank_model');
 
     if($value == null) {
-      echo "---";
+      $this->return_empty();
     } else {
       echo $this->taxonomy_rank_model->get_name($value);
     }
@@ -207,7 +207,7 @@ class Taxonomy extends BioController {
   function edit_tree()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -226,7 +226,7 @@ class Taxonomy extends BioController {
 
 
     if($value == null) {
-      echo "---";
+      $this->return_empty();
     } else {
       echo $this->taxonomy_tree_model->get_name($value);
     }
@@ -235,18 +235,18 @@ class Taxonomy extends BioController {
   function get_taxonomy($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $this->load->model('taxonomy_model');
 
-    echo json_encode($this->taxonomy_model->get($id));
+    $this->json_return($this->taxonomy_model->get($id));
   }
 
   function taxonomy_childs($tax, $tree)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $this->load->model('taxonomy_model');
@@ -262,13 +262,13 @@ class Taxonomy extends BioController {
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
 
-    echo json_encode($this->taxonomy_model->get_taxonomy_childs($tax, $tree, $start, $size));
+    $this->json_return($this->taxonomy_model->get_taxonomy_childs($tax, $tree, $start, $size));
   }
 
   function total_taxonomy_childs($tax, $tree)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_zero();
     }
 
     $this->load->model('taxonomy_model');
@@ -281,13 +281,13 @@ class Taxonomy extends BioController {
       $tax = NULL;
     }
 
-    echo json_encode($this->taxonomy_model->count_taxonomy_childs($tax, $tree));
+    $this->json_return($this->taxonomy_model->count_taxonomy_childs($tax, $tree));
   }
 
   function tree_browse()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->use_paging_size();
@@ -305,7 +305,7 @@ class Taxonomy extends BioController {
   function _browse($title)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->use_paging_size();
@@ -347,7 +347,7 @@ class Taxonomy extends BioController {
   function search()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $name = $this->get_parameter('name');
@@ -368,13 +368,13 @@ class Taxonomy extends BioController {
 
     $result = $this->taxonomy_model->search($name, $rank, $tree, $start, $size);
 
-    echo json_encode($result);
+    $this->json_return($result);
   }
 
   function search_total()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_zero();
     }
 
     $name = $this->get_parameter('name');
@@ -397,7 +397,7 @@ class Taxonomy extends BioController {
   function search_autocomplete()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_nothing();
     }
 
     $what = $this->get_parameter('q');
@@ -429,21 +429,10 @@ class Taxonomy extends BioController {
     $this->taxonomy_model->delete($id);
   }
 
-  function delete($id)
-  {
-    if(!$this->logged_in) {
-      return;
-    }
-
-    $this->_delete($id);
-
-    echo build_ok();
-  }
-
   function delete_redirect($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->_delete($id);
@@ -454,7 +443,7 @@ class Taxonomy extends BioController {
   function set_parent($tax_id, $parent_id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->load->model('taxonomy_model');
