@@ -20,7 +20,7 @@ class Sequence extends BioController
   function browse()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Browse sequences');
@@ -34,28 +34,28 @@ class Sequence extends BioController
   function get_all()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
 
-    echo json_encode($this->sequence_model->get_all($start, $size));
+    $this->json_return($this->sequence_model->get_all($start, $size));
   }
 
   function get_total()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_zero();
     }
 
-    echo json_encode($this->sequence_model->get_total());
+    $this->json_return($this->sequence_model->get_total());
   }
 
   function view($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'View sequence');
@@ -95,7 +95,7 @@ class Sequence extends BioController
   function do_add()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $errors = false;
@@ -136,7 +136,7 @@ class Sequence extends BioController
   function download($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     echo $this->sequence_model->get_content($id);
@@ -145,7 +145,7 @@ class Sequence extends BioController
   function delete($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->sequence_model->delete($id);
@@ -156,7 +156,7 @@ class Sequence extends BioController
   function edit_name()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -179,7 +179,7 @@ class Sequence extends BioController
   function edit_accession()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -195,7 +195,7 @@ class Sequence extends BioController
   function edit_content()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -207,13 +207,4 @@ class Sequence extends BioController
 
     echo $value;
   }
-
-  function regenerate($seq)
-  {
-    $this->load->model('label_sequence_model');
-
-    $this->sequence_model->edit_content($seq, 'ABDAD');
-//    $this->label_sequence_model->regenerate_labels($seq);
-  }
-
 }
