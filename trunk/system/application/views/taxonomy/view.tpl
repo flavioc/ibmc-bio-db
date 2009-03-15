@@ -48,7 +48,7 @@ $(document).ready(function() {
   <p><span class="desc">Name: </span><span id="taxname" class="writeable">{$taxonomy.name}</span></p>
   <p><span class="desc">Rank: </span><span id="taxrank" class="writeable">{if $taxonomy.rank_name}{$taxonomy.rank_name}{else}---{/if}</span></p>
   <p><span class="desc">Tree: </span><span id="taxtree" class="writeable">{if $taxonomy.tree_name}{$taxonomy.tree_name}{else}---{/if}</span></p>
-  <p><span class="desc"><a id="set_parent">Parent:</a> </span>
+  <p><span class="desc"><span class="clickable"><a href="#" id="set_parent">Parent:</a></span> </span>
   {if $parent}
     <a href="{site}/taxonomy/view/{$parent.id}">{$parent.name}</a>
   {else}
@@ -58,9 +58,14 @@ $(document).ready(function() {
 {include file="history/form_view.tpl" data=$taxonomy}
 </div>
 
-{assign var=tax_id value=$taxonomy.id}
-{form_open name=form_delete to="taxonomy/delete_redirect/$tax_id"}
+{form_open name=form_delete to="taxonomy/delete_redirect"}
+{form_hidden name=id value=$taxonomy.id}
 {form_submit name=submit_delete msg=Delete}
+{form_end}
+
+{form_open name=form_add_child to="taxonomy/add" method="get"}
+{form_hidden name="parent_id" value=$taxonomy.id}
+{form_submit name=submit_add_child msg="Add child"}
 {form_end}
 
 <h3>Other names</h3>
@@ -72,7 +77,7 @@ $(document).ready(function() {
 <script>
 {literal}
   $(document).ready(function() {
-    var tax_id = {/literal}{$taxonomy.id}{literal};
+    var tax_id = taxonomy.id;
     var base_site = get_app_url() +"/taxonomy_name/";
 
     $('#other_names')
