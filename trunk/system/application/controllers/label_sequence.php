@@ -7,6 +7,7 @@ class Label_Sequence extends BioController {
   private static $label_invalid_url_type = "This label has invalid url type";
   private static $label_invalid_integer_type = "This label has invalid integer type";
   private static $label_invalid_obj_type = "This label has invalid object type";
+  private static $label_invalid_position_type = "This label has invalid position type";
 
   function Label_Sequence()
   {
@@ -125,6 +126,9 @@ class Label_Sequence extends BioController {
           break;
         case 'bool':
           $this->smarty->view_s('new_label/bool');
+          break;
+        case 'position':
+          $this->smarty->view_s('new_label/position');
           break;
       }
     } else {
@@ -285,6 +289,43 @@ class Label_Sequence extends BioController {
         }
       } else {
         $ret = $this->upload->display_errors('', '');;
+      }
+    }
+
+    echo json_encode($ret);
+  }
+
+  function add_position_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $start = $this->get_post('start');
+    $length = $this->get_post('length');
+    $generate = $this->__get_generate();
+
+    $ret = null;
+
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      $ret = self::$label_used_error;
+    } else {
+      if($generate) {
+        if($this->label_sequence_model->add_generated_position_label($seq_id, $label_id)) {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_position_type;
+        }
+      } else {
+        if($this->label_sequence_model->add_position_label($seq_id, $label_id,
+          intval($start), intval($length)))
+        {
+          $ret = true;
+        } else {
+          $ret = self::$label_invalid_position_type;
+        }
       }
     }
 
