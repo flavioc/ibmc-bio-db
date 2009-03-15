@@ -48,7 +48,9 @@ function enable_error_messages()
 
 function add_new_error_message(msg)
 {
-  $("#content").prepend("<div class=\"error_msg\"><img src=\"../images/error.png\"></img>" + msg + "<a class=\"hide_box\" href=\"#\">Hide</a></div>");
+  image_url = get_images_url();
+  $("#content").prepend("<div class=\"error_msg\"><img src=\"" + image_url +
+      "/error.png\"></img>" + msg + "<a class=\"hide_box\" href=\"#\">Hide</a></div>");
   enable_error_messages();
 }
 
