@@ -226,6 +226,6 @@ body>div#content hr {
   background-color: #BBB;
 }
 
-span.minus_text, span.plus_text {
+span.minus_text, span.plus_text, span.clickable, a.clickable {
   text-decoration: underline;
 }
