@@ -45,6 +45,11 @@ class Taxonomy_model extends BioModel
     return $this->get_field($id, 'rank_id');
   }
 
+  function get_tree($id)
+  {
+    return $this->get_field($id, 'tree_id');
+  }
+
   function edit_name($id, $name)
   {
     $this->db->trans_start();
