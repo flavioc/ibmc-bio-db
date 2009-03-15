@@ -17,10 +17,16 @@ $(document).ready(function () {
     fields: ['name', 'type', 'accession', 'update', 'user_name'],
     links: {
       name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
+        return '#';
+//        return get_app_url() + '/sequence/view/' + row.id;
       },
       user_name: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;
+      }
+    },
+    clickFun: {
+      name: function (row) {
+        alert("clicked " + row.name);
       }
     }
   });
