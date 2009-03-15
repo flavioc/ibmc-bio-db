@@ -8,7 +8,7 @@ class Label_model extends BioModel
 
   function __select()
   {
-    $this->db->select('label_id AS id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, deletable, editable, multiple, update_user_id, update, user_name, comment');
+    $this->db->select('label_id AS id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment');
   }
 
   function get($id)
@@ -57,7 +57,8 @@ class Label_model extends BioModel
   function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
-    $default, $code, $comment)
+    $default, $code,
+    $valid_code, $comment)
   {
     $data = array(
       'name' => $name,
@@ -71,6 +72,7 @@ class Label_model extends BioModel
       'multiple' => $multiple,
       'default' => $default,
       'code' => $code,
+      'valid_code' => $valid_code,
       'comment' => $comment,
     );
 
@@ -80,7 +82,8 @@ class Label_model extends BioModel
   function edit($id, $name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
-    $default, $code, $comment)
+    $default, $code,
+    $valid_code, $comment)
   {
     $data = array(
       'name' => $name,
@@ -94,6 +97,7 @@ class Label_model extends BioModel
       'multiple' => $multiple,
       'default' => $default,
       'code' => $code,
+      'valid_code' => $valid_code,
       'comment' => $comment,
     );
 
