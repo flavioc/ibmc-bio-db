@@ -229,3 +229,11 @@ body>div#content hr {
 span.minus_text, span.plus_text, span.clickable, a.clickable {
   text-decoration: underline;
 }
+
+span.label_valid {
+  color: rgb(19, 119, 61);
+}
+
+span.label_invalid {
+  color: rgb(110, 0, 0);
+}
