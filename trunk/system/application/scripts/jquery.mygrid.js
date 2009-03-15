@@ -488,6 +488,7 @@ $.fn.grid = function(options) {
     $this = $(this);
 
     this.opts = opts;
+    this.highlight = null;
     $this.show();
 
     var url_total = opts.url + '/' + opts.total;
@@ -523,6 +524,33 @@ $.fn.grid = function(options) {
     }
   });
 }
+
+function do_highlight(obj)
+{
+  $('td', obj).addClass('highlight');
+}
+
+function disable_highlight(obj)
+{
+  $('td', obj).removeClass('highlight');
+}
+
+$.fn.gridHighLight = function (row_id) {
+  return this.each(function() {
+    $this = $(this);
+    var old = this.highlight;
+
+    if(old) {
+      disable_highlight($(old));
+    }
+
+    var row = '#row_' + this.id + '_' + row_id;
+
+    do_highlight($(row));
+
+    this.highlight = row;
+  });
+};
 
 $.fn.gridEnable = function(options) {
   var opts = $.extend({}, $.fn.gridEnable.defaults, options);
