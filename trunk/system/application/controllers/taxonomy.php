@@ -121,11 +121,24 @@ class Taxonomy extends BioController {
     }
   }
 
+  function select_parent($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_thickbox();
+    }
+
+    $this->__assign_search_components();
+    $this->use_paging_size();
+    $this->smarty->assign('taxonomy', $id);
+    $this->smarty->view_s('taxonomy/select_parent');
+  }
+
   function view($id)
   {
     $this->smarty->assign('title', 'View taxonomy');
-    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'taxonomy_functions.js', AUTOCOMPLETE_SCRIPT);
     $this->use_mygrid();
+    $this->use_thickbox();
 
     $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_name_model');
@@ -316,6 +329,13 @@ class Taxonomy extends BioController {
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'taxonomy_functions.js');
     $this->use_mygrid();
 
+    $this->__assign_search_components();
+
+    $this->smarty->view('taxonomy/browse');
+  }
+
+  function __assign_search_components()
+  {
     $this->load->model('taxonomy_rank_model');
     $ranks = $this->taxonomy_rank_model->get_ranks();
 
@@ -324,8 +344,6 @@ class Taxonomy extends BioController {
 
     $this->smarty->assign('ranks', $ranks);
     $this->smarty->assign('trees', $trees);
-
-    $this->smarty->view('taxonomy/browse');
   }
 
   function search()
@@ -424,11 +442,14 @@ class Taxonomy extends BioController {
     redirect('taxonomy/browse');
   }
 
-  function set_parent($tax_id, $parent_id)
+  function set_parent()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
+
+    $tax_id = $this->get_post('tax_id');
+    $parent_id = $this->get_post('hidden_tax');
 
     $this->load->model('taxonomy_model');
     $this->taxonomy_model->edit_parent($tax_id, $parent_id);
