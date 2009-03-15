@@ -551,6 +551,31 @@ function smarty_function_random($params, &$smarty)
   return $random_number;
 }
 
+function findexts ($filename)
+{
+  $exts = split("[/\\.]", $filename) ;
+  $n = count($exts)-1;
+
+  if($n == 0) {
+    return null;
+  }
+
+  return $exts[$n];
+} 
+
+function smarty_function_include_js($params, &$smarty)
+{
+  $top_dir = smarty_function_top_dir(array(), &$smarty);
+  $name = $params['name'];
+  $random = smarty_function_random(array(), &$smarty);
+  $ext = findexts($name);
+  if($ext == null) {
+    $name = "$name.js";
+  }
+
+  return "<script type=\"text/javascript\" src=\"$top_dir/scripts/$name?random=$random\"></script>";
+}
+
 class BioSmarty extends Smarty
 {
   var $controller;
@@ -583,6 +608,7 @@ class BioSmarty extends Smarty
     $this->register_function('loader_pic', 'smarty_function_loader_pic');
     $this->register_function('boolean', 'smarty_function_boolean');
     $this->register_function('random', 'smarty_function_random');
+    $this->register_function('include_js', 'smarty_function_include_js');
 
 		$config =& get_config();
 		
