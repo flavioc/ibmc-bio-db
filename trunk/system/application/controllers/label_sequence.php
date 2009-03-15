@@ -9,6 +9,7 @@ class Label_Sequence extends BioController {
   private static $label_invalid_obj_type = "This label has invalid object type";
   private static $label_invalid_position_type = "This label has invalid position type";
   private static $label_invalid_ref_type = "This label has invalid ref type";
+  private static $label_invalid_tax_type = "This label has invalid tax type";
 
   function Label_Sequence()
   {
@@ -133,6 +134,9 @@ class Label_Sequence extends BioController {
           break;
         case 'ref':
           $this->smarty->view_s('new_label/ref');
+          break;
+        case 'tax':
+          $this->smarty->view_s('new_label/tax');
           break;
       }
     } else {
@@ -341,6 +345,48 @@ class Label_Sequence extends BioController {
     $this->json_return($this->__add_position_label($seq_id, $label_id, $start, $length, $generate));
   }
 
+  function add_tax_label()
+  {
+    if(!$this->logged_in) {
+      return;
+    }
+
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    $tax = $this->get_post('tax');
+    $generate = $this->__get_generate();
+
+    $this->json_return($this->__add_tax_label($seq_id, $label_id, $tax, $generate));
+  }
+
+  function __add_tax_label($seq_id, $label_id, $tax, $generate)
+  {
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return self::$label_used_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->add_generated_tax_label($seq_id, $label_id)) {
+        return true;
+      }
+
+      return self::$label_invalid_tax_type;
+    }
+
+    $tax = intval($tax);
+
+    $this->load->model('taxonomy_model');
+    if(!$this->taxonomy_model->has_taxonomy($tax)) {
+      return "Taxonomy doesn't exist.";
+    }
+
+    if($this->label_sequence_model->add_tax_label($seq_id, $label_id, $tax)) {
+      return true;
+    }
+
+    return self::$label_invalid_tax_label;
+  }
+
   function __add_ref_label($seq_id, $label_id, $ref, $generate)
   {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
@@ -350,9 +396,9 @@ class Label_Sequence extends BioController {
     if($generate) {
       if($this->label_sequence_model->add_generated_ref_label($seq_id, $label_id)) {
         return true;
-      } else {
-        return self::$label_invalid_ref_type;
       }
+
+      return self::$label_invalid_ref_type;
     }
 
     $ref = intval($ref);
@@ -363,9 +409,9 @@ class Label_Sequence extends BioController {
 
     if($this->label_sequence_model->add_ref_label($seq_id, $label_id, $ref)) {
       return true;
-    } else {
-      return self::$label_invalid_ref_label;
     }
+
+    return self::$label_invalid_ref_label;
   }
 
   function add_ref_label()

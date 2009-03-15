@@ -30,6 +30,11 @@ class Taxonomy_model extends BioModel
     return $this->get_id($id, 'taxonomy_info_history');
   }
 
+  function has_taxonomy($id)
+  {
+    return $this->has_id($id);
+  }
+
   function get_name($id)
   {
     return $this->get_field($id, 'name');
