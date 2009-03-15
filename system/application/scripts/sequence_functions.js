@@ -5,68 +5,8 @@ var seqdata = {seq: seq_id};
 var missing_loaded = false;
 var addable_loaded = false;
 var labels_loaded = false;
-
-function reload_labels_list()
-{
-  labels_loaded = true;
-
-  $('#labels_list')
-  .grid({
-    url: get_app_url() + '/label_sequence',
-    retrieve: 'get_labels/' + seq_id,
-    fieldNames: ['Name', 'Data', 'Subname', 'Type'],
-    fieldGenerator: function (row) {
-      var field_to_add = 'data';
-
-      if(row) {
-        switch(row.type) {
-          case 'integer':
-            field_to_add = 'int_data';
-            break;
-          case 'text':
-            field_to_add = 'text_data';
-            break;
-          case 'url':
-            field_to_add = 'url_data';
-            break;
-          case 'ref':
-            field_to_add = 'ref_data';
-            break;
-          case 'tax':
-            field_to_add = 'taxonomy_data';
-            break;
-          case 'position':
-            field_to_add = 'position_a_data';
-            break;
-          case 'obj':
-            field_to_add = 'obj_data';
-            break;
-          case 'bool':
-            field_to_add = 'bool_data';
-            break;
-        }
-      }
-
-      return ['name', field_to_add, 'subname', 'type'];
-    },
-    links: {
-      name: function (row) {
-        return get_app_url() + '/label/view/' + row.label_id;
-      },
-      url_data: function (row) {
-        return row.url_data;
-      },
-      ref_data: function (row) {
-        return get_app_url() + '/sequence/view/' + row.ref_data;
-      },
-      taxonomy_data: function (row) {
-        return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
-      },
-      obj_data: function (row) {
-        return get_app_url() + '/label_sequence/download_label/' + row.id;
-      }
-    },
-    dataTransform: {
+var validation_loaded = false;
+var data_transform_labels = {
       subname: function (row) {
         if(row.subname == null) {
           return null;
@@ -86,7 +26,75 @@ function reload_labels_list()
       obj_data: function (row) {
         return row.text_data;
       }
+  };
+var link_labels = {
+      name: function (row) {
+        return get_app_url() + '/label/view/' + row.label_id;
+      },
+      url_data: function (row) {
+        return row.url_data;
+      },
+      ref_data: function (row) {
+        return get_app_url() + '/sequence/view/' + row.ref_data;
+      },
+      taxonomy_data: function (row) {
+        return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
+      },
+      obj_data: function (row) {
+        return get_app_url() + '/label_sequence/download_label/' + row.id;
+      }
+    };
+
+function select_field(row)
+{
+  var field_to_add = 'data';
+
+  if(row) {
+    switch(row.type) {
+      case 'integer':
+        field_to_add = 'int_data';
+        break;
+      case 'text':
+        field_to_add = 'text_data';
+        break;
+      case 'url':
+        field_to_add = 'url_data';
+        break;
+      case 'ref':
+        field_to_add = 'ref_data';
+        break;
+      case 'tax':
+        field_to_add = 'taxonomy_data';
+        break;
+      case 'position':
+        field_to_add = 'position_a_data';
+        break;
+      case 'obj':
+        field_to_add = 'obj_data';
+        break;
+      case 'bool':
+        field_to_add = 'bool_data';
+        break;
+    }
+  }
+
+  return field_to_add;
+}
+
+function reload_labels_list()
+{
+  labels_loaded = true;
+
+  $('#labels_list')
+  .grid({
+    url: get_app_url() + '/label_sequence',
+    retrieve: 'get_labels/' + seq_id,
+    fieldNames: ['Name', 'Data', 'Subname', 'Type'],
+    fieldGenerator: function (row) {
+      return ['name', select_field(row), 'subname', 'type'];
     },
+    links: link_labels,
+    dataTransform: data_transform_labels,
     editables: {
       subname: {
         select: true,
@@ -215,6 +223,48 @@ function load_addable_list()
   }
 
   $('#addable_box').fadeIn('slow');
+}
+
+function reload_validation_list()
+{
+  validation_loaded = true;
+
+  $('#validation_list')
+  .grid({
+    url: get_app_url() + '/label_sequence',
+    retrieve: 'get_validation_labels/' + seq_id,
+    fieldNames: ['Name', 'Data', 'Type', 'Status'],
+    fieldGenerator: function (row) {
+      return ['name', select_field(row), 'type', 'status'];
+    },
+    dataTransform: data_transform_labels,
+    classFun: {
+      status: function (row) {
+        if(row.status == 'no validation') {
+          return 'label_no_validation';
+        } else if(row.status == 'invalid') {
+          return 'label_invalid';
+        } else if(row.status == 'valid') {
+          return 'label_valid';
+        }
+      }
+    },
+    links: link_labels
+  });
+}
+
+function hide_validation_list()
+{
+  $('#validation_box').fadeOut('slow');
+}
+
+function load_validation_list()
+{
+  if(!validation_loaded) {
+    reload_validation_list();
+  }
+
+  $('#validation_box').fadeIn('slow');
 }
 
 function generate_disabled()
