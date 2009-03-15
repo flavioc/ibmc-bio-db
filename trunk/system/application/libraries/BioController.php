@@ -148,6 +148,7 @@ class BioController extends Controller
 
   function invalid_permission()
   {
-    redirect('welcome/index');
+    $url = uri_string();
+    redirect("welcome/index?redirect=$url");
   }
 }

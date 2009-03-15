@@ -73,7 +73,11 @@
 
   {else}
 
-  {form_open to='welcome/login' name=login_form}
+{form_open to='welcome/login' name=login_form}
+
+{if $redirect}
+{form_hidden name=redirect value=$redirect}
+{/if}
 
 <script>
 {literal}

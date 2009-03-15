@@ -16,8 +16,15 @@ class Welcome extends BioController {
       $this->smarty->load_scripts(VALIDATE_SCRIPT);
       $this->smarty->fetch_form_row('login_username');
       $this->smarty->fetch_form_row('login_password');
+
+      $redirect = $this->get_parameter('redirect');
+
+      if($redirect) {
+        $this->smarty->assign('redirect', $redirect);
+      }
     } else {
       $userdata = $this->user_model->get_user_by_id($this->user_id);
+
       $this->smarty->assign('complete_name', $userdata['complete_name']);
       $this->smarty->assign('email', $userdata['email']);
       $this->smarty->assign('birthday', $userdata['birthday']);
@@ -44,13 +51,15 @@ class Welcome extends BioController {
     if($this->form_validation->run() == false) {
       $this->assign_row_data('login_username');
       $this->assign_row_data('login_password', false);
-      redirect('');
+      redirect('welcome/index');
     } else {
       $username = $this->get_post('login_username');
       $password = $this->get_post('login_password');
+
       if($this->user_model->validate($username, $password)) {
         // everything's fine.
         $this->do_login($username);
+        redirect($this->get_post('redirect'));
       } else {
         $this->set_form_value('login_username');
         if($this->user_model->user_exists($username)) {
@@ -58,9 +67,9 @@ class Welcome extends BioController {
         } else {
           $this->set_form_error('login_username', 'User does not exist.');
         }
-      }
 
-      redirect('');
+        redirect('');
+      }
     }
   }
 
