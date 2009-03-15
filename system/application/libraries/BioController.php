@@ -146,11 +146,21 @@ class BioController extends Controller
     echo "---";
   }
 
-  function invalid_permission()
+  function invalid_permission($msg = null)
   {
     $url = uri_string();
-    $this->set_error_message("Invalid permission to access $url");
+
+    if(!$msg) {
+      $msg = "Invalid permission to access";
+    }
+
+    $this->set_error_message("$url: $msg");
     redirect("welcome/index?redirect=$url");
+  }
+
+  function invalid_permission_admin()
+  {
+    return $this->invalid_permission("Please login as admin");
   }
 
   function invalid_json_permission($val)
