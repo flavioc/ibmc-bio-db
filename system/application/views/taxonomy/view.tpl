@@ -1,11 +1,12 @@
 <h2>View/Edit taxonomy</h2>
 
-
 <script>
+{to_js var=taxonomy value=$taxonomy}
+
 {literal}
 $(document).ready(function() {
-  var base_site = "{/literal}{site}{literal}/taxonomy/";
-  var tax_id = "{/literal}{$taxonomy.id}{literal}";
+  var base_site = get_app_url() + "/taxonomy/";
+  var tax_id = taxonomy.id;
   var taxdata = {tax: tax_id};
 
   $('#taxname').editable(base_site + 'edit_name', {
@@ -35,6 +36,11 @@ $(document).ready(function() {
     submitdata: taxdata
   });
 
+  $('#set_parent').click(function () {
+    tb_show('Select parent',
+      base_site + 'select_parent/' + taxonomy.id);
+  });
+
 });
 {/literal}
 </script>
@@ -42,7 +48,7 @@ $(document).ready(function() {
   <p><span class="desc">Name: </span><span id="taxname" class="writeable">{$taxonomy.name}</span></p>
   <p><span class="desc">Rank: </span><span id="taxrank" class="writeable">{if $taxonomy.rank_name}{$taxonomy.rank_name}{else}---{/if}</span></p>
   <p><span class="desc">Tree: </span><span id="taxtree" class="writeable">{if $taxonomy.tree_name}{$taxonomy.tree_name}{else}---{/if}</span></p>
-  <p><span class="desc"><a href="{site}/taxonomy/browse_parent/{$taxonomy.id}">Parent:</a> </span>
+  <p><span class="desc"><a id="set_parent">Parent:</a> </span>
   {if $parent}
     <a href="{site}/taxonomy/view/{$parent.id}">{$parent.name}</a>
   {else}
