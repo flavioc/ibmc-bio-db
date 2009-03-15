@@ -17,11 +17,34 @@ class Label_model extends BioModel
     return $this->get_id($id, 'label_info_history', 'label_id');
   }
 
-  function get_all()
+  function get_all($name = null, $start = null, $size = null)
   {
     $this->db->order_by('name');
     $this->__select();
+
+    if($name != null) {
+      $this->db->like('name', "%$name%");
+    }
+
+    if($size != null) {
+      if(!$start) {
+        $start = 0;
+      }
+      $this->db->limit($size, $start);
+    }
+
     return parent::get_all('label_info_history');
+  }
+
+  function get_total($name = null)
+  {
+    $this->db->select('id');
+
+    if($name) {
+      $this->db->like('name', "%$name%");
+    }
+
+    return parent::count_total();
   }
 
   function count_names($name)
