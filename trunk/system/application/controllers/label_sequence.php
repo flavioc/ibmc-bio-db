@@ -22,40 +22,40 @@ class Label_Sequence extends BioController {
   function get_labels($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $labels = $this->label_sequence_model->get_sequence($id);
 
-    echo json_encode($labels);
+    $this->json_return($labels);
   }
 
   function get_missing_labels($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $data = $this->label_sequence_model->get_missing_obligatory($id);
 
-    echo json_encode($data);
+    $this->json_return($data);
   }
 
   function get_addable_labels($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $data = $this->label_sequence_model->get_addable_labels($id);
 
-    echo json_encode($data);
+    $this->json_return($data);
   }
 
   function download_label($id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $label = $this->label_sequence_model->get_id($id);
@@ -70,7 +70,7 @@ class Label_Sequence extends BioController {
 
   function edit_subname() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -84,18 +84,19 @@ class Label_Sequence extends BioController {
     echo $value;
   }
 
-  function delete_label($id) {
+  function delete_label($id)
+  {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
-    echo json_encode($this->label_sequence_model->delete($id));
+    $this->json_return($this->label_sequence_model->delete($id));
   }
 
   function add_label($seq_id, $label_id)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_thickbox();
     }
 
     $label = $this->label_model->get($label_id);
@@ -175,7 +176,7 @@ class Label_Sequence extends BioController {
   function add_text_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -210,7 +211,7 @@ class Label_Sequence extends BioController {
   function add_bool_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -247,7 +248,7 @@ class Label_Sequence extends BioController {
   function add_integer_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -297,7 +298,7 @@ class Label_Sequence extends BioController {
   function add_obj_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -333,7 +334,7 @@ class Label_Sequence extends BioController {
   function add_position_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -348,7 +349,7 @@ class Label_Sequence extends BioController {
   function add_tax_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -417,7 +418,7 @@ class Label_Sequence extends BioController {
   function add_ref_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -452,7 +453,7 @@ class Label_Sequence extends BioController {
   function add_url_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
@@ -476,7 +477,7 @@ class Label_Sequence extends BioController {
   function add_auto_label()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $seq_id = $this->get_post('seq_id');
