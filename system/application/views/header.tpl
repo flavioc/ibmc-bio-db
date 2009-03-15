@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="{top_dir}/scripts/jquery.js"></script>
-<script type="text/javascript" src="{top_dir}/scripts/custom-jquery.js"></script>
-<script type="text/javascript" src="{top_dir}/scripts/functions.js"></script>
+{include_js name=jquery}
+{include_js name=functions}
+{include_js name=custom-jquery}
 {foreach from=$scripts item=script}
-<script type="text/javascript" src="{top_dir}/scripts/{$script}?random={random}"></script>
+  {include_js name=$script}
 {/foreach}
 {foreach from=$stylesheets item=stylesheet}
 <link rel="stylesheet" href="{top_dir}/styles/{$stylesheet}" type="text/css" media="screen" />
