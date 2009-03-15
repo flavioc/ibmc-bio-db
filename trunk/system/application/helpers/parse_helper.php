@@ -9,16 +9,6 @@ function parse_id($str)
   return $id;
 }
 
-function build_ok_id($id)
-{
-  return "ok_$id";
-}
-
-function build_ok()
-{
-  return "ok";
-}
-
 function parse_yes($yes)
 {
   return $yes == 'yes' ? TRUE : FALSE;
