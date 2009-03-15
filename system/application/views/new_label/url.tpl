@@ -15,3 +15,18 @@
 
 {form_submit name=submit msg='Add label'}
 {form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+
+  $("#form_add_label").validate({
+    rules: {
+      url: {
+        required: generate_disabled
+      }
+    }
+  });
+});
+</script>
+{/literal}
