@@ -92,6 +92,11 @@ class Taxonomy_rank_model extends BioModel
     return $this->get_field($id, 'name');
   }
 
+  function get_parent($id)
+  {
+    return $this->get_field($id, 'parent_id');
+  }
+
   function has_name($name)
   {
     return $this->has_field('name', $name);
