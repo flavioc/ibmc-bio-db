@@ -9,7 +9,7 @@ class Tree extends BioController {
 
   function index() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Edit trees');
@@ -21,54 +21,54 @@ class Tree extends BioController {
 
   function get_all() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $trees = $this->taxonomy_tree_model->get_trees();
 
-    echo json_encode($trees);
+    $this->json_return($trees);
   }
 
   function add($name) {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     if($this->taxonomy_tree_model->has_name($name)) {
-      echo json_encode(null);
+      $this->json_return(false);
     } else {
       $id = $this->taxonomy_tree_model->add($name);
       $data = $this->taxonomy_tree_model->get($id);
 
-      echo json_encode($data);
+      $this->json_return($data);
     }
   }
 
   function total_taxonomies($tree)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_zero();
     }
 
     $this->load->model('taxonomy_model');
     $total = $this->taxonomy_model->count_tree($tree);
 
-    echo $total;
+    $this->json_return($total);
   }
 
   function delete($id) {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $this->taxonomy_tree_model->delete_id($id);
 
-    echo json_encode(true);
+    $this->json_return(true);
   }
 
   function edit_name() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
