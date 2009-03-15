@@ -286,6 +286,29 @@ class Label_sequence_model extends BioModel
     return $this->add_generated_label($seq_id, $label_id, 'obj');
   }
 
+  function __is_position($label)
+  {
+    return $label['type'] == 'position';
+  }
+
+  function add_position_label($seq_id, $label_id, $start, $length)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($this->__is_position($label) && $label['editable']) {
+      $this->add($seq_id, $label_id, 'position', null, $start, $length);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function add_generated_position_label($seq_id, $label_id)
+  {
+    return $this->add_generated_label($seq_id, $label_id, 'position');
+  }
+
   function get_labels_to_auto_modify($seq)
   {
     $this->db->where('auto_on_modification', true);
