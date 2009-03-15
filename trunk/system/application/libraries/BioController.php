@@ -184,6 +184,11 @@ class BioController extends Controller
     return $this->invalid_json_permission(false);
   }
 
+  function invalid_permission_zero()
+  {
+    return $this->invalid_json_permission(0);
+  }
+
   function invalid_permission_thickbox()
   {
     echo "Please login";
