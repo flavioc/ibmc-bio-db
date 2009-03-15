@@ -177,7 +177,7 @@ ORDER BY name";
     $this->db->from($this->table);
     $this->db->where('rank_id', $rank);
 
-    return $this->db->count_all_results();
+    return intval($this->db->count_all_results());
   }
 
   function count_tree($tree)

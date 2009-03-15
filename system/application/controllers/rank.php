@@ -13,7 +13,7 @@ class Rank extends BioController {
   function list_all()
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission();
     }
 
     $this->smarty->assign('title', 'Rank list');
@@ -103,29 +103,29 @@ class Rank extends BioController {
 
   function get_all() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_empty();
     }
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
     $ranks = $this->taxonomy_rank_model->get_ranks($size, $start);
 
-    echo json_encode($ranks);
+    $this->json_return($ranks);
   }
 
   function get_total() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_zero();
     }
 
     $total = $this->taxonomy_rank_model->get_total();
 
-    echo json_encode($total);
+    $this->json_return($total);
   }
 
   function edit_name() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -146,7 +146,7 @@ class Rank extends BioController {
 
   function edit_parent() {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_field();
     }
 
     $this->load->library('input');
@@ -179,18 +179,18 @@ class Rank extends BioController {
   function total_taxonomies($rank)
   {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_zero();
     }
 
     $this->load->model('taxonomy_model');
     $total = $this->taxonomy_model->count_rank($rank);
 
-    echo $total;
+    $this->json_return($total);
   }
 
   function delete($id) {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     $this->taxonomy_rank_model->delete_id($id);
@@ -212,15 +212,15 @@ class Rank extends BioController {
 
   function add_json($name) {
     if(!$this->logged_in) {
-      return;
+      return $this->invalid_permission_false();
     }
 
     if($this->taxonomy_rank_model->has_name($name)) {
-      echo "null";
+      $this->json_return(false);
     } else {
       $id = $this->taxonomy_rank_model->add($name);
       $data = $this->taxonomy_rank_model->get_id($id);
-      echo json_encode($data);
+      $this->json_return($data);
     }
   }
 }
