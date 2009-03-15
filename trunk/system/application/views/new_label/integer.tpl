@@ -15,3 +15,27 @@
 
 {form_submit name=submit msg='Add label'}
 {form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+
+  function number_required() {
+    var generate = $('#generate_check');
+    
+    // if generate box doesn't exist user must enter a value
+    return generate.size() == 0 ||
+      !generate.is(":checked");
+  }
+
+  $("#form_add_label").validate({
+    rules: {
+      integer: {
+        required: number_required,
+        number: true
+      }
+    }
+  });
+});
+</script>
+{/literal}
