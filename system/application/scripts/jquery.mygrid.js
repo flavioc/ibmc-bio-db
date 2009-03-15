@@ -116,6 +116,12 @@
         field_data = '---';
       }
 
+      var class_fun = opts.classFun[field_name];
+
+      if(class_fun) {
+        field_data = '<span class="' + class_fun(row) + '">' + field_data + '</span>';
+      }
+
       if(opts.clickFun[field_name]) {
         var className = "field_" + id + '_' + field_name;
 
@@ -615,7 +621,8 @@ $.fn.grid.defaults = {
   idField: 'id',
   clickFun: {},
   hiddenFields: [],
-  writeableClass: 'writeable'
+  writeableClass: 'writeable',
+  classFun: {}
 }
 
 $.fn.gridEnable.defaults = {
