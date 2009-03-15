@@ -194,4 +194,9 @@ class BioController extends Controller
     echo "Please login";
     return false;
   }
+
+  function invalid_permission_nothing()
+  {
+    return false;
+  }
 }
