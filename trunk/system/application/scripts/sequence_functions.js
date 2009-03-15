@@ -217,3 +217,7 @@ function load_addable_list()
   $('#addable_box').fadeIn('slow');
 }
 
+function generate_disabled()
+{
+  return !checkbox_enabled('#generate_check');
+}
