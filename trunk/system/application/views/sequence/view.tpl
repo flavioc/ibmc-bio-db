@@ -140,7 +140,6 @@ $(document).ready(function() {
 <hr />
 
 <p>
-<br />
-<a href="{site}/sequence/browse">Sequence List</a>
+{button name="browse_seq" msg="Sequence list" to="sequence/browse"}
 </p>
 

@@ -195,7 +195,19 @@ class Rank extends BioController {
 
     $this->taxonomy_rank_model->delete_id($id);
 
-    echo json_encode(true);
+    $this->json_return(true);
+  }
+
+  function delete_redirect()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $id = $this->get_post('id');
+    $this->taxonomy_rank_model->delete_id($id);
+
+    redirect('rank/list_all');
   }
 
   function add_json($name) {
