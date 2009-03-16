@@ -8,7 +8,7 @@ class Sequence_model extends BioModel
 
   function __select()
   {
-    $this->db->select('id, content, accession, type, name, update_user_id, update, user_name');
+    $this->db->select('id, content, accession, name, update_user_id, update, user_name');
   }
 
   function get_all($start = null, $size = null)
@@ -29,11 +29,11 @@ class Sequence_model extends BioModel
     return $this->count_total();
   }
 
-  function add($name, $accession, $type, $content) {
+  function add($name, $accession, $content)
+  {
     $data = array(
       'name' => $name,
       'accession' => $accession,
-      'type' => $type,
       'content' => $content,
     );
 

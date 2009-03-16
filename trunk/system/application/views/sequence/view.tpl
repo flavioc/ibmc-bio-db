@@ -97,7 +97,6 @@ $(document).ready(function() {
 
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="seqname" class="writeable">{$sequence.name}</span></p>
-  <p><span class="desc">Type: </span><span id="seqtype">{$sequence.type}</span></p>
   <p><span class="desc">Accession Number: </span><span id="seqaccession" class="writeable">{$sequence.accession}</span></p>
   <p><span class="desc">Content: </span><span class="writeable" id="seqcontent">{$sequence.content}</span></p>
 

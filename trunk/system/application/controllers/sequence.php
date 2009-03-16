@@ -7,16 +7,6 @@ class Sequence extends BioController
     $this->load->model('sequence_model');
   }
 
-  function __get_types()
-  {
-    return build_data_array(array('dna', 'protein'));
-  }
-
-  function __assign_types()
-  {
-    $this->smarty->assign('types', $this->__get_types());
-  }
-
   function browse()
   {
     if(!$this->logged_in) {
@@ -66,9 +56,8 @@ class Sequence extends BioController
     $this->use_mygrid();
     $this->use_plusminus();
 
-    $this->__assign_types();
-
-    $this->smarty->assign('sequence', $this->sequence_model->get($id));
+    $sequence = $this->sequence_model->get($id);
+    $this->smarty->assign('sequence', $sequence);
 
     $this->smarty->view('sequence/view');
   }
@@ -77,10 +66,8 @@ class Sequence extends BioController
   {
     $this->smarty->assign('title', 'Add sequence');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
-    $this->__assign_types();
 
     $this->smarty->fetch_form_row('name');
-    $this->smarty->fetch_form_row('type');
     $this->smarty->fetch_form_row('content');
     $this->smarty->fetch_form_row('accession');
 
@@ -116,17 +103,15 @@ class Sequence extends BioController
     if($errors) {
       $this->assign_row_data('name');
       $this->assign_row_data('content');
-      $this->assign_row_data('type');
       $this->assign_row_data('accession');
 
       redirect('sequence/add');
     } else {
       $name = $this->get_post('name');
       $accession = $this->get_post('accession');
-      $type = $this->get_post('type');
       $content = $this->get_post('content');
 
-      $id = $this->sequence_model->add($name, $accession, $type, $content);
+      $id = $this->sequence_model->add($name, $accession, $content);
 
       $this->_add_labels($id);
 
