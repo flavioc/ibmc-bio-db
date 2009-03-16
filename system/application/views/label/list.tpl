@@ -3,7 +3,6 @@
 {literal}
 <script>
 $(document).ready(function () {
-  var paging_size = get_paging_size();
   var base_site = get_app_url() + "/label";
   var changed = true;
 
@@ -14,7 +13,6 @@ $(document).ready(function () {
     if(changed) {
       $('#label_show').grid({
         url: base_site,
-        size: paging_size,
         retrieve: 'get_all',
         total: 'count_total',
         params: {

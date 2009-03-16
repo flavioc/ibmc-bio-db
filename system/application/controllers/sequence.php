@@ -16,7 +16,6 @@ class Sequence extends BioController
     $this->smarty->assign('title', 'Browse sequences');
 
     $this->use_mygrid();
-    $this->use_paging_size();
 
     $this->smarty->view('sequence/list');
   }

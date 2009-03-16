@@ -4,15 +4,12 @@
 <script>
 $(document).ready(function () {
 
-  var paging_size = {/literal}{$paging_size}{literal};
-
   $('#show_sequences')
   .gridEnable()
   .grid({
     url: get_app_url() + '/sequence',
     retrieve: 'get_all',
     total: 'get_total',
-    size: paging_size,
     fieldNames: ['Name', 'Last update', 'User'],
     fields: ['name', 'update', 'user_name'],
     links: {
