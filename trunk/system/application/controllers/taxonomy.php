@@ -136,7 +136,6 @@ class Taxonomy extends BioController {
     }
 
     $this->__assign_search_components();
-    $this->use_paging_size();
 
     $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_rank_model');
@@ -322,7 +321,6 @@ class Taxonomy extends BioController {
       return $this->invalid_permission();
     }
 
-    $this->use_paging_size();
     $this->smarty->assign('title', 'Browse taxonomies');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
     $this->use_mygrid();
@@ -340,7 +338,6 @@ class Taxonomy extends BioController {
       return $this->invalid_permission();
     }
 
-    $this->use_paging_size();
     $this->use_autocomplete();
 
     $this->smarty->assign('title', 'Browse taxonomies');
