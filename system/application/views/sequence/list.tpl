@@ -32,3 +32,5 @@ $(document).ready(function () {
 <p>
 <div id="show_sequences"></div>
 </p>
+
+{button name="add_seq" msg="Add new" to="sequence/add"}

@@ -77,3 +77,5 @@ $(document).ready(function () {
 <div id="label_show">
 </div>
 </p>
+
+{button name="add_label" msg="Add new" to="label/add"}
