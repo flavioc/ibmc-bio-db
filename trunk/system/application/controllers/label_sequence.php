@@ -112,7 +112,6 @@ class Label_Sequence extends BioController {
 
     $label = $this->label_model->get($label_id);
 
-    $this->use_paging_size();
     $this->smarty->assign('sequence', $this->sequence_model->get($seq_id));
     $this->smarty->assign('label', $label);
 

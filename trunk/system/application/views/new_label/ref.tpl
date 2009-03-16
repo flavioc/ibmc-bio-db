@@ -26,7 +26,7 @@
 <script>
 $(document).ready(function () {
 
-  var paging_size = {/literal}{$paging_size}{literal};
+  var paging_size = get_paging_size();
   var form = $('#form_add_label');
   var place = $('#show_sequences');
 
