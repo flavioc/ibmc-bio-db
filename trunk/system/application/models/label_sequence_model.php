@@ -8,6 +8,7 @@ class Label_sequence_model extends BioModel
 
   function get_sequence($id)
   {
+    $this->db->select('label_id, id, seq_id, subname, history_id, int_data, text_data, obj_data, ref_data, position_a_data, position_b_data, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple');
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }
