@@ -159,13 +159,27 @@ function reload_missing_list()
   .grid({
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_missing_labels/' + seq_id,
-    fieldNames: ['Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
-    fields: ['name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+    fieldNames: ['Select', 'Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+    fields: ['select', 'name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
     links: {
-      name: nameLink
+      name: nameLink,
+      select: function (row) {
+        return '#row_addable_list_' + row.id;
+      }
     },
     types: labelTypes,
-    hiddenFields: hiddenFields
+    dataTransform: {
+      select: function (row) {
+        return 'Select';
+      }
+    },
+    hiddenFields: hiddenFields,
+    clickFun: {
+      select: function (row) {
+        $('#addable_list').gridHighLight(row.id);
+        return true;
+      }
+    }
   });
 }
 
