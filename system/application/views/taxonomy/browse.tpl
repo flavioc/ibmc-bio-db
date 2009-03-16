@@ -3,9 +3,7 @@
 <script>
 {literal}
 $(document).ready(function () {
-  var paging_size = {/literal}{$paging_size}{literal};
-
-  start_tax_search_form('#show_data', paging_size, true);
+  start_tax_search_form('#show_data', get_paging_size(), true);
 });
 {/literal}
 </script>
