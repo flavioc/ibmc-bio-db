@@ -13,8 +13,8 @@ $(document).ready(function () {
     retrieve: 'get_all',
     total: 'get_total',
     size: paging_size,
-    fieldNames: ['Name', 'Accession Number', 'Last update', 'User'],
-    fields: ['name', 'accession', 'update', 'user_name'],
+    fieldNames: ['Name', 'Last update', 'User'],
+    fields: ['name', 'update', 'user_name'],
     links: {
       name: function (row) {
         return get_app_url() + '/sequence/view/' + row.id;

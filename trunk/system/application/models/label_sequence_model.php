@@ -120,7 +120,6 @@ class Label_sequence_model extends BioModel
     $seq = $seq_model->get_id($id);
 
     $name = $seq['name'];
-    $accession = $seq['accession'];
     $content = $seq['content'];
 
     return eval($code);

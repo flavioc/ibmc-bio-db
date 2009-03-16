@@ -14,15 +14,6 @@ $(document).ready(function() {
     submitdata: seqdata
   });
 
-  $('#seqaccession').editable(base_site + '/edit_accession', {
-    select: true,
-    submit: 'OK',
-    cancel: 'cancel',
-    width: '150px',
-    style: 'inherit',
-    submitdata: seqdata
-  });
-
   $('#seqcontent').editable(base_site + '/edit_content', {
     select: true,
     type: 'textarea',
@@ -97,7 +88,6 @@ $(document).ready(function() {
 
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="seqname" class="writeable">{$sequence.name}</span></p>
-  <p><span class="desc">Accession Number: </span><span id="seqaccession" class="writeable">{$sequence.accession}</span></p>
   <p><span class="desc">Content: </span><span class="writeable" id="seqcontent">{$sequence.content}</span></p>
 
 {include file='history/form_view.tpl' data=$sequence}

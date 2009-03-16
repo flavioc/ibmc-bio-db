@@ -69,7 +69,6 @@ class Sequence extends BioController
 
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('content');
-    $this->smarty->fetch_form_row('accession');
 
     $this->smarty->view('sequence/add');
   }
@@ -94,7 +93,6 @@ class Sequence extends BioController
     // define form rules and validate all form fields
     $this->form_validation->set_rules('name', 'Name', 'trim|min_length[2]|max_length[255]');
     $this->form_validation->set_rules('content', 'Content', 'trim|required|max_length[65535]');
-    $this->form_validation->set_rules('accession', 'Accession Number', 'trim|max_length[255]');
 
     if($this->form_validation->run() == FALSE) {
       $errors = true;
@@ -103,15 +101,13 @@ class Sequence extends BioController
     if($errors) {
       $this->assign_row_data('name');
       $this->assign_row_data('content');
-      $this->assign_row_data('accession');
 
       redirect('sequence/add');
     } else {
       $name = $this->get_post('name');
-      $accession = $this->get_post('accession');
       $content = $this->get_post('content');
 
-      $id = $this->sequence_model->add($name, $accession, $content);
+      $id = $this->sequence_model->add($name, $content);
 
       $this->_add_labels($id);
 
@@ -158,22 +154,6 @@ class Sequence extends BioController
     }
 
     $this->sequence_model->edit_name($id, $value);
-
-    echo $value;
-  }
-
-  function edit_accession()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_field();
-    }
-
-    $this->load->library('input');
-
-    $id = $this->input->post('seq');
-    $value = $this->input->post('value');
-
-    $this->sequence_model->edit_accession($id, $value);
 
     echo $value;
   }
