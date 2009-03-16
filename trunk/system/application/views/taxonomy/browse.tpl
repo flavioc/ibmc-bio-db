@@ -3,7 +3,7 @@
 <script>
 {literal}
 $(document).ready(function () {
-  start_tax_search_form('#show_data', get_paging_size(), true);
+  start_tax_search_form('#show_data', true);
 });
 {/literal}
 </script>

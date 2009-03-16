@@ -5,7 +5,6 @@
 $(document).ready(function () {
 
   var base_site = get_app_url() + "/taxonomy/";
-  var paging_size = get_paging_size();
   var parents = {};
 
   function add_path(path, what, tax, tree)
@@ -54,7 +53,6 @@ $(document).ready(function () {
       url: get_app_url() + '/taxonomy',
       total: 'total_taxonomy_childs/' + tax + '/' + tree,
       retrieve: 'taxonomy_childs/' + tax + '/' + tree,
-      size: paging_size,
       fieldNames: ['Select', 'Name', 'Rank', 'Tree', 'Add Child'],
       fields: ['select', 'name', 'rank_name', 'tree_name', 'add_child'],
       links: {

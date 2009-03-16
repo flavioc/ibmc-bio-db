@@ -26,7 +26,6 @@
 <script>
 $(document).ready(function () {
 
-  var paging_size = get_paging_size();
   var form = $('#form_add_label');
   var place = $('#show_sequences');
 
@@ -44,7 +43,6 @@ $(document).ready(function () {
     url: get_app_url() + '/sequence',
     retrieve: 'get_all',
     total: 'get_total',
-    size: paging_size,
     fieldNames: ['Name', 'Type', 'Accession Number', 'Last update', 'User'],
     fields: ['name', 'type', 'accession', 'update', 'user_name'],
     links: {

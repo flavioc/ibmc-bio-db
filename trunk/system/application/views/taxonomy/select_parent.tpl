@@ -26,7 +26,6 @@
   <script>
   {literal}
   $(document).ready(function () {
-    var paging_size = get_paging_size();
     var place = $('#show_data');
     var form = $('#form_select_parent');
 
@@ -38,7 +37,7 @@
       }
     });
 
-    start_tax_search_form('#show_data', paging_size, false,
+    start_tax_search_form('#show_data', false,
       {
         name: function (row) {
           var input_show = $('input[name=tax]', form);
