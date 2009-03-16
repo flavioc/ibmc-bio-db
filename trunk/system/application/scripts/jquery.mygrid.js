@@ -599,7 +599,7 @@ $.fn.gridEnable = function(options) {
 
 $.fn.grid.defaults = {
   total: 'total',
-  size: 20,
+  size: get_paging_size(),
   start: 0,
   retrieve: 'get',
   fields: [],
