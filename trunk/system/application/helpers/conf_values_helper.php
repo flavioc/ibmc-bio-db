@@ -19,4 +19,5 @@ define('IMPROMPTU_THEME', 'jquery.impromptu.css');
 define('FORM_SCRIPT', 'jquery.form.js');
 define('PLUSMINUS_SCRIPT', 'jquery.plusminus.js');
 define('ZOOM_SCRIPT', 'jquery.zoom.js');
+define('COOKIE_SCRIPT', 'jquery.cookie.js');
 
