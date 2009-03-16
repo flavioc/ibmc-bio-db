@@ -363,7 +363,10 @@
 
             if(found.length == 1) {
               found.click(function (event) {
-                value(row);
+                var ret = value(row);
+                if(ret) {
+                  return true;
+                }
                 return false;
               });
             } else {
