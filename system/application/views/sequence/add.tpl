@@ -12,9 +12,6 @@
         accession: {
           maxlength: 255
         },
-        type: {
-          required: true
-        },
         content: {
           maxlength: 65535,
           required: true
@@ -30,7 +27,6 @@
 <fieldset>
 {form_row name=name msg='Name:'}
 {form_row name=accession msg='Accession number:'}
-{form_row type=select data=$types name=type msg='Type:' key=name}
 {form_row type=textarea name=content msg='Content:' cols=50 rows=15}
 </fieldset>
 {form_submit name=submit msg='Add'}

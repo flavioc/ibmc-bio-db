@@ -121,7 +121,6 @@ class Label_sequence_model extends BioModel
 
     $name = $seq['name'];
     $accession = $seq['accession'];
-    $type = $seq['type'];
     $content = $seq['content'];
 
     return eval($code);
