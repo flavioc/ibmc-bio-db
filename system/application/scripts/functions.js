@@ -114,3 +114,8 @@ function checkbox_enabled(dom)
 
   return obj.size() != 0 && obj.is(":checked");
 }
+
+function get_paging_size()
+{
+  return $.cookie('paging-size');
+}
