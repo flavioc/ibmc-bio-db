@@ -15,7 +15,6 @@ class Label extends BioController {
     }
 
     $this->use_mygrid();
-    $this->use_paging_size();
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
     $this->smarty->assign('title', 'View labels');
     $this->smarty->view('label/list');

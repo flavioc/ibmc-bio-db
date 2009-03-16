@@ -3,7 +3,7 @@
 {literal}
 <script>
 $(document).ready(function () {
-  var paging_size = {/literal}{$paging_size}{literal};
+  var paging_size = get_paging_size();
   var base_site = get_app_url() + "/label";
   var changed = true;
 
