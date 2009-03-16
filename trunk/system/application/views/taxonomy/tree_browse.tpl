@@ -5,7 +5,7 @@
 $(document).ready(function () {
 
   var base_site = get_app_url() + "/taxonomy/";
-  var paging_size = {/literal}{$paging_size}{literal};
+  var paging_size = get_paging_size();
   var parents = {};
 
   function add_path(path, what, tax, tree)
