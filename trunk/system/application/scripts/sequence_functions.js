@@ -25,6 +25,9 @@ var data_transform_labels = {
       },
       obj_data: function (row) {
         return row.text_data;
+      },
+      select: function (row) {
+        return "Select";
       }
   };
 var link_labels = {
@@ -42,6 +45,9 @@ var link_labels = {
       },
       obj_data: function (row) {
         return get_app_url() + '/label_sequence/download_label/' + row.id;
+      },
+      select: function (row) {
+        return '#row_labels_list_' + row.id;
       }
     };
 
@@ -233,9 +239,9 @@ function reload_validation_list()
   .grid({
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_validation_labels/' + seq_id,
-    fieldNames: ['Name', 'Data', 'Type', 'Status'],
+    fieldNames: ['Select', 'Name', 'Data', 'Type', 'Status'],
     fieldGenerator: function (row) {
-      return ['name', select_field(row), 'type', 'status'];
+      return ['select', 'name', select_field(row), 'type', 'status'];
     },
     dataTransform: data_transform_labels,
     classFun: {
@@ -249,7 +255,13 @@ function reload_validation_list()
         }
       }
     },
-    links: link_labels
+    links: link_labels,
+    clickFun: {
+      select: function (row) {
+        $('#labels_list').gridHighLight(row.id);
+        return true;
+      }
+    }
   });
 }
 
