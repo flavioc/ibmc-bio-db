@@ -6,34 +6,10 @@ class Label_sequence_model extends BioModel
     parent::BioModel('label_sequence');
   }
 
-  function process_label_sequence(&$label)
-  {
-    if($label['type'] == 'tax') {
-      $taxonomy = $this->load_model('taxonomy_model');
-      $label['taxonomy_name'] = $taxonomy->get_name($label['taxonomy_data']);
-    } else if($label['type'] == 'ref') {
-      $sequence = $this->load_model('sequence_model');
-      $label['sequence_name'] = $sequence->get_name($label['ref_data']);
-    }
-
-    return $label;
-  }
-
-  function process_label_sequences(&$labels)
-  {
-    $ret = array();
-    foreach($labels as $label) {
-      $ret[] = $this->process_label_sequence(&$label);
-    }
-
-    return $ret;
-  }
-
   function get_sequence($id)
   {
     $this->db->where('seq_id', $id);
-    return $this->process_label_sequences(
-      $this->get_all('label_sequence_info'));
+    return $this->get_all('label_sequence_info');
   }
 
   function add($seq, $label, $type, $subname, $data1 = null, $data2 = null)
