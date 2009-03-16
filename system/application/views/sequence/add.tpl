@@ -9,9 +9,6 @@
           minlength: 2,
           maxlength: 255
         },
-        accession: {
-          maxlength: 255
-        },
         content: {
           maxlength: 65535,
           required: true
@@ -26,7 +23,6 @@
 {form_open to='sequence/do_add' name=add_form}
 <fieldset>
 {form_row name=name msg='Name:'}
-{form_row name=accession msg='Accession number:'}
 {form_row type=textarea name=content msg='Content:' cols=50 rows=15}
 </fieldset>
 {form_submit name=submit msg='Add'}

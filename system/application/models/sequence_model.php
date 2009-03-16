@@ -8,7 +8,7 @@ class Sequence_model extends BioModel
 
   function __select()
   {
-    $this->db->select('id, content, accession, name, update_user_id, update, user_name');
+    $this->db->select('id, content, name, update_user_id, update, user_name');
   }
 
   function get_all($start = null, $size = null)
@@ -29,11 +29,10 @@ class Sequence_model extends BioModel
     return $this->count_total();
   }
 
-  function add($name, $accession, $content)
+  function add($name, $content)
   {
     $data = array(
       'name' => $name,
-      'accession' => $accession,
       'content' => $content,
     );
 
@@ -72,16 +71,6 @@ class Sequence_model extends BioModel
 
     $this->update_history($id);
     $this->edit_field($id, 'name', $name);
-
-    $this->db->trans_complete();
-  }
-
-  function edit_accession($id, $accession)
-  {
-    $this->db->trans_start();
-
-    $this->update_history($id);
-    $this->edit_field($id, 'accession', $accession);
 
     $this->db->trans_complete();
   }
