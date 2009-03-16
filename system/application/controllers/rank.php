@@ -18,7 +18,6 @@ class Rank extends BioController {
 
     $this->smarty->assign('title', 'Rank list');
     $this->use_mygrid();
-    $this->use_paging_size();
 
     $this->smarty->view('rank/list');
   }

@@ -5,7 +5,6 @@
   $(document).ready(function () {
 
   var base_site = '{/literal}{site}{literal}/rank/';
-  var paging_size = {/literal}{$paging_size}{literal};
 
   $('#show_ranks')
   .gridEnable()
@@ -14,7 +13,6 @@
     retrieve: 'get_all',
     fieldNames: ['Name', 'Parent', 'Last update', 'User', '$delete', 'Add taxonomy', 'Add child rank'],
     fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', '$delete', 'add', 'add_child'],
-    size: paging_size,
     dataTransform: {
       add: function (row) {
         return 'Add';
