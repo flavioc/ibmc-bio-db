@@ -443,7 +443,7 @@ class Label_sequence_model extends BioModel
 
     $ret = array();
     foreach($ids as $id) {
-      $ret[] = $label_model->get($id);
+      $ret[] = $label_model->get_simple($id);
     }
 
     return $ret;
