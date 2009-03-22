@@ -187,6 +187,8 @@ class BioModel extends Model
 
     $this->db->where('id', $id);
     $this->db->update($table, $data);
+
+    return true;
   }
 
   function edit_data_with_history($id, $data, $table = null)

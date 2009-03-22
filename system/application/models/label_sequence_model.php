@@ -15,6 +15,12 @@ class Label_sequence_model extends BioModel
     return self::$label_basic_fields . ", " . self::$label_data_fields;
   }
 
+  function get($id)
+  {
+    $this->db->select($this->__get_select() . ", code");
+    return $this->get_id($id, 'label_sequence_info');
+  }
+
   function get_sequence($id)
   {
     $this->db->select($this->__get_select());
@@ -153,6 +159,13 @@ class Label_sequence_model extends BioModel
     $label = $label_model->get($label_id);
 
     return $this->add_auto_label($seq, $label);
+  }
+
+  function edit_auto_label($id)
+  {
+    $label = $this->get($id);
+
+    return $this->regenerate_label($label['seq_id'], $label);
   }
 
   function __is_text($label)
@@ -364,7 +377,7 @@ class Label_sequence_model extends BioModel
       $data1 = $value;
     }
 
-    $this->edit($id, $type, $data1, $data2);
+    return $this->edit($id, $type, $data1, $data2);
   }
 
   function regenerate_labels($seq)
@@ -594,6 +607,11 @@ class Label_sequence_model extends BioModel
       ->where('multiple IS FALSE');
 
     return $this->count_total('label_sequence_info') > 0;
+  }
+
+  function label_exists($id)
+  {
+    return $this->has_id($id);
   }
 
   function __get_data_fields($type)
