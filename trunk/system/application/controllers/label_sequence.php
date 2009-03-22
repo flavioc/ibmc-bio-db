@@ -135,6 +135,14 @@ class Label_Sequence extends BioController {
 
     if(!$editable && $auto) {
       $this->smarty->view_s('edit_label/auto');
+    } else if($editable) {
+      $type = $label['type'];
+
+      switch($type) {
+        case 'text':
+          $this->smarty->view_s('edit_label/text');
+          break;
+      }
     }
   }
 
@@ -242,6 +250,40 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_text_label($seq_id, $label_id, $text, $generate));
+  }
+
+  function __edit_text_label($id, $text, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_text_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    if($this->label_sequence_model->edit_text_label($id, $text)) {
+      return true;
+    }
+
+    return self::$label_invalid_text_type;
+  }
+
+  function edit_text_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+    $text = $this->get_post('text');
+    $generate = $this->__get_generate();
+
+    $this->json_return($this->__edit_text_label($id, $text, $generate));
   }
 
   function __add_bool_label($seq_id, $label_id, $bool, $generate)

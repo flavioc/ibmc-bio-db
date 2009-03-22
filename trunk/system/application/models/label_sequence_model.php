@@ -191,6 +191,22 @@ class Label_sequence_model extends BioModel
     return $this->add_generated_label($seq_id, $label_id, 'text');
   }
 
+  function edit_text_label($id, $text)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_text($label) && $label['editable']) {
+      return $this->edit($id, 'text', $text);
+    } else {
+      return false;
+    }
+  }
+
+  function edit_generated_text_label($id)
+  {
+    return $this->edit_auto_label($id);
+  }
+
   function __is_integer($label)
   {
     return $label['type'] == 'integer';
