@@ -14,7 +14,7 @@
 </span>
 </fieldset>
 
-{form_submit name=submit_file msg='Add label'}
+{form_submit name=submit_pos msg='Add label'}
 {form_end}
 
 {literal}
