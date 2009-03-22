@@ -398,14 +398,18 @@ function get_results(obj, opts, total, start) {
   }
 
   $.ajax({
-    mode: "abort",
-    port: "grid" + this.id,
     url: data_url,
     data: params,
+    type: 'get',
+    global: false,
     success: function(data) {
       var rows = $.evalJSON(data);
 
       get_data_results(obj, opts, total, start, rows);
+    },
+    error: function (request, textstatus, error) {
+      alert("ERROR!");
+      alert(textstatus);
     }
   });
 }
