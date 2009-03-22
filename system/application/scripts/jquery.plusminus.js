@@ -99,23 +99,52 @@ $.fn.minusPlus = function(options) {
       hide_minus($this);
     }
 
-    $(a_plus, $this).click(function (event) {
-        hide_plus($this);
-        show_minus($this);
-        opts.plusEnabled();
+    var minusPlus = {
+      enable: null,
+      disable: null,
+      enabled: opts.enabled
+    };
 
+    this.minusPlus = minusPlus;
+
+    minusPlus.enable = function () {
+      hide_plus($this);
+      show_minus($this);
+      opts.plusEnabled();
+      minusPlus.enabled = true;
+    };
+
+    $(a_plus, $this).click(function (event) {
+        minusPlus.enable();
         return false;
     });
 
-    $(a_minus, $this).click(function (event) {
+    minusPlus.disable = function () {
         hide_minus($this);
         show_plus($this);
         opts.minusEnabled();
+        minusPlus.enabled = false;
+    };
 
+    $(a_minus, $this).click(function (event) {
+        minusPlus.disable();
         return false;
     });
 
     $this.show();
+  });
+};
+
+$.fn.minusPlusEnable = function() {
+  return this.each(function () {
+    var $this = $(this);
+    var minusPlus = this.minusPlus;
+
+    if(minusPlus.enabled) { // plus activated, showing minus
+      // nothing to do
+    } else {
+      minusPlus.enable();
+    }
   });
 };
 
