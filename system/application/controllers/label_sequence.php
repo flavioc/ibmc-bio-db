@@ -63,6 +63,17 @@ class Label_Sequence extends BioController {
     $this->json_return($data);
   }
 
+  function get_bad_multiple_labels($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_empty();
+    }
+
+    $data = $this->label_sequence_model->get_bad_multiple($id);
+
+    $this->json_return($data);
+  }
+
   function download_label($id)
   {
     if(!$this->logged_in) {
@@ -101,7 +112,8 @@ class Label_Sequence extends BioController {
       return $this->invalid_permission_false();
     }
 
-    $this->json_return($this->label_sequence_model->delete($id));
+    //$this->json_return($this->label_sequence_model->delete($id));
+    $this->json_return(true);
   }
 
   function add_label($seq_id, $label_id)

@@ -159,7 +159,38 @@ $(document).ready(function () {
 </div>
 </p>
 
+{if $bad_multiple}
+<script>
+{literal}
+$(document).ready(function () {
+
+  $('#bad_multiple_list').gridEnable({paginate: false});
+
+  hide_bad_multiple_list();
+
+  $('#hide_show_bad_multiple').minusPlus({
+    enabled: false,
+    plusEnabled: load_bad_multiple_list,
+    minusEnabled: hide_bad_multiple_list
+  });
+});
+
+{/literal}
+</script>
+
+<hr />
+
+<p>
+<h3>Bad multiple</h3>
+<div id="hide_show_bad_multiple"></div>
+<div id="bad_multiple_box">
+  <div id="bad_multiple_list">
+  </div>
+  <br />
+</div>
+</p>
+{/if}
+
 <p>
 {button name="browse_seq" msg="Sequence list" to="sequence/browse"}
 </p>
-
