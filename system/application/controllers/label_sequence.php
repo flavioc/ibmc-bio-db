@@ -131,8 +131,6 @@ class Label_Sequence extends BioController {
 
     if(!$editable && $auto) {
       $this->smarty->view_s('new_label/auto');
-    } else if($editable && $auto) {
-      echo "NOT AUTO";
     } else if($editable) {
       $type = $label['type'];
 
