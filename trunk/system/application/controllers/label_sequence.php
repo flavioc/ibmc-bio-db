@@ -1,6 +1,8 @@
 <?php
 
 class Label_Sequence extends BioController {
+  private static $label_inexistant_error = "This label does not exist.";
+  private static $label_generate_error = "An error has ocurred while generating the label.";
   private static $label_used_error = "This label is already being used and cannot be reused";
   private static $label_invalid_text_type = "This label has invalid text type";
   private static $label_invalid_bool_type = "This label has invalid integer type";
@@ -115,6 +117,27 @@ class Label_Sequence extends BioController {
     $this->json_return($this->label_sequence_model->delete($id));
   }
 
+  function edit_label($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_thickbox();
+    }
+
+    $label = $this->label_sequence_model->get($id);
+    $this->smarty->assign('label', $label);
+
+    $seq_id = $label['seq_id'];
+    $sequence = $this->sequence_model->get($seq_id);
+    $this->smarty->assign('sequence', $sequence);
+
+    $editable = $label['editable'];
+    $auto = $label['auto_on_creation'];
+
+    if(!$editable && $auto) {
+      $this->smarty->view_s('edit_label/auto');
+    }
+  }
+
   function add_label($seq_id, $label_id)
   {
     if(!$this->logged_in) {
@@ -161,7 +184,7 @@ class Label_Sequence extends BioController {
           break;
       }
     } else {
-      echo "NOT HANDLED";
+      echo "NOT HANDLED, PLEASE REPORT";
     }
   }
 
@@ -518,6 +541,32 @@ class Label_Sequence extends BioController {
     $label_id = $this->get_post('label_id');
 
     $this->json_return($this->__add_auto_label($seq_id, $label_id));
+  }
+
+  function __edit_auto_label($id)
+  {
+    if($this->label_sequence_model->label_exists($id)) {
+      $ret = $this->label_sequence_model->edit_auto_label($id);
+
+      if($ret) {
+        return true;
+      } else {
+        return self::$label_generate_error;
+      }
+    } else {
+      return self::$label_inexistant_error;
+    }
+  }
+
+  function edit_auto_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+
+    $this->json_return($this->__edit_auto_label($id));
   }
 
   function _get_upload_config()

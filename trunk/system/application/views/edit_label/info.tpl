@@ -17,14 +17,6 @@ $(document).ready(function () {
     var resp = $.evalJSON(responseText);
 
     if(resp == true) {
-      if(label.multiple == 0) {
-        reload_addable_list();
-      }
-
-      if(label.must_exist == 1) {
-        reload_missing_list();
-      }
-
       reload_labels_list();
     } else {
       alert(responseText);
@@ -33,7 +25,7 @@ $(document).ready(function () {
     self.parent.tb_remove();
   }
 
-  $('#form_add_label').ajaxForm({
+  $('#form_edit_label').ajaxForm({
     success: checkResponse,
     beforeSubmit: function (data, form) {
       return $(form).valid();

@@ -29,6 +29,9 @@ var data_transform_labels = {
       },
       select: function (row) {
         return "Select";
+      },
+      edit: function (row) {
+        return 'Edit';
       }
   };
 var link_labels = {
@@ -48,6 +51,9 @@ var link_labels = {
         return get_app_url() + '/label_sequence/download_label/' + row.id;
       },
       select: function (row) {
+        return '#row_labels_list_' + row.id;
+      },
+      edit: function (row) {
         return '#row_labels_list_' + row.id;
       }
     };
@@ -96,9 +102,9 @@ function reload_labels_list()
   .grid({
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_labels/' + seq_id,
-    fieldNames: ['Name', 'Data', 'Subname', 'Type'],
+    fieldNames: ['Name', 'Data', 'Subname', 'Type', 'Edit'],
     fieldGenerator: function (row) {
-      return ['name', select_field(row), 'subname', 'type'];
+      return ['name', select_field(row), 'subname', 'type', 'edit'];
     },
     links: link_labels,
     dataTransform: data_transform_labels,
@@ -122,6 +128,12 @@ function reload_labels_list()
     deleteFun: function (id) {
       if(bad_multiple_loaded) {
         $('#bad_multiple_list').gridDeleteRow(id);
+      }
+    },
+    clickFun: {
+      edit: function (row) {
+        var url = get_app_url() + '/label_sequence/edit_label/' + row.id;
+        tb_show('Edit label', url);
       }
     }
   });
