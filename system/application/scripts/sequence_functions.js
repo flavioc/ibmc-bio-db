@@ -127,12 +127,12 @@ function load_labels_list()
     reload_labels_list();
   }
 
-  $('#labels_list').fadeIn('slow');
+  $('#labels_list').fadeIn();
 }
 
 function hide_labels_list()
 {
-  $('#labels_list').fadeOut('slow');
+  $('#labels_list').fadeOut();
 }
 
 var nameLink = function (row) {
@@ -176,6 +176,7 @@ function reload_missing_list()
     hiddenFields: hiddenFields,
     clickFun: {
       select: function (row) {
+        $('#hide_show_addable').minusPlusEnable();
         $('#addable_list').gridHighLight(row.id);
         return true;
       }
@@ -183,18 +184,22 @@ function reload_missing_list()
   });
 }
 
-function load_missing_list()
+function ensure_missing_list_loaded()
 {
   if(!missing_loaded) {
     reload_missing_list();
   }
+}
 
-  $('#missing_box').fadeIn('slow');
+function load_missing_list()
+{
+  ensure_missing_list_loaded();
+  $('#missing_box').fadeIn();
 }
 
 function hide_missing_list()
 {
-  $('#missing_box').fadeOut('slow');
+  $('#missing_box').fadeOut();
 }
 
 function reload_addable_list()
@@ -233,16 +238,20 @@ function reload_addable_list()
 
 function hide_addable_list()
 {
-  $('#addable_box').fadeOut('slow');
+  $('#addable_box').fadeOut();
 }
 
-function load_addable_list()
+function ensure_addable_list_loaded()
 {
   if(!addable_loaded) {
     reload_addable_list();
   }
+}
 
-  $('#addable_box').fadeIn('slow');
+function load_addable_list()
+{
+  ensure_addable_list_loaded();
+  $('#addable_box').fadeIn();
 }
 
 function reload_validation_list()
@@ -272,6 +281,7 @@ function reload_validation_list()
     links: link_labels,
     clickFun: {
       select: function (row) {
+        $('#hide_show_labels').minusPlusEnable();
         $('#labels_list').gridHighLight(row.id);
         return true;
       }
@@ -281,7 +291,7 @@ function reload_validation_list()
 
 function hide_validation_list()
 {
-  $('#validation_box').fadeOut('slow');
+  $('#validation_box').fadeOut();
 }
 
 function load_validation_list()
@@ -290,7 +300,7 @@ function load_validation_list()
     reload_validation_list();
   }
 
-  $('#validation_box').fadeIn('slow');
+  $('#validation_box').fadeIn();
 }
 
 function generate_disabled()
