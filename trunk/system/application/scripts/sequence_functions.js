@@ -6,6 +6,7 @@ var missing_loaded = false;
 var addable_loaded = false;
 var labels_loaded = false;
 var validation_loaded = false;
+var bad_multiple_loaded = false;
 var data_transform_labels = {
       subname: function (row) {
         if(row.subname == null) {
@@ -117,6 +118,11 @@ function reload_labels_list()
     remove: 'delete_label',
     types: {
       bool_data: 'boolean'
+    },
+    deleteFun: function (id) {
+      if(bad_multiple_loaded) {
+        $('#bad_multiple_list').gridDeleteRow(id);
+      }
     }
   });
 }
@@ -301,6 +307,49 @@ function load_validation_list()
   }
 
   $('#validation_box').fadeIn();
+}
+
+function hide_bad_multiple_list()
+{
+  $('#bad_multiple_box').fadeOut();
+}
+
+function load_bad_multiple_list()
+{
+  if(!bad_multiple_loaded) {
+    reload_bad_multiple_list();
+  }
+
+  $('#bad_multiple_box').fadeIn();
+}
+
+function reload_bad_multiple_list()
+{
+  bad_multiple_loaded = true;
+
+  $('#bad_multiple_list')
+  .grid({
+    url: get_app_url() + '/label_sequence',
+    retrieve: 'get_bad_multiple_labels/' + seq_id,
+    fieldNames: ['Select', 'Name', 'Data', 'Type'],
+    fieldGenerator: function (row) {
+      return ['select', 'name', select_field(row), 'type'];
+    },
+    dataTransform: data_transform_labels,
+    links: {
+      name: nameLink,
+      select: function (row) {
+        return '#row_labels_list_' + row.id;
+      }
+    },
+    clickFun: {
+      select: function (row) {
+        $('#hide_show_labels').minusPlusEnable();
+        $('#labels_list').gridHighLight(row.id);
+        return true;
+      }
+    }
+  });
 }
 
 function generate_disabled()

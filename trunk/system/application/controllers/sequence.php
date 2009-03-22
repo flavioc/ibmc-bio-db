@@ -59,7 +59,10 @@ class Sequence extends BioController
 
     $sequence = $this->sequence_model->get($id);
     $this->smarty->assign('sequence', $sequence);
-    $this->smarty->assign('missing', $this->label_sequence_model->has_missing($id));
+    $this->smarty->assign('missing',
+      $this->label_sequence_model->has_missing($id));
+    $this->smarty->assign('bad_multiple',
+      $this->label_sequence_model->has_bad_multiple($id));
 
     $this->smarty->view('sequence/view');
   }

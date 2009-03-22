@@ -2,13 +2,22 @@
 
 class Label_sequence_model extends BioModel
 {
+  private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_a_data, position_b_data, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name";
+
+  private static $label_basic_fields = "label_id, id, seq_id, subname, history_id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
+
   function Label_sequence_model() {
     parent::BioModel('label_sequence');
   }
 
+  function __get_select()
+  {
+    return self::$label_basic_fields . ", " . self::$label_data_fields;
+  }
+
   function get_sequence($id)
   {
-    $this->db->select('label_id, id, seq_id, subname, history_id, int_data, text_data, obj_data, ref_data, position_a_data, position_b_data, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple');
+    $this->db->select($this->__get_select());
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }
@@ -527,7 +536,8 @@ class Label_sequence_model extends BioModel
       $data2 = $label[$field2];
     }
 
-    $ret['status'] = $this->get_validation_status($label_id, $sequence, $data1, $data2);
+    $ret['status'] =
+      $this->get_validation_status($label_id, $sequence, $data1, $data2);
 
     return $ret;
   }
@@ -546,6 +556,34 @@ class Label_sequence_model extends BioModel
     }
 
     return $ret;
+  }
+
+  function __bad_multiple_sql($id)
+  {
+      return "FROM label_sequence_info AS lsi
+      WHERE multiple IS FALSE AND
+            label_id IN (SELECT label_id
+                         FROM label_sequence AS ls
+                         WHERE ls.id <> lsi.id AND
+                           ls.label_id = lsi.label_id
+                           AND ls.seq_id = $id)
+           AND seq_id = $id";
+  }
+
+  function get_bad_multiple($id)
+  {
+  $sql = "SELECT id, label_id, seq_id, name, type, " . self::$label_data_fields . " " .
+      $this->__bad_multiple_sql($id);
+
+    return $this->rows_sql($sql);
+  }
+
+  function has_bad_multiple($id)
+  {
+    $sql = "SELECT count(id) AS total  " .
+      $this->__bad_multiple_sql($id);
+
+    return $this->total_sql($sql) > 0;
   }
 
   function label_used_up($seq, $label)
