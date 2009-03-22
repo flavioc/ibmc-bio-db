@@ -425,6 +425,22 @@ class Label_sequence_model extends BioModel
     return $this->add_generated_label($seq_id, $label_id, 'tax');
   }
 
+  function edit_tax_label($id, $tax)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_tax($label) && $label['editable']) {
+      return $this->edit($id, 'tax', $tax);
+    } else {
+      return false;
+    }
+  }
+
+  function edit_generated_tax_label($id)
+  {
+    return $this->edit_auto_label($id);
+  }
+
   function __is_position($label)
   {
     return $label['type'] == 'position';

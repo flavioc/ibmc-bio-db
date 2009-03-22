@@ -4,6 +4,7 @@ class Label_Sequence extends BioController {
   private static $label_inexistant_error = "This label does not exist.";
   private static $label_generate_error = "An error has ocurred while generating the label.";
   private static $sequence_inexistant_error = "Sequence doesn't exist.";
+  private static $taxonomy_inexistant_error = "Taxonomy doesn't exist.";
   private static $label_used_error = "This label is already being used and cannot be reused";
   private static $label_invalid_text_type = "This label has invalid text type";
   private static $label_invalid_bool_type = "This label has invalid integer type";
@@ -161,6 +162,9 @@ class Label_Sequence extends BioController {
         case 'ref':
           $this->smarty->view_s('edit_label/ref');
           break;
+        case 'tax':
+          $this->__display_tax_form('edit_label/tax');
+          break;
       }
     }
   }
@@ -207,7 +211,7 @@ class Label_Sequence extends BioController {
           $this->smarty->view_s('new_label/ref');
           break;
         case 'tax':
-          $this->__display_tax_form();
+          $this->__display_tax_form('new_label/tax');
           break;
       }
     } else {
@@ -215,7 +219,7 @@ class Label_Sequence extends BioController {
     }
   }
 
-  function __display_tax_form()
+  function __display_tax_form($file)
   {
     $this->load->model('taxonomy_rank_model');
     $ranks = $this->taxonomy_rank_model->get_ranks();
@@ -226,7 +230,7 @@ class Label_Sequence extends BioController {
     $this->smarty->assign('ranks', $ranks);
     $this->smarty->assign('trees', $trees);
 
-    $this->smarty->view_s('new_label/tax');
+    $this->smarty->view_s($file);
   }
 
   function __get_generate()
@@ -630,6 +634,47 @@ class Label_Sequence extends BioController {
     $this->json_return($this->__add_tax_label($seq_id, $label_id, $tax, $generate));
   }
 
+  function edit_tax_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+    $generate = $this->__get_generate();
+    $tax = $this->get_post('hidden_tax');
+
+    $this->json_return($this->__edit_tax_label($id, $tax, $generate));
+  }
+
+  function __edit_tax_label($id, $tax, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_tax_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    $tax = intval($tax);
+
+    $this->load->model('taxonomy_model');
+    if(!$this->taxonomy_model->has_taxonomy($tax)) {
+      return self::$taxonomy_inexistant_error;
+    }
+
+    if($this->label_sequence_model->edit_tax_label($id, $tax)) {
+      return true;
+    }
+
+    return self::$label_invalid_tax_type;
+  }
+
   function __add_tax_label($seq_id, $label_id, $tax, $generate)
   {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
@@ -648,7 +693,7 @@ class Label_Sequence extends BioController {
 
     $this->load->model('taxonomy_model');
     if(!$this->taxonomy_model->has_taxonomy($tax)) {
-      return "Taxonomy doesn't exist.";
+      return self::$taxonomy_inexistant_error;
     }
 
     if($this->label_sequence_model->add_tax_label($seq_id, $label_id, $tax)) {
