@@ -55,8 +55,11 @@ class Sequence extends BioController
     $this->use_mygrid();
     $this->use_plusminus();
 
+    $this->load->model('label_sequence_model');
+
     $sequence = $this->sequence_model->get($id);
     $this->smarty->assign('sequence', $sequence);
+    $this->smarty->assign('missing', $this->label_sequence_model->has_missing($id));
 
     $this->smarty->view('sequence/view');
   }
