@@ -27,36 +27,15 @@ $(document).ready(function() {
   });
 
   $('#labels_list').gridEnable({paginate: false});
-  $('#missing_list').gridEnable({paginate: false});
   $('#addable_list').gridEnable({paginate: false});
   $('#validation_list').gridEnable({paginate: false});
 
   hide_addable_list();
-  hide_missing_list();
 
   $('#hide_show_labels').minusPlus({
     enabled: true,
     plusEnabled: load_labels_list,
     minusEnabled: hide_labels_list
-  });
-
-  $('#hide_show_missing').minusPlus({
-    enabled: false,
-    plusEnabled: load_missing_list,
-    minusEnabled: hide_missing_list
-  });
-
-  $('#hide_show_missing_details').minusPlus({
-    zoom: 85,
-    enableImage: false,
-    plusEnabled: function () {
-      $('#missing_list').gridShowDefault('fast');
-    },
-    minusEnabled: function () {
-      $('#missing_list').gridHideDefault('fast');
-    },
-    plusText: 'Show details',
-    minusText: 'Hide details'
   });
 
   $('#hide_show_addable_details').minusPlus({
@@ -105,6 +84,40 @@ $(document).ready(function() {
 </div>
 </p>
 
+{if $missing}
+<script>
+{literal}
+$(document).ready(function () {
+
+  $('#missing_list').gridEnable({paginate: false});
+
+  hide_missing_list();
+
+  $('#hide_show_missing').minusPlus({
+    enabled: false,
+    plusEnabled: load_missing_list,
+    minusEnabled: hide_missing_list
+  });
+
+  $('#hide_show_missing_details').minusPlus({
+    zoom: 85,
+    enableImage: false,
+    plusEnabled: function () {
+      $('#missing_list').gridShowDefault('fast');
+    },
+    minusEnabled: function () {
+      $('#missing_list').gridHideDefault('fast');
+    },
+    plusText: 'Show details',
+    minusText: 'Hide details'
+  });
+
+  ensure_addable_list_loaded();
+});
+
+{/literal}
+</script>
+
 <hr />
 
 <p>
@@ -117,6 +130,8 @@ $(document).ready(function() {
   </div>
 </div>
 </p>
+
+{/if}
 
 <hr />
 
