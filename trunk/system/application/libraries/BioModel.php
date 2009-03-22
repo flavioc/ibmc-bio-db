@@ -277,4 +277,25 @@ class BioModel extends Model
 
     return $data;
   }
+
+  function rows_sql($sql)
+  {
+    $query = $this->db->query($sql);
+
+    return $query->result_array();
+  }
+
+  function row_sql($sql)
+  {
+    $query = $this->db->query($sql);
+
+    return $query->row_array();
+  }
+
+  function total_sql($sql)
+  {
+    $data = $this->row_sql($sql);
+
+    return intval($data['total']);
+  }
 }
