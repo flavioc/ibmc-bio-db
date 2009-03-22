@@ -285,7 +285,6 @@ class Label_sequence_model extends BioModel
     return $this->edit_auto_label($id);
   }
 
-
   function __is_url($label)
   {
     return $label['type'] == 'url';
@@ -431,6 +430,22 @@ class Label_sequence_model extends BioModel
   function add_generated_position_label($seq_id, $label_id)
   {
     return $this->add_generated_label($seq_id, $label_id, 'position');
+  }
+
+  function edit_position_label($id, $start, $length)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_position($label) && $label['editable']) {
+      return $this->edit($id, 'position', $start, $length);
+    } else {
+      return false;
+    }
+  }
+
+  function edit_generated_position_label($id)
+  {
+    return $this->edit_auto_label($id);
   }
 
   function get_labels_to_auto_modify($seq)

@@ -138,7 +138,7 @@ function common_input_textarea(&$data, $params)
   $data['id'] = $id;
 
   $init = $params['value'];
-  if($init) {
+  if($init || $init == '0') {
     $data['value'] = $init;
   }
 
