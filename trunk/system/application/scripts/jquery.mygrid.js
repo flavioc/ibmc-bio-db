@@ -215,16 +215,31 @@
                   var resp = $.evalJSON(data);
 
                   if(resp) {
-                    var tr_id = "row_" + id + "_" + row_id;
+                    delete_row(obj, row_id);
 
-                    $('#' + tr_id).fadeOut('slow');
-                    decrement_results(obj);
+                    if(opts.deleteFun) {
+                      opts.deleteFun(row_id);
+                    }
                   } else {
                     alert('Error deleting item: ' + row_id + ' -> ' + data);
                   }
               });
       })
       .confirm(confirm_data);
+  }
+
+  function delete_row(obj, row_id)
+  {
+    var id = obj[0].id;
+    var tr_id = "row_" + id + "_" + row_id;
+    var tr_obj = $('#' + tr_id);
+
+    if(tr_obj.size() == 1 && tr_obj.is(':visible')) {
+      tr_obj.fadeOut('slow', function () {
+          tr_obj.remove();
+      });
+      decrement_results(obj);
+    }
   }
 
   function get_table_headers(obj, opts) {
@@ -565,6 +580,12 @@ $.fn.gridHighLight = function (row_id) {
   });
 };
 
+$.fn.gridDeleteRow = function (row_id) {
+  return this.each(function () {
+      delete_row($(this), row_id);
+  });
+};
+
 $.fn.gridEnable = function(options) {
   var opts = $.extend({}, $.fn.gridEnable.defaults, options);
 
@@ -629,7 +650,8 @@ $.fn.grid.defaults = {
   clickFun: {},
   hiddenFields: [],
   writeableClass: 'writeable',
-  classFun: {}
+  classFun: {},
+  deleteFun: null
 }
 
 $.fn.gridEnable.defaults = {
