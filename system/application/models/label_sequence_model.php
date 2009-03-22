@@ -449,9 +449,15 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
+  function has_missing($id)
+  {
+    return count($this->get_missing_obligatory($id)) > 0;
+  }
+
   function get_addable_labels($id)
   {
-    $sql = "SELECT *
+    $sql = "SELECT id, name, type, autoadd, must_exist, auto_on_creation
+          auto_on_modification, deletable, editable, multiple
       FROM label
       WHERE multiple IS TRUE OR
             id NOT IN (SELECT DISTINCT label_id AS id
