@@ -142,6 +142,9 @@ class Label_Sequence extends BioController {
         case 'text':
           $this->smarty->view_s('edit_label/text');
           break;
+        case 'integer':
+          $this->smarty->view_s('edit_label/integer');
+          break;
       }
     }
   }
@@ -356,6 +359,40 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_integer_label($seq_id, $label_id, $int, $generate));
+  }
+
+  function __edit_integer_label($id, $integer, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_integer_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    if($this->label_sequence_model->edit_integer_label($id, $integer)) {
+      return true;
+    }
+
+    return self::$label_invalid_integer_type;
+  }
+
+  function edit_integer_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_zero();
+    }
+
+    $id = $this->get_post('id');
+    $integer = $this->get_post('integer');
+    $generate = $this->__get_generate();
+
+    $this->json_return($this->__edit_integer_label($id, $integer, $generate));
   }
 
   function __add_obj_label($seq_id, $label_id, $generate)
