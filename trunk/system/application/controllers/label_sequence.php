@@ -112,8 +112,7 @@ class Label_Sequence extends BioController {
       return $this->invalid_permission_false();
     }
 
-    //$this->json_return($this->label_sequence_model->delete($id));
-    $this->json_return(true);
+    $this->json_return($this->label_sequence_model->delete($id));
   }
 
   function add_label($seq_id, $label_id)
