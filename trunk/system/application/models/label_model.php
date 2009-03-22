@@ -19,6 +19,19 @@ class Label_model extends BioModel
     return $this->get_id($id, 'label_info_history', 'label_id');
   }
 
+  function get_simple($id, $get_code = false)
+  {
+    $select = 'id, name, type, autoadd, must_exist, auto_on_creation,
+      auto_on_modification, deletable, editable, multiple';
+
+    if($get_code) {
+      $select .= ', code, valid_code';
+    }
+
+    $this->db->select($select);
+    return $this->get_id($id);
+  }
+
   function get_all($name = null, $start = null, $size = null)
   {
     $this->db->order_by('name');
