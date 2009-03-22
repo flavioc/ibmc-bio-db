@@ -151,6 +151,12 @@ class Label_Sequence extends BioController {
         case 'obj':
           $this->smarty->view_s('edit_label/obj');
           break;
+        case 'bool':
+          $this->smarty->view_s('edit_label/bool');
+          break;
+        case 'position':
+          $this->smarty->view_s('edit_label/position');
+          break;
       }
     }
   }
@@ -330,6 +336,42 @@ class Label_Sequence extends BioController {
     $bool = ($bool ? TRUE : FALSE);
 
     $this->json_return($this->__add_bool_label($seq_id, $label_id, $bool, $generate));
+  }
+
+  function __edit_bool_label($id, $bool, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_bool_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    if($this->label_sequence_model->edit_bool_label($id, $bool)) {
+      return true;
+    }
+
+    return self::$label_invalid_bool_type;
+  }
+
+  function edit_bool_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+    $bool = $this->get_post('boolean');
+    $generate = $this->__get_generate();
+
+    $bool = ($bool ? TRUE : FALSE);
+
+    $this->json_return($this->__edit_bool_label($id, $bool, $generate));
   }
 
   function __add_integer_label($seq_id, $label_id, $int, $generate)

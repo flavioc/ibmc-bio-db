@@ -269,6 +269,23 @@ class Label_sequence_model extends BioModel
     return $this->add_generated_label($seq_id, $label_id, 'bool');
   }
 
+  function edit_bool_label($id, $bool)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_bool($label) && $label['editable']) {
+      return $this->edit($id, 'bool', $bool);
+    } else {
+      return false;
+    }
+  }
+
+  function edit_generated_bool_label($id)
+  {
+    return $this->edit_auto_label($id);
+  }
+
+
   function __is_url($label)
   {
     return $label['type'] == 'url';
