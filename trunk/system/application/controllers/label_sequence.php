@@ -145,6 +145,9 @@ class Label_Sequence extends BioController {
         case 'integer':
           $this->smarty->view_s('edit_label/integer');
           break;
+        case 'url':
+          $this->smarty->view_s('edit_label/url');
+          break;
       }
     }
   }
@@ -385,7 +388,7 @@ class Label_Sequence extends BioController {
   function edit_integer_label()
   {
     if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
+      return $this->invalid_permission_false();
     }
 
     $id = $this->get_post('id');
@@ -598,6 +601,40 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_url_label($seq_id, $label_id, $url, $generate));
+  }
+
+  function __edit_url_label($id, $url, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_url_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    if($this->label_sequence_model->edit_url_label($id, $url)) {
+      return true;
+    }
+
+    return self::$label_invalid_url_type;
+  }
+
+  function edit_url_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+    $url = $this->get_post('url');
+    $generate = $this->__get_generate();
+
+    $this->json_return($this->__edit_url_label($id, $url, $generate));
   }
 
   function __add_auto_label($seq_id, $label_id)
