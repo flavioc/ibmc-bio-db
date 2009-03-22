@@ -225,6 +225,22 @@ class Label_sequence_model extends BioModel
     }
   }
 
+  function edit_integer_label($id, $int)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_integer($label) && $label['editable']) {
+      return $this->edit($id, 'integer', $int);
+    } else {
+      return false;
+    }
+  }
+
+  function edit_generated_integer_label($id)
+  {
+    return $this->edit_auto_label($id);
+  }
+
   function add_generated_integer_label($seq_id, $label_id)
   {
     return $this->add_generated_label($seq_id, $label_id, 'integer');
