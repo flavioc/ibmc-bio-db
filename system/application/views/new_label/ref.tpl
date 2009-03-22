@@ -43,8 +43,8 @@ $(document).ready(function () {
     url: get_app_url() + '/sequence',
     retrieve: 'get_all',
     total: 'get_total',
-    fieldNames: ['Name', 'Type', 'Accession Number', 'Last update', 'User'],
-    fields: ['name', 'type', 'accession', 'update', 'user_name'],
+    fieldNames: ['Name', 'Last update', 'User'],
+    fields: ['name', 'update', 'user_name'],
     links: {
       name: function (row) {
         return get_app_url() + '/sequence/view/' + row.id;
