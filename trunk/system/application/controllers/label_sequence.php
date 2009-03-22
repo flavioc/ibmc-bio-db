@@ -3,6 +3,7 @@
 class Label_Sequence extends BioController {
   private static $label_inexistant_error = "This label does not exist.";
   private static $label_generate_error = "An error has ocurred while generating the label.";
+  private static $sequence_inexistant_error = "Sequence doesn't exist.";
   private static $label_used_error = "This label is already being used and cannot be reused";
   private static $label_invalid_text_type = "This label has invalid text type";
   private static $label_invalid_bool_type = "This label has invalid integer type";
@@ -156,6 +157,9 @@ class Label_Sequence extends BioController {
           break;
         case 'position':
           $this->smarty->view_s('edit_label/position');
+          break;
+        case 'ref':
+          $this->smarty->view_s('edit_label/ref');
           break;
       }
     }
@@ -654,6 +658,33 @@ class Label_Sequence extends BioController {
     return self::$label_invalid_tax_label;
   }
 
+  function __edit_ref_label($id, $ref, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_ref_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    $ref = intval($ref);
+
+    if(!$this->sequence_model->has_sequence($ref)) {
+      return self::$sequence_inexistant_error;
+    }
+
+    if($this->label_sequence_model->edit_ref_label($id, $ref)) {
+      return true;
+    }
+
+    return self::$label_invalid_ref_type;
+  }
+
   function __add_ref_label($seq_id, $label_id, $ref, $generate)
   {
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
@@ -671,7 +702,7 @@ class Label_Sequence extends BioController {
     $ref = intval($ref);
 
     if(!$this->sequence_model->has_sequence($ref)) {
-      return "Sequence doesn't exist.";
+      return self::$sequence_inexistant_error;
     }
 
     if($this->label_sequence_model->add_ref_label($seq_id, $label_id, $ref)) {
@@ -693,6 +724,19 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_ref_label($seq_id, $label_id, $ref, $generate));
+  }
+
+  function edit_ref_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+    $generate = $this->__get_generate();
+    $ref = $this->get_post('hidden_ref');
+
+    $this->json_return($this->__edit_ref_label($id, $ref, $generate));
   }
 
   function __add_url_label($seq_id, $label_id, $url, $generate)
