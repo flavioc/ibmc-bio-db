@@ -331,6 +331,22 @@ class Label_sequence_model extends BioModel
     return $this->add_generated_label($seq_id, $label_id, 'obj');
   }
 
+  function edit_obj_label($id, $filename, $data)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_obj($label) && $label['editable']) {
+      return $this->edit($id, 'obj', $filename, $data);
+    } else {
+      return false;
+    }
+  }
+
+  function edit_generated_obj_label($id)
+  {
+    return $this->edit_auto_label($id);
+  }
+
   function __is_ref($label)
   {
     return $label['type'] == 'ref';

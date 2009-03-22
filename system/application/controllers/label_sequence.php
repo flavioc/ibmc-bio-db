@@ -148,6 +148,9 @@ class Label_Sequence extends BioController {
         case 'url':
           $this->smarty->view_s('edit_label/url');
           break;
+        case 'obj':
+          $this->smarty->view_s('edit_label/obj');
+          break;
       }
     }
   }
@@ -400,6 +403,10 @@ class Label_Sequence extends BioController {
 
   function __add_obj_label($seq_id, $label_id, $generate)
   {
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return self::$label_used_error;
+    }
+
     if($generate) {
       if($this->label_sequence_model->add_generated_obj_label($seq_id, $label_id)) {
         return true;
@@ -416,10 +423,6 @@ class Label_Sequence extends BioController {
     }
 
     $data = $this->upload->data();
-
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
 
     $this->load->helper('image_utils');
     $filename = $data['orig_name'];
@@ -445,6 +448,53 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__add_obj_label($seq_id, $label_id, $generate));
+  }
+
+  function __edit_obj_label($id, $generate)
+  {
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return self::$label_inexistant_error;
+    }
+
+    if($generate) {
+      if($this->label_sequence_model->edit_generated_obj_label($id)) {
+        return true;
+      }
+
+      return self::$label_generate_error;
+    }
+
+    $this->load->library('upload', $this->_get_upload_config());
+    $upload_ret = $this->upload->do_upload('file');
+
+    if(!$upload_ret) {
+      return $this->upload->display_errors('', '');;
+    }
+
+    $data = $this->upload->data();
+
+    $this->load->helper('image_utils');
+    $filename = $data['orig_name'];
+    $bytes = read_file_content($data);
+
+    if($this->label_sequence_model->edit_obj_label($id, $filename, $bytes))
+    {
+      return true;
+    }
+
+    return self::$label_invalid_obj_type;
+  }
+
+  function edit_obj_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+
+    $id = $this->get_post('id');
+    $generate = $this->__get_generate();
+
+    $this->json_return($this->__edit_obj_label($id, $generate));
   }
 
   function __add_position_label($seq_id, $label_id, $start, $length, $generate)
