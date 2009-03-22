@@ -2,13 +2,15 @@
 
 class Label_model extends BioModel
 {
+  public static $label_view_fields = 'label_id AS id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment';
+
   function Label_model() {
     parent::BioModel('label');
   }
 
   function __select()
   {
-    $this->db->select('label_id AS id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment');
+    $this->db->select(self::$label_view_fields);
   }
 
   function get($id)
