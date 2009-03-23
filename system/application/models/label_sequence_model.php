@@ -742,6 +742,40 @@ class Label_sequence_model extends BioModel
     return $this->has_id($id);
   }
 
+  function __get_data($label)
+  {
+    $fields = $this->__get_data_fields($label['type']);
+
+    if(is_array($fields)) {
+      return array($label[$fields[0]], $label[$fields[1]]);
+    } else {
+      return $label[$fields];
+    }
+  }
+
+  function get_data($id)
+  {
+    $this->db->select('id, type, ' . self::$label_data_fields);
+
+    $data = $this->get_id($id, 'label_sequence_info');
+
+    return $this->__get_data($data);
+  }
+
+  function get_label($seq_id, $label_name)
+  {
+    $this->db->select('id, type, ' . self::$label_data_fields);
+    $this->db->where('name', $label_name);
+    $this->db->where('seq_id', $seq_id);
+    $all = $this->get_all('label_sequence_info');
+
+    if(!$all || count($all) == 0) {
+      return null;
+    }
+
+    return $this->__get_data($all[0]);
+  }
+
   function __get_data_fields($type)
   {
     switch($type) {
