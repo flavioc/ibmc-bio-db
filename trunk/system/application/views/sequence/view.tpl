@@ -43,6 +43,19 @@ $(document).ready(function() {
     minusEnabled: hide_labels_list
   });
 
+  $('#hide_show_labels_details').minusPlus({
+    zoom: 85,
+    enableImage: false,
+    plusEnabled: function () {
+      $('#labels_list').gridShowDefault('fast');
+    },
+    minusEnabled: function () {
+      $('#labels_list').gridHideDefault('fast');
+    },
+    plusText: 'Show details',
+    minusText: 'Hide details'
+  });
+
   $('#hide_show_validation').minusPlus({
     plusEnabled: load_validation_list,
     minusEnabled: hide_validation_list
@@ -67,8 +80,10 @@ $(document).ready(function() {
 <p>
 <h3>Associated labels</h3>
 <div id="hide_show_labels"></div>
-<div id="labels_list">
-</div>
+  <div id="labels_list">
+  </div>
+  <div id="hide_show_labels_details">
+  </div>
 </p>
 
 {if $missing}
