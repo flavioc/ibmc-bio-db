@@ -23,7 +23,7 @@ class Label_sequence_model extends BioModel
 
   function get_sequence($id)
   {
-    $this->db->select($this->__get_select());
+    $this->db->select($this->__get_select() . ", update_user_id, update, user_name");
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }

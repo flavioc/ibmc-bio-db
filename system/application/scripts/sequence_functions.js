@@ -56,6 +56,9 @@ var link_labels = {
       },
       edit: function (row) {
         return '#row_labels_list_' + row.id;
+      },
+      user_name: function (row) {
+        return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     };
 
@@ -103,9 +106,9 @@ function reload_labels_list()
   var options = {
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_labels/' + seq_id,
-    fieldNames: ['Name', 'Data', 'Subname', 'Type'],
+    fieldNames: ['Name', 'Data', 'Subname', 'Type', 'Update', 'User'],
     fieldGenerator: function (row) {
-      var base = ['name', select_field(row), 'subname', 'type'];
+      var base = ['name', select_field(row), 'subname', 'type', 'update', 'user_name'];
 
       if(logged_in) {
         base.push('edit');
@@ -113,6 +116,7 @@ function reload_labels_list()
 
       return base;
     },
+    hiddenFields: ['user_name', 'update'],
     links: link_labels,
     dataTransform: data_transform_labels,
     enableRemove: logged_in,
