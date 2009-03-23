@@ -44,6 +44,9 @@ class BioController extends Controller
 
     $this->load->model('configuration_model');
     setcookie('paging-size', $this->configuration_model->get_paging_size());
+
+    setcookie('logged-in', $this->logged_in);
+    setcookie('username', $this->username);
   }
 
   function use_paging_size()
