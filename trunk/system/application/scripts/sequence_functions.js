@@ -7,6 +7,7 @@ var addable_loaded = false;
 var labels_loaded = false;
 var validation_loaded = false;
 var bad_multiple_loaded = false;
+var logged_in = get_logged_in();
 var data_transform_labels = {
       subname: function (row) {
         if(row.subname == null) {
@@ -98,26 +99,23 @@ function reload_labels_list()
 {
   labels_loaded = true;
 
-  $('#labels_list')
-  .grid({
+
+  var options = {
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_labels/' + seq_id,
-    fieldNames: ['Name', 'Data', 'Subname', 'Type', 'Edit'],
+    fieldNames: ['Name', 'Data', 'Subname', 'Type'],
     fieldGenerator: function (row) {
-      return ['name', select_field(row), 'subname', 'type', 'edit'];
+      var base = ['name', select_field(row), 'subname', 'type'];
+
+      if(logged_in) {
+        base.push('edit');
+      }
+
+      return base;
     },
     links: link_labels,
     dataTransform: data_transform_labels,
-    editables: {
-      subname: {
-        select: true,
-        submit: 'OK',
-        cancel: 'cancel',
-        cssclass: 'editable',
-        width: '150px'
-      }
-    },
-    enableRemove: true,
+    enableRemove: logged_in,
     enableRemoveFun: function (row) {
       return row.deletable == '1';
     },
@@ -136,7 +134,23 @@ function reload_labels_list()
         tb_show('Edit label', url);
       }
     }
-  });
+  };
+
+  if(logged_in) {
+    options.editables = {
+      subname: {
+        select: true,
+        submit: 'OK',
+        cancel: 'cancel',
+        cssclass: 'editable',
+        width: '150px'
+      }
+    };
+
+    options.fieldNames.push('Edit');
+  }
+
+  $('#labels_list').grid(options);
 }
 
 function load_labels_list()
