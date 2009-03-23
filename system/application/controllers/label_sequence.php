@@ -25,7 +25,7 @@ class Label_Sequence extends BioController {
 
   function get_labels($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
     }
 
@@ -36,7 +36,7 @@ class Label_Sequence extends BioController {
 
   function get_missing_labels($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
     }
 
@@ -58,7 +58,7 @@ class Label_Sequence extends BioController {
 
   function get_validation_labels($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
     }
 
@@ -69,7 +69,7 @@ class Label_Sequence extends BioController {
 
   function get_bad_multiple_labels($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
     }
 

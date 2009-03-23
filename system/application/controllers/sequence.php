@@ -43,7 +43,7 @@ class Sequence extends BioController
 
   function view($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission();
     }
 
