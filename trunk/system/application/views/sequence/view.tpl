@@ -113,8 +113,6 @@ $(document).ready(function () {
     plusText: 'Show details',
     minusText: 'Hide details'
   });
-
-  ensure_addable_list_loaded();
 });
 
 {/literal}
@@ -161,6 +159,10 @@ $(document).ready(function () {
     plusEnabled: load_addable_list,
     minusEnabled: hide_addable_list
   });
+
+  {/literal}{if $missing}
+  ensure_addable_list_loaded();
+  {/if}{literal}
 });
 {/literal}
 </script>
