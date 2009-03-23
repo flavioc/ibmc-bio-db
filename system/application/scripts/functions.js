@@ -119,3 +119,18 @@ function get_paging_size()
 {
   return $.cookie('paging-size');
 }
+
+function get_logged_in()
+{
+  var value = $.cookie('logged-in');
+
+  if(value == 'deleted') {
+    return false;
+  }
+
+  if(value == '1') {
+    return true;
+  }
+
+  return false;
+}
