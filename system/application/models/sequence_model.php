@@ -75,6 +75,18 @@ class Sequence_model extends BioModel
     $this->db->trans_complete();
   }
 
+  function permission_public($id)
+  {
+    $label_sequence = $this->load_model('label_sequence_model');
+    $data =  $label_sequence->get_label($id, 'perm_public');
+
+    if($data == null) {
+      return false;
+    }
+
+    return $data;
+  }
+
   function edit_content($id, $content)
   {
     $this->db->trans_start();
