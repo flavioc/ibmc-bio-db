@@ -2,6 +2,7 @@
 
 {assign var=seq_id value=$sequence.id}
 
+{if $logged_in}
 <script>
 {literal}
 $(document).ready(function() {
@@ -25,35 +26,21 @@ $(document).ready(function() {
     submitdata: seqdata,
     finishHook: reload_labels_list
   });
+});
+{/literal}
+</script>
+{/if}
 
+<script>
+{literal}
+$(document).ready(function() {
   $('#labels_list').gridEnable({paginate: false});
-  $('#addable_list').gridEnable({paginate: false});
   $('#validation_list').gridEnable({paginate: false});
-
-  hide_addable_list();
 
   $('#hide_show_labels').minusPlus({
     enabled: true,
     plusEnabled: load_labels_list,
     minusEnabled: hide_labels_list
-  });
-
-  $('#hide_show_addable_details').minusPlus({
-    zoom: 85,
-    enableImage: false,
-    plusEnabled: function () {
-      $('#addable_list').gridShowDefault('fast');
-    },
-    minusEnabled: function () {
-      $('#addable_list').gridHideDefault('fast');
-    },
-    plusText: 'Show details',
-    minusText: 'Hide details'
-  });
-
-  $('#hide_show_addable').minusPlus({
-    plusEnabled: load_addable_list,
-    minusEnabled: hide_addable_list
   });
 
   $('#hide_show_validation').minusPlus({
@@ -133,6 +120,36 @@ $(document).ready(function () {
 
 {/if}
 
+{if $logged_in}
+
+<script>
+{literal}
+$(document).ready(function () {
+  $('#addable_list').gridEnable({paginate: false});
+
+  hide_addable_list();
+
+  $('#hide_show_addable_details').minusPlus({
+    zoom: 85,
+    enableImage: false,
+    plusEnabled: function () {
+      $('#addable_list').gridShowDefault('fast');
+    },
+    minusEnabled: function () {
+      $('#addable_list').gridHideDefault('fast');
+    },
+    plusText: 'Show details',
+    minusText: 'Hide details'
+  });
+
+  $('#hide_show_addable').minusPlus({
+    plusEnabled: load_addable_list,
+    minusEnabled: hide_addable_list
+  });
+});
+{/literal}
+</script>
+
 <hr />
 
 <p>
@@ -146,6 +163,7 @@ $(document).ready(function () {
   </div>
 </div>
 </p>
+{/if}
 
 <hr />
 
