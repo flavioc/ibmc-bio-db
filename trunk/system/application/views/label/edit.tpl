@@ -20,6 +20,7 @@ validate_label_form('#edit_form');
 {form_row type=checkbox name=editable msg='Editable:' checked=$label.editable}
 {form_row type=checkbox name=multiple msg='Multiple:' checked=$label.multiple}
 {form_row type=checkbox name=default msg='Default:' checked=$label.default}
+{form_row type=checkbox name=public msg='Public:' checked=$label.public}
 {form_row type=textarea name=code msg='Code:' cols=50 rows=5 value=$label.code}
 {form_row type=textarea name=valid_code msg='Validation code:' cols=50 rows=5 value=$label.valid_code}
 {form_row type=textarea name=comment msg='Comment:' cols=50 rows=5 value=$label.comment}

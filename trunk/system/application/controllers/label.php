@@ -107,6 +107,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('editable', $label['editable']);
     $this->smarty->fetch_form_row('multiple', $label['multiple']);
     $this->smarty->fetch_form_row('default', $label['default']);
+    $this->smarty->fetch_form_row('public', $label['public']);
     $this->smarty->fetch_form_row('code', $label['code']);
     $this->smarty->fetch_form_row('valid_code', $label['valid_code']);
     $this->smarty->fetch_form_row('comment', $label['comment']);
@@ -130,6 +131,7 @@ class Label extends BioController {
         $result['auto_on_modification'], $result['deletable'],
         $result['editable'], $result['multiple'],
         $result['default'],
+        $result['public'],
         $result['code'],
         $result['valid_code'],
         $result['comment']);
@@ -159,6 +161,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('editable');
     $this->smarty->fetch_form_row('multiple');
     $this->smarty->fetch_form_row('default');
+    $this->smarty->fetch_form_row('public');
     $this->smarty->fetch_form_row('code');
     $this->smarty->fetch_form_row('valid_code');
     $this->smarty->fetch_form_row('comment');
@@ -225,6 +228,7 @@ class Label extends BioController {
       $this->assign_row_data('editable');
       $this->assign_row_data('multiple');
       $this->assign_row_data('default');
+      $this->assign_row_data('public');
       $this->assign_row_data('code');
       $this->assign_row_data('valid_code');
       $this->assign_row_data('comment');
@@ -237,6 +241,7 @@ class Label extends BioController {
       $editable = $this->get_post('editable');
       $multiple = $this->get_post('multiple');
       $default = $this->get_post('default');
+      $public = $this->get_post('public');
       $comment = $this->get_post('comment');
 
       $mustexist = ($mustexist ? TRUE : FALSE);
@@ -244,6 +249,7 @@ class Label extends BioController {
       $editable = ($editable ? TRUE : FALSE);
       $multiple = ($multiple ? TRUE : FALSE);
       $default = ($default ? TRUE : FALSE);
+      $public = ($public ? TRUE : FALSE);
 
       return array('name' => $name,
                    'type' => $type,
@@ -255,6 +261,7 @@ class Label extends BioController {
                    'editable' => $editable,
                    'multiple' => $multiple,
                    'default' => $default,
+                   'public' => $public,
                    'code' => $code,
                    'valid_code' => $valid_code,
                    'comment' => $comment);
@@ -275,6 +282,7 @@ class Label extends BioController {
         $result['auto_on_modification'], $result['deletable'],
         $result['editable'], $result['multiple'],
         $result['default'],
+        $result['public'],
         $result['code'],
         $result['valid_code'],
         $result['comment']);

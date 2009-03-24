@@ -2,7 +2,7 @@
 
 class Label_model extends BioModel
 {
-  public static $label_view_fields = 'label_id AS id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment';
+  public static $label_view_fields = 'label_id AS id, type, name, autoadd, default, public, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment';
 
   function Label_model() {
     parent::BioModel('label');
@@ -72,7 +72,8 @@ class Label_model extends BioModel
   function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
-    $default, $code,
+    $default, $public,
+    $code,
     $valid_code, $comment)
   {
     $data = array(
@@ -86,6 +87,7 @@ class Label_model extends BioModel
       'editable' => $editable,
       'multiple' => $multiple,
       'default' => $default,
+      'public' => $public,
       'code' => $code,
       'valid_code' => $valid_code,
       'comment' => $comment,
@@ -97,8 +99,8 @@ class Label_model extends BioModel
   function edit($id, $name, $type, $autoadd, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
-    $default, $code,
-    $valid_code, $comment)
+    $default, $public,
+    $code, $valid_code, $comment)
   {
     $data = array(
       'name' => $name,
@@ -111,6 +113,7 @@ class Label_model extends BioModel
       'editable' => $editable,
       'multiple' => $multiple,
       'default' => $default,
+      'public' => $public,
       'code' => $code,
       'valid_code' => $valid_code,
       'comment' => $comment,
