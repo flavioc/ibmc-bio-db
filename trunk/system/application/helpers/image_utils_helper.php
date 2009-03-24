@@ -17,39 +17,6 @@ function process_user_image($controller, $data)
   $controller->image_lib->resize();
 }
 
-/* read slashed file content
- * as uploaded by file upload library
- */
-function read_file_content($data)
-{
-  $path = $data['full_path'];
-  $fp = fopen($path, 'rb');
-  $size = filesize($path);
-
-  $content = fread($fp, $size);
-
-  fclose($fp);
-
-  $content = addslashes($content);
-
-  return $content;
-}
-
-/* removes uploaded image */
-function remove_image($data)
-{
-  unlink($data['full_path']);
-}
-
-/* read image and then delete it */
-function read_file_and_delete($data)
-{
-  $content = read_file_content($data);
-  remove_image($data);
-
-  return $content;
-}
-
 /* process image from database to gd format */
 function process_db_image($content)
 {
