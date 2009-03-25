@@ -47,6 +47,13 @@ class Sequence extends BioController
       return $this->invalid_permission();
     }
 
+    if(!$this->sequence_model->has_id($id)) {
+      $this->smarty->assign('title', 'Invalid sequence');
+      $this->smarty->assign('id', $id);
+      $this->smarty->view('sequence/invalid_sequence');
+      return;
+    }
+
     $this->smarty->assign('title', 'View sequence');
     $this->smarty->load_scripts(JSON_SCRIPT, VALIDATE_SCRIPT,
       AUTOCOMPLETE_SCRIPT, FORM_SCRIPT,
@@ -58,7 +65,7 @@ class Sequence extends BioController
     $this->load->model('label_sequence_model');
 
     $sequence = $this->sequence_model->get($id);
-    $sequence['content'] = substr($sequence['content'], 0, 40);
+    $sequence['content'] = sequence_short_content($sequence['content']);
 
     $this->smarty->assign('sequence', $sequence);
     $this->smarty->assign('missing',
@@ -97,7 +104,7 @@ class Sequence extends BioController
 
     foreach($seqs as &$seq)
     {
-      $seq['short_content'] = substr($seq['content'], 0, 50);
+      $seq['short_content'] = sequence_short_content($seq['content']);
     }
 
     $this->smarty->assign('sequences', $seqs);
@@ -173,10 +180,21 @@ class Sequence extends BioController
   function download($id)
   {
     if(!$this->logged_in) {
-      return $this->invalid_permission();
+      return $this->invalid_permission_nothing();
     }
 
     echo $this->sequence_model->get_content($id);
+  }
+
+  function fetch($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_nothing();
+    }
+
+    $content = $this->sequence_model->get_content($id);
+
+    echo sequence_split($content);
   }
 
   function delete($id)
@@ -224,8 +242,10 @@ class Sequence extends BioController
     $id = $this->input->post('seq');
     $value = $this->input->post('value');
 
+    $value = sequence_join($value);
+
     $this->sequence_model->edit_content($id, $value);
 
-    echo $value;
+    echo sequence_short_content($value) . "...";
   }
 }
