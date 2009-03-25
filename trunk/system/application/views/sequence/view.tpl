@@ -84,6 +84,7 @@ $(document).ready(function() {
 <div id="labels_box">
   <div id="labels_list">
   </div>
+  <br />
   <div id="hide_show_labels_details">
   </div>
 </div>
