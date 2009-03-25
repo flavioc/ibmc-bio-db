@@ -24,7 +24,8 @@ $(document).ready(function() {
     cols: 50,
     rows: 5,
     submitdata: seqdata,
-    finishHook: reload_labels_list
+    finishHook: reload_labels_list,
+    loadurl: get_app_url() + '/sequence/fetch/' + seq_id
   });
 });
 {/literal}
@@ -67,7 +68,7 @@ $(document).ready(function() {
 
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="seqname" class="writeable">{$sequence.name}</span></p>
-  <p><span class="desc">Content: </span><span class="writeable" id="seqcontent">{$sequence.content}...</span></p>
+  <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span><span class="writeable" id="seqcontent">{$sequence.content}...</span></p>
 
 {include file='history/form_view.tpl' data=$sequence}
 

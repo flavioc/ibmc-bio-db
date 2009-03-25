@@ -44,6 +44,38 @@ function sequence_type($seq)
   return $type;
 }
 
+define('SEQUENCE_SPACING', 50);
+
+function sequence_split($content)
+{
+  $size = strlen($content);
+
+  $ret = '';
+  for($i = 0; $i < $size; $i = $i + SEQUENCE_SPACING) {
+    $ret .= substr($content, $i, SEQUENCE_SPACING) . "\n";
+  }
+
+  return $ret;
+}
+
+function sequence_join($content)
+{
+  $vec = explode("\n", $content);
+
+  $ret = "";
+
+  foreach($vec as $el) {
+    $ret .= $el;
+  }
+
+  return $ret;
+}
+
+function sequence_short_content($content)
+{
+  return substr($content, 0, SEQUENCE_SPACING);
+}
+
 function is_sequence_start($line)
 {
   return $line[0] == '>';
@@ -88,13 +120,15 @@ function import_fasta_file($controller, $file)
       $has_name = $controller->sequence_model->has_name($name);
       $el['add'] = !$has_name;
 
+      /*
       if($has_name) {
         $controller->sequence_model->delete($controller->sequence_model->get_id_by_name($name));
         $has_name = false;
-      }
+      }*/
 
       if($has_name) {
         $el['id'] = $controller->sequence_model->get_id_by_name($name);
+        $el['content'] = $controller->sequence_model->get_content($el['id']);
       } else {
         $el['id'] = $controller->sequence_model->add($name, $content);
       }
