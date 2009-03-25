@@ -163,12 +163,12 @@ function load_labels_list()
     reload_labels_list();
   }
 
-  $('#labels_list').fadeIn();
+  $('#labels_box').fadeIn();
 }
 
 function hide_labels_list()
 {
-  $('#labels_list').fadeOut();
+  $('#labels_box').fadeOut();
 }
 
 var nameLink = function (row) {

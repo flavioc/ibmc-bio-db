@@ -81,10 +81,12 @@ $(document).ready(function() {
 <p>
 <h3>Associated labels</h3>
 <div id="hide_show_labels"></div>
+<div id="labels_box">
   <div id="labels_list">
   </div>
   <div id="hide_show_labels_details">
   </div>
+</div>
 </p>
 
 {if $missing}
@@ -122,7 +124,8 @@ $(document).ready(function () {
 <hr />
 
 <p>
-<h3>Missing labels</h3><div id="hide_show_missing"></div>
+<h3>Missing labels</h3>
+<div id="hide_show_missing"></div>
 <div id="missing_box">
   <div id="missing_list">
   </div>
