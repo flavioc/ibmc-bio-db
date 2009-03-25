@@ -58,6 +58,8 @@ class Sequence extends BioController
     $this->load->model('label_sequence_model');
 
     $sequence = $this->sequence_model->get($id);
+    $sequence['content'] = substr($sequence['content'], 0, 40);
+
     $this->smarty->assign('sequence', $sequence);
     $this->smarty->assign('missing',
       $this->label_sequence_model->has_missing($id));
@@ -65,6 +67,62 @@ class Sequence extends BioController
       $this->label_sequence_model->has_bad_multiple($id));
 
     $this->smarty->view('sequence/view');
+  }
+
+  function add_batch()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $this->smarty->fetch_form_row('file');
+
+    $this->smarty->assign('title', 'Add batch sequences');
+    $this->smarty->view('sequence/add_batch');
+  }
+
+  function __get_fasta_upload_config()
+  {
+    $config['upload_path'] = UPLOAD_DIRECTORY;
+    $config['overwrite'] = true;
+    $config['encrypt_name'] = true;
+    $config['allowed_types'] = 'txt|application/octet-stream|exe';
+
+    return $config;
+  }
+
+  function __import_fasta_file($file)
+  {
+    $seqs = import_fasta_file($this, $file);
+
+    foreach($seqs as &$seq)
+    {
+      $seq['short_content'] = substr($seq['content'], 0, 50);
+    }
+
+    $this->smarty->assign('sequences', $seqs);
+
+    $this->smarty->assign('title', 'Batch results');
+    $this->smarty->view('sequence/batch_report');
+  }
+
+  function do_add_batch()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $this->load->library('upload', $this->__get_fasta_upload_config());
+
+    $upload_ret = $this->upload->do_upload('file');
+
+    if($upload_ret) {
+      $data = $this->upload->data();
+      $this->__import_fasta_file($data['full_path']);
+    } else {
+      $this->set_upload_form_error('file');
+      redirect('sequence/add_batch');
+    }
   }
 
   function add()
@@ -76,12 +134,6 @@ class Sequence extends BioController
     $this->smarty->fetch_form_row('content');
 
     $this->smarty->view('sequence/add');
-  }
-
-  function _add_labels($id)
-  {
-    $this->load->model('label_sequence_model');
-    $this->label_sequence_model->add_initial_labels($id);
   }
 
   function do_add()
@@ -113,8 +165,6 @@ class Sequence extends BioController
       $content = $this->get_post('content');
 
       $id = $this->sequence_model->add($name, $content);
-
-      $this->_add_labels($id);
 
       redirect("sequence/view/$id");
     }

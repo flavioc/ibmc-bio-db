@@ -43,3 +43,69 @@ function sequence_type($seq)
 
   return $type;
 }
+
+function is_sequence_start($line)
+{
+  return $line[0] == '>';
+}
+
+function get_sequence_name($line)
+{
+  $vec = split("[ \|>]+", $line);
+
+  return $vec[1];
+}
+
+function get_sequence_content($file)
+{
+  $line = read_file_line($file);
+
+  return trim($line);
+}
+
+function import_fasta_file($controller, $file)
+{
+  $ret = array();
+
+  $fp = fopen($file, 'rb');
+
+  while(!feof($fp)) {
+    $line = read_file_line($fp);
+
+    if(!$line) {
+      continue;
+    }
+
+    if(is_sequence_start($line)) {
+      $name = get_sequence_name($line);
+      $content = get_sequence_content($fp);
+
+      $el = array(
+        'name' => $name,
+        'content' => $content,
+      );
+
+      $has_name = $controller->sequence_model->has_name($name);
+      $el['add'] = !$has_name;
+
+      if($has_name) {
+        $controller->sequence_model->delete($controller->sequence_model->get_id_by_name($name));
+        $has_name = false;
+      }
+
+      if($has_name) {
+        $el['id'] = $controller->sequence_model->get_id_by_name($name);
+      } else {
+        $el['id'] = $controller->sequence_model->add($name, $content);
+      }
+
+      // adicionar no resultado
+      $ret[] = $el;
+    }
+  }
+
+  fclose($fp);
+  unlink($file);
+
+  return $ret;
+}

@@ -36,7 +36,13 @@ class Sequence_model extends BioModel
       'content' => $content,
     );
 
-    return $this->insert_data_with_history($data);
+    $label_sequence = $this->load_model('label_sequence_model');
+
+    $id = $this->insert_data_with_history($data);
+
+    $label_sequence->add_initial_labels($id);
+
+    return $id;
   }
 
   function get($id)
@@ -63,6 +69,16 @@ class Sequence_model extends BioModel
   function get_name($id)
   {
     return $this->get_field($id, 'name');
+  }
+
+  function has_name($name)
+  {
+    return $this->has_field('name', $name);
+  }
+
+  function get_id_by_name($name)
+  {
+    return $this->get_id_by_field('name', $name);
   }
 
   function edit_name($id, $name)

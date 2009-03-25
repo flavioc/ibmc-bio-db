@@ -289,6 +289,7 @@ class Profile extends BioController {
     }
 
     $image_str = $this->get_post_filename('image'); 
+
     if($image_str) {
       // verify image upload
       $this->load->library('upload', $this->_get_upload_config());
@@ -297,9 +298,9 @@ class Profile extends BioController {
       if(!$upload_ret) {
         $this->set_upload_form_error('image');
         $errors = true;
+      } else {
+        $image_data = $this->upload->data();
       }
-
-      $image_data = $this->upload->data();
     }
 
     if($errors) {
@@ -318,6 +319,7 @@ class Profile extends BioController {
 
       if($image_data) {
         $this->load->helper("image_utils");
+
         process_user_image($this, $image_data);
         $imagecontent = read_file_and_delete($image_data);
       }
