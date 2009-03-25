@@ -41,7 +41,6 @@ add_label "integer" "internal_id" "TRUE" "TRUE" \
 	"TRUE" "FALSE" "return \$id;" \
 	"FALSE" "FALSE" "FALSE"
 
-
 add_label "bool" "perm_public" "TRUE" "TRUE" \
   "TRUE" "FALSE" "return false;" \
   "FALSE" "TRUE" "FALSE"
