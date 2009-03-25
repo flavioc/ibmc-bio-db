@@ -110,6 +110,7 @@ class Sequence extends BioController
     $this->smarty->assign('sequences', $seqs);
 
     $this->smarty->assign('title', 'Batch results');
+    $this->smarty->assign('file', $file);
     $this->smarty->view('sequence/batch_report');
   }
 

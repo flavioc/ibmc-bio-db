@@ -143,9 +143,9 @@ class Profile extends BioController {
       if(!$upload_ret) {
         $this->set_upload_form_error('image');
         $errors = true;
+      } else {
+        $image_data = $this->upload->data();
       }
-
-      $image_data = $this->upload->data();
     }
 
     if($errors) {

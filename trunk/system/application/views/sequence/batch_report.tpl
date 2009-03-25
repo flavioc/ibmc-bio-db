@@ -1,6 +1,7 @@
 <h2>Batch results</h2>
 
 <p>The following sequences marked 'Yes' in 'New' were imported:</p>
+<p><strong>{$file}</strong></p>
 
 <table class="data">
   <tr>
