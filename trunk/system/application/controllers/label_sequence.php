@@ -474,7 +474,6 @@ class Label_Sequence extends BioController {
 
     $data = $this->upload->data();
 
-    $this->load->helper('image_utils');
     $filename = $data['orig_name'];
     $bytes = read_file_content($data);
 
@@ -523,7 +522,6 @@ class Label_Sequence extends BioController {
 
     $data = $this->upload->data();
 
-    $this->load->helper('image_utils');
     $filename = $data['orig_name'];
     $bytes = read_file_content($data);
 

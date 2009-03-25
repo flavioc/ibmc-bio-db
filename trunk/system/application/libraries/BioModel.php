@@ -88,7 +88,7 @@ class BioModel extends Model
 
   function get_id_by_field($field, $data, $table = null)
   {
-    $row = $this->get_row($field, $data, 'id', $table);
+    $row = $this->get_row($field, $data, $table);
 
     if($row == null) {
       return null;
