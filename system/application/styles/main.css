@@ -143,16 +143,25 @@ div.data_show, fieldset {
 div.navigation {
   margin-top: 7px;
   border: 1px solid black;
-  width: 150px;
+  width: 200px;
   padding-left: 2px;
   padding-right: 2px;
   padding: 5px;
+  height: 20px;
 }
 
 div.navigation a:hover {
   background: #c00;
   color: white;
   border: 1px dashed black;
+}
+
+div.navigation a.nav_previous {
+  float: left;
+}
+
+div.navigation a.nav_next {
+  float: right;
 }
 
 p.help {
