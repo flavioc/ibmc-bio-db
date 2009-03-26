@@ -33,7 +33,7 @@ class Sequence_model extends BioModel
   {
     $data = array(
       'name' => $name,
-      'content' => $content,
+      'content' => sequence_normalize($content),
     );
 
     $label_sequence = $this->load_model('label_sequence_model');
