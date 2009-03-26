@@ -117,7 +117,7 @@ function checkbox_enabled(dom)
 
 function get_paging_size()
 {
-  return $.cookie('paging-size');
+  return parseInt($.cookie('paging-size'));
 }
 
 function get_logged_in()
