@@ -326,8 +326,11 @@
           next.fadeIn();
         }
 
+        next.attr('href', '#start_' + next_start);
+
         next.click(function () {
             get_results(obj, opts, total, next_start);
+            return true;
         });
       } else {
         if(!next.is(':hidden')) {
@@ -340,8 +343,10 @@
           previous.fadeIn();
         }
 
+        previous.attr('href', '#start_' + previous_start);
         previous.click(function() {
             get_results(obj, opts, total, previous_start);
+            return true;
         });
       } else {
         if(!previous.is(':hidden')) {
