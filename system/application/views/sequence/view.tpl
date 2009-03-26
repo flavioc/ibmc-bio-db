@@ -22,7 +22,7 @@ $(document).ready(function() {
     cancel: 'cancel',
     style: 'inherit',
     cols: 50,
-    rows: 5,
+    rows: 15,
     submitdata: seqdata,
     finishHook: reload_labels_list,
     loadurl: get_app_url() + '/sequence/fetch/' + seq_id
