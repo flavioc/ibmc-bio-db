@@ -44,7 +44,7 @@ function sequence_type($seq)
   return $type;
 }
 
-define('SEQUENCE_SPACING', 50);
+define('SEQUENCE_SPACING', 40);
 
 function sequence_split($content)
 {
@@ -68,7 +68,12 @@ function sequence_join($content)
     $ret .= $el;
   }
 
-  return $ret;
+  return sequence_normalize($ret);
+}
+
+function sequence_normalize($content)
+{
+  return strtoupper(trim($content));
 }
 
 function sequence_short_content($content)
@@ -92,7 +97,7 @@ function get_sequence_content($file)
 {
   $line = read_file_line($file);
 
-  return trim($line);
+  return sequence_normalize($line);
 }
 
 function import_fasta_file($controller, $file)
