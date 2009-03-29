@@ -153,7 +153,6 @@ class Taxonomy extends BioController {
 
   function view($id)
   {
-    $this->smarty->assign('title', 'View taxonomy');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'taxonomy_functions.js', AUTOCOMPLETE_SCRIPT);
     $this->use_mygrid();
     $this->use_thickbox();
@@ -180,6 +179,7 @@ class Taxonomy extends BioController {
     $this->smarty->assign('ranks', $ranks);
     $this->smarty->assign('trees', $trees);
 
+    $this->smarty->assign('title', 'Taxonomy "' . $taxonomy['name'] . '"');
     $this->smarty->view('taxonomy/view');
   }
 
@@ -274,7 +274,18 @@ class Taxonomy extends BioController {
     $this->json_return($this->taxonomy_model->get($id));
   }
 
-  function taxonomy_childs($tax, $tree)
+  function __get_tree($tax, $tree)
+  {
+    if($tree == null) {
+      return $this->taxonomy_model->get_tree($tax);
+    } else if($tree == '0') {
+      return NULL;
+    } else {
+      return $tree;
+    }
+  }
+
+  function taxonomy_childs($tax, $tree = null)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -282,9 +293,7 @@ class Taxonomy extends BioController {
 
     $this->load->model('taxonomy_model');
 
-    if($tree == '0') {
-      $tree = NULL;
-    }
+    $tree = $this->__get_tree($tax, $tree);
 
     if($tax == '0') {
       $tax = NULL;
@@ -296,7 +305,7 @@ class Taxonomy extends BioController {
     $this->json_return($this->taxonomy_model->get_taxonomy_childs($tax, $tree, $start, $size));
   }
 
-  function total_taxonomy_childs($tax, $tree)
+  function total_taxonomy_childs($tax, $tree = null)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_zero();
@@ -304,15 +313,14 @@ class Taxonomy extends BioController {
 
     $this->load->model('taxonomy_model');
 
-    if($tree == '0') {
-      $tree = NULL;
-    }
+    $tree = $this->__get_tree($tax, $tree);
 
     if($tax == '0') {
       $tax = NULL;
     }
 
-    $this->json_return($this->taxonomy_model->count_taxonomy_childs($tax, $tree));
+    $this->json_return(
+      $this->taxonomy_model->count_taxonomy_childs($tax, $tree));
   }
 
   function tree_browse()
