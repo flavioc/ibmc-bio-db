@@ -1,10 +1,11 @@
 <h2>View/Edit rank</h2>
 
 <script>
+{to_js var=rank value=$rank}
 {literal}
 $(document).ready(function() {
-  var base_site = "{/literal}{site}{literal}/rank/";
-  var rank_id = "{/literal}{$rank.rank_id}{literal}";
+  var base_site = get_app_url() + "/rank/";
+  var rank_id = rank.rank_id;
   var rankdata = {rank: rank_id};
 
   $('#rankname').editable(base_site + 'edit_name', {
@@ -39,7 +40,28 @@ $(document).ready(function() {
 
 {form_open name=form_delete to="rank/delete_redirect"}
 {form_hidden name=id value=$rank.rank_id}
-{form_submit name=submit_delete msg=Delete}
+{form_submit name=delete_button msg=Delete}
 {form_end}
 
 {button name="list_ranks" to="rank/list_all" msg="List ranks"}
+
+<script>
+{literal}
+$(document).ready(function () {
+  $('#delete_button').click(function () {
+    $.ajaxprompt(get_app_url() + '/rank/delete_dialog/' + rank.rank_id,
+      {
+        buttons: {Yes: true, No: false},
+        submit: function (v) {
+          if(v) {
+            $('#form_delete').submit();
+          }
+
+          return true;
+        }
+      });
+    return false;
+  });
+});
+{/literal}
+</script>
