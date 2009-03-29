@@ -61,6 +61,9 @@ $(document).ready(function () {
         },
         add_child: function (row) {
           return base_site + 'add?parent_id=' + row.id + '&tree=' + row.tree_id;
+        },
+        rank_name: function (row) {
+          return get_app_url() + '/rank/view/' + row.rank_id;
         }
       },
       dataTransform: {
