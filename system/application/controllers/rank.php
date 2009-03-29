@@ -5,9 +5,7 @@ class Rank extends BioController {
   function Rank() {
     parent::BioController();
     $this->load->model('taxonomy_rank_model');
-  }
-
-  function index() {
+    $this->load->model('taxonomy_model');
   }
 
   function list_all()
@@ -24,16 +22,16 @@ class Rank extends BioController {
 
   function view($id)
   {
-    $this->smarty->assign('title', 'View rank');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
+    $this->use_impromptu();
 
-    $this->load->model('taxonomy_rank_model');
     $rank = $this->taxonomy_rank_model->get($id);
     $this->smarty->assign('rank', $rank);
 
     $ranks = $this->taxonomy_rank_model->get_simple_all($id);
     $this->smarty->assign('ranks', $ranks);
 
+    $this->smarty->assign('title', 'Rank "' . $rank['rank_name'] . '"');
     $this->smarty->view('rank/view');
   }
 
@@ -46,7 +44,6 @@ class Rank extends BioController {
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('parent_id');
 
-    $this->load->model('taxonomy_rank_model');
     $ranks = $this->taxonomy_rank_model->get_ranks();
     $this->smarty->assign('ranks', $ranks);
 
@@ -68,7 +65,6 @@ class Rank extends BioController {
       $errors = true;
     }
 
-    $this->load->model('taxonomy_rank_model');
 
     $parent = intval($this->get_post('parent_id'));
     if($parent == 0) {
@@ -181,10 +177,32 @@ class Rank extends BioController {
       return $this->invalid_permission_zero();
     }
 
-    $this->load->model('taxonomy_model');
     $total = $this->taxonomy_model->count_rank($rank);
 
     $this->json_return($total);
+  }
+
+  function delete_dialog($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_nothing();
+    }
+
+    $total = $this->taxonomy_model->count_rank($id);
+
+    $this->smarty->assign('total', $total);
+
+    $rank = $this->taxonomy_rank_model->get_name($id);
+    $this->smarty->assign('rank', $rank);
+
+    $child_id = $this->taxonomy_rank_model->get_child($id);
+    $child = null;
+    if($child_id != null) {
+      $child = $this->taxonomy_rank_model->get_name($child_id);
+    }
+    $this->smarty->assign('child', $child);
+
+    $this->smarty->view_s('rank/delete');
   }
 
   function delete($id) {

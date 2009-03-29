@@ -71,7 +71,7 @@ class BioController extends Controller
 
   function use_impromptu()
   {
-    $this->smarty->load_scripts(IMPROMPTU_SCRIPT);
+    $this->smarty->load_scripts(IMPROMPTU_SCRIPT, AJAXIMPROMPTU_SCRIPT);
     $this->smarty->load_stylesheets(IMPROMPTU_THEME);
   }
 
