@@ -67,7 +67,7 @@ class Label extends BioController {
 
     $label = $this->label_model->get($id);
 
-    $this->smarty->assign('title', 'View label');
+    $this->smarty->assign('title', 'Label "' . $label['name'] . '"');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->__assign_types();
     $this->smarty->assign('label', $label);
@@ -91,7 +91,6 @@ class Label extends BioController {
     }
 
     $id = $this->get_parameter('id');
-    $this->smarty->assign('title', 'Edit label');
     $this->__assign_types();
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');
 
@@ -114,6 +113,7 @@ class Label extends BioController {
 
     $this->smarty->assign('label', $label);
 
+    $this->smarty->assign('title', 'Edit label "' . $label['name'] . '"');
     $this->smarty->view('label/edit');
   }
 
