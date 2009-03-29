@@ -63,10 +63,7 @@ $(document).ready(function() {
 {form_submit name=submit_delete msg=Delete}
 {form_end}
 
-{form_open name=form_add_child to="taxonomy/add" method="get"}
-{form_hidden name="parent_id" value=$taxonomy.id}
-{form_submit name=submit_add_child msg="Add child"}
-{form_end}
+<hr />
 
 <h3>Other names</h3>
 <p>
@@ -142,4 +139,44 @@ $(document).ready(function() {
 {form_end}
 
 </p>
-{button name="browse_tax" msg="List taxonomies" to="taxonomy/browse"}
+<br />
+
+<hr />
+
+<h3>Children</h3>
+<p>
+<div id="child_taxonomies">
+</div>
+
+{form_open name=form_add_child to="taxonomy/add" method="get"}
+{form_hidden name="parent_id" value=$taxonomy.id}
+{form_submit name=submit_add_child msg="Add child"}
+{form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+  var div = $('#child_taxonomies');
+  var base_site = get_app_url() + "/taxonomy";
+
+  div.gridEnable();
+
+  div.grid({
+    url: base_site,
+    total: 'total_taxonomy_childs/' + taxonomy.id,
+    retrieve: 'taxonomy_childs/' + taxonomy.id,
+    fieldNames: ['Name', 'Rank', 'Tree'],
+    fields: ['name', 'rank_name', 'tree_name'],
+    links: {
+        name: function(row) {
+          return base_site + '/view/' + row.id;
+        },
+        rank_name: function (row) {
+          return get_app_url() + '/rank/view/' + row.rank_id;
+        }
+    }
+  });
+
+});
+</script>
+{/literal}
