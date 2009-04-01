@@ -3,7 +3,7 @@
 class BioForm_validation extends CI_Form_validation
 {
   var $base_password_rules = 'trim|min_length[6]';
-  var $base_username_rules = 'trim|required|min_length[5]|max_length[32]';
+  var $base_username_rules = 'trim|required|min_length[2]|max_length[32]';
 
   function BioForm_validation()
   {
