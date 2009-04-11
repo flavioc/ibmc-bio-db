@@ -11,8 +11,8 @@
   .grid({
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Parent', 'Last update', 'User', '$delete', 'Add taxonomy', 'Add child rank'],
-    fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', '$delete', 'add', 'add_child'],
+    fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Add taxonomy', 'Add child rank'],
+    fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', 'add', 'add_child'],
     dataTransform: {
       add: function (row) {
         return 'Add';
@@ -56,10 +56,7 @@
         return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     },
-    countRemove: 'total_taxonomies',
     what: 'rank',
-    removeAssociated: 'taxonomies',
-    enableRemove: true,
     total: 'get_total',
     idField: 'rank_id'
   });
