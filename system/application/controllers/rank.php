@@ -171,17 +171,6 @@ class Rank extends BioController {
     }
   }
 
-  function total_taxonomies($rank)
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
-    }
-
-    $total = $this->taxonomy_model->count_rank($rank);
-
-    $this->json_return($total);
-  }
-
   function delete_dialog($id)
   {
     if(!$this->logged_in) {
@@ -203,16 +192,6 @@ class Rank extends BioController {
     $this->smarty->assign('child', $child);
 
     $this->smarty->view_s('rank/delete');
-  }
-
-  function delete($id) {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $this->taxonomy_rank_model->delete_id($id);
-
-    $this->json_return(true);
   }
 
   function delete_redirect()
