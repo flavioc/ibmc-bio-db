@@ -3,6 +3,7 @@
 import MySQLdb
 from connection import *
 
+just_add = True
 db = create_conn()
 
 ######## NAME TYPES
@@ -194,6 +195,12 @@ def get_other_names(vec):
 
 ### Taxonomies
 
+def drop_tax():
+  c = db.cursor()
+  sql = "DELETE FROM taxonomy"
+  c.execute(sql)
+  db.commit()
+
 def get_tax(id):
   c = db.cursor()
   sql = "SELECT id FROM taxonomy WHERE import_id = " + id
@@ -238,6 +245,12 @@ def update_tax(id, parent, rank, name):
 
 ### TAXONOMY NAMES
 
+def drop_all_tax_names():
+  c = db.cursor()
+  sql = "DELETE FROM taxonomy_name"
+  c.execute(sql)
+  db.commit()
+
 def get_tax_names(id):
   c = db.cursor()
   sql = "SELECT id, name, type_id FROM taxonomy_name WHERE tax_id = " + str(id)
@@ -271,7 +284,10 @@ def get_missing_names(other_names, current_names):
   return ret
 
 def sync_names(id, other_names, current_names):
-  missing = get_missing_names(other_names, current_names)
+  if just_add:
+    missing = other_names
+  else:
+    missing = get_missing_names(other_names, current_names)
   for name in missing:
     name_str = name[1]
     type_str = name[3]
@@ -288,14 +304,17 @@ def sync_db():
     import_id = node[0]
     parent_id = node[1]
     rank = ensure_rank(node[2])
-    tax = get_tax(import_id)
     tax_names = names.fetch_id(int(import_id))
     name_vec = get_scientific_name(tax_names)
     name = name_vec[1]
-    if not tax:
+    if just_add:
       tax = create_tax(import_id, parent_id, rank, name)
-    #else:
-    #  update_tax(import_id, parent_id, rank, name)
+    else:
+      tax = get_tax(import_id)
+      if not tax:
+        tax = create_tax(import_id, parent_id, rank, name)
+      #else:
+      #  update_tax(import_id, parent_id, rank, name)
     other_names = get_other_names(tax_names)
     current_names = get_tax_names(tax)
     sync_names(tax, other_names, current_names)
@@ -313,6 +332,10 @@ def fix_parents():
     import_parent_id = row[1]
     fix_tax_parent(id, import_parent_id)
   c.close()
+
+if just_add:
+  drop_all_tax_names()
+  drop_tax()
 
 sync_db()
 fix_parents()
