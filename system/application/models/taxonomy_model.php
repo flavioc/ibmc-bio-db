@@ -25,9 +25,22 @@ class Taxonomy_model extends BioModel
 
   function get($id)
   {
-    $this->db->select('id, name, rank_id, tree_id, parent_id, parent_name, rank_name, tree_name, update_user_id, update, user_name');
+    $this->db->select('id, name, rank_id, tree_id, rank_name, tree_name, update_user_id, update, user_name');
 
     return $this->get_id($id, 'taxonomy_info_history');
+  }
+
+  function get_parent($id)
+  {
+    $import_parent_id = $this->get_import_parent_id($id);
+
+    $this->db->select('id AS parent_id, name AS parent_name');
+
+    if($import_parent_id) {
+      return $this->get_row('import_id', $import_parent_id);
+    } else {
+      return $this->get_row('parent_id', $id);
+    }
   }
 
   function has_taxonomy($id)
@@ -103,37 +116,24 @@ class Taxonomy_model extends BioModel
       $lower_name = $name;
     }
 
-    $sql = " FROM (SELECT *
-      FROM taxonomy_info
-      WHERE 1";
-
-    if($tree) {
-      $sql .= " AND tree_id = $tree";
+    $where_name_sql = "";
+    if($nocase) {
+      $where_name_sql .= "LCASE(name)";
     } else {
-      $sql .= " AND tree_id IS NULL";
+      $where_name_sql .= "name";
+    }
+    $where_name_sql .= " LIKE '$lower_name%'";
+
+    $sql = " FROM taxonomy_info WHERE TRUE ";
+    if($tree) {
+      $sql .= " AND tree_id = $tree ";
     }
 
     if($rank) {
-      $sql .= " AND rank_id = $rank";
-    } else {
-      $sql .= " AND rank_id IS NULL";
+      $sql .= " AND rank_id = $rank ";
     }
 
-    $sql .= ") AS a";
-    
-    $sql .= " NATURAL JOIN
-              (SELECT DISTINCT id
-              FROM taxonomy_all_names AS b
-              WHERE ";
-
-    if($nocase) {
-      $sql .= "LCASE(b.name)";
-    } else {
-      $sql .= "b.name";
-    }
-
-    $sql .= " LIKE '$lower_name%') AS c
-ORDER BY name";
+    $sql .= "AND $where_name_sql ORDER BY name ";
 
     if($start == null) {
       $start = 0;
@@ -202,74 +202,50 @@ ORDER BY name";
     $this->db->trans_complete();
   }
 
+  function __get_childs($tax, $tree)
+  {
+    if($tax == null) {
+      return "WHERE tree_id = $tree AND ((parent_id IS NULL AND import_id IS NULL) OR (parent_id IS NULL AND import_id IS NOT NULL AND import_id = import_parent_id))";
+    } else {
+      $import_id = $this->get_import_id($tax);
+      $sql = "WHERE tree_id = $tree AND ((parent_id IS NOT NULL AND parent_id = $tax) OR ";
+      if($import_id) {
+        $sql .= "(import_parent_id IS NOT NULL AND import_parent_id = $import_id AND import_parent_id <> import_id))";
+      } else {
+        $sql .= "TRUE)";
+      }
+
+      return $sql;
+    }
+  }
+
   function get_taxonomy_childs($tax, $tree, $start = null, $size = null)
   {
-    $this->db->where('tree_id', $tree);
-    $this->db->where('parent_id', $tax);
+
+    $sql = "SELECT * FROM taxonomy_info " . $this->__get_childs($tax, $tree) .
+      " ORDER BY name ";
 
     if($start != null && $size != null) {
-      $this->db->limit($size, $start);
+      $sql .= "LIMIT $start, $size";
     }
 
-    $this->db->order_by('name');
-    return $this->get_all('taxonomy_info');
+    return $this->rows_sql($sql);
   }
 
   function count_taxonomy_childs($tax, $tree)
   {
-    $this->db->where('tree_id', $tree);
-    $this->db->where('parent_id', $tax);
-
-    return $this->count_total();
+    $sql = "SELECT count(id) AS total FROM taxonomy " . $this->__get_childs($tax, $tree);
+    return $this->total_sql($sql);
   }
 
   function get_import_id($id)
   {
-    return $this->get_id_by_field('import_id', $id);
+    return $this->get_field($id, 'import_id');
   }
 
-  function ensure_existance($import_id, $import_parent_id, $rank, $name)
+  function get_import_parent_id($id)
   {
-    $id = $this->get_import_id($import_id);
-    
-    if($id != null) {
-      /*
-      $data = array(
-        'name' => $name,
-        'rank_id' => $rank,
-        'import_parent_id' => $import_parent_id,
-      );
-
-      $this->edit_data($id, $data);
-*/
-      return $id;
-    } else {
-      $data = array(
-        'name' => $name,
-        'rank_id' => $rank,
-        'import_id' => $import_id,
-        'import_parent_id' => $import_parent_id,
-      );
-
-      return $this->insert_data($data);
-    }
-  }
-
-  function get_import_parented()
-  {
-    $this->db->select('id, import_parent_id');
-    $this->db->where('import_parent_id IS NOT NULL');
-
-    return $this->db->get($this->table)->result_array();
-  }
-
-  function fix_imported_parent($id, $imported_parent)
-  {
-    $parent_id = $this->get_import_id($imported_parent);
-
-    $this->edit_field($id, 'parent_id', $parent_id);
-
-    return $parent_id != null;
+    return $this->get_field($id, 'import_parent_id');
   }
 }
 

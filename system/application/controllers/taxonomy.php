@@ -165,6 +165,10 @@ class Taxonomy extends BioController {
 
     $types = $this->taxonomy_name_type_model->get_all();
     $taxonomy = $this->taxonomy_model->get($id);
+    $parent = $this->taxonomy_model->get_parent($id);
+
+    $taxonomy = array_merge($taxonomy, $parent);
+
     $ranks = $this->taxonomy_rank_model->get_ranks();
     $trees = $this->taxonomy_tree_model->get_trees();
 

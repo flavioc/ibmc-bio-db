@@ -3,8 +3,8 @@ var form_tax_changed = false;
 var form_tax_base_site = get_app_url() + "/taxonomy/";
 var form_tax_dom = null;
 var form_tax_add_child = false;
-var form_tax_field_names = ['Name', 'Rank', 'Tree', 'Parent'];
-var form_tax_fields = ['name', 'rank_name', 'tree_name', 'parent_name'];
+var form_tax_field_names = ['Name', 'Rank', 'Tree'];
+var form_tax_fields = ['name', 'rank_name', 'tree_name'];
 var form_tax_click_fun = null;
 
 function start_tax_search_form(dom, put_addchild, click_fun)

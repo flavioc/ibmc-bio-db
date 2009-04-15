@@ -81,7 +81,7 @@ $(document).ready(function() {
     .gridEnable({paginate: false})
     .grid({
       url: get_app_url() + '/taxonomy_name',
-      retrieve: 'list_all/' + {/literal}{$taxonomy.id}{literal},
+      retrieve: 'list_all/' + tax_id,
       fieldNames: ['Name', 'Type'],
       fields: ['name', 'type_name'],
       enableRemove: true,
