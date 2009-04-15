@@ -219,15 +219,6 @@ def get_import_tax(import_id):
     return None
   return int(row[0])
 
-def fix_tax_parent(tax, import_parent_id):
-  parent_id = get_import_tax(import_parent_id)
-  if parent_id is None:
-    return
-  c = db.cursor()
-  sql = "UPDATE taxonomy SET parent_id = " + str(parent_id) + " WHERE id = " + str(tax)
-  c.execute(sql)
-  db.commit()
-
 def create_tax(id, parent, rank, name):
   cursor = db.cursor()
   sql = "INSERT INTO taxonomy (name, rank_id, tree_id, import_id, import_parent_id) VALUES(\"" + MySQLdb.escape_string(name) + "\", " + str(rank) + ", " + str(tree_id) + ", " + id + ", " + parent + ")"
@@ -320,25 +311,11 @@ def sync_db():
     sync_names(tax, other_names, current_names)
     print import_id
 
-def fix_parents():
-  c = db.cursor()
-  sql = "SELECT id, import_parent_id FROM taxonomy WHERe import_parent_id is NOT NULL AND parent_id IS NULL"
-  c.execute(sql)
-  while True:
-    row = c.fetchone()
-    if row is None:
-      break
-    id = row[0]
-    import_parent_id = row[1]
-    fix_tax_parent(id, import_parent_id)
-  c.close()
-
 if just_add:
   drop_all_tax_names()
   drop_tax()
 
 sync_db()
-fix_parents()
 
 db.close()
 
