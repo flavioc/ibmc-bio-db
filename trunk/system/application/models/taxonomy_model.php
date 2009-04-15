@@ -237,9 +237,7 @@ class Taxonomy_model extends BioModel
     $sql = "SELECT * FROM taxonomy_info " . $this->__get_childs($tax, $tree) .
       " ORDER BY name ";
 
-    if($start != null && $size != null) {
-      $sql .= "LIMIT $start, $size";
-    }
+    $sql .= sql_limit($start, $size);
 
     return $this->rows_sql($sql);
   }
