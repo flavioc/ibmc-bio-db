@@ -34,12 +34,18 @@ class Taxonomy_model extends BioModel
   {
     $import_parent_id = $this->get_import_parent_id($id);
 
-    $this->db->select('id AS parent_id, name AS parent_name');
-
     if($import_parent_id) {
+      $this->db->select('id AS parent_id, name AS parent_name');
       return $this->get_row('import_id', $import_parent_id);
     } else {
-      return $this->get_row('parent_id', $id);
+      $parent_id = $this->get_field($id, 'parent_id');
+      $this->db->select('id AS parent_id, name AS parent_name');
+      $ret = $this->get_id($parent_id);
+      if($ret) {
+        return $ret;
+      } else {
+        return array('parent_id' => NULL, 'parent_name' => NULL);
+      }
     }
   }
 
@@ -124,7 +130,9 @@ class Taxonomy_model extends BioModel
     }
     $where_name_sql .= " LIKE '$lower_name%'";
 
-    $sql = " FROM taxonomy_info WHERE TRUE ";
+    $sql = "SELECT id ";
+
+    $sql .= " FROM taxonomy_info WHERE TRUE ";
     if($tree) {
       $sql .= " AND tree_id = $tree ";
     }
@@ -133,48 +141,52 @@ class Taxonomy_model extends BioModel
       $sql .= " AND rank_id = $rank ";
     }
 
-    $sql .= "AND $where_name_sql ORDER BY name ";
+    $sql .= " AND $where_name_sql ";
 
-    if($start == null) {
-      $start = 0;
+    /*
+    $sql .= " UNION SELECT tax_id AS id FROM taxonomy_name_tax WHERE TRUE ";
+
+    if($tree) {
+      $sql .= " AND tree_id = $tree ";
     }
-  
-    if($size != null) {
-      $sql .= " LIMIT $start, $size";
+
+    if($rank) {
+      $sql .= " AND rank_id = $rank ";
     }
+    $sql .= " AND $where_name_sql ";
+     */
+
+    $sql .= sql_limit($start, $size);
 
     return $sql;
   }
 
   function _search_query($name, $rank, $tree, $start = null, $size = null)
   {
-    return $this->db->query('SELECT * ' . $this->_get_search_sql($name, $rank, $tree, $start, $size));
+    $search = $this->_get_search_sql($name, $rank, $tree);
+    $sql =  $this->_get_search_sql($name, $rank, $tree) . ' ORDER BY name' . sql_limit($start, $size);
+    return $this->db->query($sql);
   }
 
   function search($name, $rank, $tree, $start = null, $size = null)
   {
-    $query = $this->_search_query($name, $rank, $tree, $start, $size);
-
-    $data = $query->result_array();
-
-    return $data;
+    return $this->search_field('*', $name, $rank, $tree, $start, $size);
   }
 
   function search_field($field, $name, $rank, $tree, $start = null, $size = null)
   {
-    $query = $this->db->query("SELECT $field " . $this->_get_search_sql($name, $rank,
-      $tree, $start, $size));
+    $search = $this->_get_search_sql($name, $rank, $tree, $start, $size);
+    $sql = "SELECT $field FROM (taxonomy_info NATURAL JOIN ($search) AS dderiv ) ORDER BY name";
 
-    $data = $query->result_array();
-
-    return $data;
+    return $this->rows_sql($sql);
   }
 
   function search_total($name, $rank, $tree)
   {
-    $query = $this->_search_query($name, $rank, $tree);
+    $search = $this->_get_search_sql($name, $rank, $tree);
+    $sql = "SELECT count(id) AS total FROM ($search) AS C";
 
-    return $query->num_rows();
+    return $this->total_sql($sql);
   }
 
   function count_rank($rank)
@@ -212,7 +224,7 @@ class Taxonomy_model extends BioModel
       if($import_id) {
         $sql .= "(import_parent_id IS NOT NULL AND import_parent_id = $import_id AND import_parent_id <> import_id))";
       } else {
-        $sql .= "TRUE)";
+        $sql .= "FALSE)";
       }
 
       return $sql;
