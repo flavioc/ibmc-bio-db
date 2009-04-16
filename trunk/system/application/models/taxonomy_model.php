@@ -128,7 +128,7 @@ class Taxonomy_model extends BioModel
     } else {
       $where_name_sql .= "name";
     }
-    $where_name_sql .= " LIKE '$lower_name%'";
+    $where_name_sql .= " LIKE '%$lower_name%'";
 
     $sql = "SELECT id ";
 
