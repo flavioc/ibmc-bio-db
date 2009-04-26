@@ -28,27 +28,26 @@ def sql_to_string(val):
 def sql_to_symbol(val):
   return "'%s'" % val
 
-def update_label(name, type, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple):
+def update_label(name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple):
   cursor = db.cursor()
-  sql = "UPDATE label SET type = %s, autoadd = %s, `default` = %s, must_exist = %s, auto_on_creation = %s, auto_on_modification = %s, code = %s, valid_code = %s, deletable = %s, editable = %s, multiple = %s WHERE name = %s" \
-    % (type, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, sql_to_string(name))
+  sql = "UPDATE label SET type = %s, `default` = %s, must_exist = %s, auto_on_creation = %s, auto_on_modification = %s, code = %s, valid_code = %s, deletable = %s, editable = %s, multiple = %s WHERE name = %s" \
+    % (type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, sql_to_string(name))
   cursor.execute(sql)
   db.commit()
   print("Label %s has been updated." % name)
 
-def add_new_label(name, type, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple):
+def add_new_label(name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple):
   cursor = db.cursor()
-  sql = "INSERT INTO label(name, type, autoadd, `default`, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple) VALUES(\"%s\", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" \
-    % (name, type, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple)
+  sql = "INSERT INTO label(name, type, `default`, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple) VALUES(\"%s\", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" \
+    % (name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple)
   cursor.execute(sql)
   id = int(db.insert_id())
   db.commit()
   print("Label %s added to database." % name)
   return id
 
-def add_label(name, type, autoadd = True, default = True, must_exist = True, auto_on_creation = True, auto_on_modification = True, code = '', valid_code = '', deletable = False, editable = False, multiple = False):
+def add_label(name, type, default = True, must_exist = True, auto_on_creation = True, auto_on_modification = True, code = '', valid_code = '', deletable = False, editable = False, multiple = False):
   type = sql_to_symbol(type)
-  autoadd = sql_to_bool(autoadd)
   default = sql_to_bool(default)
   must_exist = sql_to_bool(must_exist)
   auto_on_creation = sql_to_bool(auto_on_creation)
@@ -59,9 +58,9 @@ def add_label(name, type, autoadd = True, default = True, must_exist = True, aut
   editable = sql_to_bool(editable)
   multiple = sql_to_bool(multiple)
   if has_label(name):
-    update_label(name, type, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple)
+    update_label(name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple)
   else:
-    add_new_label(name, type, autoadd, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple)
+    add_new_label(name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple)
 
 add_label(name = "length",
     type = "integer",
@@ -70,7 +69,6 @@ add_label(name = "length",
 
 add_label(name = "refseq",
     type = "ref",
-    autoadd = False,
     must_exist = False,
     auto_on_creation = False,
     auto_on_modification = False,
@@ -80,7 +78,6 @@ add_label(name = "refseq",
 
 add_label(name = "refpos",
     type = "position",
-    autoadd = False,
     must_exist = False,
     auto_on_creation = False,
     auto_on_modification = False,
@@ -89,7 +86,6 @@ add_label(name = "refpos",
 
 add_label(name = "url",
     type = "url",
-    autoadd = False,
     must_exist = False,
     auto_on_creation = False,
     auto_on_modification = False,
