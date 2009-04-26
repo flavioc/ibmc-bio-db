@@ -24,13 +24,6 @@ class BioModel extends Model
     return $found != null;
   }
 
-  function new_history()
-  {
-    $history = $this->load_model('history_model');
-
-    return $history->add();
-  }
-
   function update_history($id, $table = null)
   {
     $history = $this->load_model('history_model');
@@ -211,11 +204,10 @@ class BioModel extends Model
 
     $this->db->trans_start();
 
-    $data['history_id'] = $this->new_history();
-
     $this->db->insert($table, $data);
 
     $ret = $this->db->insert_id();
+    $this->update_history($ret, $table);
 
     $this->db->trans_complete();
 

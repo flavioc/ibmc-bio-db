@@ -12,11 +12,9 @@ class Taxonomy_rank_model extends BioModel
     return $this->get_row('rank_id', $id, 'taxonomy_rank_info_history');
   }
 
-  function get_simple_all($except = null)
+  function get_unparented_ranks($id = null)
   {
-    if($except) {
-      $this->db->where("id != $except");
-    }
+    $this->db->order_by('name');
 
     return parent::get_all();
   }
@@ -73,9 +71,9 @@ class Taxonomy_rank_model extends BioModel
 
   function edit_parent($id, $new_parent)
   {
-    if($this->parent_used($new_parent, $id)) {
-      return false;
-    }
+    // if($this->parent_used($new_parent, $id)) {
+    //  return false;
+    // }
 
     $this->db->trans_start();
 
