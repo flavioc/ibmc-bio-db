@@ -8,7 +8,6 @@ validate_label_form('#add_form');
 <fieldset>
 {form_row name=name msg='Name:'}
 {form_row type=select data=$types name=type msg='Type:' key=name}
-{form_row type=checkbox name=autoadd msg='Auto add:'}
 {form_row type=checkbox name=mustexist msg='Must exist:'}
 {form_row type=checkbox name=auto_on_creation msg='Generate on creation:'}
 {form_row type=checkbox name=auto_on_modification msg='Generate on modification:'}<br />

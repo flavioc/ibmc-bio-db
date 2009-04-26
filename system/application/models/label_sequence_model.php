@@ -4,7 +4,7 @@ class Label_sequence_model extends BioModel
 {
   private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_a_data, position_b_data, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name";
 
-  private static $label_basic_fields = "label_id, id, seq_id, subname, history_id, type, name, autoadd, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
+  private static $label_basic_fields = "label_id, id, seq_id, subname, history_id, type, name, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
 
   function Label_sequence_model() {
     parent::BioModel('label_sequence');
@@ -606,7 +606,7 @@ class Label_sequence_model extends BioModel
 
   function get_addable_labels($id)
   {
-    $sql = "SELECT id, name, type, autoadd, must_exist, auto_on_creation
+    $sql = "SELECT id, name, type, must_exist, auto_on_creation
           auto_on_modification, deletable, editable, multiple
       FROM label
       WHERE multiple IS TRUE OR

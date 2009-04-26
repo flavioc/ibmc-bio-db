@@ -18,8 +18,8 @@ $(document).ready(function () {
         params: {
           name: function () { return $('#name').val(); }
         },
-        fieldNames: ['Name', 'Type', 'Auto Add', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
-        fields: ['name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+        fieldNames: ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+        fields: ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
         countRemove: 'total_sequences',
         what: 'label',
         removeAssociated: 'sequences',
@@ -30,7 +30,6 @@ $(document).ready(function () {
           }
         },
         types: {
-          autoadd: 'boolean',
           must_exist: 'boolean',
           auto_on_creation: 'boolean',
           auto_on_modification: 'boolean',

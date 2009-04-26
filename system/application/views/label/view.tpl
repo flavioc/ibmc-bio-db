@@ -4,10 +4,6 @@
   <p><span class="desc">Name: </span><span id="labelname">{$label.name}</span></p>
   <p><span class="desc">Type: </span><span id="labeltype">{$label.type}</span></p>
 
-  <p><span class="desc">Auto Add: </span>
-    <span id="labelautoadd">{boolean value=$label.autoadd}</span>
-  </p>
-
   <p><span class="desc">Must Exist: </span>
     <span id="labelmustexist">{boolean value=$label.must_exist}</span>
   </p>

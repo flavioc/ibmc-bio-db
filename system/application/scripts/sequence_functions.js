@@ -176,7 +176,6 @@ var nameLink = function (row) {
 }
 
 var labelTypes = {
-  autoadd: 'boolean',
   auto_on_creation: 'boolean',
   auto_on_modification: 'boolean',
   deletable: 'boolean',
@@ -185,7 +184,7 @@ var labelTypes = {
   must_exist: 'boolean'
 }
 
-var hiddenFields = ['autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'must_exist'];
+var hiddenFields = ['auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'must_exist'];
 
 function reload_missing_list()
 {
@@ -195,8 +194,8 @@ function reload_missing_list()
   .grid({
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_missing_labels/' + seq_id,
-    fieldNames: ['Select', 'Name', 'Type', 'Auto Add', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
-    fields: ['select', 'name', 'type', 'autoadd', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+    fieldNames: ['Select', 'Name', 'Type', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+    fields: ['select', 'name', 'type', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
     links: {
       name: nameLink,
       select: function (row) {
@@ -246,8 +245,8 @@ function reload_addable_list()
   .grid({
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_addable_labels/' + seq_id,
-    fieldNames: ['Add', 'Name', 'Type', 'Auto Add', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
-    fields: ['add', 'name', 'type', 'autoadd', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
+    fieldNames: ['Add', 'Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
+    fields: ['add', 'name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
     links: {
       name: nameLink,
       add: function (row) {
