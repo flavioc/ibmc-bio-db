@@ -12,12 +12,6 @@ function validate_label_form (dom)
       return checked_creation || checked_modification;
     }
 
-    function autoadd_is_required() {
-      var checked_creation = auto_on_creation.is(":checked");
-
-      return checked_creation;
-    }
-
     $(dom).validate({
       rules: {
         name: {
@@ -27,9 +21,6 @@ function validate_label_form (dom)
         },
         type: {
           required: true
-        },
-        autoadd: {
-          required: autoadd_is_required
         },
         code: {
           required: code_is_required

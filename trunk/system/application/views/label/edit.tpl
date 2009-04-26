@@ -10,7 +10,6 @@ validate_label_form('#edit_form');
 <fieldset>
 {form_row name=name msg='Name:'}
 {form_row type=select data=$types name=type msg='Type:' start=$label.type key=name}
-{form_row type=checkbox name=autoadd msg='Auto Add:' checked=$label.autoadd}
 {form_row type=checkbox name=mustexist msg='Must Exist:' checked=$label.must_exist}
 {form_row type=checkbox name=auto_on_creation msg='Generate on creation' checked=$label.auto_on_creation}
 {form_row type=checkbox name=auto_on_modification msg='Generate on modification' checked=$label.auto_on_modification}

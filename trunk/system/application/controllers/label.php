@@ -98,7 +98,6 @@ class Label extends BioController {
 
     $this->smarty->fetch_form_row('name', $label['name']);
     $this->smarty->fetch_form_row('type', $label['type']);
-    $this->smarty->fetch_form_row('autoadd', $label['autoadd']);
     $this->smarty->fetch_form_row('must_exist', $label['must_exist']);
     $this->smarty->fetch_form_row('auto_on_creation', $label['auto_on_creation']);
     $this->smarty->fetch_form_row('auto_on_modification', $label['auto_on_modification']);
@@ -127,7 +126,7 @@ class Label extends BioController {
 
     if(is_array($result)) {
       $this->label_model->edit($id, $result['name'], $result['type'],
-        $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
+        $result['must_exist'], $result['auto_on_creation'],
         $result['auto_on_modification'], $result['deletable'],
         $result['editable'], $result['multiple'],
         $result['default'],
@@ -153,7 +152,6 @@ class Label extends BioController {
 
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('type');
-    $this->smarty->fetch_form_row('autoadd');
     $this->smarty->fetch_form_row('mustexist');
     $this->smarty->fetch_form_row('auto_on_creation');
     $this->smarty->fetch_form_row('auto_on_modification');
@@ -193,21 +191,12 @@ class Label extends BioController {
         $errors = true;
       }
 
-      $autoadd = $this->get_post('autoadd');
-      $autoadd = ($autoadd ? TRUE : FALSE);
       $auto_on_creation = $this->get_post('auto_on_creation');
       $auto_on_creation = ($auto_on_creation ? TRUE : FALSE);
       $auto_on_modification = $this->get_post('auto_on_modification');
       $auto_on_modification = ($auto_on_modification ? TRUE : FALSE);
       $code = $this->get_post('code');
       $valid_code = $this->get_post('valid_code');
-
-      if($auto_on_creation) {
-        if(!$autoadd) {
-          $this->set_form_error('autoadd', 'This must be set to true');
-          $errors = true;
-        }
-      }
 
       if($auto_on_creation || $auto_on_modification) {
         if(!$code || strlen($code) == 0) {
@@ -220,7 +209,6 @@ class Label extends BioController {
     if($errors) {
       $this->assign_row_data('name');
       $this->assign_row_data('type');
-      $this->assign_row_data('autoadd');
       $this->assign_row_data('mustexist');
       $this->assign_row_data('auto_on_creation');
       $this->assign_row_data('auto_on_modification');
@@ -253,7 +241,6 @@ class Label extends BioController {
 
       return array('name' => $name,
                    'type' => $type,
-                   'autoadd' => $autoadd,
                    'must_exist' => $mustexist,
                    'auto_on_creation' => $auto_on_creation,
                    'auto_on_modification' => $auto_on_modification,
@@ -278,7 +265,7 @@ class Label extends BioController {
 
     if(is_array($result)) {
       $id = $this->label_model->add($result['name'], $result['type'],
-        $result['autoadd'], $result['must_exist'], $result['auto_on_creation'],
+        $result['must_exist'], $result['auto_on_creation'],
         $result['auto_on_modification'], $result['deletable'],
         $result['editable'], $result['multiple'],
         $result['default'],

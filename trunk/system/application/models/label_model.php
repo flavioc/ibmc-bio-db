@@ -2,7 +2,7 @@
 
 class Label_model extends BioModel
 {
-  public static $label_view_fields = 'label_id AS id, type, name, autoadd, default, public, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment';
+  public static $label_view_fields = 'label_id AS id, type, name, default, public, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment';
 
   function Label_model()
   {
@@ -22,7 +22,7 @@ class Label_model extends BioModel
 
   function get_simple($id, $get_code = false)
   {
-    $select = 'id, name, type, autoadd, must_exist, auto_on_creation,
+    $select = 'id, name, type, must_exist, auto_on_creation,
       auto_on_modification, deletable, editable, multiple';
 
     if($get_code) {
@@ -70,7 +70,7 @@ class Label_model extends BioModel
     return $this->count_total();
   }
 
-  function add($name, $type, $autoadd, $mustexist, $auto_on_creation,
+  function add($name, $type, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
     $default, $public,
@@ -80,7 +80,6 @@ class Label_model extends BioModel
     $data = array(
       'name' => $name,
       'type' => $type,
-      'autoadd' => $autoadd,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
       'auto_on_modification' => $auto_on_modification,
@@ -97,7 +96,7 @@ class Label_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
-  function edit($id, $name, $type, $autoadd, $mustexist, $auto_on_creation,
+  function edit($id, $name, $type, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
     $default, $public,
@@ -106,7 +105,6 @@ class Label_model extends BioModel
     $data = array(
       'name' => $name,
       'type' => $type,
-      'autoadd' => $autoadd,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
       'auto_on_modification' => $auto_on_modification,
@@ -158,7 +156,7 @@ class Label_model extends BioModel
 
   function get_to_add()
   {
-    $this->db->where('autoadd', TRUE);
+    $this->db->where('auto_on_creation', TRUE);
 
     return parent::get_all();
   }
