@@ -28,7 +28,7 @@ class Rank extends BioController {
     $rank = $this->taxonomy_rank_model->get($id);
     $this->smarty->assign('rank', $rank);
 
-    $ranks = $this->taxonomy_rank_model->get_simple_all($id);
+    $ranks = $this->taxonomy_rank_model->get_unparented_ranks($id);
     $this->smarty->assign('ranks', $ranks);
 
     $this->smarty->assign('title', 'Rank "' . $rank['rank_name'] . '"');
@@ -160,8 +160,7 @@ class Rank extends BioController {
         $this->return_empty();
       }
     } else {
-      // parent is already being used somewhere else
-      // try to get current parent name
+      // some error ocurred
       $name = $this->taxonomy_rank_model->get_parent_name($id);
       if($name) {
         echo $name;

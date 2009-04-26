@@ -487,4 +487,3 @@ class Taxonomy extends BioController {
     redirect('taxonomy/view/' . $tax_id);
   }
 }
-
