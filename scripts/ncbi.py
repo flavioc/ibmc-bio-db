@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import MySQLdb
+import sys
 from connection import *
 
 just_add = True
@@ -197,7 +198,7 @@ def get_other_names(vec):
 
 def drop_tax():
   c = db.cursor()
-  sql = "DELETE FROM taxonomy"
+  sql = "DELETE FROM taxonomy WHERE tree_id = " + str(tree_id)
   c.execute(sql)
   db.commit()
 
@@ -235,12 +236,6 @@ def update_tax(id, parent, rank, name):
   return id
 
 ### TAXONOMY NAMES
-
-def drop_all_tax_names():
-  c = db.cursor()
-  sql = "DELETE FROM taxonomy_name"
-  c.execute(sql)
-  db.commit()
 
 def get_tax_names(id):
   c = db.cursor()
@@ -312,10 +307,8 @@ def sync_db():
     print import_id
 
 if just_add:
-  drop_all_tax_names()
   drop_tax()
 
 sync_db()
 
 db.close()
-
