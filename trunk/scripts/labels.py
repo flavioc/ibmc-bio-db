@@ -3,6 +3,7 @@
 import MySQLdb
 import sys
 from connection import *
+from utils import *
 
 db = create_conn()
 
@@ -12,21 +13,6 @@ def has_label(name):
   c.execute(sql)
   row = c.fetchone()
   return row is not None
-
-def sql_to_bool(val):
-  if val is True:
-    return "TRUE"
-  else:
-    return "FALSE"
-
-def sql_to_string(val):
-  if val == "":
-    return "NULL"
-  else:
-    return "\"%s\"" % val
-
-def sql_to_symbol(val):
-  return "'%s'" % val
 
 def update_label(name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple):
   cursor = db.cursor()
