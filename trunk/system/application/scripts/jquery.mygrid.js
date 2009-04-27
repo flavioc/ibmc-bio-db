@@ -173,6 +173,15 @@
     }
   }
 
+  function apply_td_styles(opts, obj) {
+    var tdClass = opts.tdClass;
+
+    $.each(opts.tdClass, function (field, class_name) {
+        var td_class_name = 'td_' + obj[0].id + '_' + field;
+        $('td[@class=' + td_class_name + ']', obj).addClass(class_name);
+    });
+  }
+
   function activate_edition(opts, obj, table) {
     var id = obj[0].id;
 
@@ -369,6 +378,7 @@
     }
 
     obj.gridHideDefault();
+    apply_td_styles(opts, obj);
     table.fadeIn();
     activate_edition(opts, obj, table);
 
@@ -656,7 +666,8 @@ $.fn.grid.defaults = {
   hiddenFields: [],
   writeableClass: 'writeable',
   classFun: {},
-  deleteFun: null
+  deleteFun: null,
+  tdClass: {}
 }
 
 $.fn.gridEnable.defaults = {
