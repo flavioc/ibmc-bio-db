@@ -157,7 +157,7 @@ class BioController extends Controller
     $url = uri_string();
 
     if(!$msg) {
-      $msg = "Invalid permission to access";
+      $msg = "You must login first";
     }
 
     $this->set_error_message("$url: $msg");
