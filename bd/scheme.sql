@@ -50,7 +50,7 @@ CREATE TABLE `history` (
   KEY `update_user_id` (`update_user_id`),
   CONSTRAINT `history_ibfk_1` FOREIGN KEY (`creation_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `history_ibfk_2` FOREIGN KEY (`update_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=1075819 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='history';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='history';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -108,12 +108,6 @@ SET character_set_client = utf8;
   `update` timestamp,
   `user_name` char(32),
   `complete_name` varchar(512),
-  `creation_date` timestamp,
-  `password` char(32),
-  `email` varchar(129),
-  `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
   `enabled` tinyint(1)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
@@ -145,7 +139,7 @@ CREATE TABLE `label` (
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
   CONSTRAINT `label_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -222,13 +216,6 @@ SET character_set_client = utf8;
   `update` timestamp,
   `user_name` char(32),
   `complete_name` varchar(512),
-  `creation_date` timestamp,
-  `password` char(32),
-  `email` varchar(129),
-  `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
-  `enabled` tinyint(1),
   `valid_code` text,
   `public` tinyint(1)
 ) ENGINE=MyISAM */;
@@ -294,7 +281,7 @@ CREATE TABLE `label_sequence` (
   CONSTRAINT `label_sequence_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
   CONSTRAINT `label_sequence_ibfk_6` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2232 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -428,7 +415,7 @@ CREATE TABLE `sequence` (
   PRIMARY KEY (`id`),
   KEY `history_id` (`history_id`),
   CONSTRAINT `sequence_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=434 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -494,14 +481,7 @@ SET character_set_client = utf8;
   `update_user_id` bigint(20) unsigned,
   `update` timestamp,
   `user_name` char(32),
-  `complete_name` varchar(512),
-  `creation_date` timestamp,
-  `password` char(32),
-  `email` varchar(129),
-  `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
-  `enabled` tinyint(1)
+  `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -530,7 +510,7 @@ CREATE TABLE `taxonomy` (
   CONSTRAINT `taxonomy_ibfk_7` FOREIGN KEY (`rank_id`) REFERENCES `taxonomy_rank` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_8` FOREIGN KEY (`tree_id`) REFERENCES `taxonomy_tree` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_9` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2185220 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy table.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy table.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -641,14 +621,7 @@ SET character_set_client = utf8;
   `update_user_id` bigint(20) unsigned,
   `update` timestamp,
   `user_name` char(32),
-  `complete_name` varchar(512),
-  `creation_date` timestamp,
-  `password` char(32),
-  `email` varchar(129),
-  `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
-  `enabled` tinyint(1)
+  `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -669,7 +642,7 @@ CREATE TABLE `taxonomy_name` (
   KEY `tax_id` (`tax_id`),
   CONSTRAINT `taxonomy_name_ibfk_1` FOREIGN KEY (`tax_id`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_name_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `taxonomy_name_type` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=985083 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Taxonomy names.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Taxonomy names.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -732,7 +705,7 @@ CREATE TABLE `taxonomy_name_type` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Key.',
   `name` varchar(512) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name.',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Types of names for taxonomies.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Types of names for taxonomies.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -767,7 +740,7 @@ CREATE TABLE `taxonomy_rank` (
   KEY `parent_id` (`parent_id`),
   CONSTRAINT `taxonomy_rank_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
   CONSTRAINT `taxonomy_rank_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `taxonomy_rank` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy ranks.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy ranks.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -868,14 +841,7 @@ SET character_set_client = utf8;
   `update_user_id` bigint(20) unsigned,
   `update` timestamp,
   `user_name` char(32),
-  `complete_name` varchar(512),
-  `creation_date` timestamp,
-  `password` char(32),
-  `email` varchar(129),
-  `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
-  `enabled` tinyint(1)
+  `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -925,7 +891,7 @@ CREATE TABLE `taxonomy_tree` (
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `history_id` (`history_id`),
   CONSTRAINT `taxonomy_tree_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -990,14 +956,7 @@ SET character_set_client = utf8;
   `update_user_id` bigint(20) unsigned,
   `update` timestamp,
   `user_name` char(32),
-  `complete_name` varchar(512),
-  `creation_date` timestamp,
-  `password` char(32),
-  `email` varchar(129),
-  `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
-  `enabled` tinyint(1)
+  `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -1027,27 +986,29 @@ CREATE TABLE `user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'User id.',
   `name` char(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User name.',
   `complete_name` varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'User full name.',
-  `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'User creation time.',
   `password` char(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User password md5 hashed.',
   `email` varchar(129) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'User email.',
   `user_type` enum('user','admin') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'user' COMMENT 'User type.',
   `birthday` date DEFAULT NULL COMMENT 'User''s birthday.',
   `image` blob COMMENT 'User''s image file.',
   `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Enable/Disable user.',
+  `history_id` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='User''s table.';
+  UNIQUE KEY `name` (`name`),
+  KEY `history_id` (`history_id`),
+  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='User''s table.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`fdb_app`@`localhost`*/ /*!50003 TRIGGER `user_md5_password_insert` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.password = MD5( NEW.password ) */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`fdb_app`@`localhost`*/ /*!50003 TRIGGER ins_user BEFORE INSERT ON FDB.user FOR EACH ROW BEGIN SET NEW.history_id = CREATE_HISTORY(); SET NEW.password = MD5(NEW.password); END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1056,17 +1017,28 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`fdb_app`@`localhost`*/ /*!50003 TRIGGER `user_md5_password_update` BEFORE UPDATE ON `user` FOR EACH ROW BEGIN
-  IF NEW.password <> OLD.password THEN
-    SET NEW.password = MD5( NEW.password );
-  END IF;
-END */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`fdb_app`@`localhost`*/ /*!50003 TRIGGER upd_user BEFORE UPDATE ON FDB.user FOR EACH ROW BEGIN IF NEW.password <> OLD.password THEN SET NEW.password = MD5(NEW.password); END IF; IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`fdb_app`@`localhost`*/ /*!50003 TRIGGER drop_user BEFORE DELETE ON FDB.user FOR EACH ROW CALL DELETE_HISTORY(OLD.history_id) */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1085,7 +1057,6 @@ SET character_set_client = utf8;
   `user_id` bigint(20) unsigned,
   `user_name` char(32),
   `complete_name` varchar(512),
-  `creation_date` timestamp,
   `password` char(32),
   `email` varchar(129),
   `user_type` enum('user','admin'),
@@ -1302,7 +1273,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `history_info` AS select `history`.`id` AS `history_id`,`history`.`creation_user_id` AS `creation_user_id`,`history`.`creation` AS `creation`,`history`.`update_user_id` AS `update_user_id`,`history`.`update` AS `update`,`user_norm`.`user_name` AS `user_name`,`user_norm`.`complete_name` AS `complete_name`,`user_norm`.`creation_date` AS `creation_date`,`user_norm`.`password` AS `password`,`user_norm`.`email` AS `email`,`user_norm`.`user_type` AS `user_type`,`user_norm`.`birthday` AS `birthday`,`user_norm`.`image` AS `image`,`user_norm`.`enabled` AS `enabled` from (`history` left join `user_norm` on((`history`.`update_user_id` = `user_norm`.`user_id`))) */;
+/*!50001 VIEW `history_info` AS select `history`.`id` AS `history_id`,`history`.`creation_user_id` AS `creation_user_id`,`history`.`creation` AS `creation`,`history`.`update_user_id` AS `update_user_id`,`history`.`update` AS `update`,`user_norm`.`user_name` AS `user_name`,`user_norm`.`complete_name` AS `complete_name`,`user_norm`.`enabled` AS `enabled` from (`history` left join `user_norm` on((`history`.`update_user_id` = `user_norm`.`user_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1321,7 +1292,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `label_info_history` AS select `label_norm`.`history_id` AS `history_id`,`label_norm`.`label_id` AS `label_id`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`label_norm`.`comment` AS `comment`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name`,`history_info`.`creation_date` AS `creation_date`,`history_info`.`password` AS `password`,`history_info`.`email` AS `email`,`history_info`.`user_type` AS `user_type`,`history_info`.`birthday` AS `birthday`,`history_info`.`image` AS `image`,`history_info`.`enabled` AS `enabled`,`label_norm`.`valid_code` AS `valid_code`,`label_norm`.`public` AS `public` from (`label_norm` left join `history_info` on((`label_norm`.`history_id` = `history_info`.`history_id`))) */;
+/*!50001 VIEW `label_info_history` AS select `label_norm`.`history_id` AS `history_id`,`label_norm`.`label_id` AS `label_id`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`label_norm`.`comment` AS `comment`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name`,`label_norm`.`valid_code` AS `valid_code`,`label_norm`.`public` AS `public` from (`label_norm` left join `history_info` on((`label_norm`.`history_id` = `history_info`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1397,7 +1368,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `sequence_info_history` AS select `sequence`.`history_id` AS `history_id`,`sequence`.`id` AS `id`,`sequence`.`content` AS `content`,`sequence`.`name` AS `name`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name`,`history_info`.`creation_date` AS `creation_date`,`history_info`.`password` AS `password`,`history_info`.`email` AS `email`,`history_info`.`user_type` AS `user_type`,`history_info`.`birthday` AS `birthday`,`history_info`.`image` AS `image`,`history_info`.`enabled` AS `enabled` from (`sequence` join `history_info` on((`sequence`.`history_id` = `history_info`.`history_id`))) */;
+/*!50001 VIEW `sequence_info_history` AS select `sequence`.`history_id` AS `history_id`,`sequence`.`id` AS `id`,`sequence`.`content` AS `content`,`sequence`.`name` AS `name`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name` from (`sequence` join `history_info` on((`sequence`.`history_id` = `history_info`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1435,7 +1406,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `taxonomy_info_history` AS select `taxonomy_info`.`history_id` AS `history_id`,`taxonomy_info`.`id` AS `id`,`taxonomy_info`.`name` AS `name`,`taxonomy_info`.`rank_id` AS `rank_id`,`taxonomy_info`.`tree_id` AS `tree_id`,`taxonomy_info`.`parent_id` AS `parent_id`,`taxonomy_info`.`import_id` AS `import_id`,`taxonomy_info`.`import_parent_id` AS `import_parent_id`,`taxonomy_info`.`rank_name` AS `rank_name`,`taxonomy_info`.`tree_name` AS `tree_name`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name`,`history_info`.`creation_date` AS `creation_date`,`history_info`.`password` AS `password`,`history_info`.`email` AS `email`,`history_info`.`user_type` AS `user_type`,`history_info`.`birthday` AS `birthday`,`history_info`.`image` AS `image`,`history_info`.`enabled` AS `enabled` from (`taxonomy_info` left join `history_info` on((`taxonomy_info`.`history_id` = `history_info`.`history_id`))) */;
+/*!50001 VIEW `taxonomy_info_history` AS select `taxonomy_info`.`history_id` AS `history_id`,`taxonomy_info`.`id` AS `id`,`taxonomy_info`.`name` AS `name`,`taxonomy_info`.`rank_id` AS `rank_id`,`taxonomy_info`.`tree_id` AS `tree_id`,`taxonomy_info`.`parent_id` AS `parent_id`,`taxonomy_info`.`import_id` AS `import_id`,`taxonomy_info`.`import_parent_id` AS `import_parent_id`,`taxonomy_info`.`rank_name` AS `rank_name`,`taxonomy_info`.`tree_name` AS `tree_name`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name` from (`taxonomy_info` left join `history_info` on((`taxonomy_info`.`history_id` = `history_info`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1549,7 +1520,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `taxonomy_rank_info_history` AS select `taxonomy_rank_info`.`rank_id` AS `rank_id`,`taxonomy_rank_info`.`rank_name` AS `rank_name`,`taxonomy_rank_info`.`rank_parent_id` AS `rank_parent_id`,`taxonomy_rank_info`.`rank_parent_name` AS `rank_parent_name`,`history_info`.`history_id` AS `history_id`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name`,`history_info`.`creation_date` AS `creation_date`,`history_info`.`password` AS `password`,`history_info`.`email` AS `email`,`history_info`.`user_type` AS `user_type`,`history_info`.`birthday` AS `birthday`,`history_info`.`image` AS `image`,`history_info`.`enabled` AS `enabled` from (`taxonomy_rank_info` left join `history_info` on((`history_info`.`history_id` = `taxonomy_rank_info`.`history_id`))) */;
+/*!50001 VIEW `taxonomy_rank_info_history` AS select `taxonomy_rank_info`.`rank_id` AS `rank_id`,`taxonomy_rank_info`.`rank_name` AS `rank_name`,`taxonomy_rank_info`.`rank_parent_id` AS `rank_parent_id`,`taxonomy_rank_info`.`rank_parent_name` AS `rank_parent_name`,`history_info`.`history_id` AS `history_id`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name` from (`taxonomy_rank_info` left join `history_info` on((`history_info`.`history_id` = `taxonomy_rank_info`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1606,7 +1577,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `taxonomy_tree_info_history` AS select `taxonomy_tree_norm`.`history_id` AS `history_id`,`taxonomy_tree_norm`.`tree_id` AS `tree_id`,`taxonomy_tree_norm`.`tree_name` AS `tree_name`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name`,`history_info`.`creation_date` AS `creation_date`,`history_info`.`password` AS `password`,`history_info`.`email` AS `email`,`history_info`.`user_type` AS `user_type`,`history_info`.`birthday` AS `birthday`,`history_info`.`image` AS `image`,`history_info`.`enabled` AS `enabled` from (`taxonomy_tree_norm` left join `history_info` on((`taxonomy_tree_norm`.`history_id` = `history_info`.`history_id`))) */;
+/*!50001 VIEW `taxonomy_tree_info_history` AS select `taxonomy_tree_norm`.`history_id` AS `history_id`,`taxonomy_tree_norm`.`tree_id` AS `tree_id`,`taxonomy_tree_norm`.`tree_name` AS `tree_name`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`creation` AS `creation`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`update` AS `update`,`history_info`.`user_name` AS `user_name`,`history_info`.`complete_name` AS `complete_name` from (`taxonomy_tree_norm` left join `history_info` on((`taxonomy_tree_norm`.`history_id` = `history_info`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1644,7 +1615,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `user_norm` AS select `user`.`id` AS `user_id`,`user`.`name` AS `user_name`,`user`.`complete_name` AS `complete_name`,`user`.`creation_date` AS `creation_date`,`user`.`password` AS `password`,`user`.`email` AS `email`,`user`.`user_type` AS `user_type`,`user`.`birthday` AS `birthday`,`user`.`image` AS `image`,`user`.`enabled` AS `enabled` from `user` */;
+/*!50001 VIEW `user_norm` AS select `user`.`id` AS `user_id`,`user`.`name` AS `user_name`,`user`.`complete_name` AS `complete_name`,`user`.`password` AS `password`,`user`.`email` AS `email`,`user`.`user_type` AS `user_type`,`user`.`birthday` AS `birthday`,`user`.`image` AS `image`,`user`.`enabled` AS `enabled` from `user` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1658,4 +1629,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-04-27 14:09:52
+-- Dump completed on 2009-04-27 16:49:24
