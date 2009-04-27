@@ -1,34 +1,32 @@
 <?php
 
-class User_model extends Model
+class User_model extends BioModel
 {
   function User_model()
   {
-    parent::Model();
+    parent::BioModel('user');
   }
 
   function validate($name, $pwd)
   {
-    $query = $this->db->get_where('user', array('name' => $name, 'enabled' => TRUE));
+    $this->db->where('enabled', TRUE);
+    $user = $this->get_row('name', $name);
 
-    if($query->num_rows() != 1) {
+    if(!$user) {
       return false;
     }
 
-    $user = $query->row();
-
-    return $user->password == md5($pwd);
+    return $user['password'] == md5($pwd);
   }
 
   function _get_user($key, $value)
   {
-    $query = $this->db->get_where('user', array($key => $value, 'enabled' => TRUE));
+    $this->db->where('enabled', TRUE);
+    $data = $this->get_row($key, $value);
 
-    if($query->num_rows() != 1) {
+    if(!$data) {
       return null;
     }
-
-    $data = $query->row_array();
 
     if($data['birthday']) {
       $this->load->helper('date_utils');
@@ -54,15 +52,8 @@ class User_model extends Model
 
     $this->db->select('image');
     $this->db->where('image IS NOT NULL');
-    $this->db->where($key, $value);
     $this->db->where('enabled', TRUE);
-    $query = $this->db->get('user');
-
-    if($query->num_rows() != 1) {
-      return null;
-    }
-
-    $array = $query->row_array();
+    $array = $this->get_row($key, $value);
 
     return process_db_image($array['image']);
   }
@@ -84,10 +75,10 @@ class User_model extends Model
 
   function username_used($name)
   {
-    $this->db->where('name', $name);
-    $query = $this->db->get('user');
+    $this->db->select('id');
+    $row = $this->get_row('name', $name);
 
-    return ($query->num_rows() == 1);
+    return $row != null;
   }
 
   function new_user($name, $complete_name, $email,
@@ -112,32 +103,12 @@ class User_model extends Model
       $data['image'] = $image;
     }
 
-    // send email
-    $this->load->library('email');
-
-    $this->email->from('changeThis@evolution.ibmc.up.pt', 'BioDB');
-    $this->email->to($email);
-
-    $this->email->subject('Registo bem sucedido');
-    $this->email->message("Olá,
-
-O seu registo foi bem sucedido.
-
-Username: $name
-Password: $password
-
-Cumprimentos.");
-
-    $this->email->send();
-
-    $this->db->insert('user', $data);
+    return $this->insert_data_with_history($data);
   }
 
   function edit_user($id, $complete_name, $email, $birthday,
     $imagecontent, $new_password)
   {
-    $this->db->where('id', $id);
-    $this->db->where('enabled', TRUE);
     $data = array(
       'complete_name' => $complete_name,
       'email' => $email,
@@ -156,21 +127,18 @@ Cumprimentos.");
       $data['password'] = $new_password;
     }
 
-    $this->db->update('user', $data);
+    return $this->edit_data_with_history($id, $data);
   }
 
   function get_users()
   {
-    $this->db->where('user_type', 'user');
     $this->db->where('enabled', TRUE);
 
-    return $this->db->get('user', 10)->result_array();
+    return $this->get_rows('user_type', 'user');
   }
 
   function delete_user($id)
   {
-    $this->db->where('id', $id);
-    $this->db->where('enabled', TRUE);
-    $this->db->update('user', array('enabled' => FALSE));
+    return $this->edit_data_with_history($id, array('enabled' => FALSE));
   }
 }
