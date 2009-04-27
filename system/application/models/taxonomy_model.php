@@ -191,18 +191,16 @@ class Taxonomy_model extends BioModel
 
   function count_rank($rank)
   {
-    $this->db->from($this->table);
     $this->db->where('rank_id', $rank);
 
-    return intval($this->db->count_all_results());
+    return $this->count_total();
   }
 
   function count_tree($tree)
   {
-    $this->db->from($this->table);
     $this->db->where('tree_id', $tree);
 
-    return intval($this->db->count_all_results());
+    return $this->count_total();
   }
 
   function delete($id)
