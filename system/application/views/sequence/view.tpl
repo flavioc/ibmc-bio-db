@@ -232,5 +232,9 @@ $(document).ready(function () {
 {/if}
 
 <p>
+{form_open name=form_export to="sequence/export" method="get"}
+{form_hidden name="id" value=$sequence.id}
+{form_submit name=submit_export msg="Export sequence"}
+{form_end}
 {button name="browse_seq" msg="Sequence list" to="sequence/browse"}
 </p>

@@ -742,7 +742,7 @@ class Label_sequence_model extends BioModel
     return $this->has_id($id);
   }
 
-  function __get_data($label)
+  function select_data($label)
   {
     $fields = $this->__get_data_fields($label['type']);
 
@@ -759,7 +759,7 @@ class Label_sequence_model extends BioModel
 
     $data = $this->get_id($id, 'label_sequence_info');
 
-    return $this->__get_data($data);
+    return $this->select_data($data);
   }
 
   function get_label($seq_id, $label_name)
@@ -773,7 +773,7 @@ class Label_sequence_model extends BioModel
       return null;
     }
 
-    return $this->__get_data($all[0]);
+    return $this->select_data($all[0]);
   }
 
   function __get_data_fields($type)
