@@ -11,8 +11,16 @@
   .grid({
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Add taxonomy', 'Add child rank'],
+    fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Taxonomy', 'Child rank'],
     fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', 'add', 'add_child'],
+    tdClass: {last_update: 'centered', add: 'centered', add_child: 'centered'},
+    width: {
+      add: w_add,
+      add_child: w_add,
+      last_user: w_user,
+      last_update: w_update,
+      rank_name: '26%'
+    },
     dataTransform: {
       add: function (row) {
         return 'Add';
@@ -56,7 +64,6 @@
         return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     },
-    what: 'rank',
     total: 'get_total',
     idField: 'rank_id'
   });
