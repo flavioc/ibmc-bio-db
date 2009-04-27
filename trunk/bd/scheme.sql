@@ -50,7 +50,7 @@ CREATE TABLE `history` (
   KEY `update_user_id` (`update_user_id`),
   CONSTRAINT `history_ibfk_1` FOREIGN KEY (`creation_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `history_ibfk_2` FOREIGN KEY (`update_user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2796 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='history';
+) ENGINE=InnoDB AUTO_INCREMENT=2808 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='history';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -146,7 +146,7 @@ CREATE TABLE `label` (
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
   CONSTRAINT `label_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -246,12 +246,12 @@ CREATE TABLE `label_sequence` (
   KEY `seq_id` (`seq_id`),
   KEY `ref_index` (`ref_data`),
   KEY `taxonomy_index` (`taxonomy_data`),
-  CONSTRAINT `label_sequence_ibfk_5` FOREIGN KEY (`taxonomy_data`) REFERENCES `taxonomy` (`id`) ON DELETE SET NULL,
   CONSTRAINT `label_sequence_ibfk_1` FOREIGN KEY (`seq_id`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `label_sequence_ibfk_4` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2156 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
+  CONSTRAINT `label_sequence_ibfk_4` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`),
+  CONSTRAINT `label_sequence_ibfk_5` FOREIGN KEY (`taxonomy_data`) REFERENCES `taxonomy` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2159 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -341,7 +341,7 @@ CREATE TABLE `sequence` (
   PRIMARY KEY (`id`),
   KEY `history_id` (`history_id`),
   CONSTRAINT `sequence_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=415 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
+) ENGINE=InnoDB AUTO_INCREMENT=416 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -396,7 +396,7 @@ CREATE TABLE `taxonomy` (
   CONSTRAINT `taxonomy_ibfk_2` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_5` FOREIGN KEY (`rank_id`) REFERENCES `taxonomy_rank` (`id`) ON DELETE SET NULL,
   CONSTRAINT `taxonomy_ibfk_6` FOREIGN KEY (`tree_id`) REFERENCES `taxonomy_tree` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=784610 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy table.';
+) ENGINE=InnoDB AUTO_INCREMENT=1112353 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy table.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -490,7 +490,7 @@ CREATE TABLE `taxonomy_name` (
   KEY `tax_id` (`tax_id`),
   CONSTRAINT `taxonomy_name_ibfk_1` FOREIGN KEY (`tax_id`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_name_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `taxonomy_name_type` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=364229 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Taxonomy names.';
+) ENGINE=InnoDB AUTO_INCREMENT=480617 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Taxonomy names.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -588,7 +588,7 @@ CREATE TABLE `taxonomy_rank` (
   KEY `history_id` (`history_id`),
   CONSTRAINT `taxonomy_rank_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
   CONSTRAINT `taxonomy_rank_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `taxonomy_rank` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy ranks.';
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT COMMENT='Taxonomy ranks.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -827,6 +827,27 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Dumping routines for database 'FDB'
+--
+/*!50003 DROP FUNCTION IF EXISTS `CREATE_HISTORY` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 FUNCTION `CREATE_HISTORY`() RETURNS bigint(20)
+BEGIN INSERT INTO FDB.history(history.update) VALUES(CURRENT_TIMESTAMP); RETURN LAST_INSERT_ID(); END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
 -- Final view structure for view `history_info`
 --
 
@@ -991,7 +1012,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_name_helper` AS select `taxonomy`.`id` AS `tax_id`,`taxonomy`.`rank_id` AS `rank_id`,`taxonomy`.`tree_id` AS `tree_id` from `taxonomy` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1029,7 +1050,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `taxonomy_name_tax` AS select `taxonomy_name`.`id` AS `id`,`taxonomy_name`.`name` AS `name`,`taxonomy_name`.`tax_id` AS `tax_id`,`taxonomy_name_helper`.`rank_id` AS `rank_id`,`taxonomy_name_helper`.`tree_id` AS `tree_id` from (`taxonomy_name` join `taxonomy_name_helper`) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1196,4 +1217,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-04-15 15:38:44
+-- Dump completed on 2009-04-26 13:00:19
