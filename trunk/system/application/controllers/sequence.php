@@ -262,7 +262,6 @@ class Sequence extends BioController
 
     $this->load->model('label_sequence_model');
 
-
     $this->export_sequences(array($id));
   }
 
@@ -277,6 +276,7 @@ class Sequence extends BioController
     }
 
     header('Content-type: text/plain');
+    header('Content-Disposition: attachment; filename="sequences.fasta"');
     echo export_sequences($sequences, $seq_labels);
   }
 }
