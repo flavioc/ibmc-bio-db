@@ -289,6 +289,7 @@ class Profile extends BioController {
     }
 
     $image_str = $this->get_post_filename('image'); 
+    $image_data = null;
 
     if($image_str) {
       // verify image upload
@@ -316,6 +317,7 @@ class Profile extends BioController {
       $email = $this->get_post('email');
       $birthday = $this->get_post('birthday');
       $password = $this->get_post('password1');
+      $imagecontent = NULL;
 
       if($image_data) {
         $this->load->helper("image_utils");
