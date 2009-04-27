@@ -53,8 +53,20 @@ $(document).ready(function () {
       url: get_app_url() + '/taxonomy',
       total: 'total_taxonomy_childs/' + tax + '/' + tree,
       retrieve: 'taxonomy_childs/' + tax + '/' + tree,
-      fieldNames: ['Select', 'Name', 'Rank', 'Tree', 'Add Child'],
+      fieldNames: ['Select', 'Name', 'Rank', 'Tree', 'Child'],
       fields: ['select', 'name', 'rank_name', 'tree_name', 'add_child'],
+      tdClass: {
+        select: 'centered',
+        tree_name: 'centered',
+        add_child: 'centered',
+        rank_name: 'centered'
+      },
+      width: {
+        add_child: w_add,
+        tree_name: w_tree,
+        select: w_select,
+        rank_name: w_rank
+      },
       links: {
         name: function(row) {
           return base_site + 'view/' + row.id;
