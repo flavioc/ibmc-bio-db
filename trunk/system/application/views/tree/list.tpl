@@ -11,17 +11,8 @@
   .grid({
     url: base_site,
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Last update', 'User', '$delete', 'Add'],
-    fields: ['name', 'update', 'user_name', '$delete', 'add'],
-    editables: {
-      name: {
-        select : true,
-        submit : 'OK',
-        cancel : 'cancel',
-        cssclass : 'editable',
-        width: '200px'
-      }
-    },
+    fieldNames: ['Name', 'Last update', 'User', 'Add'],
+    fields: ['name', 'update', 'user_name', 'add'],
     dataTransform: {
       add: function (row) {
         return 'Add';
@@ -33,12 +24,11 @@
       },
       user_name: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;
+      },
+      name: function (row) {
+        return base_site + '/view/' + row.id;
       }
-    },
-    countRemove: 'total_taxonomies',
-    what: 'tree',
-    removeAssociated: 'taxonomies',
-    enableRemove: true
+    }
   });
 });
 </script>
@@ -46,6 +36,4 @@
 
 <div id="show_trees"></div>
 
-<p>
 {button name="add_tree" to="tree/add" msg="Add tree"}
-</p>

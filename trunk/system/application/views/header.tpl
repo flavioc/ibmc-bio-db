@@ -29,6 +29,7 @@
     toggle_menu('label');
     toggle_menu('user');
     toggle_menu('rank');
+    toggle_menu('tree');
   });
 </script>
 {/literal}
@@ -38,8 +39,12 @@
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
-      <li><a href="{site}/tree">Trees</a></li>
       <li><a href="{site}/taxonomy/sync">Sync</a></li>
+    </ul>
+    <li id="tree_menu"><a href="#">Trees</a></li>
+    <ul id="tree_id">
+      <li><a href="{site}/tree/add">Add</a></li>
+      <li><a href="{site}/tree">List</a></li>
     </ul>
     <li id="rank_menu"><a href="#">Ranks</a></li>
     <ul id="rank_id">

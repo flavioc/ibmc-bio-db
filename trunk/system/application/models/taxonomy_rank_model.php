@@ -42,7 +42,7 @@ class Taxonomy_rank_model extends BioModel
     }
   }
 
-  function get_child($id)
+  function get_first_child($id)
   {
     $data = $this->get_all_by_field('parent_id', $id);
 
@@ -51,6 +51,22 @@ class Taxonomy_rank_model extends BioModel
     } else {
       return $data[0]['id'];
     }
+  }
+
+  function get_children_names($id)
+  {
+    $this->db->select('name');
+    $data = $this->get_all_by_field('parent_id', $id);
+
+    $ret = array();
+
+    if($data) {
+      foreach($data as $el) {
+        $ret[] = $el['name'];
+      }
+    }
+
+    return $ret;
   }
 
   function edit_name($id, $new_name)
@@ -71,10 +87,6 @@ class Taxonomy_rank_model extends BioModel
 
   function edit_parent($id, $new_parent)
   {
-    // if($this->parent_used($new_parent, $id)) {
-    //  return false;
-    // }
-
     $this->db->trans_start();
 
     $this->update_history($id);

@@ -22,6 +22,10 @@ class Rank extends BioController {
 
   function view($id)
   {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->use_impromptu();
 
@@ -37,6 +41,10 @@ class Rank extends BioController {
 
   function add()
   {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
     $this->smarty->assign('title', 'Add rank');
 
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
@@ -65,7 +73,6 @@ class Rank extends BioController {
       $errors = true;
     }
 
-
     $parent = intval($this->get_post('parent_id'));
     if($parent == 0) {
       $parent = null;
@@ -74,11 +81,6 @@ class Rank extends BioController {
     if($parent && !$this->taxonomy_rank_model->has_id($parent)) {
       $this->set_form_error('parent_id',
         "Rank with id $parent doesn't exist.");
-      $errors = true;
-    }
-
-    if($parent && $this->taxonomy_rank_model->parent_used($parent)) {
-      $this->set_form_error('parent_id', "Rank with id $parent already being used as parent.");
       $errors = true;
     }
 
@@ -183,12 +185,9 @@ class Rank extends BioController {
     $rank = $this->taxonomy_rank_model->get_name($id);
     $this->smarty->assign('rank', $rank);
 
-    $child_id = $this->taxonomy_rank_model->get_child($id);
-    $child = null;
-    if($child_id != null) {
-      $child = $this->taxonomy_rank_model->get_name($child_id);
-    }
-    $this->smarty->assign('child', $child);
+    $children = $this->taxonomy_rank_model->get_children_names($id);
+    $this->smarty->assign('children', $children);
+    $this->smarty->assign('total_children', count($children));
 
     $this->smarty->view_s('rank/delete');
   }

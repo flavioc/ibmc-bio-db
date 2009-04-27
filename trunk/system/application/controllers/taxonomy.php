@@ -42,7 +42,7 @@ class Taxonomy extends BioController {
     if(!$rank_id && $parent_id) {
       $this->load->model('taxonomy_model');
       $parent_rank = $this->taxonomy_model->get_rank($parent_id);
-      $child_rank = $this->taxonomy_rank_model->get_child($parent_rank);
+      $child_rank = $this->taxonomy_rank_model->get_first_child($parent_rank);
 
       $this->smarty->set_initial_var('rank', $child_rank);
     }
