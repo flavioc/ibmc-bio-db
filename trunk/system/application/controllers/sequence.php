@@ -249,4 +249,34 @@ class Sequence extends BioController
 
     echo sequence_short_content($value) . "...";
   }
+
+  function export($id = null)
+  {
+    if(!$id) {
+      $id = $this->get_parameter('id');
+    }
+
+    if(!$this->sequence_model->has_sequence($id)) {
+      return;
+    }
+
+    $this->load->model('label_sequence_model');
+
+
+    $this->export_sequences(array($id));
+  }
+
+  function export_sequences($sequences_id)
+  {
+    $sequences = array();
+    $seq_labels = array();
+
+    foreach($sequences_id as $id) {
+      $sequences[] = $this->sequence_model->get($id);
+      $seq_labels[] = $this->label_sequence_model->get_sequence($id);
+    }
+
+    header('Content-type: text/plain');
+    echo export_sequences($sequences, $seq_labels);
+  }
 }
