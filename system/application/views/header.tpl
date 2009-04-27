@@ -5,6 +5,7 @@
 {include_js name=jquery}
 {include_js name=functions}
 {include_js name=custom-jquery}
+{include_js name=constants}
 {foreach from=$scripts item=script}
   {include_js name=$script}
 {/foreach}

@@ -28,6 +28,12 @@
       name: function (row) {
         return base_site + '/view/' + row.id;
       }
+    },
+    tdClass: {update: 'centered', add: 'centered'},
+    width: {
+      add: w_add,
+      user_name: w_user,
+      update: w_update
     }
   });
 });
