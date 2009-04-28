@@ -61,6 +61,7 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_mygrid();
     $this->use_plusminus();
+    $this->use_impromptu();
 
     $this->load->model('label_sequence_model');
 
@@ -198,15 +199,28 @@ class Sequence extends BioController
     echo sequence_split($content);
   }
 
-  function delete($id)
+  function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
 
+    $id = $this->get_post('id');
     $this->sequence_model->delete($id);
 
     redirect('sequence/browse');
+  }
+
+  function delete_dialog($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_nothing();
+    }
+
+    $sequence = $this->sequence_model->get($id);
+    $this->smarty->assign('sequence', $sequence);
+
+    $this->smarty->view_s('sequence/delete');
   }
 
   function edit_name()
@@ -280,3 +294,4 @@ class Sequence extends BioController
     echo export_sequences($sequences, $seq_labels);
   }
 }
+
