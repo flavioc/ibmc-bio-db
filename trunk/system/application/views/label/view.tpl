@@ -54,6 +54,20 @@
 {form_hidden name=id value=$label.id}
 {form_submit name=submit_edit msg=Edit}
 {form_end}
+
+{form_open name=form_delete to="label/delete_redirect"}
+{form_hidden name=id value=$label.id}
+{form_submit name=delete_button msg=Delete}
+{form_end}
+
+<script>
+{to_js var=label value=$label}
+{literal}
+$(document).ready(function () {
+  activate_delete_dialog(get_app_url() + '/label/delete_dialog/' + label.id);
+});
+{/literal}
+</script>
 {button name="browse_labels" msg="List labels" to="label/browse"}
 </p>
 
