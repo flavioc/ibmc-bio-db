@@ -2,6 +2,7 @@
 
 <script>
 {literal}
+
 $(document).ready(function () {
 
   var base_site = get_app_url() + "/taxonomy/";
@@ -83,10 +84,10 @@ $(document).ready(function () {
           return row.tree_name == null ? "---" : row.tree_name;
         },
         select: function (row) {
-          return '<a href="#" class="select_child">Go</a>';
+          return build_image_url('go.png', 'select_child');
         },
         add_child: function (row) {
-          return 'Add';
+          return img_add;
         }
       },
       finishedFun: function (opts) {
@@ -124,7 +125,7 @@ $(document).ready(function () {
         show_path(obj, new_path);
         childs_name.show();
 
-        $('a[@class=select_child]', obj).click(function (e) {
+        $('img[@class=select_child]', obj).click(function (e) {
           // get row id that contains taxonomy ID
           var tr_id = $(e.target).parent().parent()[0].id;
           var id = parse_id(tr_id);

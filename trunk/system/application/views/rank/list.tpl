@@ -11,7 +11,7 @@
   .grid({
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Taxonomy', 'Child rank'],
+    fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Taxonomy', 'Child'],
     fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', 'add', 'add_child'],
     tdClass: {last_update: 'centered', add: 'centered', add_child: 'centered'},
     width: {
@@ -23,10 +23,10 @@
     },
     dataTransform: {
       add: function (row) {
-        return 'Add';
+        return img_add;
       },
       add_child: function (row) {
-        return 'Add';
+        return img_add;
       },
       rank_parent_name: function (row) {
         if (row.rank_parent_name == null) {
