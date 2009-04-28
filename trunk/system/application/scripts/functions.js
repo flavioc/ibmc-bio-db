@@ -134,3 +134,24 @@ function get_logged_in()
 
   return false;
 }
+
+function build_class_text(class_name)
+{
+  if(class_name == null) {
+    return '';
+  } else {
+    return ' class="' + class_name + '" ';
+  }
+}
+
+function build_image_url(url, class_name)
+{
+  var class_txt = build_class_text(class_name);
+  return '<img src="' + get_images_url() + '/' + url + '"' + class_txt + ' />';
+}
+
+function build_href(url, class_name, inner)
+{
+  var class_txt = build_class_text(class_name);
+  return '<a href="' + url + '" ' + class_txt + '>' + inner + '</a>';
+}
