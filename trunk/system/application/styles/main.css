@@ -212,6 +212,13 @@ div.grid_box {
   width: 97%;
 }
 
+div.grid_form {
+  margin-left: 15px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  width: 98%;
+}
+
 img.plus_image, img.minus_image {
   border: 0;
 }
@@ -255,4 +262,8 @@ img.select_child {
 
 img.image_url {
   border-width:0;
+}
+
+table.fixed_table {
+  table-layout: fixed;
 }

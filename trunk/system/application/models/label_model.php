@@ -14,6 +14,11 @@ class Label_model extends BioModel
     return $this->has_id($id);
   }
 
+  function has_name($name)
+  {
+    return $this->has_field('name', $name);
+  }
+
   function __select()
   {
     $this->db->select(self::$label_view_fields);
@@ -172,5 +177,39 @@ class Label_model extends BioModel
     }
 
     return $ret;
+  }
+
+  function edit_name($id, $name)
+  {
+    if($this->has_name($name)) {
+      return false;
+    }
+
+    return $this->edit_field($id, 'name', $name);
+  }
+
+  function edit_type($id, $type)
+  {
+    return $this->edit_field($id, 'type', $type);
+  }
+
+  function edit_code($id, $code)
+  {
+    return $this->edit_field($id, 'code', $code);
+  }
+
+  function edit_validcode($id, $code)
+  {
+    return $this->edit_field($id, 'valid_code', $code);
+  }
+
+  function edit_comment($id, $comment)
+  {
+    return $this->edit_field($id, 'comment', $comment);
+  }
+
+  function edit_bool($id, $what, $val)
+  {
+    return $this->edit_field($id, $what, $val);
   }
 }
