@@ -1,9 +1,9 @@
 <h2>View/Edit sequence</h2>
 
-{assign var=seq_id value=$sequence.id}
-
 {if $logged_in}
 <script>
+{to_js var=sequence value=$sequence}
+
 {literal}
 $(document).ready(function() {
   $('#seqname').editable(base_site + '/edit_name', {
@@ -25,7 +25,7 @@ $(document).ready(function() {
     rows: 15,
     submitdata: seqdata,
     finishHook: reload_labels_list,
-    loadurl: get_app_url() + '/sequence/fetch/' + seq_id
+    loadurl: get_app_url() + '/sequence/fetch/' + sequence.id
   });
 });
 {/literal}
@@ -74,9 +74,18 @@ $(document).ready(function() {
 
 </div>
 
-{form_open name=form_delete to="sequence/delete/$seq_id"}
-{form_submit name=submit_delete msg=Delete}
+{form_open name=form_delete to="sequence/delete_redirect"}
+{form_hidden name=id value=$sequence.id}
+{form_submit name=delete_button msg=Delete}
 {form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+  activate_delete_dialog(get_app_url() + '/sequence/delete_dialog/' + sequence.id);
+});
+</script>
+{/literal}
 
 <p>
 <h3>Associated labels</h3>
