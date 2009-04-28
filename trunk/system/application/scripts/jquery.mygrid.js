@@ -150,17 +150,29 @@
 
     if(removeFun == null || removeFun(row)) {
       var delete_id = 'delete_' + id + '_' + row[opts.idField];
+      var deleteText = opts.deleteText;
+      var trans_del = opts.dataTransform[opts.deleteTag];
+      var more_class = opts.tdClass[opts.deleteTag];
+      var del_class = "deletable_column";
+
+      if(more_class) {
+        del_class = del_class + " " + more_class;
+      }
+
+      if(trans_del) {
+        deleteText = trans_del(row);
+      }
 
       row_tag.childNodes[index] = {
         tagName: 'td',
-        class: 'deletable_column',
+        class: del_class,
         childNodes: [
           {
             tagName: 'a',
             class: 'deletable',
             href: '#' + delete_id,
             id: delete_id,
-            innerHTML: opts.deleteText
+            innerHTML: deleteText
           }
         ]
       }
@@ -268,7 +280,7 @@
       var name = names[i];
 
       if(opts.enableRemove && name == opts.deleteTag) {
-        name = opts.deleteText;
+        name = opts.deleteHeader;
       }
 
       ret[i] = {
@@ -550,7 +562,7 @@ $.fn.grid = function(options) {
       !has_delete_row(opts.enableRemove, opts.fields, opts.deleteTag))
     {
       opts.fields.push(opts.deleteTag);
-      opts.fieldNames.push(opts.deleteText);
+      opts.fieldNames.push(opts.deleteHeader);
     }
 
     show_loading($this);
@@ -667,6 +679,7 @@ $.fn.grid.defaults = {
   finishedFun: null,
   deleteTag: '$delete',
   deleteText: 'Delete',
+  deleteHeader: 'Delete',
   idField: 'id',
   clickFun: {},
   hiddenFields: [],
