@@ -10,6 +10,13 @@ class Profile extends BioController {
 
   function __view($id)
   {
+    if(!$this->user_model->has_user($id)) {
+      $this->smarty->assign('id', $id);
+      $this->smarty->assign('title', 'User not found');
+      $this->smarty->view('profile/not_found');
+      return;
+    }
+
     $user = $this->user_model->get_user_by_id($id);
     $this->smarty->assign('user', $user);
 
@@ -17,6 +24,10 @@ class Profile extends BioController {
       $this->smarty->assign('title', 'User ' . $user['name']);
     } else {
       $this->smarty->assign('title', 'Invalid user');
+    }
+
+    if($this->is_admin) {
+      $this->use_impromptu();
     }
 
     $this->smarty->view('profile/view');
@@ -63,15 +74,28 @@ class Profile extends BioController {
     $this->json_return($users);
   }
 
-  function do_delete($id)
+  function delete_redirect()
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_false();
     }
 
+    $id = $this->get_post('id');
     $this->user_model->delete_user($id);
 
-    $this->json_return(true);
+    redirect('profile/list_all');
+  }
+
+  function delete_dialog($id)
+  {
+    if(!$this->is_admin) {
+      return $this->invalid_permission_nothing();
+    }
+
+    $user = $this->user_model->get_user_by_id($id);
+    $this->smarty->assign('user', $user);
+
+    $this->smarty->view_s('profile/delete');
   }
 
   function edit()
