@@ -83,6 +83,13 @@ class Tree extends BioController {
       return $this->invalid_permission();
     }
 
+    if(!$this->taxonomy_tree_model->has_tree($id)) {
+      $this->smarty->assign('id', $id);
+      $this->smarty->assign('title', 'Tree not found');
+      $this->smarty->view('tree/not_found');
+      return;
+    }
+
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->use_impromptu();
 

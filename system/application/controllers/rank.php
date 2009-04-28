@@ -26,6 +26,13 @@ class Rank extends BioController {
       return $this->invalid_permission();
     }
 
+    if(!$this->taxonomy_rank_model->has_rank($id)) {
+      $this->smarty->assign('title', 'Rank not found');
+      $this->smarty->assign('id', $id);
+      $this->smarty->view('rank/not_found');
+      return;
+    }
+
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->use_impromptu();
 
@@ -78,7 +85,7 @@ class Rank extends BioController {
       $parent = null;
     }
 
-    if($parent && !$this->taxonomy_rank_model->has_id($parent)) {
+    if($parent && !$this->taxonomy_rank_model->has_rank($parent)) {
       $this->set_form_error('parent_id',
         "Rank with id $parent doesn't exist.");
       $errors = true;

@@ -4,6 +4,7 @@ class Taxonomy extends BioController {
   function Taxonomy()
   {
     parent::BioController();
+    $this->load->model('taxonomy_model');
   }
 
   function add()
@@ -30,7 +31,6 @@ class Taxonomy extends BioController {
       if($parent_id == '0') {
         $parent_id = null;
       } else {
-        $this->load->model('taxonomy_model');
         $parent_name = $this->taxonomy_model->get_name($parent_id);
 
         $this->smarty->assign('parent_name', $parent_name);
@@ -40,7 +40,6 @@ class Taxonomy extends BioController {
 
     $rank_id = $this->smarty->get_initial_var('rank');
     if(!$rank_id && $parent_id) {
-      $this->load->model('taxonomy_model');
       $parent_rank = $this->taxonomy_model->get_rank($parent_id);
       $child_rank = $this->taxonomy_rank_model->get_first_child($parent_rank);
 
@@ -49,7 +48,6 @@ class Taxonomy extends BioController {
 
     $tree_id = $this->smarty->get_initial_var('tree');
     if(!$tree_id && $parent_id) {
-      $this->load->model('taxonomy_model');
       $tree_id = $this->taxonomy_model->get_tree($parent_id);
 
       $this->smarty->set_initial_var('tree', $tree_id);
@@ -73,7 +71,6 @@ class Taxonomy extends BioController {
       $errors = true;
     }
 
-    $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_rank_model');
 
     $rank = intval($this->get_post('rank'));
@@ -101,7 +98,7 @@ class Taxonomy extends BioController {
     $parent_id = $this->get_post('parent_id');
     if($parent_id) {
       $parent_id = intval($parent_id);
-      if(!$this->taxonomy_model->has_id($parent_id)) {
+      if(!$this->taxonomy_model->has_taxonomy($parent_id)) {
         $this->set_form_error('parent_id', "Parent with id $parent_id doesn't exist.");
         $errors = true;
       }
@@ -121,8 +118,6 @@ class Taxonomy extends BioController {
     } else {
       $name = $this->get_post('name');
 
-      $this->load->model('taxonomy_model');
-
       $id = $this->taxonomy_model->add($name, $rank, $tree, $parent_id);
 
       redirect("taxonomy/view/$id");
@@ -137,7 +132,6 @@ class Taxonomy extends BioController {
 
     $this->__assign_search_components();
 
-    $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_rank_model');
 
     $taxonomy = $this->taxonomy_model->get($id);
@@ -153,11 +147,21 @@ class Taxonomy extends BioController {
 
   function view($id)
   {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    if(!$this->taxonomy_model->has_taxonomy($id)) {
+      $this->smarty->assign('title', 'Taxonomy not found');
+      $this->smarty->assign('id', $id);
+      $this->smarty->view('taxonomy/not_found');
+      return;
+    }
+
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'taxonomy_functions.js', AUTOCOMPLETE_SCRIPT);
     $this->use_mygrid();
     $this->use_thickbox();
 
-    $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_name_model');
     $this->load->model('taxonomy_name_type_model');
     $this->load->model('taxonomy_rank_model');
@@ -198,8 +202,6 @@ class Taxonomy extends BioController {
     $id = $this->input->post('tax');
     $value = $this->input->post('value');
 
-    $this->load->model('taxonomy_model');
-
     $size = strlen($value);
     if($size < 3 || $size > 512) {
       $name = $this->taxonomy_model->get_name($id);
@@ -226,8 +228,6 @@ class Taxonomy extends BioController {
       $value = null;
     }
 
-    $this->load->model('taxonomy_model');
-
     $this->taxonomy_model->edit_rank($id, $value);
 
     $this->load->model('taxonomy_rank_model');
@@ -253,8 +253,6 @@ class Taxonomy extends BioController {
       $value = null;
     }
 
-    $this->load->model('taxonomy_model');
-
     $this->taxonomy_model->edit_tree($id, $value);
 
     $this->load->model('taxonomy_tree_model');
@@ -272,8 +270,6 @@ class Taxonomy extends BioController {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();
     }
-
-    $this->load->model('taxonomy_model');
 
     $this->json_return($this->taxonomy_model->get($id));
   }
@@ -295,8 +291,6 @@ class Taxonomy extends BioController {
       return $this->invalid_permission_empty();
     }
 
-    $this->load->model('taxonomy_model');
-
     $tree = $this->__get_tree($tax, $tree);
 
     if($tax == '0') {
@@ -314,8 +308,6 @@ class Taxonomy extends BioController {
     if(!$this->logged_in) {
       return $this->invalid_permission_zero();
     }
-
-    $this->load->model('taxonomy_model');
 
     $tree = $this->__get_tree($tax, $tree);
 
@@ -394,8 +386,6 @@ class Taxonomy extends BioController {
       $tree = null;
     }
 
-    $this->load->model('taxonomy_model');
-
     $result = $this->taxonomy_model->search($name, $rank, $tree, $start, $size);
 
     $this->json_return($result);
@@ -419,8 +409,6 @@ class Taxonomy extends BioController {
       $tree = null;
     }
 
-    $this->load->model('taxonomy_model');
-
     echo $this->taxonomy_model->search_total($name, $rank, $tree);
   }
 
@@ -435,8 +423,6 @@ class Taxonomy extends BioController {
     $timestamp = $this->get_parameter('timestamp');
     $rank = $this->get_parameter('rank');
     $tree = $this->get_parameter('tree');
-
-    $this->load->model('taxonomy_model');
 
     if($tree == '0') {
       $tree = null;
@@ -454,8 +440,6 @@ class Taxonomy extends BioController {
 
   function _delete($id)
   {
-    $this->load->model('taxonomy_model');
-
     $this->taxonomy_model->delete($id);
   }
 
@@ -481,7 +465,6 @@ class Taxonomy extends BioController {
     $tax_id = $this->get_post('tax_id');
     $parent_id = $this->get_post('hidden_tax');
 
-    $this->load->model('taxonomy_model');
     $this->taxonomy_model->edit_parent($tax_id, $parent_id);
 
     redirect('taxonomy/view/' . $tax_id);

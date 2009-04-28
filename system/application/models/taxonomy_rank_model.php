@@ -7,6 +7,11 @@ class Taxonomy_rank_model extends BioModel
     parent::BioModel('taxonomy_rank');
   }
 
+  function has_rank($id)
+  {
+    return $this->has_id($id);
+  }
+
   function get($id)
   {
     return $this->get_row('rank_id', $id, 'taxonomy_rank_info_history');
