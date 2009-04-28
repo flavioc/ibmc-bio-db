@@ -249,3 +249,11 @@ span.label_invalid {
   color: blue;
   text-align: center;
 }
+
+img.select_child {
+  cursor: pointer;
+}
+
+img.image_url {
+  border-width:0;
+}
