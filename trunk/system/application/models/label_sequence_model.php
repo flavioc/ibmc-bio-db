@@ -737,6 +737,13 @@ class Label_sequence_model extends BioModel
     return $this->count_total('label_sequence_info') > 0;
   }
 
+  function count_taxonomies($tax)
+  {
+    $this->db->select('id');
+    $this->db->where('taxonomy_data', $tax);
+    return $this->count_total();
+  }
+
   function label_exists($id)
   {
     return $this->has_id($id);

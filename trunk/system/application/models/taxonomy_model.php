@@ -143,7 +143,6 @@ class Taxonomy_model extends BioModel
 
     $sql .= " AND $where_name_sql ";
 
-    /*
     $sql .= " UNION SELECT tax_id AS id FROM taxonomy_name_tax WHERE TRUE ";
 
     if($tree) {
@@ -154,7 +153,6 @@ class Taxonomy_model extends BioModel
       $sql .= " AND rank_id = $rank ";
     }
     $sql .= " AND $where_name_sql ";
-     */
 
     $sql .= sql_limit($start, $size);
 
@@ -212,13 +210,18 @@ class Taxonomy_model extends BioModel
     $this->db->trans_complete();
   }
 
-  function __get_childs($tax, $tree)
+  function __get_children($tax, $tree)
   {
+    $tree_str = "";
+    if($tree) {
+      $tree_str = "tree_id = $tree AND";
+    }
+
     if($tax == null) {
-      return "WHERE tree_id = $tree AND ((parent_id IS NULL AND import_id IS NULL) OR (parent_id IS NULL AND import_id IS NOT NULL AND import_id = import_parent_id))";
+      return "WHERE $tree_str ((parent_id IS NULL AND import_id IS NULL) OR (parent_id IS NULL AND import_id IS NOT NULL AND import_id = import_parent_id))";
     } else {
       $import_id = $this->get_import_id($tax);
-      $sql = "WHERE tree_id = $tree AND ((parent_id IS NOT NULL AND parent_id = $tax) OR ";
+      $sql = "WHERE $tree_str ((parent_id IS NOT NULL AND parent_id = $tax) OR ";
       if($import_id) {
         $sql .= "(import_parent_id IS NOT NULL AND import_parent_id = $import_id AND import_parent_id <> import_id))";
       } else {
@@ -229,10 +232,9 @@ class Taxonomy_model extends BioModel
     }
   }
 
-  function get_taxonomy_childs($tax, $tree, $start = null, $size = null)
+  function get_taxonomy_children($tax, $tree, $start = null, $size = null)
   {
-
-    $sql = "SELECT * FROM taxonomy_info " . $this->__get_childs($tax, $tree) .
+    $sql = "SELECT * FROM taxonomy_info " . $this->__get_children($tax, $tree) .
       " ORDER BY name ";
 
     $sql .= sql_limit($start, $size);
@@ -240,9 +242,9 @@ class Taxonomy_model extends BioModel
     return $this->rows_sql($sql);
   }
 
-  function count_taxonomy_childs($tax, $tree)
+  function count_taxonomy_children($tax, $tree)
   {
-    $sql = "SELECT count(id) AS total FROM taxonomy " . $this->__get_childs($tax, $tree);
+    $sql = "SELECT count(id) AS total FROM taxonomy " . $this->__get_children($tax, $tree);
     return $this->total_sql($sql);
   }
 

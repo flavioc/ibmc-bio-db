@@ -52,8 +52,8 @@ $(document).ready(function () {
 
     obj.grid({
       url: get_app_url() + '/taxonomy',
-      total: 'total_taxonomy_childs/' + tax + '/' + tree,
-      retrieve: 'taxonomy_childs/' + tax + '/' + tree,
+      total: 'total_taxonomy_children/' + tax + '/' + tree,
+      retrieve: 'taxonomy_children/' + tax + '/' + tree,
       fieldNames: ['Select', 'Name', 'Rank', 'Tree', 'Child'],
       fields: ['select', 'name', 'rank_name', 'tree_name', 'add_child'],
       tdClass: {
