@@ -65,12 +65,20 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
 
+    if(!$this->label_model->has_label($id)) {
+      $this->smarty->assign('title', 'Label not found');
+      $this->smarty->assign('id', $id);
+      $this->smarty->view('label/not_found');
+      return;
+    }
+
     $label = $this->label_model->get($id);
 
     $this->smarty->assign('title', 'Label "' . $label['name'] . '"');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->__assign_types();
     $this->smarty->assign('label', $label);
+    $this->use_impromptu();
     $this->smarty->view('label/view');
   }
 
@@ -280,31 +288,30 @@ class Label extends BioController {
     }
   }
 
-  function delete($id)
+  function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
 
-    if($this->label_model->is_default($id)) {
-      return;
-    }
-
-    $this->json_return($this->label_model->delete($id));
-  }
-
-  function delete_redirect($id)
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
-    if($this->label_model->is_default($id)) {
-      return;
-    }
-
-    $this->label_model->delete($id);
+    $id = $this->get_post('id');
+    $this->label_model->delete_label($id);
 
     redirect('label/browse');
+  }
+
+  function delete_dialog($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_nothing();
+    }
+
+    $label = $this->label_model->get($id);
+    $this->smarty->assign('label', $label);
+    $this->load->model('label_sequence_model');
+    $num_seq = $this->label_sequence_model->count_sequences_for_label($id);
+    $this->smarty->assign('num_seq', $num_seq);
+
+    $this->smarty->view_s('label/delete');
   }
 }

@@ -744,6 +744,13 @@ class Label_sequence_model extends BioModel
     return $this->count_total();
   }
 
+  function count_sequences_for_label($label)
+  {
+    $this->db->select('DISTINCT id');
+    $this->db->where('label_id', $label);
+    return $this->count_total();
+  }
+
   function label_exists($id)
   {
     return $this->has_id($id);

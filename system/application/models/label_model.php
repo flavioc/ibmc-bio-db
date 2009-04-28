@@ -9,6 +9,11 @@ class Label_model extends BioModel
     parent::BioModel('label');
   }
 
+  function has_label($id)
+  {
+    return $this->has_id($id);
+  }
+
   function __select()
   {
     $this->db->select(self::$label_view_fields);
@@ -126,17 +131,10 @@ class Label_model extends BioModel
     return $this->has_field('name', $name);
   }
 
-  function delete($id)
+  function delete_label($id)
   {
-    $deletable = $this->get_field($id, 'deletable');
-    $default = $this->get_field($id, 'default');
-
-    if($default) {
-      return false;
-    } else {
-      $this->delete_id($id);
-      return true;
-    }
+    $this->delete_id($id);
+    return true;
   }
 
   function is_default($id)
