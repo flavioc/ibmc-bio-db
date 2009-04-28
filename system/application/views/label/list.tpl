@@ -20,14 +20,27 @@ $(document).ready(function () {
         },
         fieldNames: ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple'],
         fields: ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple'],
-        countRemove: 'total_sequences',
-        what: 'label',
-        removeAssociated: 'sequences',
-        enableRemove: true,
         links: {
           name: function (row) {
             return base_site + '/view/' + row.id;
           }
+        },
+        tdClass: {
+          multiple: 'centered',
+          editable: 'centered',
+          deletable: 'centered',
+          auto_on_modification: 'centered',
+          auto_on_creation: 'centered',
+          must_exist: 'centered'
+        },
+        width: {
+          multiple: w_boolean,
+          editable: w_boolean,
+          deletable: w_boolean,
+          auto_on_creation: w_boolean,
+          auto_on_modification: w_boolean,
+          must_exist: w_boolean,
+          type: w_type
         },
         types: {
           must_exist: 'boolean',

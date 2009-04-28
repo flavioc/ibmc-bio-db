@@ -12,6 +12,11 @@ $(document).ready(function () {
     total: 'get_total',
     fieldNames: ['Name', 'Last update', 'User'],
     fields: ['name', 'update', 'user_name'],
+    tdClass: {user_name: 'centered', update: 'centered'},
+    width: {
+      user_name: w_user,
+      update: w_update
+    },
     links: {
       name: function (row) {
         return get_app_url() + '/sequence/view/' + row.id;
