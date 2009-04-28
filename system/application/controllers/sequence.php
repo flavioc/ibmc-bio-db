@@ -61,7 +61,7 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_mygrid();
     $this->use_plusminus();
-    $this->use_impromptu();
+    //$this->use_impromptu();
 
     $this->load->model('label_sequence_model');
 

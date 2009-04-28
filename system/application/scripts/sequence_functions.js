@@ -32,7 +32,13 @@ var data_transform_labels = {
         return "Select";
       },
       edit: function (row) {
-        return 'Edit';
+        return img_edit;
+      },
+      '$delete': function (row) {
+        return img_del;
+      },
+      select: function (row) {
+        return img_go;
       }
   };
 var link_labels = {
@@ -102,10 +108,24 @@ function reload_labels_list()
 {
   labels_loaded = true;
 
-
   var options = {
     url: get_app_url() + '/label_sequence',
     retrieve: 'get_labels/' + seq_id,
+    tdClass: {
+      '$delete': 'centered',
+      update: 'centered',
+      edit: 'centered',
+      type: 'centered'
+    },
+    width: {
+      update: w_update,
+      '$delete': w_del,
+      type: w_type,
+      edit: w_edit,
+      name: w_label_name,
+      subname: w_subname,
+      user_name: w_user
+    },
     fieldNames: ['Name', 'Data', 'Subname', 'Type', 'Update', 'User'],
     fieldGenerator: function (row) {
       var base = ['name', select_field(row), 'subname', 'type', 'update', 'user_name'];
@@ -116,7 +136,7 @@ function reload_labels_list()
 
       return base;
     },
-    hiddenFields: ['user_name', 'update'],
+    hiddenFields: ['user_name', 'update', 'subname'],
     links: link_labels,
     dataTransform: data_transform_labels,
     enableRemove: logged_in,
@@ -253,10 +273,30 @@ function reload_addable_list()
         return '#label_' + row.id;
       }
     },
+    tdClass: {
+      auto_on_creation: 'centered',
+      auto_on_modification: 'centered',
+      deletable: 'centered',
+      editable: 'centered',
+      multiple: 'centered',
+      must_exist: 'centered',
+      type: 'centered',
+      add: 'centered'
+    },
+    width: {
+      add: w_add,
+      type: w_type,
+      auto_on_creation: w_boolean,
+      auto_on_modification: w_boolean,
+      deletable: w_boolean,
+      editable: w_boolean,
+      multiple: w_boolean,
+      must_exist: w_boolean
+    },
     types: labelTypes,
     dataTransform: {
       add: function (row) {
-        return 'Add';
+        return img_add;
       }
     },
     clickFun: {
@@ -300,6 +340,16 @@ function reload_validation_list()
     fieldNames: ['Select', 'Name', 'Data', 'Type', 'Status'],
     fieldGenerator: function (row) {
       return ['select', 'name', select_field(row), 'type', 'status'];
+    },
+    tdClass: {
+      select: 'centered',
+      type: 'centered'
+    },
+    width: {
+      select: w_select,
+      type: w_type,
+      name: w_label_name,
+      status: w_status
     },
     dataTransform: data_transform_labels,
     classFun: {

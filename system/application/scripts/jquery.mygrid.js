@@ -147,17 +147,17 @@
   {
     var removeFun = opts.enableRemoveFun;
     var id = obj[0].id;
+    var more_class = opts.tdClass[opts.deleteTag];
+    var del_class = "deletable_column";
+
+    if(more_class) {
+      del_class = del_class + " " + more_class;
+    }
 
     if(removeFun == null || removeFun(row)) {
       var delete_id = 'delete_' + id + '_' + row[opts.idField];
       var deleteText = opts.deleteText;
       var trans_del = opts.dataTransform[opts.deleteTag];
-      var more_class = opts.tdClass[opts.deleteTag];
-      var del_class = "deletable_column";
-
-      if(more_class) {
-        del_class = del_class + " " + more_class;
-      }
 
       if(trans_del) {
         deleteText = trans_del(row);
@@ -179,7 +179,7 @@
     } else {
       row_tag.childNodes[index] = {
         tagName: 'td',
-        class: 'deletable_column',
+        class: del_class,
         innerHTML: '---'
       }
     }
@@ -481,28 +481,24 @@ $.fn.gridAdd = function(data) {
   });
 }
 
-function get_data_column (obj, column)
+function get_data_column(obj, column)
 {
   var td_class = 'td_' + obj.id + '_' + column;
   var th_class = 'th_' + obj.id + '_' + column;
-  var th_sel = 'th[@class=' + th_class + ']';
-  var td_sel = 'td[@class=' + td_class + ']';
+  var th_sel = 'th[@class*=' + th_class + ']';
+  var td_sel = 'td[@class*=' + td_class + ']';
   var sel = th_sel + ', ' + td_sel;
 
   return sel;
 }
 
-$.fn.gridHideColumn = function(column, type) {
+$.fn.gridHideColumn = function(column) {
   return this.each(function () {
     var $this = $(this);
     var opts = this.opts;
     var obj = $(get_data_column(this, column), $this);
     
-    if(type) {
-      obj.fadeOut(type);
-    } else {
-      obj.hide();
-    }
+    obj.hide();
   });
 };
 
@@ -517,17 +513,14 @@ $.fn.gridHideDefault = function (type) {
   });
 };
 
-$.fn.gridShowColumn = function(column, type) {
+$.fn.gridShowColumn = function(column) {
   return this.each(function () {
     var $this = $(this);
     var opts = this.opts;
     var obj = $(get_data_column(this, column), $this);
+    var class_name = opts.tdClass[column];
     
-    if(type) {
-      obj.fadeIn(type);
-    } else {
-      obj.show();
-    }
+    obj.show();
   });
 };
 

@@ -606,7 +606,7 @@ class Label_sequence_model extends BioModel
 
   function get_addable_labels($id)
   {
-    $sql = "SELECT id, name, type, must_exist, auto_on_creation
+    $sql = "SELECT id, name, type, must_exist, auto_on_creation,
           auto_on_modification, deletable, editable, multiple
       FROM label
       WHERE multiple IS TRUE OR
