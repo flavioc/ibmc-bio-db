@@ -1,4 +1,3 @@
-{if $user}
 <h2>User {$user.name}</h2>
 
 <p><img src="{site}/image/get_id/{$user.id}/50" /></p>
@@ -13,7 +12,21 @@
 </ul>
 {if $user.id == $user_id}
 <p><a href="{site}/profile/edit">Edit profile</a></p>
-{/if}
 {else}
-<p>Invalid user id</p>
+{if $is_admin}
+{form_open name=form_delete to="profile/delete_redirect"}
+{form_hidden name=id value=$user.id}
+{form_submit name=delete_button msg=Delete}
+{form_end}
+
+<script>
+{to_js var=user value=$user}
+{literal}
+$(document).ready(function () {
+  activate_delete_dialog(get_app_url() + '/profile/delete_dialog/' + user.id);
+});
+{/literal}
+</script>
 {/if}
+{/if}
+

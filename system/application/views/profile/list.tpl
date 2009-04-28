@@ -11,8 +11,11 @@ $(document).ready(function () {
     retrieve: 'get_all',
     fieldNames: ['Image', 'Name', 'Complete name', 'Email'],
     fields: ['image', 'name', 'complete_name', 'email'],
-    enableRemove: true,
-    remove: 'do_delete',
+    width: {
+      name: w_user,
+      email: w_email,
+      image: w_image
+    },
     dataTransform: {
       image: function (row) {
         return '<img src="' + get_app_url() + '/image/get_id/' + row.id + '/20" />';
