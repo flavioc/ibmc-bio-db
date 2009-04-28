@@ -74,6 +74,7 @@ class Label extends BioController {
 
     $label = $this->label_model->get($id);
 
+    $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->smarty->assign('title', 'Label "' . $label['name'] . '"');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->__assign_types();
@@ -90,63 +91,6 @@ class Label extends BioController {
   function __assign_types()
   {
     $this->smarty->assign('types', $this->__get_types());
-  }
-
-  function edit()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
-    $id = $this->get_parameter('id');
-    $this->__assign_types();
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');
-
-    $label = $this->label_model->get($id);
-
-    $this->smarty->fetch_form_row('name', $label['name']);
-    $this->smarty->fetch_form_row('type', $label['type']);
-    $this->smarty->fetch_form_row('must_exist', $label['must_exist']);
-    $this->smarty->fetch_form_row('auto_on_creation', $label['auto_on_creation']);
-    $this->smarty->fetch_form_row('auto_on_modification', $label['auto_on_modification']);
-    $this->smarty->fetch_form_row('deletable', $label['deletable']);
-    $this->smarty->fetch_form_row('editable', $label['editable']);
-    $this->smarty->fetch_form_row('multiple', $label['multiple']);
-    $this->smarty->fetch_form_row('default', $label['default']);
-    $this->smarty->fetch_form_row('public', $label['public']);
-    $this->smarty->fetch_form_row('code', $label['code']);
-    $this->smarty->fetch_form_row('valid_code', $label['valid_code']);
-    $this->smarty->fetch_form_row('comment', $label['comment']);
-
-    $this->smarty->assign('label', $label);
-
-    $this->smarty->assign('title', 'Edit label "' . $label['name'] . '"');
-    $this->smarty->view('label/edit');
-  }
-
-  function do_edit($id)
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
-    $result = $this->__form_validation(1);
-
-    if(is_array($result)) {
-      $this->label_model->edit($id, $result['name'], $result['type'],
-        $result['must_exist'], $result['auto_on_creation'],
-        $result['auto_on_modification'], $result['deletable'],
-        $result['editable'], $result['multiple'],
-        $result['default'],
-        $result['public'],
-        $result['code'],
-        $result['valid_code'],
-        $result['comment']);
-
-      redirect("label/view/$id");
-    } else {
-      redirect("label/edit/$id");
-    }
   }
 
   function add()
@@ -313,5 +257,98 @@ class Label extends BioController {
     $this->smarty->assign('num_seq', $num_seq);
 
     $this->smarty->view_s('label/delete');
+  }
+
+  function edit_name() {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $result = $this->label_model->edit_name($id, $value);
+
+    if($result) {
+      // Update OK
+      echo $value;
+    } else {
+      // Name already used.
+      echo $this->label_model->get_name($id);
+    }
+  }
+
+  function edit_type() {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $result = $this->label_model->edit_type($id, $value);
+    echo $value;
+  }
+
+  function edit_code() {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $result = $this->label_model->edit_code($id, $value);
+    echo $value;
+  }
+
+  function edit_validcode() {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $result = $this->label_model->edit_validcode($id, $value);
+    echo $value;
+  }
+
+  function edit_comment() {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+
+    $result = $this->label_model->edit_comment($id, $value);
+    echo $value;
+  }
+
+  function edit_bool($what) {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+
+    $this->load->library('input');
+
+    $id = $this->input->post('label');
+    $value = $this->input->post('value');
+    $value = ($value == '1' ? TRUE : FALSE);
+
+    $result = $this->label_model->edit_bool($id, $what, $value);
+
+    echo $value ? "Yes" : "No";
   }
 }
