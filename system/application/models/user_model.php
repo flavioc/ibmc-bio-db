@@ -7,6 +7,11 @@ class User_model extends BioModel
     parent::BioModel('user');
   }
 
+  function has_user($id)
+  {
+    return $this->has_id($id);
+  }
+
   function validate($name, $pwd)
   {
     $this->db->where('enabled', TRUE);
