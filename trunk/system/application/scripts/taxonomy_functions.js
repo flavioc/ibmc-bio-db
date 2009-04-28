@@ -14,7 +14,7 @@ function start_tax_search_form(dom, put_addchild, click_fun)
   form_tax_click_fun = click_fun;
 
   if(form_tax_add_child) {
-    form_tax_field_names.push('Add child');
+    form_tax_field_names.push('Child');
     form_tax_fields.push('add_child');
   }
 
@@ -69,6 +69,16 @@ function form_tax_when_submit()
           rank: function () { return $('#rank').val(); },
           tree: function () { return $('#tree').val(); }
         },
+        tdClass: {
+          tree_name: 'centered',
+          add_child: 'centered',
+          rank_name: 'centered'
+        },
+        width: {
+          add_child: w_add,
+          tree_name: w_tree,
+          rank_name: w_rank
+        },
         fieldNames: form_tax_field_names,
         fields: form_tax_fields,
         links: {
@@ -98,7 +108,7 @@ function form_tax_when_submit()
             return row.rank_name == null ? null : row.rank_name;
           },
           add_child: function (row) {
-            return 'Add';
+            return img_add;
           }
         },
       });
