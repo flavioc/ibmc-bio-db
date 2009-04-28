@@ -38,20 +38,7 @@ $(document).ready(function() {
 <script>
 {literal}
 $(document).ready(function () {
-  $('#delete_button').click(function () {
-    $.ajaxprompt(get_app_url() + '/tree/delete_dialog/' + tree.id,
-      {
-        buttons: {Yes: true, No: false},
-        submit: function (v) {
-          if(v) {
-            $('#form_delete').submit();
-          }
-
-          return true;
-        }
-      });
-    return false;
-  });
+  activate_delete_dialog(get_app_url() + '/tree/delete_dialog/' + tree.id);
 });
 {/literal}
 </script>
