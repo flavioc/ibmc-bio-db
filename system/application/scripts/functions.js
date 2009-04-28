@@ -155,3 +155,28 @@ function build_href(url, class_name, inner)
   var class_txt = build_class_text(class_name);
   return '<a href="' + url + '" ' + class_txt + '>' + inner + '</a>';
 }
+
+function activate_delete_dialog(url, delete_button, form_delete)
+{
+  if(delete_button == null) {
+    delete_button = '#delete_button';
+  }
+  if(form_delete == null) {
+    form_delete = '#form_delete';
+  }
+
+  $(delete_button).click(function () {
+    $.ajaxprompt(url,
+      {
+        buttons: {Yes: true, No: false},
+        submit: function (v) {
+          if(v) {
+            $(form_delete).submit();
+          }
+
+          return true;
+        }
+      });
+    return false;
+  });
+}
