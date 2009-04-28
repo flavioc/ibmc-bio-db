@@ -29,6 +29,7 @@ class BioController extends Controller
     $this->smarty->assign('user_id', $this->user_id);
     $this->smarty->assign('username', $this->username);
     $this->smarty->assign('user_type', $this->user_type);
+    $this->smarty->assign('is_admin', $this->is_admin);
 
     $error_msg = $this->session->flashdata('error_msg');
     if($error_msg) {
