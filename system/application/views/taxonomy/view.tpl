@@ -60,8 +60,16 @@ $(document).ready(function() {
 
 {form_open name=form_delete to="taxonomy/delete_redirect"}
 {form_hidden name=id value=$taxonomy.id}
-{form_submit name=submit_delete msg=Delete}
+{form_submit name=delete_button msg=Delete}
 {form_end}
+
+{literal}
+<script>
+$(document).ready(function () {
+  activate_delete_dialog(get_app_url() + '/taxonomy/delete_dialog/' + taxonomy.id);
+});
+</script>
+{/literal}
 
 <hr />
 
@@ -176,8 +184,8 @@ $(document).ready(function () {
 
   div.grid({
     url: base_site,
-    total: 'total_taxonomy_childs/' + taxonomy.id,
-    retrieve: 'taxonomy_childs/' + taxonomy.id,
+    total: 'total_taxonomy_children/' + taxonomy.id,
+    retrieve: 'taxonomy_children/' + taxonomy.id,
     fieldNames: ['Name', 'Rank', 'Tree'],
     fields: ['name', 'rank_name', 'tree_name'],
     tdClass: {

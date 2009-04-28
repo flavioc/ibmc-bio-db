@@ -161,6 +161,7 @@ class Taxonomy extends BioController {
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'taxonomy_functions.js', AUTOCOMPLETE_SCRIPT);
     $this->use_mygrid();
     $this->use_thickbox();
+    $this->use_impromptu();
 
     $this->load->model('taxonomy_name_model');
     $this->load->model('taxonomy_name_type_model');
@@ -285,7 +286,7 @@ class Taxonomy extends BioController {
     }
   }
 
-  function taxonomy_childs($tax, $tree = null)
+  function taxonomy_children($tax, $tree = null)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -300,10 +301,10 @@ class Taxonomy extends BioController {
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
 
-    $this->json_return($this->taxonomy_model->get_taxonomy_childs($tax, $tree, $start, $size));
+    $this->json_return($this->taxonomy_model->get_taxonomy_children($tax, $tree, $start, $size));
   }
 
-  function total_taxonomy_childs($tax, $tree = null)
+  function total_taxonomy_children($tax, $tree = null)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_zero();
@@ -316,7 +317,7 @@ class Taxonomy extends BioController {
     }
 
     $this->json_return(
-      $this->taxonomy_model->count_taxonomy_childs($tax, $tree));
+      $this->taxonomy_model->count_taxonomy_children($tax, $tree));
   }
 
   function tree_browse()
@@ -438,9 +439,23 @@ class Taxonomy extends BioController {
     }
   }
 
-  function _delete($id)
+  function delete_dialog($id)
   {
-    $this->taxonomy_model->delete($id);
+    if(!$this->logged_in) {
+      return $this->invalid_permission_nothing();
+    }
+
+    $taxonomy = $this->taxonomy_model->get($id);
+    $this->smarty->assign('taxonomy', $taxonomy);
+
+    $num_children = $this->taxonomy_model->count_taxonomy_children($id, null);
+    $this->smarty->assign('num_children', $num_children);
+
+    $this->load->model('label_sequence_model');
+    $num_labels = $this->label_sequence_model->count_taxonomies($id);
+    $this->smarty->assign('num_labels', $num_labels);
+
+    $this->smarty->view_s('taxonomy/delete');
   }
 
   function delete_redirect()
@@ -450,8 +465,7 @@ class Taxonomy extends BioController {
     }
 
     $id = $this->get_post('id');
-
-    $this->_delete($id);
+    $this->taxonomy_model->delete($id);
 
     redirect('taxonomy/browse');
   }
