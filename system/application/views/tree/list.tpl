@@ -11,11 +11,11 @@
   .grid({
     url: base_site,
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Last update', 'User', 'Add'],
+    fieldNames: ['Name', 'Last update', 'User', 'Root'],
     fields: ['name', 'update', 'user_name', 'add'],
     dataTransform: {
       add: function (row) {
-        return 'Add';
+        return img_add;
       }
     },
     links: {

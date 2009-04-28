@@ -85,12 +85,25 @@ $(document).ready(function() {
       fieldNames: ['Name', 'Type'],
       fields: ['name', 'type_name'],
       enableRemove: true,
+      dataTransform: {
+        '$delete': function (row) {
+          return img_del;
+        }
+      },
+      tdClass: {
+        '$delete' : 'centered',
+        type_name: 'centered'
+      },
+      width: {
+        '$delete': w_del,
+        type_name: w_type
+      },
       editables: {
         name: {
           select : true,
           submit : 'OK',
           cancel : 'cancel',
-          width: "200px"
+          width: "400px"
         },
         type_name: { 
           data   : {/literal}{encode_json_data data=$types}{literal},
@@ -167,6 +180,14 @@ $(document).ready(function () {
     retrieve: 'taxonomy_childs/' + taxonomy.id,
     fieldNames: ['Name', 'Rank', 'Tree'],
     fields: ['name', 'rank_name', 'tree_name'],
+    tdClass: {
+      tree_name: 'centered',
+      rank_name: 'centered'
+    },
+    width: {
+      rank_name: w_rank,
+      tree_name: w_tree
+    },
     links: {
         name: function(row) {
           return base_site + '/view/' + row.id;
