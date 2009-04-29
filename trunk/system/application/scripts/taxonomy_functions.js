@@ -79,6 +79,11 @@ function form_tax_when_submit()
           tree_name: w_tree,
           rank_name: w_rank
         },
+        ordering: {
+          name: 'asc',
+          rank_name: 'def',
+          tree_name: 'def'
+        },
         fieldNames: form_tax_field_names,
         fields: form_tax_fields,
         links: {
