@@ -275,7 +275,7 @@ function export_sequences($sequences, $seq_labels)
     $labels = $seq_labels[$i];
 
     $ret .= __get_sequence_header($sequence, $labels, $merged_labels);
-    $content = sequence_split($sequence['content']);
+    $content = $sequence['content'];
     $ret .= "\n$content";
   }
 
