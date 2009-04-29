@@ -143,6 +143,7 @@ class Taxonomy_model extends BioModel
 
     $sql .= " AND $where_name_sql ";
 
+    /*
     $sql .= " UNION SELECT tax_id AS id FROM taxonomy_name_tax WHERE TRUE ";
 
     if($tree) {
@@ -153,6 +154,7 @@ class Taxonomy_model extends BioModel
       $sql .= " AND rank_id = $rank ";
     }
     $sql .= " AND $where_name_sql ";
+     */
 
     $sql .= sql_limit($start, $size);
 

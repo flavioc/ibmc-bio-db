@@ -222,10 +222,28 @@ function reload_missing_list()
         return '#row_addable_list_' + row.id;
       }
     },
+    tdClass: {
+      multiple: 'centered',
+      editable: 'centered',
+      deletable: 'centered',
+      auto_on_modification: 'centered',
+      auto_on_creation: 'centered',
+      type: 'centered',
+      select: 'centered'
+    },
+    width: {
+      multiple: w_boolean,
+      editable: w_boolean,
+      deletable: w_boolean,
+      auto_on_modification: w_boolean,
+      auto_on_creation: w_boolean,
+      type: w_type,
+      select: w_select
+    },
     types: labelTypes,
     dataTransform: {
       select: function (row) {
-        return 'Select';
+        return img_go;
       }
     },
     hiddenFields: hiddenFields,
