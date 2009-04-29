@@ -104,7 +104,7 @@ $(document).ready(function () {
       },
       width: {
         '$delete': w_del,
-        type_name: w_type
+        type_name: w_type_tax
       },
       editables: {
         name: {

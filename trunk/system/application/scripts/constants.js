@@ -7,6 +7,7 @@ var w_rank = '15%';
 var w_del = '15%';
 var w_edit = w_add;
 var w_type = '10%';
+var w_type_tax = '20%';
 var w_boolean = '8%';
 var w_email = '20%';
 var w_image = '20%';
