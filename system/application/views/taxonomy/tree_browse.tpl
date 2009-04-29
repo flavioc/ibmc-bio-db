@@ -84,7 +84,7 @@ $(document).ready(function () {
           return row.tree_name == null ? "---" : row.tree_name;
         },
         select: function (row) {
-          return img_go;
+          return build_image_url('go.png', 'image_url select_child');
         },
         add_child: function (row) {
           return img_add;
@@ -125,7 +125,7 @@ $(document).ready(function () {
         show_path(obj, new_path);
         childs_name.show();
 
-        $('img[@class=select_child]', obj).click(function (e) {
+        $('img[@class*=select_child]', obj).click(function (e) {
           // get row id that contains taxonomy ID
           var tr_id = $(e.target).parent().parent()[0].id;
           var id = parse_id(tr_id);
