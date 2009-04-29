@@ -102,7 +102,7 @@ $(document).ready(function () {
 
 <div class="grid_form">
 <h3>Label flags</h3>
-<table class="data" style="table-layout: fixed;">
+<table class="data fixed_table">
 <tr>
   <th>Must Exist</th>
   <th>Generate on creation</th>

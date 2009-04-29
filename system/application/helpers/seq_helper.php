@@ -86,6 +86,11 @@ function is_sequence_start($line)
   return $line[0] == '>';
 }
 
+function is_header_sequence($line)
+{
+  return $line[0] == '#';
+}
+
 function get_sequence_name($line)
 {
   $vec = split("[ \|>]+", $line);
@@ -100,9 +105,109 @@ function get_sequence_content($file)
   return sequence_normalize($line);
 }
 
-function import_fasta_file($controller, $file)
+function read_header_labels($line, $controller)
+{
+  $stripped_line = trim($line, " \t\n\#");
+  $labels_vec = explode("|", $stripped_line);
+  $ret = array();
+
+  foreach($labels_vec as $label_text) {
+    $label_vec = explode(":", $label_text);
+    if(count($label_vec) != 2) {
+      continue;
+    }
+    $label_name = $label_vec[0];
+    $label_type = $label_vec[1];
+
+    if(!$controller->label_model->has_name($label_name)) {
+      $ret[] = array('name' => $label_name, 'type' => $label_type, 'status' => 'not_found');
+    } else {
+      $new_label = $controller->label_model->get_by_name($label_name);
+
+      if($new_label == null) {
+        die("SHOULD NOT HAPPEN");
+      } else {
+        if($new_label['type'] != $label_type) {
+          $ret[] = array('name' => $label_name,
+                    'type' => $label_type,
+                    'status' => 'type_differ',
+                    'new_type' => $new_label['type']);
+        } else {
+          $ret[] = array('name' => $label_name,
+                        'type' => $label_type,
+                        'status' => 'ok',
+                        'data' => $new_label);
+        }
+      }
+    }
+  }
+
+  return $ret;
+}
+
+function export_labels($el, $labels, $labeldata, $controller)
 {
   $ret = array();
+
+  for($i = 0; $i < count($labels); ++$i) {
+    $label_text = $labeldata[$i];
+    $label = $labels[$i];
+    $label_name = $label['name'];
+    $label_info = $label['data'];
+    $label_status = $label['status'];
+
+    if($label_text == null || $label_text == '') {
+      $ret[$label_name] = 'empty';
+      continue;
+    }
+
+    if($label_status != 'ok') {
+      $ret[$label_name] = 'invalid';
+      continue;
+    }
+
+    if($controller->label_sequence_model->label_used_up($el['id'], $label_info['id'])) {
+      $ret[$label_name] = 'already inserted';
+      continue;
+    }
+
+    if($label_info['auto_on_creation']) {
+      $ret[$label_name] = 'generated';
+      $controller->label_sequence_model->add_auto_label($el['id'], $label_info);
+    } else {
+      $ret[$label_name] = 'added';
+    }
+  }
+
+  return $ret;
+}
+
+function get_sequence_labels($line, $labels)
+{
+  $stripped_line = trim($line, " \n\t");
+  $line_vec = explode('#', $stripped_line);
+
+  if(count($line_vec) <= 1) {
+    $ret = array();
+    foreach($labels as $label) {
+      array_push($ret, null);
+    }
+
+    return $ret;
+  }
+
+  // get last
+  $labels_text = $line_vec[count($line_vec)-1];
+  $label_vec = explode('|', $labels_text);
+
+  return $label_vec;
+}
+
+function import_fasta_file($controller, $file)
+{
+  $has_header = false;
+  $labels = array();
+  $sequences = array();
 
   $fp = fopen($file, 'rb');
 
@@ -113,40 +218,51 @@ function import_fasta_file($controller, $file)
       continue;
     }
 
-    if(is_sequence_start($line)) {
+    if(is_header_sequence($line) && !$has_header) {
+      $labels = read_header_labels($line, $controller);
+      $has_header = true;
+    } else if(is_sequence_start($line)) {
       $name = get_sequence_name($line);
+      $labeldata = get_sequence_labels($line, $labels);
       $content = get_sequence_content($fp);
 
+      $sequence = array();
       $el = array(
         'name' => $name,
         'content' => $content,
       );
 
       $has_name = $controller->sequence_model->has_name($name);
-      $el['add'] = !$has_name;
+      $sequence['add'] = !$has_name;
 
-      /*
       if($has_name) {
         $controller->sequence_model->delete($controller->sequence_model->get_id_by_name($name));
         $has_name = false;
-      }*/
+      }
 
       if($has_name) {
         $el['id'] = $controller->sequence_model->get_id_by_name($name);
         $el['content'] = $controller->sequence_model->get_content($el['id']);
+        $sequence['comment'] = 'Sequence name already exists.';
       } else {
         $el['id'] = $controller->sequence_model->add($name, $content);
       }
 
+      if(!$has_name) {
+        $sequence['labels'] = export_labels($el, $labels, $labeldata, $controller);
+      }
+
+      $sequence['data'] = $el;
+
       // adicionar no resultado
-      $ret[] = $el;
+      $sequences[] = $sequence;
     }
   }
 
   fclose($fp);
-  unlink($file);
+  //unlink($file);
 
-  return $ret;
+  return array($sequences, $labels);
 }
 
 function export_sequences($sequences, $seq_labels)
