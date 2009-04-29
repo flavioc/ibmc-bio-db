@@ -30,6 +30,11 @@ class Label_model extends BioModel
     return $this->get_id($id, 'label_info_history', 'label_id');
   }
 
+  function get_by_name($name)
+  {
+    return $this->get_row('name', $name);
+  }
+
   function get_simple($id, $get_code = false)
   {
     $select = 'id, name, type, must_exist, auto_on_creation,

@@ -107,14 +107,17 @@ class Sequence extends BioController
 
   function __import_fasta_file($file)
   {
-    $seqs = import_fasta_file($this, $file);
+    $seqs_labels = import_fasta_file($this, $file);
+    $seqs = $seqs_labels[0];
+    $labels = $seqs_labels[1];
 
     foreach($seqs as &$seq)
     {
-      $seq['short_content'] = sequence_short_content($seq['content']);
+      $seq['short_content'] = sequence_short_content($seq['data']['content']);
     }
 
     $this->smarty->assign('sequences', $seqs);
+    $this->smarty->assign('labels', $labels);
 
     $this->smarty->assign('title', 'Batch results');
     $this->smarty->assign('file', $file);
@@ -133,6 +136,8 @@ class Sequence extends BioController
 
     if($upload_ret) {
       $data = $this->upload->data();
+      $this->load->model('label_model');
+      $this->load->model('label_sequence_model');
       $this->__import_fasta_file($data['full_path']);
     } else {
       $this->set_upload_form_error('file');
