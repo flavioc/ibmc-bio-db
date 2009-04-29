@@ -17,6 +17,11 @@ $(document).ready(function () {
       user_name: w_user,
       update: w_update
     },
+    ordering: {
+      name: 'asc',
+      update: 'def',
+      user_name: 'def'
+    },
     links: {
       name: function (row) {
         return get_app_url() + '/sequence/view/' + row.id;

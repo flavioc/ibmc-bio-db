@@ -11,9 +11,9 @@ class Sequence_model extends BioModel
     $this->db->select('id, content, name, update_user_id, update, user_name');
   }
 
-  function get_all($start = null, $size = null)
+  function get_all($start = null, $size = null, $ordering = array())
   {
-    $this->db->order_by('name');
+    $this->order_by($ordering, 'name', 'asc');
 
     if($start != null && $size != null) {
       $this->db->limit($size, $start);

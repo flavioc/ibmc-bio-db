@@ -28,8 +28,14 @@ class Sequence extends BioController
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
+    $ordering_name = $this->get_order('name');
+    $ordering_update = $this->get_order('update');
+    $ordering_user = $this->get_order('user_name');
 
-    $this->json_return($this->sequence_model->get_all($start, $size));
+    $this->json_return($this->sequence_model->get_all($start, $size,
+      array('name' => $ordering_name,
+      'update' => $ordering_update,
+      'user_name' => $ordering_user)));
   }
 
   function get_total()
