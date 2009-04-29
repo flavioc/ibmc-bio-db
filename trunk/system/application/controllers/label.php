@@ -30,7 +30,11 @@ class Label extends BioController {
     $start = intval($this->get_parameter('start'));
     $size = intval($this->get_parameter('size'));
 
-    $labels = $this->label_model->get_all($name, $start, $size);
+    $ordering_name = $this->get_order('name');
+    $ordering_type = $this->get_order('type');
+    $labels = $this->label_model->get_all($name, $start, $size,
+      array('name' => $ordering_name,
+            'type' => $ordering_type));
 
     $this->json_return($labels);
   }

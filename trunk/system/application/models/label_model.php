@@ -43,9 +43,9 @@ class Label_model extends BioModel
     return $this->get_id($id);
   }
 
-  function get_all($name = null, $start = null, $size = null)
+  function get_all($name = null, $start = null, $size = null, $ordering = array())
   {
-    $this->db->order_by('name');
+    $this->order_by($ordering, 'name', 'asc');
     $this->__select();
 
     if($name != null) {
