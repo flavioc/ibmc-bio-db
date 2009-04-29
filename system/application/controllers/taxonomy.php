@@ -387,7 +387,13 @@ class Taxonomy extends BioController {
       $tree = null;
     }
 
-    $result = $this->taxonomy_model->search($name, $rank, $tree, $start, $size);
+    $order_name = $this->get_order('name');
+    $order_rank = $this->get_order('rank_name');
+    $order_tree = $this->get_order('tree_name');
+    $ordering = array('name' => $order_name,
+      'rank_name' => $order_rank,
+      'tree_name' => $order_tree);
+    $result = $this->taxonomy_model->search($name, $rank, $tree, $start, $size, $ordering);
 
     $this->json_return($result);
   }
