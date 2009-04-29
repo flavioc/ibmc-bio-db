@@ -18,6 +18,11 @@
         return img_add;
       }
     },
+    ordering: {
+      name: 'asc',
+      update: 'def',
+      user_name: 'def'
+    },
     links: {
       add: function (row) {
         return get_app_url() + '/taxonomy/add?tree=' + row.id;

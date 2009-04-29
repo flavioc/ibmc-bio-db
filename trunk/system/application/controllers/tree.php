@@ -24,7 +24,13 @@ class Tree extends BioController {
       return $this->invalid_permission_empty();
     }
 
-    $trees = $this->taxonomy_tree_model->get_trees();
+    $order_name = $this->get_order('name');
+    $order_update = $this->get_order('update');
+    $order_user = $this->get_order('user_name');
+    $trees = $this->taxonomy_tree_model->get_trees(
+      array('name' => $order_name,
+      'update' => $order_update,
+      'user_name' => $order_user));
 
     $this->json_return($trees);
   }
