@@ -199,6 +199,37 @@
     });
   }
 
+  function activate_ordering(opts, obj) {
+    $.each(opts.ordering, function (field, start) {
+        var a_class_name = 'ordering_' + obj[0].id + '_' + field;
+
+        $('#' + a_class_name, obj).click(function () {
+          var index = 'order_' + field;
+          var current = opts.inner.ordering[index];
+
+          if(current == null) {
+            current = start;
+          }
+
+          if(current == "desc" || current == 'def') {
+            current = "asc";
+          } else if(current == "asc") {
+            current = "desc";
+          }
+
+          var new_ordering = {};
+          new_ordering[index] = current;
+          opts.inner.ordering = new_ordering;
+
+          $.each(opts.ordering, function (key, value) {
+              opts.ordering[key] = 'def';
+          });
+
+          get_results(obj, opts);
+        });
+    });
+  }
+
   function activate_edition(opts, obj, table) {
     var id = obj[0].id;
 
@@ -212,24 +243,11 @@
 
     var confirm_data = {};
 
-    if(opts.removeMessage != null) {
-      confirm_data.msg = function (target, msg) {
+    confirm_data.msg = function (target, msg) {
         var id = parseInt(parse_id(target.id));
-
         opts.removeMessage(id, msg);
-      }
-    } else if(opts.countRemove != null) {
-      confirm_data.msg = function (target, msg) {
-        var id = parseInt(parse_id(target.id));
-
-        $.get(opts.url + '/' + opts.countRemove + '/' + id,
-            {},
-            function (data) {
-              msg.text('This ' + opts.what + ' is associated with ' + data + ' ' + opts.removeAssociated + '. Delete it?');
-        });
-      }
-    }
-
+      };
+    
     $('a[@class=deletable]', table)
       .unbind('confirm')
       .unbind('click')
@@ -283,10 +301,18 @@
         name = opts.deleteHeader;
       }
 
+      var inner = name;
+      var field_name = fields[i];
+      var order = opts.ordering[field_name];
+
+      if(order != null) {
+        inner = '<a id="ordering_' + id + '_' + fields[i] + '" href="#">' + inner + '</a>';
+      }
+
       ret[i] = {
         tagName: 'th',
         class: 'th_' + id + '_' + fields[i],
-        innerHTML: name
+        innerHTML: inner
       };
     }
 
@@ -355,7 +381,8 @@
         next.attr('href', '#start_' + next_start);
 
         next.click(function () {
-            get_results(obj, opts, total, next_start);
+            opts.inner.start = next_start;
+            get_results(obj, opts);
             return true;
         });
       } else {
@@ -371,7 +398,8 @@
 
         previous.attr('href', '#start_' + previous_start);
         previous.click(function() {
-            get_results(obj, opts, total, previous_start);
+            opts.inner.start = previous_start;
+            get_results(obj, opts);
             return true;
         });
       } else {
@@ -399,6 +427,7 @@
     apply_th_widths(opts, obj);
     table.fadeIn();
     activate_edition(opts, obj, table);
+    activate_ordering(opts, obj);
 
     if(opts.clickFun) {
       $.each(opts.clickFun, function (key, value) {
@@ -431,17 +460,17 @@
     }
   }
 
-function get_results(obj, opts, total, start) {
+function get_results(obj, opts) {
   var data_url = opts.url + '/' + opts.retrieve;
 
   show_loading(obj);
 
-  var params = opts.params;
+  var params = $.extend({}, opts.params, opts.inner.ordering);
 
   if(opts.paginate) {
     params = $.extend({
-      start: start,
-      size: Math.min(opts.size, total - start)
+      start: opts.inner.start,
+      size: Math.min(opts.size, opts.inner.total - opts.inner.start)
     }, params);
   }
 
@@ -453,11 +482,9 @@ function get_results(obj, opts, total, start) {
     success: function(data) {
       var rows = $.evalJSON(data);
 
-      get_data_results(obj, opts, total, start, rows);
+      get_data_results(obj, opts, opts.inner.total, opts.inner.start, rows);
     },
     error: function (request, textstatus, error) {
-      alert("ERROR!");
-      alert(textstatus);
     }
   });
 }
@@ -570,11 +597,13 @@ $.fn.grid = function(options) {
           var total = parseInt(data);
 
           set_results($this, data);
-          get_results($this, opts, total, 0);
+          opts.inner.total = total;
+          opts.inner.start = 0;
+          get_results($this, opts);
         }
       });
     } else {
-      get_results($this, opts, null, 0);
+      get_results($this, opts);
     }
   });
 }
@@ -649,6 +678,11 @@ $.fn.gridEnable = function(options) {
 }
 
 $.fn.grid.defaults = {
+  inner: { // do not change this
+    ordering: {},
+    total: null,
+    start: 0
+  },
   total: 'total',
   size: get_paging_size(),
   start: 0,
@@ -663,9 +697,7 @@ $.fn.grid.defaults = {
   editables: {},
   remove: 'delete',
   removeMessage: null,
-  countRemove: null,
   what: null,
-  removeAssociated: null,
   enableRemove: false,
   types: {},
   enableRemoveFun: null,
@@ -680,7 +712,8 @@ $.fn.grid.defaults = {
   classFun: {},
   deleteFun: null,
   tdClass: {},
-  width: {}
+  width: {},
+  ordering: {}
 }
 
 $.fn.gridEnable.defaults = {

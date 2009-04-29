@@ -112,7 +112,15 @@ class Rank extends BioController {
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
-    $ranks = $this->taxonomy_rank_model->get_ranks($size, $start);
+    $order_name = $this->get_order('rank_name');
+    $rank_parent_name = $this->get_order('rank_parent_name');
+    $update = $this->get_order('update');
+    $user = $this->get_order('user');
+    $ranks = $this->taxonomy_rank_model->get_ranks($size, $start,
+      array('rank_name' => $order_name,
+      'rank_parent_name' => $rank_parent_name,
+      'update' => $update,
+      'user_name' => $user));
 
     $this->json_return($ranks);
   }
