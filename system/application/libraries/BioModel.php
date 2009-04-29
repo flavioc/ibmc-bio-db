@@ -258,4 +258,16 @@ class BioModel extends Model
 
     return intval($data['total']);
   }
+
+  function order_by($order, $default, $typed)
+  {
+    foreach($order as $field => $order_type) {
+      if($field && $order_type) {
+        $this->db->order_by($field, $order_type);
+        return;
+      }
+    }
+
+    $this->db->order_by($default, $typed);
+  }
 }

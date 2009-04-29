@@ -24,14 +24,14 @@ class Taxonomy_rank_model extends BioModel
     return parent::get_all();
   }
 
-  function get_ranks($size = null, $start = null)
+  function get_ranks($size = null, $start = null, $ordering = array())
   {
     if($start != null && $size != null) {
       $this->db->limit($size, $start);
     }
 
-    $this->db->order_by('rank_name');
     $this->db->select('history_id, rank_id, rank_name, rank_parent_id, rank_parent_name, update_user_id, update, user_name');
+    $this->order_by($ordering, 'rank_name', 'asc');
 
     return $this->get_all('taxonomy_rank_info_history');
   }

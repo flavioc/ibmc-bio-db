@@ -267,3 +267,8 @@ img.image_url {
 table.fixed_table {
   table-layout: fixed;
 }
+
+table.data th a:visited, table.data th a {
+  color: #fff;
+  text-decoration: underline;
+}

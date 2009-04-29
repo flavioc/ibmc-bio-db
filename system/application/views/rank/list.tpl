@@ -12,13 +12,13 @@
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
     fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Taxonomy', 'Child'],
-    fields: ['rank_name', 'rank_parent_name', 'last_update', 'last_user', 'add', 'add_child'],
-    tdClass: {last_update: 'centered', add: 'centered', add_child: 'centered'},
+    fields: ['rank_name', 'rank_parent_name', 'update', 'user', 'add', 'add_child'],
+    tdClass: {update: 'centered', add: 'centered', add_child: 'centered'},
     width: {
       add: w_add,
       add_child: w_add,
       last_user: w_user,
-      last_update: w_update,
+      update: w_update,
       rank_name: '26%'
     },
     dataTransform: {
@@ -35,14 +35,7 @@
           return row.rank_parent_name;
         }
       },
-      last_update: function (row) {
-        if(row.update == null) {
-          return null;
-        } else {
-          return row.update;
-        }
-      },
-      last_user: function (row) {
+      user: function (row) {
         if(row.update_user_id == null) {
           return null;
         } else {
@@ -60,9 +53,15 @@
       add_child: function (row) {
         return get_app_url() + '/rank/add?parent_id=' + row.rank_id;
       },
-      last_user: function (row) {
+      user: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;
       }
+    },
+    ordering: {
+      rank_name: 'asc',
+      rank_parent_name: 'def',
+      update: 'def',
+      user: 'def'
     },
     total: 'get_total',
     idField: 'rank_id'

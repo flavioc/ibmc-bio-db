@@ -206,4 +206,11 @@ class BioController extends Controller
   {
     return false;
   }
+
+  function get_order($what)
+  {
+    $param = "order_$what";
+    $get = $this->get_parameter($param);
+    return $get;
+  }
 }
