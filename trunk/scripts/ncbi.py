@@ -306,9 +306,26 @@ def sync_db():
     sync_names(tax, other_names, current_names)
     print import_id
 
+def disable_tax_keys():
+  cursor = db.cursor()
+  sql = "ALTER TABLE taxonomy DROP FOREIGN KEY taxonomy_ibfk_11"
+  cursor.execute(sql)
+  db.commit()
+
+def enable_tax_keys():
+  cursor = db.cursor()
+  sql = "ALTER TABLE taxonomy ADD CONSTRAINT taxonomy_ibfk_11 FOREIGN KEY (import_parent_id) REFERENCES taxonomy(import_id) ON DELETE CASCADE"
+  cursor.execute(sql)
+  db.commit()
+
 if just_add:
   drop_tax()
 
-sync_db()
+try:
+  disable_tax_keys()
+  sync_db()
+  enable_tax_keys()
+except:
+  enable_tax_keys()
 
 db.close()
