@@ -50,8 +50,9 @@ $(document).ready(function () {
           editable: 'boolean',
           multiple: 'boolean'
         },
-        enableRemoveFun: function (row) {
-          return row.default == '0';
+        ordering: {
+          name: 'asc',
+          type: 'def'
         }
       });
     }
@@ -71,6 +72,8 @@ $(document).ready(function () {
     submitHandler: when_submit,
     errorPlacement: basicErrorPlacement
   });
+
+  when_submit();
 
 });
 </script>
