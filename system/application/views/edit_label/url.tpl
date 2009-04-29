@@ -23,7 +23,8 @@ $(document).ready(function () {
   $("#form_edit_label").validate({
     rules: {
       url: {
-        required: generate_disabled
+        required: generate_disabled,
+        url: true
       }
     }
   });
