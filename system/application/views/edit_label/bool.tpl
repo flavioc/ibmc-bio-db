@@ -9,7 +9,7 @@
 {include file=edit_label/hidden.tpl}
 {include file=edit_label/generate.tpl to_hide="#data_area"}
 <span id="data_area">
-{form_row type=checkbox name=boolean msg='Boolean:' checked=$label.bool_data}
+{form_row type=checkbox name=boolean msg='Value:' checked=$label.bool_data}
 </span>
 </fieldset>
 
