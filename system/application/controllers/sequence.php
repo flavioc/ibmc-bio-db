@@ -277,6 +277,10 @@ class Sequence extends BioController
 
   function export($id = null)
   {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
     if(!$id) {
       $id = $this->get_parameter('id');
     }
@@ -287,7 +291,18 @@ class Sequence extends BioController
 
     $this->load->model('label_sequence_model');
 
-    $this->export_sequences(array($id));
+    return $this->export_sequences(array($id));
+  }
+
+  function export_all()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $ids = $this->sequence_model->get_ids_array();
+    $this->load->model('label_sequence_model');
+    return $this->export_sequences($ids);
   }
 
   function export_sequences($sequences_id)

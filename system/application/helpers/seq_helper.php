@@ -310,11 +310,13 @@ function import_fasta_file($controller, $file)
   $sequences = array();
 
   $fp = fopen($file, 'rb');
+  $line_cnt = 0;
 
   while(!feof($fp)) {
     $line = read_file_line($fp);
 
-    if(!$line) {
+    $line_cnt++;
+    if($line == null) {
       continue;
     }
 
@@ -334,10 +336,11 @@ function import_fasta_file($controller, $file)
 
       $has_name = $controller->sequence_model->has_name($name);
 
+      /*
       if($has_name) {
         $controller->sequence_model->delete($controller->sequence_model->get_id_by_name($name));
         $has_name = false;
-      }
+      }*/
 
       if($has_name) {
         $el['id'] = $controller->sequence_model->get_id_by_name($name);
@@ -378,7 +381,7 @@ function export_sequences($sequences, $seq_labels)
 
     $ret .= __get_sequence_header($sequence, $labels, $merged_labels);
     $content = $sequence['content'];
-    $ret .= "\n$content";
+    $ret .= "\n$content\n";
   }
 
   return $ret;
