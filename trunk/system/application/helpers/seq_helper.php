@@ -145,9 +145,88 @@ function read_header_labels($line, $controller)
   return $ret;
 }
 
-function export_labels($el, $labels, $labeldata, $controller)
+function import_update_label_content($id, $label_type, $text, $controller)
+{
+  $model = $controller->label_sequence_model;
+  switch($label_type) {
+    case 'integer':
+      return $model->edit_integer_label($id, intval($text));
+    case 'text':
+      return $model->edit_text_label($id, $text);
+    case 'position':
+      $vec = explode(' ', $text);
+      if(count($vec) != 2) {
+        return false;
+      }
+      return $model->edit_position_label($id, intval($vec[0]), intval($vec[1]));
+    case 'url':
+      return $model->edit_url_label($id, $text);
+    case 'bool':
+      return $model->edit_bool_label($id, $text);
+    case 'ref':
+      $row = $controller->sequence_model->get_by_name($text);
+      if($row == null) {
+        return false;
+      }
+      return $model->edit_ref_label($id, $row['id']);
+    case 'tax':
+      $row = $controller->taxonomy_model->get_by_name($text);
+      if($row == null) {
+        return false;
+      }
+      return $model->edit_tax_label($id, $row['id']);
+  }
+  return false;
+}
+function import_label_content($seq_id, $label_id, $label_type, $text, $controller)
+{
+  $model = $controller->label_sequence_model;
+
+  switch($label_type) {
+    case 'integer':
+      return $model->add_integer_label($seq_id, $label_id, intval($text));
+    case 'text':
+      return $model->add_text_label($seq_id, $label_id, $text);
+    case 'position':
+      $vec = explode(' ', $text);
+      if(count($vec) != 2) {
+        return false;
+      }
+      return $model->add_position_label($seq_id, $label_id, intval($vec[0]), intval($vec[1]));
+    case 'ref':
+      $row = $controller->sequence_model->get_by_name($text);
+      if($row == null) {
+        return false;
+      }
+      return $model->add_ref_label($seq_id, $label_id, $row['id']);
+    case 'tax':
+      $row = $controller->taxonomy_model->get_by_name($text);
+      if($row == null) {
+        return false;
+      }
+      return $model->add_tax_label($seq_id, $label_id, $row['id']);
+    case 'url':
+      return $model->add_url_label($seq_id, $label_id, $text);
+    case 'bool':
+      return $model->add_bool_label($seq_id, $label_id, $text);
+  }
+  return false;
+}
+
+function get_import_label_text_natural($text, $type)
+{
+  switch($type) {
+  case 'bool':
+    return $text == '0' ? 'No' : 'Yes';
+  }
+
+  return $text;
+}
+
+function import_labels($el, $labels, $labeldata, $controller)
 {
   $ret = array();
+  $seq_id = $el['id'];
 
   for($i = 0; $i < count($labels); ++$i) {
     $label_text = $labeldata[$i];
@@ -155,27 +234,48 @@ function export_labels($el, $labels, $labeldata, $controller)
     $label_name = $label['name'];
     $label_info = $label['data'];
     $label_status = $label['status'];
+    $label_id = $label_info['id'];
+    $label_type = $label_info['type'];
+    $label_text_natural = get_import_label_text_natural($label_text, $label_type);
+
+    $ret[$label_name] = array();
+    $label_array =& $ret[$label_name];
 
     if($label_text == null || $label_text == '') {
-      $ret[$label_name] = 'empty';
+      $label_array['status'] = 'Empty / Not inserted';
       continue;
     }
 
     if($label_status != 'ok') {
-      $ret[$label_name] = 'invalid';
+      $label_array['status'] = 'Invalid';
       continue;
     }
 
-    if($controller->label_sequence_model->label_used_up($el['id'], $label_info['id'])) {
-      $ret[$label_name] = 'already inserted';
-      continue;
-    }
+    $already_there = $controller->label_sequence_model->label_used_up($seq_id, $label_id);
+    $editable = $label_info['editable'];
+    $multiple = $label_info['multiple'];
 
-    if($label_info['auto_on_creation']) {
-      $ret[$label_name] = 'generated';
-      $controller->label_sequence_model->add_auto_label($el['id'], $label_info);
+    if($already_there && !$editable && !$multiple) {
+      $label_array['status'] = 'Already inserted';
+    } else if($already_there && $editable && !$multiple) {
+      $id = $controller->label_sequence_model->get_label_id($seq_id, $label_id);
+      if(import_update_label_content($id, $label_type, $label_text, $controller))
+      {
+        $label_array['status'] = "Updated value: $label_text_natural";
+      } else {
+        $label_array['status'] = "Parse error: $label_text";
+      }
     } else {
-      $ret[$label_name] = 'added';
+      if($label_info['auto_on_creation']) {
+        $label_array['status'] = 'Generated';
+        $controller->label_sequence_model->add_auto_label($seq_id, $label_info);
+      } else {
+        if(import_label_content($seq_id, $label_id, $label_type, $label_text, $controller)) {
+          $label_array['status'] = "Value: $label_text_natural";
+        } else {
+          $label_array['status'] = "Parse error: $label_text";
+        }
+      }
     }
   }
 
@@ -233,7 +333,6 @@ function import_fasta_file($controller, $file)
       );
 
       $has_name = $controller->sequence_model->has_name($name);
-      $sequence['add'] = !$has_name;
 
       if($has_name) {
         $controller->sequence_model->delete($controller->sequence_model->get_id_by_name($name));
@@ -248,8 +347,11 @@ function import_fasta_file($controller, $file)
         $el['id'] = $controller->sequence_model->add($name, $content);
       }
 
-      if(!$has_name) {
-        $sequence['labels'] = export_labels($el, $labels, $labeldata, $controller);
+      $is_new = !$has_name;
+      $sequence['add'] = $is_new;
+
+      if($is_new) {
+        $sequence['labels'] = import_labels($el, $labels, $labeldata, $controller);
       }
 
       $sequence['data'] = $el;
