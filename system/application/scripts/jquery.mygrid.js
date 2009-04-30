@@ -465,7 +465,7 @@ function get_results(obj, opts) {
 
   show_loading(obj);
 
-  var params = $.extend({}, opts.params, opts.inner.ordering);
+  var params = $.extend({}, opts.inner.params, opts.inner.ordering);
 
   if(opts.paginate) {
     params = $.extend({
@@ -519,6 +519,24 @@ function get_data_column(obj, column)
   return sel;
 }
 
+$.fn.gridColumnFilter = function(column, what) {
+  return this.each(function () {
+      var $this = $(this);
+      var opts = this.opts;
+
+      opts.inner.params[column] = what;
+  });
+};
+
+$.fn.gridReload = function () {
+  return this.each(function () {
+      var $this = $(this);
+      var opts = this.opts;
+
+      reload_grid(this, $this, opts);
+  });
+};
+
 $.fn.gridHideColumn = function(column) {
   return this.each(function () {
     var $this = $(this);
@@ -562,6 +580,32 @@ $.fn.gridShowDefault = function (type) {
   });
 };
 
+function reload_grid(this_obj, $this, opts)
+{
+  var url_total = opts.url + '/' + opts.total;
+
+  show_loading($this);
+
+  if(opts.paginate) {
+    $.ajax({
+      mode: "abort",
+      port: "grid" + this_obj.id,
+      url: url_total,
+      data: opts.inner.params,
+      success: function (data) {
+        var total = parseInt(data);
+
+        set_results($this, data);
+        opts.inner.total = total;
+        opts.inner.start = 0;
+        get_results($this, opts);
+      }
+    });
+  } else {
+    get_results($this, opts);
+  }
+}
+
 $.fn.grid = function(options) {
   var opts = $.extend({}, $.fn.grid.defaults, options);
 
@@ -572,12 +616,6 @@ $.fn.grid = function(options) {
     this.highlight = null;
     $this.show();
 
-    var url_total = opts.url + '/' + opts.total;
-
-    if(this.paginate != null) {
-      opts.paginate = this.paginate;
-    }
-
     if(opts.enableRemove &&
       !has_delete_row(opts.enableRemove, opts.fields, opts.deleteTag))
     {
@@ -585,28 +623,13 @@ $.fn.grid = function(options) {
       opts.fieldNames.push(opts.deleteHeader);
     }
 
-    show_loading($this);
-
-    if(opts.paginate) {
-      $.ajax({
-        mode: "abort",
-        port: "grid" + this.id,
-        url: url_total,
-        data: opts.params,
-        success: function (data) {
-          var total = parseInt(data);
-
-          set_results($this, data);
-          opts.inner.total = total;
-          opts.inner.start = 0;
-          get_results($this, opts);
-        }
-      });
-    } else {
-      get_results($this, opts);
+    if(this.paginate != null) {
+      opts.paginate = this.paginate;
     }
+
+    reload_grid(this, $this, opts);
   });
-}
+};
 
 function do_highlight(obj)
 {
@@ -681,7 +704,8 @@ $.fn.grid.defaults = {
   inner: { // do not change this
     ordering: {},
     total: null,
-    start: 0
+    start: 0,
+    params: {}
   },
   total: 'total',
   size: get_paging_size(),
@@ -691,7 +715,6 @@ $.fn.grid.defaults = {
   fieldNames: [],
   fieldGenerator: null,
   url: '',
-  params: {},
   dataTransform: {},
   links: {},
   editables: {},

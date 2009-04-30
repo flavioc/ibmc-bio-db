@@ -180,3 +180,8 @@ function activate_delete_dialog(url, delete_button, form_delete)
     return false;
   });
 }
+
+function build_user_url(id)
+{
+  return get_app_url() + '/profile/view/' + id;
+}
