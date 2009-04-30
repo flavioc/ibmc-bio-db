@@ -24,7 +24,9 @@ class Taxonomy_rank_model extends BioModel
     return parent::get_all();
   }
 
-  function get_ranks($size = null, $start = null, $ordering = array())
+  function get_ranks($size = null, $start = null,
+    $filtering = array(),
+    $ordering = array())
   {
     if($start != null && $size != null) {
       $this->db->limit($size, $start);
@@ -32,6 +34,7 @@ class Taxonomy_rank_model extends BioModel
 
     $this->db->select('history_id, rank_id, rank_name, rank_parent_id, rank_parent_name, update_user_id, update, user_name');
     $this->order_by($ordering, 'rank_name', 'asc');
+    $this->__filter($filtering);
 
     return $this->get_all('taxonomy_rank_info_history');
   }
@@ -142,9 +145,28 @@ class Taxonomy_rank_model extends BioModel
     }
   }
 
-  function get_total()
+  function __filter($filtering)
   {
-    return $this->count_total();
+    $name = $filtering['name'];
+    if(!sql_is_nothing($name)) {
+      $this->db->like('rank_name', "%$name%");
+    }
+
+    $parent_name = $filtering['parent_name'];
+    if(!sql_is_nothing($parent_name)) {
+      $this->db->like('rank_parent_name', "%$parent_name%");
+    }
+
+    $user = $filtering['user'];
+    if(!sql_is_nothing($user)) {
+      $this->db->where('update_user_id', $user);
+    }
+  }
+
+  function get_total($filtering = array())
+  {
+    $this->__filter($filtering);
+    return $this->count_total('taxonomy_rank_info_history');
   }
 
   function get_parent_name($id)
