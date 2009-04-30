@@ -41,3 +41,4 @@ $(document).ready(function () {
 </p>
 
 {button name="add_seq" msg="Add new" to="sequence/add"}
+{button name="export_seqs" msg="Export sequences" to="sequence/export_all"}
