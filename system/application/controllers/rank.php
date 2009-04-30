@@ -16,6 +16,9 @@ class Rank extends BioController {
 
     $this->smarty->assign('title', 'Rank list');
     $this->use_mygrid();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
 
     $this->smarty->view('rank/list');
   }
@@ -112,15 +115,24 @@ class Rank extends BioController {
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
+
+    $filter_name = $this->get_parameter('name');
+    $filter_parent = $this->get_parameter('parent_name');
+    $filter_user = $this->get_parameter('user');
+
     $order_name = $this->get_order('rank_name');
     $rank_parent_name = $this->get_order('rank_parent_name');
     $update = $this->get_order('update');
     $user = $this->get_order('user');
+
     $ranks = $this->taxonomy_rank_model->get_ranks($size, $start,
+      array('name' => $filter_name,
+            'parent_name' => $filter_parent,
+            'user' => $filter_user),
       array('rank_name' => $order_name,
-      'rank_parent_name' => $rank_parent_name,
-      'update' => $update,
-      'user_name' => $user));
+        'rank_parent_name' => $rank_parent_name,
+        'update' => $update,
+        'user_name' => $user));
 
     $this->json_return($ranks);
   }
@@ -130,7 +142,14 @@ class Rank extends BioController {
       return $this->invalid_permission_zero();
     }
 
-    $total = $this->taxonomy_rank_model->get_total();
+    $filter_name = $this->get_parameter('name');
+    $filter_parent = $this->get_parameter('parent_name');
+    $filter_user = $this->get_parameter('user');
+
+    $total = $this->taxonomy_rank_model->get_total(
+      array('name' => $filter_name,
+            'parent_name' => $filter_parent,
+            'user' => $filter_user));
 
     $this->json_return($total);
   }

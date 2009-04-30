@@ -2,18 +2,23 @@
 
 {literal}
 <script>
-  $(document).ready(function () {
+$(document).ready(function () {
+  var base_site = get_app_url() + '/rank/';
+  var show_ranks = $('#show_ranks');
 
-  var base_site = '{/literal}{site}{literal}/rank/';
-
-  $('#show_ranks')
+  show_ranks
   .gridEnable()
   .grid({
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
     fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Taxonomy', 'Child'],
     fields: ['rank_name', 'rank_parent_name', 'update', 'user', 'add', 'add_child'],
-    tdClass: {update: 'centered', add: 'centered', add_child: 'centered'},
+    tdClass: {
+      update: 'centered',
+      add: 'centered',
+      add_child: 'centered',
+      user: 'centered'
+    },
     width: {
       add: w_add,
       add_child: w_add,
@@ -66,9 +71,52 @@
     total: 'get_total',
     idField: 'rank_id'
   });
+
+  var changed = false;
+  var name_field = $('#name');
+  var parent_field = $('#parent_name');
+  var user_field = $('#user');
+
+  function changed_function ()
+  {
+    changed = true;
+  }
+
+  function when_submit()
+  {
+    if(changed) {
+      var name_val = name_field.val();
+      var parent_val = parent_field.val();
+      var user_val = user_field.val();
+
+      show_ranks.gridColumnFilter('name', name_val);
+      show_ranks.gridColumnFilter('parent_name', parent_val);
+      show_ranks.gridColumnFilter('user', user_val);
+      show_ranks.gridReload();
+    }
+
+    changed = false;
+  }
+
+  $("#form_search").validate({
+    submitHandler: when_submit,
+    errorPlacement: basicErrorPlacement
+  });
+
+  name_field.change(changed_function);
+  parent_field.change(changed_function);
+  user_field.change(changed_function);
+  
 });
 </script>
 {/literal}
+
+{form_open name=form_search}
+{form_row name=name msg='Name:'}
+{form_row name=parent_name msg='Parent:'}
+{form_row type=select data=$users name=user msg='User:' key=id blank=yes}
+{form_submit name=submit_search msg=Filter}
+{form_end}
 
 <div id="show_ranks"></div>
 

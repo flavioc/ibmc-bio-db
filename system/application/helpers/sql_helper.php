@@ -12,3 +12,8 @@ function sql_limit($start, $size)
     return '';
   }
 }
+
+function sql_is_nothing($val)
+{
+  return $val == null || $val == '' || $val == '0';
+}

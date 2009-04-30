@@ -117,7 +117,7 @@ class Taxonomy_model extends BioModel
     $this->db->trans_complete();
   }
 
-  function _get_search_sql($name, $rank, $tree)
+  function _get_search_sql($name, $rank, $tree, $start = null, $size = null)
   {
     $nocase = false;
 
@@ -147,6 +147,7 @@ class Taxonomy_model extends BioModel
     }
 
     $sql .= " AND $where_name_sql ";
+    $sql .= sql_limit($start, $size);
 
     /*
     $sql .= " UNION SELECT tax_id AS id FROM taxonomy_name_tax WHERE TRUE ";
@@ -166,8 +167,8 @@ class Taxonomy_model extends BioModel
 
   function _search_query($name, $rank, $tree, $start = null, $size = null)
   {
-    $search = $this->_get_search_sql($name, $rank, $tree);
-    $sql =  $this->_get_search_sql($name, $rank, $tree) . ' ORDER BY name' . sql_limit($start, $size);
+    $search = $this->_get_search_sql($name, $rank, $tree, $start, $size);
+    $sql =  "$search ORDER BY name";
     return $this->db->query($sql);
   }
 
@@ -182,9 +183,9 @@ class Taxonomy_model extends BioModel
     $order_field = $order[0];
     $order_type = $order[1];
     $order_str = " ORDER BY $order_field $order_type ";
-    $search = $this->_get_search_sql($name, $rank, $tree);
-    $sql = "SELECT $field FROM (taxonomy_info NATURAL JOIN ($search) AS dderiv ) $order_str";
-    $sql .= sql_limit($start, $size);
+    $search = $this->_get_search_sql($name, $rank, $tree, $start, $size);
+    $limit = sql_limit($start, $size);
+    $sql = "SELECT $field FROM (taxonomy_info NATURAL JOIN ($search) AS dderiv) $order_str";
 
     return $this->rows_sql($sql);
   }

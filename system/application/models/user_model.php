@@ -142,6 +142,12 @@ class User_model extends BioModel
     return $this->get_rows('user_type', 'user');
   }
 
+  function get_users_all()
+  {
+    $this->db->select('id, name');
+    return $this->get_all();
+  }
+
   function delete_user($id)
   {
     return $this->edit_data_with_history($id, array('enabled' => FALSE));

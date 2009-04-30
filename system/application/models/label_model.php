@@ -48,14 +48,30 @@ class Label_model extends BioModel
     return $this->get_id($id);
   }
 
-  function get_all($name = null, $start = null, $size = null, $ordering = array())
+  function __filter_labels($filtering = array())
+  {
+    $name = $filtering['name'];
+    if(!sql_is_nothing($name)) {
+      $this->db->like('name', "%$name%");
+    }
+
+    $type = $filtering['type'];
+    if(!sql_is_nothing($type)) {
+      $this->db->where('type', $type);
+    }
+
+    $user = $filtering['user'];
+    if(!sql_is_nothing($user)) {
+      $this->db->where('update_user_id', $user);
+    }
+  }
+
+  function get_all($start = null, $size = null,
+    $filtering = array(), $ordering = array())
   {
     $this->order_by($ordering, 'name', 'asc');
     $this->__select();
-
-    if($name != null) {
-      $this->db->like('name', "%$name%");
-    }
+    $this->__filter_labels($filtering);
 
     if($size != null) {
       if(!$start) {
@@ -67,15 +83,12 @@ class Label_model extends BioModel
     return parent::get_all('label_info_history');
   }
 
-  function get_total($name = null)
+  function get_total($filtering = array())
   {
     $this->db->select('id');
+    $this->__filter_labels($filtering);
 
-    if($name) {
-      $this->db->like('name', "%$name%");
-    }
-
-    return parent::count_total();
+    return parent::count_total('label_info_history');
   }
 
   function count_names($name)

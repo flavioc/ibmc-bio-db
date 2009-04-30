@@ -15,7 +15,13 @@ class Label extends BioController {
     }
 
     $this->use_mygrid();
+    $this->__assign_types();
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
+
+    $this->load->model('user_model');
+
+    $this->smarty->assign('users', $this->user_model->get_users_all());
+
     $this->smarty->assign('title', 'View labels');
     $this->smarty->view('label/list');
   }
@@ -26,13 +32,20 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
 
-    $name = $this->get_parameter('name');
     $start = intval($this->get_parameter('start'));
     $size = intval($this->get_parameter('size'));
 
+    $name_filter = $this->get_parameter('name');
+    $type_filter = $this->get_parameter('type');
+    $user_filter = $this->get_parameter('user');
+
     $ordering_name = $this->get_order('name');
     $ordering_type = $this->get_order('type');
-    $labels = $this->label_model->get_all($name, $start, $size,
+
+    $labels = $this->label_model->get_all($start, $size,
+      array('name' => $name_filter,
+            'type' => $type_filter,
+            'user' => $user_filter),
       array('name' => $ordering_name,
             'type' => $ordering_type));
 
@@ -45,9 +58,14 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
 
-    $name = $this->get_parameter('name');
+    $name_filter = $this->get_parameter('name');
+    $type_filter = $this->get_parameter('type');
+    $user_filter = $this->get_parameter('user');
 
-    $total = $this->label_model->get_total($name);
+    $total = $this->label_model->get_total(
+      array('name' => $name_filter,
+            'type' => $type_filter,
+            'user' => $user_filter));
 
     $this->json_return($total);
   }
