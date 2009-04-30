@@ -72,7 +72,7 @@ class BioModel extends Model
 
     $query = $this->db->get_where($table, array($field => $data));
 
-    if($query->num_rows() != 1) {
+    if($query->num_rows() < 1) {
       return null;
     }
 

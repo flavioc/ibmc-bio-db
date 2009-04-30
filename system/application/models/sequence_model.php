@@ -11,6 +11,11 @@ class Sequence_model extends BioModel
     $this->db->select('id, content, name, update_user_id, update, user_name');
   }
 
+  function get_by_name($name)
+  {
+    return $this->get_row('name', $name);
+  }
+
   function get_all($start = null, $size = null, $ordering = array())
   {
     $this->order_by($ordering, 'name', 'asc');

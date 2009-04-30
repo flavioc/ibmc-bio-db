@@ -15,6 +15,12 @@ class Label_sequence_model extends BioModel
     return self::$label_basic_fields . ", " . self::$label_data_fields;
   }
 
+  function get_label_id($seq_id, $label_id)
+  {
+    $this->db->where('seq_id', $seq_id);
+    return $this->get_id_by_field('label_id', $label_id);
+  }
+
   function get($id)
   {
     $this->db->select($this->__get_select() . ", code");
@@ -737,6 +743,14 @@ class Label_sequence_model extends BioModel
     return $this->count_total('label_sequence_info') > 0;
   }
 
+  function get_label_by_seq_name($seq_id, $label_name)
+  {
+    $this->db->select(self::$label_data_fields . ' id, seq_id, label_id, type');
+    $this->db->where('seq_id', $seq_id);
+
+    return $this->get_row('name', $label_name, 'label_sequence_info');
+  }
+
   function count_taxonomies($tax)
   {
     $this->db->select('id');
@@ -793,22 +807,22 @@ class Label_sequence_model extends BioModel
   function __get_data_fields($type)
   {
     switch($type) {
-    case "integer":
-      return "int_data";
-    case "text":
-      return "text_data";
-    case "obj":
-      return array("text_data", "obj_data");
-    case "position":
-      return array("position_a_data", "position_b_data");
-    case "ref":
-      return "ref_data";
-    case "tax":
-      return "taxonomy_data";
-    case "url":
-      return "url_data";
-    case "bool":
-      return "bool_data";
+    case 'integer':
+      return 'int_data';
+    case 'text':
+      return 'text_data';
+    case 'obj':
+      return array('text_data', 'obj_data');
+    case 'position':
+      return array('position_a_data', 'position_b_data');
+    case 'ref':
+      return 'ref_data';
+    case 'tax':
+      return 'taxonomy_data';
+    case 'url':
+      return 'url_data';
+    case 'bool':
+      return 'bool_data';
     }
 
     return "";

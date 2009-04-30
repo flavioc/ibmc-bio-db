@@ -59,6 +59,11 @@ class Taxonomy_model extends BioModel
     return $this->get_field($id, 'name');
   }
 
+  function get_by_name($name)
+  {
+    return $this->get_row('name', $name);
+  }
+
   function get_rank($id)
   {
     return $this->get_field($id, 'rank_id');

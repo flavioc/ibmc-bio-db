@@ -120,7 +120,6 @@ class Sequence extends BioController
     $this->smarty->assign('labels', $labels);
 
     $this->smarty->assign('title', 'Batch results');
-    $this->smarty->assign('file', $file);
     $this->smarty->view('sequence/batch_report');
   }
 
@@ -138,6 +137,7 @@ class Sequence extends BioController
       $data = $this->upload->data();
       $this->load->model('label_model');
       $this->load->model('label_sequence_model');
+      $this->load->model('taxonomy_model');
       $this->__import_fasta_file($data['full_path']);
     } else {
       $this->set_upload_form_error('file');
