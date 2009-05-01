@@ -29,9 +29,25 @@ class Sequence_model extends BioModel
     return $ret;
   }
 
-  function get_all($start = null, $size = null, $ordering = array())
+  function __filter($filtering)
+  {
+    $name = $filtering['name'];
+    if(!sql_is_nothing($name)) {
+      $this->db->like('name', "%$name%");
+    }
+
+    $user = $filtering['user'];
+    if(!sql_is_nothing($user)) {
+      $this->db->where('update_user_id', $user);
+    }
+  }
+
+  function get_all($start = null, $size = null,
+    $filtering = array(),
+    $ordering = array())
   {
     $this->order_by($ordering, 'name', 'asc');
+    $this->__filter($filtering);
 
     if($start != null && $size != null) {
       $this->db->limit($size, $start);
@@ -42,9 +58,10 @@ class Sequence_model extends BioModel
     return parent::get_all('sequence_info_history');
   }
 
-  function get_total()
+  function get_total($filtering = array())
   {
-    return $this->count_total();
+    $this->__filter($filtering);
+    return $this->count_total('sequence_info_history');
   }
 
   function add($name, $content)
