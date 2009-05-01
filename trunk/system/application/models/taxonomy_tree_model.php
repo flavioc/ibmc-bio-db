@@ -17,8 +17,12 @@ class Taxonomy_tree_model extends BioModel
     $this->db->select('tree_id AS id, tree_name AS name, update, update_user_id, user_name');
   }
 
-  function __filter($filtering)
+  function __filter($filtering = array())
   {
+    if(count($filtering) == 0) {
+      return;
+    }
+
     $name = $filtering['name'];
     if(!sql_is_nothing($name)) {
       $this->db->like('tree_name', "%$name%");
