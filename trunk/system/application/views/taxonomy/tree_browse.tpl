@@ -47,6 +47,10 @@ $(document).ready(function () {
   function reload_grid(obj, tree, tax, name, path)
   {
     var add_child = $('#add_child');
+    if(name == '') {
+      name = '---';
+    }
+    var new_path = add_path(path, name, tax, tree);
   
     add_child.hide();
 
@@ -90,18 +94,24 @@ $(document).ready(function () {
           return img_add;
         }
       },
+      clickFun: {
+        select: function (row) {
+          var id = row.id;
+          var new_name = row.name;
+
+          parents[id] = {id: tax, name: name};
+
+          reload_grid(obj, tree, id, new_name, new_path);
+        }
+      },
       finishedFun: function (opts) {
         var childs_name = $('#childs_name');
         var go_up = $('#go_up');
-        var new_path = add_path(path, name, tax, tree);
 
         add_child.attr('href', get_app_url() + '/taxonomy/add?parent_id=' + tax + '&tree=' + tree);
         add_child.show();
 
         if(tax == 0) {
-          if(name == '') {
-            name = '---';
-          }
           childs_name.text('Roots for tree ' + name);
           go_up.hide();
         } else {
@@ -121,22 +131,8 @@ $(document).ready(function () {
           go_up.show();
         }
 
-
         show_path(obj, new_path);
         childs_name.show();
-
-        $('img[@class*=select_child]', obj).click(function (e) {
-          // get row id that contains taxonomy ID
-          var tr_id = $(e.target).parent().parent()[0].id;
-          var id = parse_id(tr_id);
-
-          // get taxonomy name
-          var new_name = $(e.target).parent().next().children()[0].innerHTML;
-
-          parents[id] = {id: tax, name: name};
-
-          reload_grid(obj, tree, id, new_name, new_path);
-        });
       }
     });
   }
