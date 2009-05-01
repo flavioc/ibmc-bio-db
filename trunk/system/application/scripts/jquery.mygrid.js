@@ -243,11 +243,6 @@
 
     var confirm_data = {};
 
-    confirm_data.msg = function (target, msg) {
-        var id = parseInt(parse_id(target.id));
-        opts.removeMessage(id, msg);
-      };
-    
     $('a[@class=deletable]', table)
       .unbind('confirm')
       .unbind('click')
