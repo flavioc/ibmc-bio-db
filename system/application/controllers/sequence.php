@@ -14,6 +14,9 @@ class Sequence extends BioController
     }
 
     $this->smarty->assign('title', 'Browse sequences');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
 
     $this->use_mygrid();
 
@@ -28,14 +31,20 @@ class Sequence extends BioController
 
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
+
     $ordering_name = $this->get_order('name');
     $ordering_update = $this->get_order('update');
     $ordering_user = $this->get_order('user_name');
 
+    $filter_name = $this->get_parameter('name');
+    $filter_user = $this->get_parameter('user');
+
     $this->json_return($this->sequence_model->get_all($start, $size,
+      array('name' => $filter_name,
+            'user' => $filter_user),
       array('name' => $ordering_name,
-      'update' => $ordering_update,
-      'user_name' => $ordering_user)));
+            'update' => $ordering_update,
+            'user_name' => $ordering_user)));
   }
 
   function get_total()
@@ -44,7 +53,13 @@ class Sequence extends BioController
       return $this->invalid_permission_zero();
     }
 
-    $this->json_return($this->sequence_model->get_total());
+    $filter_name = $this->get_parameter('name');
+    $filter_user = $this->get_parameter('user');
+
+    $this->json_return(
+      $this->sequence_model->get_total(
+        array('name' => $filter_name,
+              'user' => $filter_user)));
   }
 
   function view($id)
