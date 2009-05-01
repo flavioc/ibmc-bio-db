@@ -17,10 +17,25 @@ class Taxonomy_tree_model extends BioModel
     $this->db->select('tree_id AS id, tree_name AS name, update, update_user_id, user_name');
   }
 
-  function get_trees($ordering = array())
+  function __filter($filtering)
+  {
+    $name = $filtering['name'];
+    if(!sql_is_nothing($name)) {
+      $this->db->like('tree_name', "%$name%");
+    }
+
+    $user = $filtering['user'];
+    if(!sql_is_nothing($user)) {
+      $this->db->where('update_user_id', $user);
+    }
+  }
+
+  function get_trees($filtering = array(), $ordering = array())
   {
     $this->__select();
     $this->order_by($ordering, 'name', 'asc');
+    $this->__filter($filtering);
+
     return $this->get_all('taxonomy_tree_info_history');
   }
 

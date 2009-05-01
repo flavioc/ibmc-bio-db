@@ -15,6 +15,8 @@ class Tree extends BioController {
     $this->smarty->assign('title', 'Tree list');
     $this->use_mygrid();
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
 
     $this->smarty->view('tree/list');
   }
@@ -27,10 +29,16 @@ class Tree extends BioController {
     $order_name = $this->get_order('name');
     $order_update = $this->get_order('update');
     $order_user = $this->get_order('user_name');
+
+    $filter_name = $this->get_parameter('name');
+    $filter_user = $this->get_parameter('user');
+
     $trees = $this->taxonomy_tree_model->get_trees(
+      array('name' => $filter_name,
+            'user' => $filter_user),
       array('name' => $order_name,
-      'update' => $order_update,
-      'user_name' => $order_user));
+            'update' => $order_update,
+            'user_name' => $order_user));
 
     $this->json_return($trees);
   }
