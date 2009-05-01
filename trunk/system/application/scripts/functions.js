@@ -185,3 +185,25 @@ function build_user_url(id)
 {
   return get_app_url() + '/profile/view/' + id;
 }
+
+function sql_true(val)
+{
+  return val == '1';
+}
+
+function sql_false(val)
+{
+  return val == '0';
+}
+
+function is_numeric(val)
+{
+  return !isNaN(val);
+}
+
+function is_valid_url(val)
+{
+  var v = new RegExp();
+  v.compile("^[A-Za-z]+://[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$");
+  return v.test(val);
+} 
