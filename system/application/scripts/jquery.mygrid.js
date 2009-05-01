@@ -460,7 +460,7 @@ function get_results(obj, opts) {
 
   show_loading(obj);
 
-  var params = $.extend({}, opts.inner.params, opts.inner.ordering);
+  var params = $.extend({}, opts.inner.params, opts.inner.ordering, opts.params);
 
   if(opts.paginate) {
     params = $.extend({
@@ -578,6 +578,7 @@ $.fn.gridShowDefault = function (type) {
 function reload_grid(this_obj, $this, opts)
 {
   var url_total = opts.url + '/' + opts.total;
+  var params = $.extend({}, opts.inner.params, opts.params);
 
   show_loading($this);
 
@@ -586,7 +587,7 @@ function reload_grid(this_obj, $this, opts)
       mode: "abort",
       port: "grid" + this_obj.id,
       url: url_total,
-      data: opts.inner.params,
+      data: params,
       success: function (data) {
         var total = parseInt(data);
 
@@ -731,7 +732,8 @@ $.fn.grid.defaults = {
   deleteFun: null,
   tdClass: {},
   width: {},
-  ordering: {}
+  ordering: {},
+  params: {}
 }
 
 $.fn.gridEnable.defaults = {
