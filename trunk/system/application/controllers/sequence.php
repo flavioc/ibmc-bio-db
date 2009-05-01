@@ -62,6 +62,52 @@ class Sequence extends BioController
               'user' => $filter_user)));
   }
 
+  function __invalid_sequence($id)
+  {
+    $this->smarty->assign('title', 'Invalid sequence');
+    $this->smarty->assign('id', $id);
+    $this->smarty->view('sequence/invalid_sequence');
+  }
+
+  function labels($id = null)
+  {
+    if(!$id) {
+      $id = $this->get_parameter('id');
+    }
+
+    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
+      return $this->invalid_permission();
+    }
+
+    if(!$this->sequence_model->has_id($id)) {
+      $this->__invalid_sequence($id);
+      return;
+    }
+
+    $this->smarty->assign('title', 'View labels');
+    $this->__load_js();
+    $this->use_thickbox();
+    $this->use_mygrid();
+    $this->use_plusminus();
+
+    $this->load->model('label_sequence_model');
+
+    $this->__load_sequence($id);
+    $this->smarty->assign('missing',
+      $this->label_sequence_model->has_missing($id));
+    $this->smarty->assign('bad_multiple',
+      $this->label_sequence_model->has_bad_multiple($id));
+
+    $this->smarty->view('sequence/view_labels');
+  }
+
+  function __load_js()
+  {
+    $this->smarty->load_scripts(JSON_SCRIPT, VALIDATE_SCRIPT,
+      AUTOCOMPLETE_SCRIPT, FORM_SCRIPT, JEDITABLE_SCRIPT,
+      'sequence_functions.js', 'taxonomy_functions.js');
+  }
+
   function view($id)
   {
     if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
@@ -69,33 +115,23 @@ class Sequence extends BioController
     }
 
     if(!$this->sequence_model->has_id($id)) {
-      $this->smarty->assign('title', 'Invalid sequence');
-      $this->smarty->assign('id', $id);
-      $this->smarty->view('sequence/invalid_sequence');
+      $this->__invalid_sequence($id);
       return;
     }
 
     $this->smarty->assign('title', 'View sequence');
-    $this->smarty->load_scripts(JSON_SCRIPT, VALIDATE_SCRIPT,
-      AUTOCOMPLETE_SCRIPT, FORM_SCRIPT,
-      'sequence_functions.js', 'taxonomy_functions.js');
-    $this->use_thickbox();
-    $this->use_mygrid();
-    $this->use_plusminus();
-    //$this->use_impromptu();
-
-    $this->load->model('label_sequence_model');
-
-    $sequence = $this->sequence_model->get($id);
-    $sequence['content'] = sequence_short_content($sequence['content']);
-
-    $this->smarty->assign('sequence', $sequence);
-    $this->smarty->assign('missing',
-      $this->label_sequence_model->has_missing($id));
-    $this->smarty->assign('bad_multiple',
-      $this->label_sequence_model->has_bad_multiple($id));
+    $this->__load_js();
+    $this->use_impromptu();
+    $this->__load_sequence($id);
 
     $this->smarty->view('sequence/view');
+  }
+
+  function __load_sequence($id)
+  {
+    $sequence = $this->sequence_model->get($id);
+    $sequence['content'] = sequence_short_content($sequence['content']);
+    $this->smarty->assign('sequence', $sequence);
   }
 
   function add_batch()
