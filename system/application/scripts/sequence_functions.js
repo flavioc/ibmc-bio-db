@@ -1,10 +1,8 @@
 
 var base_site = get_app_url() + '/sequence';
-var seq_id = get_url_id();
-var seqdata = {seq: seq_id};
+var label_site = get_app_url() + '/label_sequence';
 var missing_loaded = false;
 var addable_loaded = false;
-var labels_loaded = false;
 var validation_loaded = false;
 var bad_multiple_loaded = false;
 var logged_in = get_logged_in();
@@ -55,7 +53,7 @@ var link_labels = {
         return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
       },
       obj_data: function (row) {
-        return get_app_url() + '/label_sequence/download_label/' + row.id;
+        return label_site + '/download_label/' + row.id;
       },
       select: function (row) {
         return '#row_labels_list_' + row.id;
@@ -104,12 +102,10 @@ function select_field(row)
   return field_to_add;
 }
 
-function reload_labels_list()
+function setup_labels_list()
 {
-  labels_loaded = true;
-
   var options = {
-    url: get_app_url() + '/label_sequence',
+    url: label_site,
     retrieve: 'get_labels/' + seq_id,
     tdClass: {
       '$delete': 'centered',
@@ -151,10 +147,11 @@ function reload_labels_list()
       if(bad_multiple_loaded) {
         $('#bad_multiple_list').gridDeleteRow(id);
       }
+      reload_addable_list();
     },
     clickFun: {
       edit: function (row) {
-        var url = get_app_url() + '/label_sequence/edit_label/' + row.id;
+        var url = label_site + '/edit_label/' + row.id;
         tb_show('Edit label', url);
       }
     }
@@ -177,11 +174,14 @@ function reload_labels_list()
   $('#labels_list').grid(options);
 }
 
+function reload_labels_list()
+{
+  $('#labels_list').gridReload();
+}
+
 function load_labels_list()
 {
-  if(!labels_loaded) {
-    reload_labels_list();
-  }
+  setup_labels_list();
 
   $('#labels_box').fadeIn();
 }
@@ -206,7 +206,7 @@ var labelTypes = {
 
 var hiddenFields = ['auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'must_exist'];
 
-function reload_missing_list()
+function setup_missing_list()
 {
   missing_loaded = true;
 
@@ -257,6 +257,15 @@ function reload_missing_list()
   });
 }
 
+function reload_missing_list()
+{
+  if(!missing_loaded) {
+    setup_missing_list();
+  } else {
+    $('#missing_list').gridReload();
+  }
+}
+
 function ensure_missing_list_loaded()
 {
   if(!missing_loaded) {
@@ -275,10 +284,8 @@ function hide_missing_list()
   $('#missing_box').fadeOut();
 }
 
-function reload_addable_list()
+function setup_addable_list()
 {
-  addable_loaded = true;
-
   $('#addable_list')
   .grid({
     url: get_app_url() + '/label_sequence',
@@ -319,7 +326,7 @@ function reload_addable_list()
     },
     clickFun: {
       add: function (row) {
-        var url = get_app_url() + '/label_sequence/add_label/' + seq_id + '/' + row.id;
+        var url = label_site + '/add_label/' + seq_id + '/' + row.id;
         tb_show('Add label', url);
       },
       type: function (row) {
@@ -327,6 +334,17 @@ function reload_addable_list()
     },
     hiddenFields: hiddenFields
   });
+
+  addable_loaded = true;
+}
+
+function reload_addable_list()
+{
+  if(addable_loaded) {
+    $('#addable_list').gridReload();
+  } else {
+    setup_addable_list();
+  }
 }
 
 function hide_addable_list()
@@ -353,7 +371,7 @@ function reload_validation_list()
 
   $('#validation_list')
   .grid({
-    url: get_app_url() + '/label_sequence',
+    url: label_site,
     retrieve: 'get_validation_labels/' + seq_id,
     fieldNames: ['Select', 'Name', 'Data', 'Type', 'Status'],
     fieldGenerator: function (row) {
@@ -426,7 +444,7 @@ function reload_bad_multiple_list()
 
   $('#bad_multiple_list')
   .grid({
-    url: get_app_url() + '/label_sequence',
+    url: label_site,
     retrieve: 'get_bad_multiple_labels/' + seq_id,
     fieldNames: ['Select', 'Name', 'Data', 'Type'],
     fieldGenerator: function (row) {
