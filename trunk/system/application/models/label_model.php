@@ -64,6 +64,11 @@ class Label_model extends BioModel
     if(!sql_is_nothing($user)) {
       $this->db->where('update_user_id', $user);
     }
+
+    $searchable = $filtering['only_searchable'];
+    if($searchable == '1') {
+      $this->db->where("type <> 'obj'");
+    }
   }
 
   function get_all($start = null, $size = null,
