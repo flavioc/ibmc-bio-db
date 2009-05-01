@@ -2,11 +2,20 @@
 
 {literal}
 <script>
-  $(document).ready(function () {
+$(document).ready(function () {
 
   var base_site = get_app_url() + '/tree';
+  var changed = false;
+  var show_trees = $('#show_trees');
+  var name_field = $('#name');
+  var user_field = $('#user');
 
-  $('#show_trees')
+  function changed_function()
+  {
+    changed = true;
+  }
+
+  show_trees
   .gridEnable({paginate: false})
   .grid({
     url: base_site,
@@ -34,16 +43,47 @@
         return base_site + '/view/' + row.id;
       }
     },
-    tdClass: {update: 'centered', add: 'centered'},
+    tdClass: {
+      update: 'centered',
+      add: 'centered'
+    },
     width: {
       add: w_add,
       user_name: w_user,
       update: w_update
     }
   });
+
+  function when_submit()
+  {
+    if(changed) {
+      var name_val = name_field.val();
+      var user_val = user_field.val();
+
+      show_trees.gridColumnFilter('name', name_val);
+      show_trees.gridColumnFilter('user', user_val);
+      show_trees.gridReload();
+    }
+
+    changed = false;
+  }
+
+  name_field.change(changed_function);
+  user_field.change(changed_function);
+
+  $("#form_search").validate({
+    submitHandler: when_submit,
+    errorPlacement: basicErrorPlacement
+  });
 });
 </script>
 {/literal}
+
+{form_open name=form_search}
+{form_row name=name msg='Name:'}
+{form_row type=select data=$users name=user msg='User:' key=id blank=yes}
+{form_submit name=submit_search msg=Filter}
+{form_end}
 
 <div id="show_trees"></div>
 
