@@ -147,19 +147,25 @@ class Taxonomy_rank_model extends BioModel
 
   function __filter($filtering)
   {
-    $name = $filtering['name'];
-    if(!sql_is_nothing($name)) {
-      $this->db->like('rank_name', "%$name%");
+    if(array_key_exists('name', $filtering)) {
+      $name = $filtering['name'];
+      if(!sql_is_nothing($name)) {
+        $this->db->like('rank_name', "%$name%");
+      }
     }
 
-    $parent_name = $filtering['parent_name'];
-    if(!sql_is_nothing($parent_name)) {
-      $this->db->like('rank_parent_name', "%$parent_name%");
+    if(array_key_exists('parent_name', $filtering)) {
+      $parent_name = $filtering['parent_name'];
+      if(!sql_is_nothing($parent_name)) {
+        $this->db->like('rank_parent_name', "%$parent_name%");
+      }
     }
 
-    $user = $filtering['user'];
-    if(!sql_is_nothing($user)) {
-      $this->db->where('update_user_id', $user);
+    if(array_key_exists('user', $filtering)) {
+      $user = $filtering['user'];
+      if(!sql_is_nothing($user)) {
+        $this->db->where('update_user_id', $user);
+      }
     }
   }
 
