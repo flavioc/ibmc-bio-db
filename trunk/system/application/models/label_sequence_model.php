@@ -827,4 +827,166 @@ class Label_sequence_model extends BioModel
 
     return "";
   }
+
+  function __get_search_labels($term, $label_model, &$ret)
+  {
+    if($term != null) {
+      $oper = $term['oper'];
+
+      if($oper == 'and' || $oper == 'or') {
+        $operands = $term['operands'];
+        foreach($operands as $operand) {
+          $this->__get_search_labels($operand, $label_model, $ret);
+        }
+      } else {
+        $label = $term['label'];
+        if(!array_key_exists($label, $ret)) {
+          $ret[$label] = $label_model->get_by_name($label);
+        }
+      }
+    }
+  }
+
+  function _get_search_labels($term, $label_model)
+  {
+    $ret = array();
+
+    $this->__get_search_labels($term, $label_model, $ret);
+
+    return $ret;
+  }
+
+  function __translate_sql_oper($oper, $type)
+  {
+    switch($type) {
+    case 'integer':
+      switch($oper) {
+      case 'eq': return '=';
+      case 'gt': return '>';
+      case 'lt': return '<';
+      case 'ge': return '>=';
+      case 'le': return '<=';
+      default: return '';
+      }
+    case 'text':
+    case 'url':
+      switch($oper) {
+      case 'eq': return '=';
+      case 'contains':
+      case 'starts':
+      case 'ends':
+        return 'LIKE';
+      default: return '';
+      }
+    case 'bool': return 'IS';
+    }
+  }
+
+  function __translate_sql_value($oper, $value, $type)
+  {
+    switch($type) {
+    case 'integer':
+      return $value;
+    case 'text':
+    case 'url':
+      switch($oper) {
+        case 'eq': return "\"$value\"";
+        case 'contains': return "\"%$value%\"";
+        case 'starts': return "\"$value%\"";
+        case 'ends': return "\"%$value\"";
+      }
+    case 'bool':
+      if($value) {
+        return 'TRUE';
+      } else {
+        return 'FALSE';
+      }
+    }
+
+    return '';
+  }
+
+  function __get_search_where($term, &$labels, $default = "TRUE")
+  {
+    if($term == null) {
+      return $default;
+    }
+
+    $oper = $term['oper'];
+
+    if($oper == 'and' || $oper == 'or') {
+      $operands = $term['operands'];
+
+      if(count($operands) == 0) {
+        return $default;
+      }
+
+      $ret = "";
+      if($oper == 'and') {
+        $new_default = 'TRUE';
+        $junction = 'AND';
+      } else {
+        $new_default = 'FALSE';
+        $junction = 'OR';
+      }
+      for($i = 0; $i < count($operands); ++$i) {
+        $part = $this->__get_search_where($operands[$i], $labels, $new_default);
+
+        if($i > 0) {
+          $ret .= " $junction ($part)";
+        } else {
+          $ret .= "($part)";
+        }
+      }
+
+      return $ret;
+    } else {
+      $label_name = $term['label'];
+      $label = $labels[$label_name];
+      $label_type = $label['type'];
+      $fields = $this->__get_data_fields($label_type);
+      $oper = $term['oper'];
+      $value = $term['value'];
+      $sql_oper = $this->__translate_sql_oper($oper, $label_type);
+      $sql_value = $this->__translate_sql_value($oper, $value, $label_type);
+
+      $sql = "name = \"$label_name\" AND $fields IS NOT NULL AND $fields $sql_oper $sql_value";
+
+      return $sql;
+    }
+  }
+
+  function __get_search_sql($search)
+  {
+    $label_model = $this->load_model('label_model');
+    $labels = $this->_get_search_labels($search, $label_model);
+    $sql_part = $this->__get_search_where($search, $labels);
+    return $sql_part;
+  }
+
+  function get_search($search, $start, $size, $ordering = array())
+  {
+    $sql_where = $this->__get_search_sql($search);
+    $sql_limit = sql_limit($start, $size);
+    $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
+    $sql = "SELECT *
+      FROM sequence_info_history INNER JOIN (SELECT DISTINCT seq_id FROM label_sequence_info WHERE $sql_where $sql_limit) AS c ON (sequence_info_history.id = C.seq_id) $sql_order";
+
+    $coiso = false;
+    if($coiso) {
+    print_r($search);
+    echo "<br />";
+    echo $sql;
+    }
+    return $this->rows_sql($sql);
+  }
+
+  function get_search_total($search)
+  {
+    $sql_where = $this->__get_search_sql($search);
+    $sql = "SELECT count(id) AS total
+            FROM label_sequence_info
+            WHERE $sql_where";
+    return $this->total_sql($sql);
+  }
 }

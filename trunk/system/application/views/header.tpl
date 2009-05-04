@@ -57,6 +57,7 @@
       <li><a href="{site}/sequence/add">Add</a></li>
       <li><a href="{site}/sequence/add_batch">Batch</a></li>
       <li><a href="{site}/sequence/browse">List</a></li>
+      <li><a href="{site}/sequence/search">Search</a></li>
     </ul>
     <li id="label_menu"><a href="#">Labels</a></li>
     <ul id="label_id">

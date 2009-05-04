@@ -88,7 +88,7 @@ $(document).ready(function () {
           return row.tree_name == null ? "---" : row.tree_name;
         },
         select: function (row) {
-          return build_image_url('go.png', 'image_url select_child');
+          return img_go;
         },
         add_child: function (row) {
           return img_add;

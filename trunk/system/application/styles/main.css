@@ -256,12 +256,9 @@ span.label_invalid {
   text-align: center;
 }
 
-img.select_child {
-  cursor: pointer;
-}
-
 img.image_url {
   border-width:0;
+  cursor: pointer;
 }
 
 table.fixed_table {

@@ -137,7 +137,7 @@ function setup_labels_list()
     dataTransform: data_transform_labels,
     enableRemove: logged_in,
     enableRemoveFun: function (row) {
-      return row.deletable == '1';
+      return sql_true(row.deletable);
     },
     remove: 'delete_label',
     types: {

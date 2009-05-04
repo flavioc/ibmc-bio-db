@@ -15,8 +15,8 @@ class Label extends BioController {
     }
 
     $this->use_mygrid();
-    $this->__assign_types();
-    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->assign_label_types();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js');
 
     $this->load->model('user_model');
 
@@ -38,6 +38,7 @@ class Label extends BioController {
     $name_filter = $this->get_parameter('name');
     $type_filter = $this->get_parameter('type');
     $user_filter = $this->get_parameter('user');
+    $searchable_filter = $this->get_parameter('only_searchable');
 
     $ordering_name = $this->get_order('name');
     $ordering_type = $this->get_order('type');
@@ -45,7 +46,8 @@ class Label extends BioController {
     $labels = $this->label_model->get_all($start, $size,
       array('name' => $name_filter,
             'type' => $type_filter,
-            'user' => $user_filter),
+            'user' => $user_filter,
+            'only_searchable' => $searchable_filter),
       array('name' => $ordering_name,
             'type' => $ordering_type));
 
@@ -61,11 +63,13 @@ class Label extends BioController {
     $name_filter = $this->get_parameter('name');
     $type_filter = $this->get_parameter('type');
     $user_filter = $this->get_parameter('user');
+    $searchable_filter = $this->get_parameter('only_searchable');
 
     $total = $this->label_model->get_total(
       array('name' => $name_filter,
             'type' => $type_filter,
-            'user' => $user_filter));
+            'user' => $user_filter,
+            'only_searchable' => $searchable_filter));
 
     $this->json_return($total);
   }
@@ -99,20 +103,10 @@ class Label extends BioController {
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->smarty->assign('title', 'Label "' . $label['name'] . '"');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
-    $this->__assign_types();
+    $this->assign_label_types();
     $this->smarty->assign('label', $label);
     $this->use_impromptu();
     $this->smarty->view('label/view');
-  }
-
-  function __get_types()
-  {
-    return build_data_array(array('integer', 'text', 'obj', 'position', 'ref', 'tax', 'url', 'bool'));
-  }
-
-  function __assign_types()
-  {
-    $this->smarty->assign('types', $this->__get_types());
   }
 
   function add()
@@ -138,7 +132,7 @@ class Label extends BioController {
     $this->smarty->fetch_form_row('valid_code');
     $this->smarty->fetch_form_row('comment');
 
-    $this->__assign_types();
+    $this->assign_label_types();
 
     $this->smarty->view('label/add');
   }
