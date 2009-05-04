@@ -179,13 +179,10 @@ class Taxonomy_model extends BioModel
 
   function search_field($field, $name, $rank, $tree, $start = null, $size = null, $ordering = array())
   {
-    $order = $this->get_order_by($ordering, 'name', 'asc');
-    $order_field = $order[0];
-    $order_type = $order[1];
-    $order_str = " ORDER BY $order_field $order_type ";
+    $order = $this->get_order_sql($ordering, 'name', 'asc');
     $search = $this->_get_search_sql($name, $rank, $tree, $start, $size);
     $limit = sql_limit($start, $size);
-    $sql = "SELECT $field FROM (taxonomy_info NATURAL JOIN ($search) AS dderiv) $order_str";
+    $sql = "SELECT $field FROM (taxonomy_info NATURAL JOIN ($search) AS dderiv) $order";
 
     return $this->rows_sql($sql);
   }

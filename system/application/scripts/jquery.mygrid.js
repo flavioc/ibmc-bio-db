@@ -523,6 +523,15 @@ $.fn.gridColumnFilter = function(column, what) {
   });
 };
 
+$.fn.gridFilter = function (name, what) {
+  return this.each(function () {
+      var $this = $(this);
+      var opts = this.opts;
+
+      opts.params[name] = what;
+  });
+};
+
 $.fn.gridReload = function () {
   return this.each(function () {
       var $this = $(this);

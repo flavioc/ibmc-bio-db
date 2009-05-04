@@ -263,9 +263,11 @@ function smarty_function_form_select($params, &$smarty)
   }
 
   $data = $params['data'];
-  foreach($data as $row_data) {
-    $this_key = $row_data[$key];
-    $options[$this_key] = $row_data[$value];
+  if($data) {
+    foreach($data as $row_data) {
+      $this_key = $row_data[$key];
+      $options[$this_key] = $row_data[$value];
+    }
   }
 
   $start = $params['start'];

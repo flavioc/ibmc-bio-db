@@ -213,4 +213,20 @@ class BioController extends Controller
     $get = $this->get_parameter($param);
     return $get;
   }
+
+  function __get_label_types($only_searchable)
+  {
+    $ret = array('integer', 'text', 'position', 'ref', 'tax', 'url', 'bool');
+
+    if(!$only_searchable) {
+      array_push($ret, 'obj');
+    }
+
+    return build_data_array($ret);
+  }
+
+  function assign_label_types($only_searchable = false)
+  {
+    $this->smarty->assign('types', $this->__get_label_types($only_searchable));
+  }
 }

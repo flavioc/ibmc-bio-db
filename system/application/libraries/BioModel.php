@@ -270,6 +270,15 @@ class BioModel extends Model
     return array($default, $typed);
   }
 
+  function get_order_sql($order, $default, $typed)
+  {
+    $arr = $this->get_order_by($order, $default, $typed);
+    $field = $arr[0];
+    $order = $arr[1];
+
+    return "ORDER BY $field $order";
+  }
+
   function order_by($order, $default, $typed)
   {
     $ret = $this->get_order_by($order, $default, $typed);

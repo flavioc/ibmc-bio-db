@@ -23,6 +23,70 @@ class Sequence extends BioController
     $this->smarty->view('sequence/list');
   }
 
+  function search()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $this->smarty->assign('title', 'Search sequences');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
+      'sequence_search.js', SELECTBOXES_SCRIPT);
+    $this->use_mygrid();
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
+    $this->assign_label_types(true);
+
+    $this->smarty->view('sequence/search');
+  }
+
+  function __get_search_term()
+  {
+    $search = stripslashes($this->get_parameter('search'));
+    $search_term = null;
+    if($search) {
+      $search_term = json_decode($search, true);
+    }
+
+    return $search_term;
+  }
+
+  function get_search()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_empty();
+    }
+
+    $start = $this->get_parameter('start');
+    $size = $this->get_parameter('size');
+    $search = $this->__get_search_term();
+
+    $ordering_name = $this->get_order('name');
+    $ordering_update = $this->get_order('update');
+    $ordering_user = $this->get_order('user_name');
+
+    $this->load->model('label_sequence_model');
+
+    $this->json_return($this->label_sequence_model->get_search($search,
+      $start, $size,
+      array('name' => $ordering_name,
+            'update' => $ordering_update,
+            'user_name' => $ordering_user)));
+  }
+
+  function get_search_total()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_zero();
+    }
+
+    $search = $this->__get_search_term();
+
+    $this->load->model('label_sequence_model');
+    $this->json_return(
+      $this->label_sequence_model->get_search_total($search));
+  }
+
   function get_all()
   {
     if(!$this->logged_in) {
