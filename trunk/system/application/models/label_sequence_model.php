@@ -970,7 +970,7 @@ class Label_sequence_model extends BioModel
     $sql_limit = sql_limit($start, $size);
     $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
     $sql = "SELECT *
-      FROM sequence_info_history INNER JOIN (SELECT DISTINCT seq_id FROM label_sequence_info WHERE $sql_where $sql_limit) AS c ON (sequence_info_history.id = C.seq_id) $sql_order";
+      FROM sequence_info_history INNER JOIN (SELECT DISTINCT seq_id FROM label_sequence_info WHERE $sql_where $sql_limit) AS C ON (sequence_info_history.id = C.seq_id) $sql_order";
 
     $coiso = false;
     if($coiso) {
