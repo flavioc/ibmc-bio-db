@@ -26,6 +26,33 @@ class Label extends BioController {
     $this->smarty->view('label/list');
   }
 
+  function get_label_by_name($name)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $label = $this->label_model->get_by_name($name);
+
+    $this->json_return($label);
+  }
+
+  function autocomplete_labels()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_empty();
+    }
+
+    $name = $this->get_parameter('q');
+
+    $labels = $this->label_model->get_all(null, null,
+      array('name' => $name,
+            'only_searchable' => 'yes'),
+      array('name' => 'asc'));
+
+    output_autocomplete_data($labels, 'name');
+  }
+
   function get_all()
   {
     if(!$this->logged_in) {

@@ -11,6 +11,11 @@ function smarty_block_evalphp($params, $content, &$smarty, &$repeat)
   return(eval("return " . $content . ";"));
 }
 
+function smarty_function_display_none($params, &$smarty)
+{
+  return "style=\"display: none;\"";
+}
+
 function smarty_function_form_label_error($params, &$smarty)
 {
   $data = array();
@@ -240,12 +245,12 @@ function smarty_function_form_select($params, &$smarty)
     $id = $name;
   }
 
+  $options = array();
+
   $class = $params['class'];
   if($class) {
-    $data['class'] = $class;
+    $options['class'] = $class;
   }
-
-  $options = array();
 
   $blank = $params['blank'];
   if($blank) {
@@ -626,6 +631,7 @@ class BioSmarty extends Smarty
     $this->register_function('random', 'smarty_function_random');
     $this->register_function('include_js', 'smarty_function_include_js');
     $this->register_function('to_js', 'smarty_function_to_js');
+    $this->register_function('display_none', 'smarty_function_display_none');
 
 		$config =& get_config();
 		

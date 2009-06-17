@@ -3,16 +3,20 @@
 <div id="term_form_div">
 {form_open to='#' name=term_form}
 <fieldset>
-<p><span class="desc">Label:</span><span id="labelname">Coiso</span></p>
-<div id="operator_input">
-{form_row type=select name=operator msg='Operator:'}
+{form_row name=label_row msg='Label:'}
+
+<div id="term_other_fields" {display_none} >
+  <div id="operator_input">
+    {form_select name=operator class="search-operator"}
+  </div>
+  <div id="data_input">
+    {form_row name=data_row msg='Data:'}
+  </div>
+  <div id="data_boolean_input">
+    {form_row type=checkbox name=data_boolean_checkbox msg='Data:'}
+  </div>
 </div>
-<div id="data_input">
-{form_row name=data_row msg='Data:'}
-</div>
-<div id="data_boolean_input">
-{form_row type=checkbox name=data_boolean_checkbox msg='Data:'}
-</div>
+
 </fieldset>
 {form_submit name=submit msg='Add term'}
 {form_end}
@@ -41,18 +45,3 @@ This is the search tree:
 <p>
 <div id="show_sequences"></div>
 </p>
-
-<hr />
-<h3>Labels</h3>
-
-{literal}
-<script>
-$(document).ready(function () {
-  start_label_list({only_searchable: '1'}, label_was_selected);
-});
-</script>
-{/literal}
-
-{include file=label/labels_grid.tpl}
-{include file=label/search_form.tpl}
-
