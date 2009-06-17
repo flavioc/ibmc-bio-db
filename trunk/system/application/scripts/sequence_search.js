@@ -12,6 +12,8 @@ var data_boolean_checkbox = null;
 var show_seqs = null;
 var tree_form = null;
 var labelname = null;
+var label_row = null;
+var term_other_fields = null;
 var we_are_starting = true;
 
 function fill_operators_options(type)
@@ -47,14 +49,6 @@ function fill_operators(type)
     operator_select.removeOption(/./);
     operator_select.addOption(fill_operators_options(type));
   }
-}
-
-function label_was_selected(row, grid)
-{
-  current_row = row;
-  labelname.text(row.name);
-  fill_operators(row.type);
-  term_form.show();
 }
 
 function term_form_submitted()
@@ -203,9 +197,36 @@ $(document).ready(function () {
     or_form = $('#or_form');
     labelname = $('#labelname');
     tree_form = $('#tree_form');
-    term_form.hide();
+    label_row = $('#label_row');
+    term_other_fields = $('#term_other_fields');
 
     add_radio_box($('ul:first', tree_form), true);
+
+    label_row.autocomplete(get_app_url() + "/label/autocomplete_labels",
+      {
+        minChars: 2,
+        delay: 400,
+        scroll: true,
+        selectFirst: false
+      });
+
+    label_row.change(function () {
+        var $this = $(this);
+        var name = $this.val();
+
+        $.getJSON(get_app_url() + "/label/get_label_by_name/" + name,
+          function (data) {
+            if(data == null) {
+              term_other_fields.hide();
+            } else {
+              fill_operators(data.type);
+              term_other_fields.show();
+              current_row = data;
+            }
+        });
+
+        return false;
+    });
 
     term_form.validate({
       submitHandler: term_form_submitted,

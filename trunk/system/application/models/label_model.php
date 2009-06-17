@@ -50,24 +50,32 @@ class Label_model extends BioModel
 
   function __filter_labels($filtering = array())
   {
-    $name = $filtering['name'];
-    if(!sql_is_nothing($name)) {
-      $this->db->like('name', "%$name%");
+    if(array_key_exists('name', $filtering)) {
+      $name = $filtering['name'];
+      if(!sql_is_nothing($name)) {
+        $this->db->like('name', "%$name%");
+      }
     }
 
-    $type = $filtering['type'];
-    if(!sql_is_nothing($type)) {
-      $this->db->where('type', $type);
+    if(array_key_exists('type', $filtering)) {
+      $type = $filtering['type'];
+      if(!sql_is_nothing($type)) {
+        $this->db->where('type', $type);
+      }
     }
 
-    $user = $filtering['user'];
-    if(!sql_is_nothing($user)) {
-      $this->db->where('update_user_id', $user);
+    if(array_key_exists('user', $filtering)) {
+      $user = $filtering['user'];
+      if(!sql_is_nothing($user)) {
+        $this->db->where('update_user_id', $user);
+      }
     }
 
-    $searchable = $filtering['only_searchable'];
-    if($searchable == '1') {
-      $this->db->where("type <> 'obj'");
+    if(array_key_exists('only_searchable', $filtering)) {
+      $searchable = $filtering['only_searchable'];
+      if($searchable == '1') {
+        $this->db->where("type <> 'obj'");
+      }
     }
   }
 

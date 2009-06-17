@@ -269,3 +269,7 @@ table.data th a:visited, table.data th a {
   color: #fff;
   text-decoration: underline;
 }
+
+.term_form_div {
+  display: inline;
+}
