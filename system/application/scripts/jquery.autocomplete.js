@@ -45,6 +45,9 @@ $.fn.extend({
 	setOptions: function(options){
 		return this.trigger("setOptions", [options]);
 	},
+  autocompleteEmpty: function (handler) {
+    return this.bind("autocompleteEmpty", handler);
+  },
 	unautocomplete: function() {
 		return this.trigger("unautocomplete");
 	}
@@ -299,8 +302,10 @@ $.Autocompleter = function(input, options) {
 							var words = trimWords($input.val()).slice(0, -1);
 							$input.val( words.join(options.multipleSeparator) + (words.length ? options.multipleSeparator : "") );
 						}
-						else
+						else {
 							$input.val( "" );
+              $input.trigger("autocompleteEmpty", []);
+            }
 					}
 				}
 			);
