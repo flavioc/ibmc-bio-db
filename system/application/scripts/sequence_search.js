@@ -26,6 +26,9 @@ var change_tax = null;
 var data_seq = null;
 var data_seq_input = null;
 var change_seq = null;
+var data_position_input = null;
+var position_type = null;
+var position_type_text = null;
 var we_are_starting = true;
 var can_add_expanders = true;
 
@@ -34,6 +37,7 @@ var term_options_html = '<span class="term-options" style="display: none;">(<spa
 function fill_operators_options(type)
 {
   switch(type) {
+    case 'position':
     case 'integer':
       return {eq: '=',
               gt: '>',
@@ -51,6 +55,12 @@ function fill_operators_options(type)
   return {};
 }
 
+function init_operator_select(type)
+{
+  operator_select.removeOption(/./);
+  operator_select.addOption(fill_operators_options(type));
+}
+
 function fill_operators(type)
 {
   operator_input.hide();
@@ -58,6 +68,7 @@ function fill_operators(type)
   data_boolean_input.hide();
   data_tax_input.hide();
   data_seq_input.hide();
+  data_position_input.hide();
 
   if(type == 'bool') {
     data_boolean_input.show();
@@ -65,18 +76,26 @@ function fill_operators(type)
     data_tax_input.show();
   } else if(type == 'ref') {
     data_seq_input.show();
+  } else if(type == 'position') {
+    init_operator_select(type);
+    data_position_input.show();
+    operator_input.show();
+    data_input.show();
   } else {
     operator_input.show();
     data_input.show();
+    init_operator_select(type);
     operator_select.show();
-    operator_select.removeOption(/./);
-    operator_select.addOption(fill_operators_options(type));
   }
 }
 
 function term_form_submitted()
 {
   if(!term_was_selected()) {
+    return;
+  }
+
+  if(current_row == null) {
     return;
   }
 
@@ -97,6 +116,15 @@ function term_form_submitted()
     obj.oper = 'eq';
     obj.value = data_seq[0].seq;
     if(obj.value == null) {
+      return;
+    }
+  } else if(type == 'position') {
+    obj.oper = operator_select.val();
+    data = {num: parseInt(data_row.val()),
+            type: position_type.val()};
+    obj.value = data;
+
+    if(!is_numeric(data.num)) {
       return;
     }
   } else {
@@ -153,6 +181,8 @@ function build_operator_text(obj)
     return 'is ' + obj.value.name;
   } else if(obj.type == 'ref') {
     return 'is ' + obj.value.name;
+  } else if(obj.type == 'position') {
+    return obj.value.type + ' ' + get_operator_text() + ' ' + obj.value.num;
   }
 
   return get_operator_text() + ' ' + obj.value;
@@ -290,7 +320,6 @@ function got_new_label(data) {
   label_row.hide();
   fill_operators(data.type);
   term_other_fields.show();
-  operator_text.hide();
   current_row = data;
   submit_term.show();
 }
@@ -307,10 +336,24 @@ function enable_operator_select()
   operator_text.hide();
 }
 
+function enable_position_type_select()
+{
+  position_type.show();
+  position_type_text.hide();
+}
+
 function get_operator_text() 
 {
   var selected = $('option:selected', operator_select);
   return selected.text();
+}
+
+function select_position_type()
+{
+  if(current_row.type == 'position') {
+    position_type.hide();
+    position_type_text.text(position_type.val()).show();
+  }
 }
 
 function operator_was_selected()
@@ -319,6 +362,8 @@ function operator_was_selected()
 
   operator_select.hide();
   operator_text.text(selected_text).show();
+
+  select_position_type();
 }
 
 function node_unselected()
@@ -376,6 +421,9 @@ $(document).ready(function () {
     data_seq = $('#data_seq');
     change_seq = $('#change_seq');
     data_seq_input = $('#data_seq_input');
+    data_position_input = $('#data_position_input');
+    position_type = $('#position_type');
+    position_type_text = $('#position_type_text');
     submit_term = $('#submit_term').hide();
 
     can_add_leafs();
@@ -435,6 +483,9 @@ $(document).ready(function () {
     });
 
     label_name.click(enable_label_row);
+
+    position_type_text.click(enable_position_type_select);
+    position_type.change(select_position_type);
 
     operator_text.click(enable_operator_select);
 

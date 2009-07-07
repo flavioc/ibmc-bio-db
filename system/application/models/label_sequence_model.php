@@ -859,6 +859,7 @@ class Label_sequence_model extends BioModel
   function __translate_sql_oper($oper, $type)
   {
     switch($type) {
+    case 'position':
     case 'integer':
       switch($oper) {
       case 'eq': return '=';
@@ -887,6 +888,7 @@ class Label_sequence_model extends BioModel
   function __translate_sql_value($oper, $value, $type)
   {
     switch($type) {
+    case 'position':
     case 'integer':
       return $value;
     case 'text':
@@ -951,9 +953,22 @@ class Label_sequence_model extends BioModel
       $label = $labels[$label_name];
       $label_type = $label['type'];
       $label_id = $label['id'];
-      $fields = $this->__get_data_fields($label_type);
       $oper = $term['oper'];
       $value = $term['value'];
+      $fields = $this->__get_data_fields($label_type);
+
+      // handle position fields
+      if(is_array($fields)) {
+        $type = $value['type'];
+        if($type == 'start') {
+          $fields = 'position_a_data';
+        } else {
+          $fields = 'position_b_data';
+        }
+
+        $value = $value['num'];
+      }
+
       $sql_oper = $this->__translate_sql_oper($oper, $label_type);
       $sql_value = $this->__translate_sql_value($oper, $value, $label_type);
 
@@ -989,6 +1004,7 @@ class Label_sequence_model extends BioModel
     $sql = "SELECT count(id) AS total
             FROM sequence_info_history
             WHERE $sql_where";
+
     return $this->total_sql($sql);
   }
 }
