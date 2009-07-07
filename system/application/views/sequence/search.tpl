@@ -19,6 +19,10 @@
   <div id="data_boolean_input">
     <input id="data_boolean_checkbox" type="checkbox" value="yes" name="data_boolean_checkbox" />
   </div>
+  <div id="data_tax_input">
+    <span id="data_tax"></span>
+    <span id="change_tax">(Find taxonomy)</span>
+  </div>
 </div>
 
 {form_submit name=submit msg='Add term' id="submit_term"}

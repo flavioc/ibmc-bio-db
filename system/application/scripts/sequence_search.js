@@ -20,6 +20,9 @@ var submit_term = null;
 var or_form = null;
 var and_form = null;
 var insert_terms = null;
+var data_tax = null;
+var data_tax_input = null;
+var change_tax = null;
 var we_are_starting = true;
 var can_add_expanders = true;
 
@@ -47,14 +50,22 @@ function fill_operators_options(type)
 
 function fill_operators(type)
 {
+  operator_input.hide();
+  data_input.hide();
+  data_boolean_input.hide();
+  data_tax_input.hide();
+  change_tax.hide();
+  data_tax.hide();
+
   if(type == 'bool') {
-    data_input.hide();
     data_boolean_input.show();
-    operator_input.hide();
+  } else if(type == 'tax') {
+    data_tax_input.show();
+    change_tax.show();
+    data_tax.show();
   } else {
     operator_input.show();
     data_input.show();
-    data_boolean_input.hide();
     operator_select.show();
     operator_select.removeOption(/./);
     operator_select.addOption(fill_operators_options(type));
@@ -74,6 +85,13 @@ function term_form_submitted()
   if(type == 'bool') {
     obj.oper = 'eq';
     obj.value = data_boolean_checkbox.is(':checked');
+  } else if(type == 'tax') {
+    obj.oper = 'eq';
+    obj.value = data_tax[0].tax;
+    if(obj.value == null) {
+      return;
+    }
+    alert(obj.value.id);
   } else {
     obj.oper = operator_select.val();
     obj.value = data_row.val();
@@ -124,6 +142,8 @@ function build_operator_text(obj)
     } else {
       return 'is false';
     }
+  } else if(obj.type == 'tax') {
+    return 'is ' + obj.value.name;
   }
 
   return get_operator_text() + ' ' + obj.value;
@@ -164,7 +184,7 @@ function update_search()
     var encoded = $.toJSON(obj);
     show_seqs.gridFilter('search', encoded);
     show_seqs.gridReload();
-    //alert(encoded);
+    alert(encoded);
   }
 }
 
@@ -339,11 +359,20 @@ $(document).ready(function () {
     and_form = $('#and_form');
     or_form = $('#or_form');
     insert_terms = $('#insert_terms');
+    data_tax = $('#data_tax');
+    change_tax = $('#change_tax');
+    data_tax_input = $('#data_tax_input');
     submit_term = $('#submit_term').hide();
 
     can_add_leafs();
 
     data_row.focus(operator_was_selected);
+
+    change_tax.click(function () {
+        var url = get_app_url() + '/sequence/search_tax';
+        tb_show('Find taxonomy', url);
+        return false;
+    });
 
     $('.term-delete').livequery('click', function () {
         var li_term = $(this).parent().parent();

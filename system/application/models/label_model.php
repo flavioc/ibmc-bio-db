@@ -73,7 +73,7 @@ class Label_model extends BioModel
 
     if(array_key_exists('only_searchable', $filtering)) {
       $searchable = $filtering['only_searchable'];
-      if($searchable == '1') {
+      if($searchable) {
         $this->db->where("type <> 'obj'");
       }
     }
