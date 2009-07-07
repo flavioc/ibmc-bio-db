@@ -82,7 +82,7 @@ function term_form_submitted()
 
   var type = current_row.type;
   var label = current_row.name;
-  var obj = {label: label, type: type};
+  var obj = {label: label, type: type, id: current_row.id};
 
   if(type == 'bool') {
     obj.oper = 'eq';
