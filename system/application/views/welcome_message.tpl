@@ -8,3 +8,5 @@
 <p>Please login</p>
 
 {/if}
+
+<p>{$comment}</p>
