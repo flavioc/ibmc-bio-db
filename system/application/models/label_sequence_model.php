@@ -950,13 +950,14 @@ class Label_sequence_model extends BioModel
       $label_name = $term['label'];
       $label = $labels[$label_name];
       $label_type = $label['type'];
+      $label_id = $label['id'];
       $fields = $this->__get_data_fields($label_type);
       $oper = $term['oper'];
       $value = $term['value'];
       $sql_oper = $this->__translate_sql_oper($oper, $label_type);
       $sql_value = $this->__translate_sql_value($oper, $value, $label_type);
 
-      $sql = "name = \"$label_name\" AND $fields IS NOT NULL AND $fields $sql_oper $sql_value";
+      $sql = "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $fields IS NOT NULL AND $fields $sql_oper $sql_value)";
 
       return $sql;
     }
@@ -976,7 +977,8 @@ class Label_sequence_model extends BioModel
     $sql_limit = sql_limit($start, $size);
     $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
     $sql = "SELECT DISTINCT id, user_name, update_user_id, `update`, name
-      FROM sequence_info_history INNER JOIN (SELECT DISTINCT seq_id FROM label_sequence_info WHERE $sql_where $sql_limit) AS C ON (sequence_info_history.id = C.seq_id) $sql_order";
+      FROM sequence_info_history
+      WHERE $sql_where $sql_order $sql_limit";
 
     return $this->rows_sql($sql);
   }
@@ -984,8 +986,8 @@ class Label_sequence_model extends BioModel
   function get_search_total($search)
   {
     $sql_where = $this->__get_search_sql($search);
-    $sql = "SELECT count(DISTINCT seq_id) AS total
-            FROM label_sequence_info
+    $sql = "SELECT count(id) AS total
+            FROM sequence_info_history
             WHERE $sql_where";
     return $this->total_sql($sql);
   }
