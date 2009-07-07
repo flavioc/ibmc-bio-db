@@ -160,7 +160,7 @@ class Label_Sequence extends BioController {
           $this->smarty->view_s('edit_label/position');
           break;
         case 'ref':
-          $this->smarty->view_s('edit_label/ref');
+          $this->__display_ref_form('edit_label/ref');
           break;
         case 'tax':
           $this->__display_tax_form('edit_label/tax');
@@ -208,7 +208,7 @@ class Label_Sequence extends BioController {
           $this->smarty->view_s('new_label/position');
           break;
         case 'ref':
-          $this->smarty->view_s('new_label/ref');
+          $this->__display_ref_form('new_label/ref');
           break;
         case 'tax':
           $this->__display_tax_form('new_label/tax');
@@ -217,6 +217,11 @@ class Label_Sequence extends BioController {
     } else {
       echo "NOT HANDLED, PLEASE REPORT";
     }
+  }
+
+  function __display_ref_form($file)
+  {
+    $this->smarty->view_s($file);
   }
 
   function __display_tax_form($file)

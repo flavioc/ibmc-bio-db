@@ -53,7 +53,7 @@ class Sequence_model extends BioModel
       $this->db->limit($size, $start);
     }
 
-    $this->__select();
+    $this->db->select('id, name, update_user_id, update, user_name');
 
     return parent::get_all('sequence_info_history');
   }

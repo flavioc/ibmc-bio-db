@@ -23,6 +23,10 @@
     <span id="data_tax"></span>
     <span id="change_tax">(Find taxonomy)</span>
   </div>
+  <div id="data_seq_input">
+    <span id="data_seq"></span>
+    <span id="change_seq">(Find sequence)</span>
+  </div>
 </div>
 
 {form_submit name=submit msg='Add term' id="submit_term"}
