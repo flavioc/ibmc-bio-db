@@ -12,6 +12,12 @@ class Welcome extends BioController {
   {
     $this->smarty->assign('title', 'Main');
 
+    // load comment
+    $this->load->model('comment_model');
+    $this->load->helper('text');
+    $comment = ascii_to_entities(newline_tab_html($this->comment_model->get()));
+    $this->smarty->assign('comment', $comment);
+
     if(!$this->logged_in) {
       $this->smarty->load_scripts(VALIDATE_SCRIPT);
       $this->smarty->fetch_form_row('login_username');

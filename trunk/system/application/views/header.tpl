@@ -73,6 +73,7 @@
       <li><a href="{site}/profile/register">Register</a></li>
     {/if}
     </ul>
+    <li><a href="{site}/comment/edit">Comment</a></li>
   </ul>
 
   Logged as: <a href="{site}/profile/view/{$user_id}">{$username}</a> ({$user_type})
