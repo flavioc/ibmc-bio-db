@@ -879,6 +879,7 @@ class Label_sequence_model extends BioModel
       default: return '';
       }
     case 'bool': return 'IS';
+    case 'tax': return '=';
     }
   }
 
@@ -901,6 +902,8 @@ class Label_sequence_model extends BioModel
       } else {
         return 'FALSE';
       }
+    case 'tax':
+      return $value['id'];
     }
 
     return '';

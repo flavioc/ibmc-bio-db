@@ -31,15 +31,34 @@ class Sequence extends BioController
 
     $this->smarty->assign('title', 'Search sequences');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
-      'sequence_search.js', SELECTBOXES_SCRIPT);
+      'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js');
     $this->use_mygrid();
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
     $this->assign_label_types(true);
     $this->use_autocomplete();
+    $this->use_thickbox();
     $this->use_livequery();
 
     $this->smarty->view('sequence/search');
+  }
+
+  function search_tax()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_thickbox();
+    }
+
+    $this->load->model('taxonomy_rank_model');
+    $ranks = $this->taxonomy_rank_model->get_ranks();
+
+    $this->load->model('taxonomy_tree_model');
+    $trees = $this->taxonomy_tree_model->get_trees();
+
+    $this->smarty->assign('ranks', $ranks);
+    $this->smarty->assign('trees', $trees);
+
+    $this->smarty->view_s('sequence/search_tax');
   }
 
   function __get_search_term()

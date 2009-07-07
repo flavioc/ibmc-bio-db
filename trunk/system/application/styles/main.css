@@ -282,7 +282,10 @@ table.data th a:visited, table.data th a {
 #or_form *,
 #and_form,
 #or_form,
-#submit_term
+#submit_term,
+#data_tax_input,
+#data_tax,
+#change_tax
 {
   display: inline;
 }
@@ -377,4 +380,14 @@ label.search-desc {
 .term-delete {
   text-decoration: underline;
   cursor: pointer;
+}
+
+#change_tax {
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 90%;
+}
+
+#data_tax {
+  font-style: italic;
 }
