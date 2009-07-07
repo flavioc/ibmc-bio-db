@@ -1,5 +1,6 @@
 <h2>Search sequences</h2>
 
+<div id="insert_terms">
 <div id="term_form_div">
 {form_open to='#' name=term_form}
 <fieldset>
@@ -39,6 +40,8 @@
 <ol class="search-list" level="1">
 </ol>
 {form_end}
+</div>
+
 </div>
 
 <h3>Results</h3>

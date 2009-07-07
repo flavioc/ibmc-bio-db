@@ -369,3 +369,12 @@ label.search-desc {
 .selected-node > .term-name {
   background: yellow;
 }
+
+.term-options {
+  margin-left: 5px;
+}
+
+.term-delete {
+  text-decoration: underline;
+  cursor: pointer;
+}
