@@ -77,6 +77,18 @@ function term_form_submitted()
   } else {
     obj.oper = operator_select.val();
     obj.value = data_row.val();
+
+    if(obj.type == 'integer') {
+      obj.value = parseInt(obj.value);
+      if(!is_numeric(obj.value)) {
+        return;
+      }
+    } else {
+      // text based value
+      if(obj.value == '') {
+        return;
+      }
+    }
   }
 
   var li = get_li_selected();
