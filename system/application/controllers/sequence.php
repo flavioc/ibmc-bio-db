@@ -37,6 +37,7 @@ class Sequence extends BioController
     $this->smarty->assign('users', $this->user_model->get_users_all());
     $this->assign_label_types(true);
     $this->use_autocomplete();
+    $this->use_livequery();
 
     $this->smarty->view('sequence/search');
   }

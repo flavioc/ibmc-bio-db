@@ -1,5 +1,6 @@
 var operator_select = null;
 var operator_input = null;
+var operator_text = null;
 var term_form = null;
 var term_form_div = null;
 var and_form = null;
@@ -13,8 +14,13 @@ var show_seqs = null;
 var tree_form = null;
 var labelname = null;
 var label_row = null;
+var label_name = null;
 var term_other_fields = null;
+var submit_term = null;
+var or_form = null;
+var and_form = null;
 var we_are_starting = true;
+var can_add_expanders = true;
 
 function fill_operators_options(type)
 {
@@ -46,6 +52,7 @@ function fill_operators(type)
     operator_input.show();
     data_input.show();
     data_boolean_input.hide();
+    operator_select.show();
     operator_select.removeOption(/./);
     operator_select.addOption(fill_operators_options(type));
   }
@@ -53,6 +60,10 @@ function fill_operators(type)
 
 function term_form_submitted()
 {
+  if(!term_was_selected()) {
+    return;
+  }
+
   var type = current_row.type;
   var label = current_row.name;
   var obj = {label: label};
@@ -74,11 +85,14 @@ function term_form_submitted()
   add_li_term(li, obj);
 
   if(!we_are_starting) {
-    var ul = li.parent();
-    add_radio_box(ul, true);
+    var ol = li.parent();
   }
 
-  we_are_starting = false;
+  if(we_are_starting) {
+    we_are_starting = false;
+    can_add_expanders = false;
+    cant_add_leafs();
+  }
   update_search();
 }
 
@@ -89,22 +103,34 @@ function and_form_submitted()
 
 function add_li_term(li, obj)
 {
-  var txt = obj.label + " " + obj.oper + " " + obj.value;
+  var txt = obj.label + " " + get_operator_text() + " " + obj.value;
+  var level = li.parent().attr("level");
 
-  li.html(txt);
+  li.attr("level", level);
+  li.addClass("search-term");
+  li.html('<span class="term-name">' + txt + '</span>');
   li[0].term = obj;
 }
 
 function add_new_andor(li_obj, txt)
 {
-  li_obj.html(txt + '<ul></ul>');
+  var ol = $('<ol class="search-list"></ol>');
+  var li_parent = li_obj.parent();
+  var level = li_parent.attr("level");
+  li_obj.attr("level", level);
+  ol.attr("level", (1 + parseInt(level)).toString());
+
+  li_obj.html('<span class="expand-name">' + txt + '</span>');
+  ol.appendTo(li_obj);
   li_obj[0].term = txt;
-  return $('ul', li_obj);
+  li_obj.addClass("search-expand");
+
+  return $('ol', li_obj);
 }
 
 function update_search()
 {
-  var obj = get_search_term(tree_form.children('ul:first').children('li:first'));
+  var obj = get_search_term(tree_form.children('ol:first').children('li:first'));
   if(obj) {
     var encoded = $.toJSON(obj);
     show_seqs.gridFilter('search', encoded);
@@ -115,22 +141,26 @@ function update_search()
 
 function handle_or_and(what)
 {
+  if(!term_was_selected()) {
+    return;
+  }
+
   var obj = get_li_selected();
 
   if(obj.size() == 0) {
     return;
   }
 
-  var new_ul = add_new_andor(obj, what);
-  add_radio_box(new_ul, true);
+  var new_ol = add_new_andor(obj, what);
 
   if(!we_are_starting) {
-    var upper_ul = obj.parent();
-    add_radio_box(upper_ul, false);
+    var upper_ol = obj.parent();
   }
 
-  we_are_starting = false;
-  //update_search();
+  if(we_are_starting) {
+    we_are_starting = false;
+    cant_add_leafs();
+  }
 }
 
 function or_form_submitted()
@@ -138,16 +168,24 @@ function or_form_submitted()
   handle_or_and('or');
 }
 
-function get_li_selected()
+function term_was_selected()
 {
-  return $('input[name=new_term_radio]:checked').parent();
+  return we_are_starting ||
+    $('#search_tree .selected-node > ol').size() == 1;
 }
 
-function add_radio_box(ul_dom, selected)
+function get_li_selected()
 {
-  var checked = selected ? 'checked' : '';
-  ul_dom.append('<li><input type="radio" name="new_term_radio" ' +
-        checked + '>Add here</input></li>');
+  var selected_list = $('.selected-node > ol');
+  var new_li = $('<li></li>');
+
+  if(selected_list.size() == 0) {
+    selected_list = $('#search_tree ol:first');
+  }
+
+  new_li.appendTo(selected_list);
+
+  return new_li;
 }
 
 function get_search_term(node)
@@ -156,8 +194,8 @@ function get_search_term(node)
     return null;
   }
 
-  var ul_child = node.children('ul');
-  var is_terminal = ul_child.size() == 0;
+  var ol_child = node.children('ol');
+  var is_terminal = ol_child.size() == 0;
   var term = node[0].term;
 
   if(is_terminal) {
@@ -167,7 +205,7 @@ function get_search_term(node)
       return null;
     }
 
-    var li_children = ul_child.children('li');
+    var li_children = ol_child.children('li');
     var obj = {oper: term, operands: []};
 
     $.each(li_children, function (index, li) {
@@ -179,6 +217,69 @@ function get_search_term(node)
 
     return obj;
   }
+}
+
+function hide_term() {
+  term_other_fields.hide();
+  current_row = null;
+  label_name.hide();
+  label_row.show();
+  submit_term.hide();
+}
+
+function got_new_label(data) {
+  label_name.text(data.name).show();
+  label_row.hide();
+  fill_operators(data.type);
+  term_other_fields.show();
+  operator_text.hide();
+  current_row = data;
+  submit_term.show();
+}
+
+function enable_label_row()
+{
+  label_name.hide();
+  label_row.show();
+}
+
+function enable_operator_select()
+{
+  operator_select.show();
+  operator_text.hide();
+}
+
+function get_operator_text() 
+{
+  var selected = $('option:selected', operator_select);
+  return selected.text();
+}
+
+function operator_was_selected()
+{
+  var selected_text = get_operator_text();
+
+  operator_select.hide();
+  operator_text.text(selected_text).show();
+}
+
+function node_unselected()
+{
+  $('#search_tree *').removeClass('selected-node');
+}
+
+function can_add_leafs()
+{
+  and_form.show();
+  or_form.show();
+  term_form.show();
+}
+
+function cant_add_leafs()
+{
+  and_form.hide();
+  or_form.hide();
+  term_form.hide();
 }
 
 $(document).ready(function () {
@@ -198,30 +299,69 @@ $(document).ready(function () {
     labelname = $('#labelname');
     tree_form = $('#tree_form');
     label_row = $('#label_row');
+    label_name = $('#label_name');
+    operator_text = $('#operator_text');
     term_other_fields = $('#term_other_fields');
+    and_form = $('#and_form');
+    or_form = $('#or_form');
+    submit_term = $('#submit_term').hide();
 
-    add_radio_box($('ul:first', tree_form), true);
+    $('#search_tree .expand-name, #search_tree .term-name').livequery(function () {
+        $(this).hover(function () {
+          $(this).addClass("selected-term");
+          return false;
+        },
+        function () {
+          $(this).removeClass('selected-term');
+          return false;
+        });
+    });
+
+    $('#search_tree .expand-name').livequery('click', function () {
+        node_unselected();
+        can_add_leafs();
+        $(this).parent().addClass('selected-node');
+    });
+
+    $('#search_tree .term-name').livequery('click', function () {
+        node_unselected();
+        cant_add_leafs();
+        $(this).parent().addClass('selected-node');
+    });
+
+    label_name.click(enable_label_row);
+
+    operator_text.click(enable_operator_select);
+
+    operator_select.change(operator_was_selected);
 
     label_row.autocomplete(get_app_url() + "/label/autocomplete_labels",
       {
-        minChars: 2,
+        minChars: 0,
         delay: 400,
         scroll: true,
-        selectFirst: false
+        selectFirst: false,
+        mustMatch: true
       });
 
-    label_row.change(function () {
-        var $this = $(this);
-        var name = $this.val();
+    label_row.autocompleteEmpty(function () {
+        hide_term();
+    });
+
+    label_row.result(function (event, data, formatted) {
+        var name = data;
+
+        if(!name) {
+          hide_term();
+          return;
+        }
 
         $.getJSON(get_app_url() + "/label/get_label_by_name/" + name,
           function (data) {
             if(data == null) {
-              term_other_fields.hide();
+              hide_term();
             } else {
-              fill_operators(data.type);
-              term_other_fields.show();
-              current_row = data;
+              got_new_label(data);
             }
         });
 
