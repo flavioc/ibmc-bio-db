@@ -9,6 +9,13 @@
 <span id="label_name" {display_none}></span>
 
 <div id="term_other_fields" {display_none} >
+  <div id="data_position_input">
+    <span id="position_type_text" {display_none}></span>
+    <select id="position_type">
+      <option value="start">start</option>
+      <option value="length">length</option>
+    </select>
+  </div>
   <div id="operator_input">
     <span id="operator_text" {display_none}></span>
     {form_select name=operator class="search-operator"}

@@ -288,7 +288,10 @@ table.data th a:visited, table.data th a {
 #change_tax,
 #data_seq_input,
 #data_seq,
-#change_seq
+#change_seq,
+#position_type,
+#data_position_input,
+#position_type_text
 {
   display: inline;
 }
@@ -306,12 +309,12 @@ label.search-desc {
   font-size: 115%;
 }
 
-#operator_text {
+#operator_text, #position_type_text {
   cursor: pointer;
   font-size: 115%;
 }
 
-#label_name:hover, #operator_text:hover {
+#label_name:hover, #operator_text:hover, #position_type_text:hover {
   background: lightgray;
 }
 
