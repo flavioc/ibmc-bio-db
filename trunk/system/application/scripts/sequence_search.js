@@ -19,8 +19,11 @@ var term_other_fields = null;
 var submit_term = null;
 var or_form = null;
 var and_form = null;
+var insert_terms = null;
 var we_are_starting = true;
 var can_add_expanders = true;
+
+var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>)</span>';
 
 function fill_operators_options(type)
 {
@@ -66,7 +69,7 @@ function term_form_submitted()
 
   var type = current_row.type;
   var label = current_row.name;
-  var obj = {label: label};
+  var obj = {label: label, type: type};
 
   if(type == 'bool') {
     obj.oper = 'eq';
@@ -101,14 +104,27 @@ function and_form_submitted()
   handle_or_and('and');
 }
 
+function build_operator_text(obj)
+{
+  if(obj.type == 'bool') {
+    if(obj.value) {
+      return 'is true';
+    } else {
+      return 'is false';
+    }
+  }
+
+  return get_operator_text() + ' ' + obj.value;
+}
+
 function add_li_term(li, obj)
 {
-  var txt = obj.label + " " + get_operator_text() + " " + obj.value;
+  var txt = obj.label + " " + build_operator_text(obj);
   var level = li.parent().attr("level");
 
   li.attr("level", level);
   li.addClass("search-term");
-  li.html('<span class="term-name">' + txt + '</span>');
+  li.html('<span class="term-name">' + txt + '</span>' + term_options_html);
   li[0].term = obj;
 }
 
@@ -120,7 +136,8 @@ function add_new_andor(li_obj, txt)
   li_obj.attr("level", level);
   ol.attr("level", (1 + parseInt(level)).toString());
 
-  li_obj.html('<span class="expand-name">' + txt + '</span>');
+  li_obj.html('<span class="expand-name">' + txt + '</span>' + term_options_html);
+
   ol.appendTo(li_obj);
   li_obj[0].term = txt;
   li_obj.addClass("search-expand");
@@ -135,7 +152,7 @@ function update_search()
     var encoded = $.toJSON(obj);
     show_seqs.gridFilter('search', encoded);
     show_seqs.gridReload();
-    alert(encoded);
+    //alert(encoded);
   }
 }
 
@@ -266,20 +283,25 @@ function operator_was_selected()
 function node_unselected()
 {
   $('#search_tree *').removeClass('selected-node');
+  $('#search_tree .term-options').hide();
 }
 
 function can_add_leafs()
 {
-  and_form.show();
-  or_form.show();
-  term_form.show();
+  $('input, select', insert_terms).removeAttr('disabled');
 }
 
 function cant_add_leafs()
 {
-  and_form.hide();
-  or_form.hide();
-  term_form.hide();
+  $('input, select', insert_terms).attr('disabled', 'true');
+}
+
+function activate_term(name)
+{
+  var parent = $(name).parent();
+  var options = $('.term-options:first', parent);
+  parent.addClass('selected-node');
+  options.show();
 }
 
 $(document).ready(function () {
@@ -304,7 +326,29 @@ $(document).ready(function () {
     term_other_fields = $('#term_other_fields');
     and_form = $('#and_form');
     or_form = $('#or_form');
+    insert_terms = $('#insert_terms');
     submit_term = $('#submit_term').hide();
+
+    can_add_leafs();
+
+    data_row.focus(operator_was_selected);
+
+    $('.term-delete').livequery('click', function () {
+        var li_term = $(this).parent().parent();
+
+        li_term.remove();
+        update_search();
+
+        if($('#search_tree li').size() == 0) {
+          can_add_expanders = true;
+          we_are_starting = true;
+          can_add_leafs();
+        } else {
+          cant_add_leafs();
+        }
+
+        return false;
+    });
 
     $('#search_tree .expand-name, #search_tree .term-name').livequery(function () {
         $(this).hover(function () {
@@ -320,13 +364,13 @@ $(document).ready(function () {
     $('#search_tree .expand-name').livequery('click', function () {
         node_unselected();
         can_add_leafs();
-        $(this).parent().addClass('selected-node');
+        activate_term(this);
     });
 
     $('#search_tree .term-name').livequery('click', function () {
         node_unselected();
         cant_add_leafs();
-        $(this).parent().addClass('selected-node');
+        activate_term(this);
     });
 
     label_name.click(enable_label_row);
