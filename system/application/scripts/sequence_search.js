@@ -32,7 +32,7 @@ var position_type_text = null;
 var we_are_starting = true;
 var can_add_expanders = true;
 
-var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>)</span>';
+var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>) [<span class="term-count"></span>]</span>';
 
 function fill_operators_options(type)
 {
@@ -219,11 +219,12 @@ function add_new_andor(li_obj, txt)
 function update_search()
 {
   var obj = get_search_term(tree_form.children('ol:first').children('li:first'));
+
   if(obj) {
     var encoded = $.toJSON(obj);
     show_seqs.gridFilter('search', encoded);
     show_seqs.gridReload();
-    alert(encoded);
+    //alert(encoded);
   }
 }
 
@@ -315,7 +316,8 @@ function hide_term() {
   submit_term.hide();
 }
 
-function got_new_label(data) {
+function got_new_label(data)
+{
   label_name.text(data.name).show();
   label_row.hide();
   fill_operators(data.type);
@@ -390,6 +392,18 @@ function activate_term(name)
   var options = $('.term-options:first', parent);
   parent.addClass('selected-node');
   options.show();
+
+  // fetch total results
+  var search = get_search_term(parent);
+  var encoded = $.toJSON(search);
+
+  $.get(get_app_url() + '/sequence/get_search_total',
+      {
+        search: encoded
+      },
+      function (data) {
+          $('.term-count:first', options).text(data);
+      });
 }
 
 $(document).ready(function () {
