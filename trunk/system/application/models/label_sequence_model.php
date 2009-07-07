@@ -969,22 +969,16 @@ class Label_sequence_model extends BioModel
     $sql_where = $this->__get_search_sql($search);
     $sql_limit = sql_limit($start, $size);
     $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
-    $sql = "SELECT *
+    $sql = "SELECT DISTINCT id, user_name, update_user_id, `update`, name
       FROM sequence_info_history INNER JOIN (SELECT DISTINCT seq_id FROM label_sequence_info WHERE $sql_where $sql_limit) AS C ON (sequence_info_history.id = C.seq_id) $sql_order";
 
-    $coiso = false;
-    if($coiso) {
-    print_r($search);
-    echo "<br />";
-    echo $sql;
-    }
     return $this->rows_sql($sql);
   }
 
   function get_search_total($search)
   {
     $sql_where = $this->__get_search_sql($search);
-    $sql = "SELECT count(id) AS total
+    $sql = "SELECT count(DISTINCT seq_id) AS total
             FROM label_sequence_info
             WHERE $sql_where";
     return $this->total_sql($sql);
