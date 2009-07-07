@@ -23,6 +23,9 @@ var insert_terms = null;
 var data_tax = null;
 var data_tax_input = null;
 var change_tax = null;
+var data_seq = null;
+var data_seq_input = null;
+var change_seq = null;
 var we_are_starting = true;
 var can_add_expanders = true;
 
@@ -54,15 +57,14 @@ function fill_operators(type)
   data_input.hide();
   data_boolean_input.hide();
   data_tax_input.hide();
-  change_tax.hide();
-  data_tax.hide();
+  data_seq_input.hide();
 
   if(type == 'bool') {
     data_boolean_input.show();
   } else if(type == 'tax') {
     data_tax_input.show();
-    change_tax.show();
-    data_tax.show();
+  } else if(type == 'ref') {
+    data_seq_input.show();
   } else {
     operator_input.show();
     data_input.show();
@@ -91,7 +93,12 @@ function term_form_submitted()
     if(obj.value == null) {
       return;
     }
-    alert(obj.value.id);
+  } else if(type == 'ref') {
+    obj.oper = 'eq';
+    obj.value = data_seq[0].seq;
+    if(obj.value == null) {
+      return;
+    }
   } else {
     obj.oper = operator_select.val();
     obj.value = data_row.val();
@@ -143,6 +150,8 @@ function build_operator_text(obj)
       return 'is false';
     }
   } else if(obj.type == 'tax') {
+    return 'is ' + obj.value.name;
+  } else if(obj.type == 'ref') {
     return 'is ' + obj.value.name;
   }
 
@@ -321,11 +330,13 @@ function node_unselected()
 function can_add_leafs()
 {
   $('input, select', insert_terms).removeAttr('disabled');
+  $('#change_tax, #change_seq', insert_terms).show();
 }
 
 function cant_add_leafs()
 {
   $('input, select', insert_terms).attr('disabled', 'true');
+  $('#change_tax, #change_seq', insert_terms).hide();
 }
 
 function activate_term(name)
@@ -362,6 +373,9 @@ $(document).ready(function () {
     data_tax = $('#data_tax');
     change_tax = $('#change_tax');
     data_tax_input = $('#data_tax_input');
+    data_seq = $('#data_seq');
+    change_seq = $('#change_seq');
+    data_seq_input = $('#data_seq_input');
     submit_term = $('#submit_term').hide();
 
     can_add_leafs();
@@ -371,6 +385,12 @@ $(document).ready(function () {
     change_tax.click(function () {
         var url = get_app_url() + '/sequence/search_tax';
         tb_show('Find taxonomy', url);
+        return false;
+    });
+
+    change_seq.click(function () {
+        var url = get_app_url() + '/sequence/search_ref';
+        tb_show('Find sequence', url);
         return false;
     });
 

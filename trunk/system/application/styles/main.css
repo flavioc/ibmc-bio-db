@@ -285,7 +285,10 @@ table.data th a:visited, table.data th a {
 #submit_term,
 #data_tax_input,
 #data_tax,
-#change_tax
+#change_tax,
+#data_seq_input,
+#data_seq,
+#change_seq
 {
   display: inline;
 }
@@ -382,12 +385,12 @@ label.search-desc {
   cursor: pointer;
 }
 
-#change_tax {
+#change_tax, #change_seq {
   text-decoration: underline;
   cursor: pointer;
   font-size: 90%;
 }
 
-#data_tax {
+#data_tax, #data_seq {
   font-style: italic;
 }

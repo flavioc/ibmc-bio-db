@@ -31,7 +31,8 @@ class Sequence extends BioController
 
     $this->smarty->assign('title', 'Search sequences');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
-      'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js');
+      'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js',
+      'common_sequence.js');
     $this->use_mygrid();
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
@@ -59,6 +60,15 @@ class Sequence extends BioController
     $this->smarty->assign('trees', $trees);
 
     $this->smarty->view_s('sequence/search_tax');
+  }
+
+  function search_ref()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_thickbox();
+    }
+
+    $this->smarty->view_s('sequence/search_ref');
   }
 
   function __get_search_term()
@@ -190,7 +200,8 @@ class Sequence extends BioController
   {
     $this->smarty->load_scripts(JSON_SCRIPT, VALIDATE_SCRIPT,
       AUTOCOMPLETE_SCRIPT, FORM_SCRIPT, JEDITABLE_SCRIPT,
-      'sequence_functions.js', 'taxonomy_functions.js');
+      'sequence_functions.js', 'taxonomy_functions.js',
+      'common_sequence.js');
   }
 
   function view($id)
