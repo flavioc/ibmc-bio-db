@@ -76,6 +76,22 @@ class BioController extends Controller
     $this->smarty->load_stylesheets(IMPROMPTU_THEME);
   }
 
+  function use_jquery_ui()
+  {
+    $this->smarty->load_scripts('ui/ui.core.js');
+  }
+
+  function use_selectable()
+  {
+    $this->use_jquery_ui();
+    $this->smarty->load_scripts('ui/ui.selectable.js');
+  }
+
+  function use_livequery()
+  {
+    $this->smarty->load_scripts('jquery.livequery.js');
+  }
+
   function use_mygrid()
   {
     $this->smarty->load_scripts(JSON_SCRIPT, APPENDDOM_SCRIPT,

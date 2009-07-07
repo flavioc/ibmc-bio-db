@@ -61,11 +61,17 @@ function smarty_function_form_submit($params, &$smarty)
   }
 
   $name = $params['name'];
+
+  $id = $params['id'];
+  if(!$id) {
+    $id = $name;
+  }
+
   $data = array(
     'name' => $name,
     'value' => $params['msg'],
     'class' => $class,
-    'id' => $name,
+    'id' => $id,
   );
   return form_submit($data);
 }
