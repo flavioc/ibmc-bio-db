@@ -715,7 +715,9 @@ class BioSmarty extends Smarty
   function load_stylesheets()
   {
     $stylesheets = func_get_args();
-    $this->assign('stylesheets', $stylesheets);
+    foreach($stylesheets as $sheet) {
+      $this->append('stylesheets', $sheet);
+    }
   }
 
   function fetch_form_row($what, $default = null)

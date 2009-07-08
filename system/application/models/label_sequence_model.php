@@ -743,14 +743,6 @@ class Label_sequence_model extends BioModel
     return $this->count_total('label_sequence_info') > 0;
   }
 
-  function get_label_by_seq_name($seq_id, $label_name)
-  {
-    $this->db->select(self::$label_data_fields . ' id, seq_id, label_id, type');
-    $this->db->where('seq_id', $seq_id);
-
-    return $this->get_row('name', $label_name, 'label_sequence_info');
-  }
-
   function count_taxonomies($tax)
   {
     $this->db->select('id');
@@ -802,6 +794,14 @@ class Label_sequence_model extends BioModel
     }
 
     return $this->select_data($all[0]);
+  }
+
+  function get_label_ids($seq_id, $label_id)
+  {
+    $this->db->select($this->__get_select() . ", update_user_id, update, user_name");
+    $this->db->where('seq_id', $seq_id);
+
+    return $this->get_row('label_id', $label_id, 'label_sequence_info');
   }
 
   function __get_data_fields($type)
@@ -861,14 +861,7 @@ class Label_sequence_model extends BioModel
     switch($type) {
     case 'position':
     case 'integer':
-      switch($oper) {
-      case 'eq': return '=';
-      case 'gt': return '>';
-      case 'lt': return '<';
-      case 'ge': return '>=';
-      case 'le': return '<=';
-      default: return '';
-      }
+      return sql_oper($oper);
     case 'text':
     case 'url':
       switch($oper) {
@@ -986,7 +979,7 @@ class Label_sequence_model extends BioModel
     return $sql_part;
   }
 
-  function get_search($search, $start, $size, $ordering = array())
+  function get_search($search, $start = null, $size = null, $ordering = array())
   {
     $sql_where = $this->__get_search_sql($search);
     $sql_limit = sql_limit($start, $size);
@@ -1006,5 +999,65 @@ class Label_sequence_model extends BioModel
             WHERE $sql_where";
 
     return $this->total_sql($sql);
+  }
+
+  function get_sequence_labels($id)
+  {
+    $this->db->select('label_id AS id');
+    $this->db->distinct();
+    $this->db->where('seq_id', $id);
+
+    return $this->get_all();
+  }
+
+  function get_all_labels($seqs)
+  {
+    $labelids = array();
+    $label_model = $this->load_model('label_model');
+    $labeldata = array();
+
+    foreach($seqs as $seq) {
+      $id = $seq['id'];
+
+      $all = $this->get_sequence_labels($id);
+      $labelids[] = $all;
+
+      foreach($all as $label) {
+        $label_id = $label['id'];
+
+        if(!array_key_exists($label_id, $labeldata)) {
+          $label = $label_model->get($label_id);
+          $labeldata[$label_id] = $label;
+        }
+      }
+    }
+
+    foreach($labeldata as $id => &$label) {
+      $in_all = $this->__find_all_seqs($labelids, $id);
+      $label['intersection'] = $in_all;
+    }
+
+    return $labeldata;
+  }
+
+  function __find_all_seqs($labelids, $id) {
+    foreach($labelids as &$seqlabels) {
+      $found = false;
+
+      foreach($seqlabels as &$label) {
+        $this_id = $label['id'];
+
+        if($this_id == $id) {
+          $found = true;
+          break;
+        }
+      }
+
+      if(!$found) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

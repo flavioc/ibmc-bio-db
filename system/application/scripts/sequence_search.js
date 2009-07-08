@@ -29,6 +29,7 @@ var change_seq = null;
 var data_position_input = null;
 var position_type = null;
 var position_type_text = null;
+var submit_tree = null;
 var we_are_starting = true;
 var can_add_expanders = true;
 
@@ -216,9 +217,15 @@ function add_new_andor(li_obj, txt)
   return $('ol', li_obj);
 }
 
+function get_main_search_term()
+{
+  return get_search_term(
+      $('#search_tree ol:first').children('li:first'));
+}
+
 function update_search()
 {
-  var obj = get_search_term(tree_form.children('ol:first').children('li:first'));
+  var obj = get_main_search_term();
 
   if(obj) {
     var encoded = $.toJSON(obj);
@@ -438,11 +445,24 @@ $(document).ready(function () {
     data_position_input = $('#data_position_input');
     position_type = $('#position_type');
     position_type_text = $('#position_type_text');
+    submit_tree = $('#submit_tree');
     submit_term = $('#submit_term').hide();
 
     can_add_leafs();
 
     data_row.focus(operator_was_selected);
+
+    tree_form.submit(function () {
+        if(we_are_starting) {
+          return false;
+        }
+
+        var obj = get_main_search_term();
+        var encoded = $.toJSON(obj);
+        $('input[name=encoded_tree]', tree_form).val(encoded);
+
+        return true;
+    });
 
     change_tax.click(function () {
         var url = get_app_url() + '/sequence/search_tax';

@@ -370,10 +370,10 @@ function import_fasta_file($controller, $file)
   return array($sequences, $labels);
 }
 
-function export_sequences($sequences, $seq_labels)
+function export_sequences($sequences, $seq_labels, $comments = null)
 {
   $merged_labels = __merge_export_labels($seq_labels);
-  $ret = __get_export_header($merged_labels) . "\n";
+  $ret = __get_export_header($merged_labels, $comments) . "\n";
 
   for($i = 0; $i < count($sequences); $i++) {
     $sequence = $sequences[$i];
@@ -387,9 +387,15 @@ function export_sequences($sequences, $seq_labels)
   return $ret;
 }
 
-function __get_export_header($labels)
+function __get_export_header($labels, $comments = null)
 {
-  $ret = '#';
+  $ret = '';
+
+  if($comments) {
+    $ret .= ";$comments\n";
+  }
+
+  $ret .= '#';
   $first_done = false;
 
   foreach($labels as $label) {
@@ -508,3 +514,78 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
   return $ret;
 }
 
+function search_tree_to_html($term)
+{
+  $oper = $term['oper'];
+
+  if($oper == 'and' || $oper == 'or') {
+    $operands = $term['operands'];
+    $ret = "<li>$oper<ol>";
+
+    foreach($operands as $operand) {
+      $este = search_tree_to_html($operand);
+      $ret .= "$este";
+    }
+    return "$ret</ol></li>";
+  } else {
+    return '<li>' . humanize_search_terminal($term) . '</li>';
+  }
+}
+
+function humanize_search_terminal($term)
+{
+  $label_name = $term['label'];
+  $label_type = $term['type'];
+  $oper = $term['oper'];
+  $value = $term['value'];
+
+  $ret = null;
+  switch($label_type) {
+  case 'integer':
+    $oper = sql_oper($oper);
+    $ret = "$label_name $oper $value";
+    break;
+  case 'position':
+    $oper = sql_oper($oper);
+    $type = $value['type'];
+    $num = $value['num'];
+    $ret = "$label_name $type $oper $num";
+    break;
+  case 'text':
+    case 'url':
+      $ret = "$label_name $oper \"$value\"";
+      break;
+    case 'bool':
+      $ret = "$label_name = $value";
+      break;
+    case 'tax':
+      $name = $value['name'];
+      $ret = "$label_name = $name";
+      break;
+    case 'ref':
+      $name = $value['name'];
+      $ret = "$label_name = $name";
+      break;
+  }
+
+  return $ret;
+}
+
+function search_tree_to_string($term)
+{
+  $oper = $term['oper'];
+
+  if($oper == 'and' || $oper == 'or') {
+    $operands = $term['operands'];
+    $ret = "($oper ";
+
+    foreach($operands as $operand) {
+      $este = search_tree_to_string($operand);
+      $ret .= " $este";
+    }
+    return "$ret)";
+  } else {
+    $ret = humanize_search_terminal($term);
+    return "($ret)";
+  }
+}

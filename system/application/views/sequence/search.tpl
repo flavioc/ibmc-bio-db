@@ -51,13 +51,17 @@
 {form_end}
 
 <div id="search_tree">
-{form_open to='#' name=tree_form}
 <ol class="search-list" level="1">
 </ol>
-{form_end}
 </div>
 
 </div>
+
+{form_open to='sequence/export_search' name=tree_form}
+{form_hidden name=encoded_tree}
+{form_submit name=submit msg='Export' id="submit_tree"}
+{form_end}
+
 
 <h3>Results</h3>
 <p>
