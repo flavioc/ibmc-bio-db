@@ -31,14 +31,18 @@ class Sequence_model extends BioModel
 
   function __filter($filtering)
   {
-    $name = $filtering['name'];
-    if(!sql_is_nothing($name)) {
-      $this->db->like('name', "%$name%");
+    if(array_key_exists('name', $filtering)) {
+      $name = $filtering['name'];
+      if(!sql_is_nothing($name)) {
+        $this->db->like('name', "%$name%");
+      }
     }
 
-    $user = $filtering['user'];
-    if(!sql_is_nothing($user)) {
-      $this->db->where('update_user_id', $user);
+    if(array_key_exists('user', $filtering)) {
+      $user = $filtering['user'];
+      if(!sql_is_nothing($user)) {
+        $this->db->where('update_user_id', $user);
+      }
     }
   }
 

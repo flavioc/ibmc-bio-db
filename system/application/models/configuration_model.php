@@ -64,7 +64,7 @@ class Configuration_model extends BioModel
     } else {
       // insert new key
       $data = array(
-        'user_id' => $this->user_id,
+        'user_id' => intval($this->user_id),
         'key' => $key,
         'value' => $serialized_value,
       );
