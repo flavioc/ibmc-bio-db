@@ -31,9 +31,31 @@ var position_type = null;
 var position_type_text = null;
 var submit_tree = null;
 var we_are_starting = true;
-var can_add_expanders = true;
+var TREE_COOKIE_NAME = 'saved_search_tree';
 
 var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>) [<span class="term-count"></span>]</span>';
+
+function convert_operator(oper, type)
+{
+  if(type == 'integer' || type == 'position') {
+    switch(oper) {
+      case 'eq': return '=';
+      case 'gt': return '>';
+      case 'lt': return '<';
+      case 'ge': return '>=';
+      case 'le': return '<=';
+    }
+  } else if(type == 'text' || type == 'url') {
+    switch(oper) {
+      case 'eq': return 'Equal';
+      case 'contains': return 'Contains';
+      case 'starts': return 'Starts';
+      case 'ends': return 'Ends';
+    }
+  }
+
+  return '';
+}
 
 function fill_operators_options(type)
 {
@@ -159,7 +181,6 @@ function term_form_submitted()
 
   if(we_are_starting) {
     we_are_starting = false;
-    can_add_expanders = false;
     cant_add_leafs();
   }
   update_search();
@@ -183,10 +204,10 @@ function build_operator_text(obj)
   } else if(obj.type == 'ref') {
     return 'is ' + obj.value.name;
   } else if(obj.type == 'position') {
-    return obj.value.type + ' ' + get_operator_text() + ' ' + obj.value.num;
+    return obj.value.type + ' ' + convert_operator(obj.oper, obj.type) + ' ' + obj.value.num;
   }
 
-  return get_operator_text() + ' ' + obj.value;
+  return convert_operator(obj.oper, obj.type) + ' ' + obj.value;
 }
 
 function add_li_term(li, obj)
@@ -229,8 +250,11 @@ function update_search()
 
   if(obj) {
     var encoded = $.toJSON(obj);
+
+    save_search_tree(encoded);
     show_seqs.gridFilter('search', encoded);
     show_seqs.gridReload();
+
     //alert(encoded);
   }
 }
@@ -413,6 +437,56 @@ function activate_term(name)
       });
 }
 
+function save_search_tree(encoded)
+{
+  var options = {path: '/',
+    expires: 10
+  };
+
+  $.cookie(TREE_COOKIE_NAME, encoded, encoded);
+}
+
+function restore_old_tree()
+{
+  var encoded = $.cookie(TREE_COOKIE_NAME);
+
+  if(!encoded) {
+    return;
+  }
+
+  var obj = $.evalJSON(encoded);
+
+  //alert(encoded);
+
+  var first_ol = $('#search_tree ol:first');
+
+  cant_add_leafs();
+  we_are_starting = false;
+
+  restore_aux(obj, first_ol);
+  update_search();
+}
+
+function restore_aux(obj, ol)
+{
+  var oper = obj.oper;
+  var new_li = $('<li></li>');
+
+  new_li.appendTo(ol);
+
+  if(oper == 'or' || oper == 'and') {
+    var new_ol = add_new_andor(new_li, oper);
+    var operands = obj.operands;
+
+    $.each(operands, function () {
+        restore_aux(this, new_ol);
+    });
+  } else {
+    add_li_term(new_li, obj);
+  }
+
+}
+
 $(document).ready(function () {
     
     operator_select = $('#operator');
@@ -483,7 +557,6 @@ $(document).ready(function () {
         update_search();
 
         if($('#search_tree li').size() == 0) {
-          can_add_expanders = true;
           we_are_starting = true;
           can_add_leafs();
         } else {
@@ -607,4 +680,5 @@ $(document).ready(function () {
     }
   });
 
+  restore_old_tree();
 });
