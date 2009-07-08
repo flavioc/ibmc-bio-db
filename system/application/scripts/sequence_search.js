@@ -92,6 +92,7 @@ function fill_operators(type)
   data_tax_input.hide();
   data_seq_input.hide();
   data_position_input.hide();
+  operator_text.hide();
 
   if(type == 'bool') {
     data_boolean_input.show();
@@ -103,6 +104,12 @@ function fill_operators(type)
     init_operator_select(type);
     data_position_input.show();
     operator_input.show();
+    operator_select.show();
+    data_input.show();
+  } else if(type == 'integer') {
+    operator_input.show();
+    operator_select.show();
+    init_operator_select(type);
     data_input.show();
   } else {
     operator_input.show();
