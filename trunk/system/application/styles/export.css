@@ -1,0 +1,21 @@
+#search_tree_string {
+  margin: 10px 10px 10px 10px;
+  padding: 10px;
+  background: lightgrey;
+  width: 90%;
+  font-size: 105%;
+}
+
+.tree-list {
+  list-style: none;
+}
+
+#tree_html {
+  background: lightgrey;
+  margin: 10px;
+  width: 90%;
+}
+
+#add_form {
+  margin-bottom: 30px;
+}

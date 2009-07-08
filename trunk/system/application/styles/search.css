@@ -1,0 +1,128 @@
+#data_row, #data_boolean_checkbox,
+#label_row,
+#term_other_fields,
+#operator_input,
+#data_input,
+#data_row,
+#data_boolean_input,
+#data_boolean_checkbox,
+#operator,
+#and_form *,
+#or_form *,
+#and_form,
+#or_form,
+#submit_term,
+#data_tax_input,
+#data_tax,
+#change_tax,
+#data_seq_input,
+#data_seq,
+#change_seq,
+#position_type,
+#data_position_input,
+#position_type_text
+{
+  display: inline;
+}
+
+label.search-desc {
+  display: inline;
+  text-align: right;
+  padding-right: 5px;
+  font-weight: bold;
+}
+
+#label_name {
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 115%;
+}
+
+#operator_text, #position_type_text {
+  cursor: pointer;
+  font-size: 115%;
+}
+
+#label_name:hover, #operator_text:hover, #position_type_text:hover {
+  background: lightgray;
+}
+
+.search-list {
+  list-style: none;
+}
+
+.search-expand {
+  background: lightgray;
+  margin: 5px 5px 5px 5px;
+  padding: 5px 5px 5px 5px;
+  width: 95%;
+  margin-bottom: 5px;
+}
+
+.search-list {
+  border-left: 1px dashed black;
+}
+
+.search-list[level="1"] {
+  border-left: 0;
+}
+
+.search-expand[level="1"] {
+  border: 0px solid black;
+  background: darkgray;
+}
+
+.search-expand[level="2"] { background: #888888; }
+.search-expand[level="3"] { background: #A8A8A8; }
+.search-expand[level="4"] { background: #C8C8C8; }
+
+#search_tree {
+  margin-top: 30px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  border: 4px solid black;
+  width: 95%;
+  background: darkgray;
+  padding: 0px;
+}
+
+#search_tree li {
+  margin-left: -15px;
+}
+
+#search_tree li[level="1"] {
+  margin-left: -5px;
+}
+
+.selected-term {
+  background: white;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.selected-node > .expand-name {
+  background: yellow;
+}
+
+.selected-node > .term-name {
+  background: yellow;
+}
+
+.term-options {
+  margin-left: 5px;
+}
+
+.term-delete {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#change_tax, #change_seq {
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 90%;
+}
+
+#data_tax, #data_seq {
+  font-style: italic;
+}

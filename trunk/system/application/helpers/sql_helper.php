@@ -17,3 +17,15 @@ function sql_is_nothing($val)
 {
   return $val == null || $val == '' || $val == '0';
 }
+
+function sql_oper($oper)
+{
+  switch($oper) {
+  case 'eq': return '=';
+  case 'gt': return '>';
+  case 'lt': return '<';
+  case 'ge': return '>=';
+  case 'le': return '<=';
+  default: return '';
+  }
+}
