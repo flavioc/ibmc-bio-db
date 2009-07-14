@@ -576,7 +576,11 @@ function humanize_search_terminal($term)
       $ret = "$label_name $oper \"$value\"";
       break;
     case 'bool':
-      $ret = "$label_name = $value";
+      if($value) {
+        $ret = "$label_name is true";
+      } else {
+        $ret = "$label_name is false";
+      }
       break;
     case 'tax':
       $name = $value['name'];
@@ -591,21 +595,87 @@ function humanize_search_terminal($term)
   return $ret;
 }
 
-function search_tree_to_string($term)
+function prefix_search_tree_to_string($term)
 {
   $oper = $term['oper'];
 
-  if($oper == 'and' || $oper == 'or') {
+  if(label_compound_oper($oper)) {
     $operands = $term['operands'];
     $ret = "($oper ";
 
     foreach($operands as $operand) {
-      $este = search_tree_to_string($operand);
+      $este = prefix_search_tree_to_string($operand);
       $ret .= " $este";
     }
     return "$ret)";
   } else {
     $ret = humanize_search_terminal($term);
     return "($ret)";
+  }
+}
+
+function compound_term($term)
+{
+  return label_compound_oper($term['oper']);
+}
+
+function search_tree_to_string($term)
+{
+  $oper = $term['oper'];
+
+  if(label_compound_oper($oper)) {
+    $operands = $term['operands'];
+    $total = count($operands);
+
+    if($oper == 'or') {
+      $oper_str = 'OR';
+    } elseif ($oper == 'and') {
+      $oper_str = 'AND';
+    } else {
+      $oper_str = 'NOT';
+    }
+
+    if($total == 0) {
+      return "$oper_str ()";
+    }
+
+    if($oper == 'not') {
+      $operand = $operands[0];
+      $operand_str = search_tree_to_string($operand);
+      if(compound_term($operand)) {
+        return "NOT ($operand_str)";
+      } else {
+        return "NOT $operand_str";
+      }
+    }
+
+    $ret = "";
+
+    for($i = 0; $i < $total; ++$i) {
+      $operand = $operands[$i];
+      $operand_str = search_tree_to_string($operand);
+
+      if($i == 0) {
+        if($total == 1) {
+          return "$operand_str";
+        } else {
+          if(compound_term($operand)) {
+            $ret = "($operand_str)";
+          } else {
+            $ret = "$operand_str";
+          }
+        }
+      } else {
+        if(compound_term($operand)) {
+          $ret = "$ret $oper_str ($operand_str)";
+        } else {
+          $ret = "$ret $oper_str $operand_str";
+        }
+      }
+    }
+
+    return $ret;
+  } else {
+    return humanize_search_terminal($term);
   }
 }
