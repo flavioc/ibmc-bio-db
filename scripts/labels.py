@@ -106,5 +106,14 @@ add_label(name = "name",
     must_exist = False,
     default = False)
 
+add_label(name = "content",
+    type = "text",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    multiple = False,
+    must_exist = False,
+    default = False)
+
 db.close()
 
