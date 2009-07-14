@@ -619,7 +619,8 @@ class Label_sequence_model extends BioModel
             id NOT IN (SELECT DISTINCT label_id AS id
                       FROM label_sequence
                       WHERE seq_id = $id)
-            AND name <> 'name'";
+            AND name <> 'name'
+            AND name <> 'content' ";
 
     $query = $this->db->query($sql);
 
@@ -991,6 +992,10 @@ class Label_sequence_model extends BioModel
       // handle special purpose labels
       if($label_name == 'name') {
         return "name $sql_oper $sql_value";
+      }
+
+      if($label_name == 'content') {
+        return "content $sql_oper $sql_value";
       }
 
       return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $fields IS NOT NULL AND $fields $sql_oper $sql_value)";
