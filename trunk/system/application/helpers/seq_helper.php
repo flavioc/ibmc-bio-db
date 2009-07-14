@@ -548,6 +548,15 @@ function humanize_search_terminal($term)
   $label_name = $term['label'];
   $label_type = $term['type'];
   $oper = $term['oper'];
+
+  if(label_special_operator($oper)) {
+    if($oper == 'exists') {
+      return "$label_name $oper";
+    } else {
+      return "$label_name not exists";
+    }
+  }
+
   $value = $term['value'];
 
   $ret = null;
