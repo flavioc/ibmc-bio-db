@@ -1,5 +1,9 @@
 <h2>View label</h2>
 
+{if label_special_purpose($label.name) }
+<p>The label <em>{$label.name}</em> is special purpose and cannot be viewed/edited.</p>
+{else}
+
 <script>
 {to_js var=rank value=$rank}
 {literal}
@@ -142,6 +146,7 @@ $(document).ready(function () {
 });
 {/literal}
 </script>
-{button name="browse_labels" msg="List labels" to="label/browse"}
 </p>
+{/if}
+{button name="browse_labels" msg="List labels" to="label/browse"}
 

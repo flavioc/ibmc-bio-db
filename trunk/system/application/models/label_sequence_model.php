@@ -618,7 +618,8 @@ class Label_sequence_model extends BioModel
       WHERE multiple IS TRUE OR
             id NOT IN (SELECT DISTINCT label_id AS id
                       FROM label_sequence
-                      WHERE seq_id = $id)";
+                      WHERE seq_id = $id)
+            AND name <> 'name'";
 
     $query = $this->db->query($sql);
 
@@ -967,26 +968,32 @@ class Label_sequence_model extends BioModel
       $label_id = $label['id'];
       $oper = $term['oper'];
       $value = $term['value'];
-      $fields = $this->__get_data_fields($label_type);
 
-      // handle position fields
-      if(is_array($fields)) {
-        $type = $value['type'];
-        if($type == 'start') {
-          $fields = 'position_a_data';
-        } else {
-          $fields = 'position_b_data';
+      if(!label_special_purpose($label_name)) {
+        $fields = $this->__get_data_fields($label_type);
+
+        // handle position fields
+        if($label_type == 'position') {
+          $type = $value['type'];
+          if($type == 'start') {
+            $fields = 'position_a_data';
+          } else {
+            $fields = 'position_b_data';
+          }
+
+          $value = $value['num'];
         }
-
-        $value = $value['num'];
       }
 
       $sql_oper = $this->__translate_sql_oper($oper, $label_type);
       $sql_value = $this->__translate_sql_value($oper, $value, $label_type);
 
-      $sql = "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $fields IS NOT NULL AND $fields $sql_oper $sql_value)";
+      // handle special purpose labels
+      if($label_name == 'name') {
+        return "name $sql_oper $sql_value";
+      }
 
-      return $sql;
+      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $fields IS NOT NULL AND $fields $sql_oper $sql_value)";
     }
   }
 
