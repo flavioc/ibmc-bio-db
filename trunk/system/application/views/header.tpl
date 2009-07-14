@@ -58,6 +58,8 @@
       <li><a href="{site}/sequence/add_batch">Batch</a></li>
       <li><a href="{site}/sequence/browse">List</a></li>
       <li><a href="{site}/sequence/search">Search</a></li>
+      <li><a href="{site}/sequence/search?type=dna">DNA Search</a></li>
+      <li><a href="{site}/sequence/search?type=protein">Protein Search</a></li>
     </ul>
     <li id="label_menu"><a href="#">Labels</a></li>
     <ul id="label_id">

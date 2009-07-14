@@ -76,7 +76,7 @@ class Sequence extends BioController
     $this->smarty->assign('title', 'Search sequences');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
       'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js',
-      'common_sequence.js');
+      'common_sequence.js', GETPARAMS_SCRIPT);
     $this->smarty->load_stylesheets('search.css');
     $this->use_mygrid();
     $this->load->model('user_model');
