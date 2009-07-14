@@ -1,4 +1,10 @@
+{if $type == 'dna'}
+<h2>Search DNA sequences</h2>
+{elseif $type == 'protein'}
+<h2>Search protein sequences</h2>
+{else}
 <h2>Search sequences</h2>
+{/if}
 
 <div id="insert_terms">
 <div id="term_form_div">
