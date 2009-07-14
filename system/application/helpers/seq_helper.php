@@ -10,10 +10,17 @@ function is_dna_letter($letter)
 function is_protein_letter($letter)
 {
   $protein_letters = array('A', 'B', 'C', 'D', 'E', 'F',
-  'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S',
-  'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+    'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 
   return in_array($letter, $protein_letters);
+}
+
+function is_skip_letter($letter)
+{
+  $skip_letters = array('-');
+
+  return in_array($letter, $skip_letters);
 }
 
 function sequence_type($seq)
@@ -23,6 +30,10 @@ function sequence_type($seq)
   $array = str_split(strtoupper($seq));
 
   foreach($array as $char) {
+    if(is_skip_letter($char)) {
+      continue;
+    }
+
     if($type == null) {
       if(is_dna_letter($char)) {
       } else if(is_protein_letter($char)) {
