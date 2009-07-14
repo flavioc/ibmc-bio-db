@@ -97,5 +97,14 @@ add_label(name = "type",
     valid_code = "return $data == 'dna' || $data == 'protein';",
     editable = True)
 
+add_label(name = "name",
+    type = "text",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    multiple = False,
+    must_exist = False,
+    default = False)
+
 db.close()
 

@@ -1,8 +1,3 @@
 
 - Criar formulario dinamico.
-- Possibilidade de adicionar labels 'a mao.
-- Possibilidade de editar labels 'a mao.
-- Perceber donde vem os leaks de memoria do code igniter ao fazer importacao do NCBI.
 - Interface para sync.
-- Sistema de permissoes.
-- Adicionar sequencias em batch.

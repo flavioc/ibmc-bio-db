@@ -1,5 +1,5 @@
 
-APACHE_DIR = $(HOME)/public_html
+APACHE_DIR = $(HOME)/Sites
 CACHE_DIR = $(PWD)/system/cache
 UPLOAD_DIR = $(PWD)/uploads
 
@@ -9,5 +9,5 @@ all:
 	ln -sf $(PWD)/system/application/scripts www/
 	ln -sf $(PWD)/system/application/styles www/
 	rm -f $(CACHE_DIR)/*
-	chmod ugo+w -R $(CACHE_DIR)
-	chmod ugo+w -R $(UPLOAD_DIR)
+	chmod -R ugo+w $(CACHE_DIR)
+	chmod -R ugo+w $(UPLOAD_DIR)
