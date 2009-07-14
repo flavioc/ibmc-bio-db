@@ -50,6 +50,10 @@
 {form_submit name=submit msg='Add OR'}
 {form_end}
 
+{form_open to='#' name=not_form}
+{form_submit name=submit msg='Add NOT'}
+{form_end}
+
 <div id="search_tree">
 <ol class="search-list" level="1">
 </ol>
