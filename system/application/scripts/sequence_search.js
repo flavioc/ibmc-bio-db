@@ -32,9 +32,29 @@ var position_type = null;
 var position_type_text = null;
 var submit_tree = null;
 var we_are_starting = true;
-var TREE_COOKIE_NAME = 'saved_search_tree';
+var search_type = 'all';
+
+$(function () {
+  var got = $.getURLParam('type');
+
+  if(got) {
+    search_type = got;
+  }
+});
 
 var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>) [<span class="term-count"></span>]</span>';
+
+function get_cookie_tree_name()
+{
+  switch(search_type) {
+    case 'dna':
+      return 'saved_search_tree_dna';
+    case 'protein':
+      return 'saved_search_tree_protein';
+    default:
+      return 'saved_search_tree';
+  }
+}
 
 function convert_operator(oper, type)
 {
@@ -248,10 +268,32 @@ function add_new_compound(li_obj, txt)
   return $('ol', li_obj);
 }
 
-function get_main_search_term()
+function enclose_search_tree(tree)
+{
+  switch(search_type) {
+    case 'dna':
+      return {oper: 'and',
+        operands: [{label: 'type', type: 'text', oper: 'eq', value: 'dna'},
+                    tree]};
+    case 'protein':
+      return {oper: 'and',
+        operands: [
+          {label: 'type', type: 'text', oper: 'eq', value: 'protein'},
+          tree]};
+    default:
+      return tree;
+  }
+}
+
+function get_simple_search_tree()
 {
   return get_search_term(
       $('#search_tree ol:first').children('li:first'));
+}
+
+function get_main_search_term()
+{
+  return enclose_search_tree(get_simple_search_tree());
 }
 
 function update_search()
@@ -261,7 +303,7 @@ function update_search()
   if(obj) {
     var encoded = $.toJSON(obj);
 
-    save_search_tree(encoded);
+    save_search_tree();
     show_seqs.gridFilter('search', encoded);
     show_seqs.gridReload();
 
@@ -450,7 +492,7 @@ function activate_term(name)
   options.show();
 
   // fetch total results
-  var search = get_search_term(parent);
+  var search = enclose_search_tree(get_search_term(parent));
   var encoded = $.toJSON(search);
 
   $.get(get_app_url() + '/sequence/get_search_total',
@@ -462,18 +504,26 @@ function activate_term(name)
       });
 }
 
-function save_search_tree(encoded)
+function save_search_tree()
 {
   var options = {path: '/',
     expires: 10
   };
 
-  $.cookie(TREE_COOKIE_NAME, encoded, encoded);
+  var obj = get_simple_search_tree();
+  var encoded = $.toJSON(obj);
+
+  $.cookie(get_cookie_tree_name(), encoded);
+}
+
+function get_start_search_param()
+{
+  return $.toJSON(get_main_search_term());
 }
 
 function restore_old_tree()
 {
-  var encoded = $.cookie(TREE_COOKIE_NAME);
+  var encoded = $.cookie(get_cookie_tree_name());
 
   if(!encoded) {
     return;
@@ -483,13 +533,15 @@ function restore_old_tree()
 
   //alert(encoded);
 
-  var first_ol = $('#search_tree ol:first');
+  if(obj) {
+    var first_ol = $('#search_tree ol:first');
 
-  cant_add_leafs();
-  we_are_starting = false;
-
-  restore_aux(obj, first_ol);
-  update_search();
+    cant_add_leafs();
+    restore_aux(obj, first_ol);
+    we_are_starting = false;
+  } else {
+    can_add_leafs();
+  }
 }
 
 function compound_term(oper)
@@ -697,12 +749,17 @@ $(document).ready(function () {
       submitHandler: not_form_submitted
     });
 
+  restore_old_tree();
+
   show_seqs
   .gridEnable()
   .grid({
     url: get_app_url() + '/sequence',
     retrieve: 'get_search',
     total: 'get_search_total',
+    params: {
+      search: get_start_search_param()
+    },
     fieldNames: ['Name', 'Last update', 'User'],
     fields: ['name', 'update', 'user_name'],
     tdClass: {user_name: 'centered', update: 'centered'},
@@ -724,6 +781,4 @@ $(document).ready(function () {
       }
     }
   });
-
-  restore_old_tree();
 });
