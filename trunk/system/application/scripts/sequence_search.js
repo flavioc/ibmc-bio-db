@@ -48,10 +48,11 @@ function convert_operator(oper, type)
     }
   } else if(type == 'text' || type == 'url') {
     switch(oper) {
-      case 'eq': return 'Equal';
-      case 'contains': return 'Contains';
-      case 'starts': return 'Starts';
-      case 'ends': return 'Ends';
+      case 'eq': return 'equal';
+      case 'contains': return 'contains';
+      case 'starts': return 'starts';
+      case 'ends': return 'ends';
+      case 'regexp': return 'regexp';
     }
   }
 
@@ -70,10 +71,11 @@ function fill_operators_options(type)
               le: '<='};
     case 'text':
     case 'url':
-      return {eq: 'Equal',
-              contains: 'Contains',
-              starts: 'Starts',
-              ends: 'Ends'};
+      return {eq: 'equal',
+              contains: 'contains',
+              starts: 'starts',
+              ends: 'ends',
+              regexp: 'regexp'};
   }
 
   return {};
@@ -487,6 +489,7 @@ function restore_old_tree()
   we_are_starting = false;
 
   restore_aux(obj, first_ol);
+  update_search();
 }
 
 function compound_term(oper)
