@@ -5,7 +5,7 @@ var term_form = null;
 var term_form_div = null;
 var and_form = null;
 var or_form = null;
-var current_row = null;
+var current_label = null;
 var data_input = null;
 var data_row = null;
 var data_boolean_input = null;
@@ -76,29 +76,37 @@ function convert_operator(oper, type)
     }
   }
 
+  switch(oper) {
+    case 'eq': return 'equal';
+    case 'exists': return 'exists';
+    case 'notexists': return 'not exists';
+  }
+
   return '';
 }
 
 function fill_operators_options(type)
 {
+  var base = {exists: 'exists', notexists: 'not exists'};
+
   switch(type) {
     case 'position':
     case 'integer':
-      return {eq: '=',
-              gt: '>',
-              lt: '<',
-              ge: '>=',
-              le: '<='};
+      return $.extend(base, {eq: '=',
+                             gt: '>',
+                             lt: '<',
+                             ge: '>=',
+                             le: '<='});
     case 'text':
     case 'url':
-      return {eq: 'equal',
-              contains: 'contains',
-              starts: 'starts',
-              ends: 'ends',
-              regexp: 'regexp'};
+      return $.extend(base, {eq: 'equal',
+                            contains: 'contains',
+                            starts: 'starts',
+                            ends: 'ends',
+                            regexp: 'regexp'});
+    default:
+      return $.extend(base, {eq: 'equal'});
   }
-
-  return {};
 }
 
 function init_operator_select(type)
@@ -109,91 +117,127 @@ function init_operator_select(type)
 
 function fill_operators(type)
 {
-  operator_input.hide();
   data_input.hide();
   data_boolean_input.hide();
   data_tax_input.hide();
   data_seq_input.hide();
   data_position_input.hide();
   operator_text.hide();
+  init_operator_select(type);
+  operator_select.show();
+  operator_input.show();
 
-  if(type == 'bool') {
-    data_boolean_input.show();
-  } else if(type == 'tax') {
-    data_tax_input.show();
-  } else if(type == 'ref') {
-    data_seq_input.show();
-  } else if(type == 'position') {
-    init_operator_select(type);
-    data_position_input.show();
-    operator_input.show();
-    operator_select.show();
-    data_input.show();
-  } else if(type == 'integer') {
-    operator_input.show();
-    operator_select.show();
-    init_operator_select(type);
-    data_input.show();
-  } else {
-    operator_input.show();
-    data_input.show();
-    init_operator_select(type);
-    operator_select.show();
+  show_type_input(type);
+}
+
+function show_type_input(type)
+{
+  switch(type) {
+    case 'bool':
+      data_boolean_input.show();
+      break;
+    case 'tax':
+      data_tax_input.show();
+      break;
+    case 'ref':
+      data_seq_input.show();
+      break;
+    case 'position':
+      data_position_input.show();
+      data_input.show();
+      break;
+    case 'integer':
+      data_input.show();
+      break;
+    default:
+      data_input.show();
+  }
+}
+
+function hide_type_input(type)
+{
+  switch(type) {
+    case 'bool':
+      data_boolean_input.hide();
+      break;
+    case 'tax':
+      data_tax_input.hide();
+      break;
+    case 'ref':
+      data_seq_input.hide();
+      break;
+    case 'position':
+      data_position_input.hide();
+      data_input.hide();
+      break;
+    case 'integer':
+      data_input.hide();
+      break;
+    default:
+      data_input.hide();
   }
 }
 
 function term_form_submitted()
 {
   if(!term_was_selected()) {
+    alert("no selected");
     return;
   }
 
-  if(current_row == null) {
+  if(current_label == null) {
+    alert("no label");
     return;
   }
 
-  var type = current_row.type;
-  var label = current_row.name;
-  var obj = {label: label, type: type, id: current_row.id};
+  var type = current_label.type;
+  var label = current_label.name;
+  var oper = operator_select.val();
+  var obj = {label: label,
+             type: type,
+             id: current_label.id,
+             oper: oper};
 
-  if(type == 'bool') {
-    obj.oper = 'eq';
-    obj.value = data_boolean_checkbox.is(':checked');
-  } else if(type == 'tax') {
-    obj.oper = 'eq';
-    obj.value = data_tax[0].tax;
-    if(obj.value == null) {
-      return;
-    }
-  } else if(type == 'ref') {
-    obj.oper = 'eq';
-    obj.value = data_seq[0].seq;
-    if(obj.value == null) {
-      return;
-    }
-  } else if(type == 'position') {
-    obj.oper = operator_select.val();
-    data = {num: parseInt(data_row.val()),
-            type: position_type.val()};
-    obj.value = data;
+  if(oper != 'exists' && oper != 'notexists') {
+    switch(type) {
+      case 'bool':
+        obj.value = data_boolean_checkbox.is(':checked');
+        break;
+      case 'tax':
+        obj.value = data_tax[0].tax;
+        if(obj.value == null) {
+          return;
+        }
+        break;
+      case 'ref':
+        obj.value = data_seq[0].seq;
+        if(obj.value == null) {
+          return;
+        }
+        break;
+      case 'position':
+        data = {num: parseInt(data_row.val()),
+              type: position_type.val()};
+        obj.value = data;
 
-    if(!is_numeric(data.num)) {
-      return;
-    }
-  } else {
-    obj.oper = operator_select.val();
-    obj.value = data_row.val();
+        if(!is_numeric(data.num)) {
+          return;
+        }
+        break;
+      default:
+        obj.value = data_row.val();
 
-    if(obj.type == 'integer') {
-      obj.value = parseInt(obj.value);
-      if(!is_numeric(obj.value)) {
-        return;
-      }
-    } else {
-      // text based value
-      if(obj.value == '') {
-        return;
-      }
+        if(obj.type == 'integer') {
+          obj.value = parseInt(obj.value);
+          if(!is_numeric(obj.value)) {
+            return;
+          }
+        } else {
+          // text based value
+          if(obj.value == '') {
+            return;
+          }
+        }
     }
   }
 
@@ -223,21 +267,27 @@ function not_form_submitted()
 
 function build_operator_text(obj)
 {
-  if(obj.type == 'bool') {
-    if(obj.value) {
-      return 'is true';
-    } else {
-      return 'is false';
-    }
-  } else if(obj.type == 'tax') {
-    return 'is ' + obj.value.name;
-  } else if(obj.type == 'ref') {
-    return 'is ' + obj.value.name;
-  } else if(obj.type == 'position') {
-    return obj.value.type + ' ' + convert_operator(obj.oper, obj.type) + ' ' + obj.value.num;
+  if(obj.oper == 'exists' || obj.oper == 'notexists') {
+    return convert_operator(obj.oper, obj.type);
   }
 
-  return convert_operator(obj.oper, obj.type) + ' ' + obj.value;
+  switch(obj.type) {
+    case 'bool':
+      if(obj.value) {
+        return 'is true';
+      } else {
+        return 'is false';
+      }
+      break;
+    case 'tax':
+      return 'is ' + obj.value.name;
+    case 'ref':
+      return 'is ' + obj.value.name;
+    case 'position':
+      return obj.value.type + ' ' + convert_operator(obj.oper, obj.type) + ' ' + obj.value.num;
+    default:
+      return convert_operator(obj.oper, obj.type) + ' ' + obj.value;
+  }
 }
 
 function add_li_term(li, obj)
@@ -408,7 +458,7 @@ function get_search_term(node)
 
 function hide_term() {
   term_other_fields.hide();
-  current_row = null;
+  current_label = null;
   label_name.hide();
   label_row.show();
   submit_term.hide();
@@ -420,7 +470,7 @@ function got_new_label(data)
   label_row.hide();
   fill_operators(data.type);
   term_other_fields.show();
-  current_row = data;
+  current_label = data;
   submit_term.show();
 }
 
@@ -434,6 +484,7 @@ function enable_operator_select()
 {
   operator_select.show();
   operator_text.hide();
+
 }
 
 function enable_position_type_select()
@@ -450,7 +501,7 @@ function get_operator_text()
 
 function select_position_type()
 {
-  if(current_row.type == 'position') {
+  if(current_label.type == 'position') {
     position_type.hide();
     position_type_text.text(position_type.val()).show();
   }
@@ -463,7 +514,14 @@ function operator_was_selected()
   operator_select.hide();
   operator_text.text(selected_text).show();
 
-  select_position_type();
+  var op = operator_select.val();
+
+  if(op == 'exists' || op == 'notexists') {
+    hide_type_input(current_label.type);
+  } else {
+    show_type_input();
+    select_position_type();
+  }
 }
 
 function node_unselected()
@@ -725,16 +783,7 @@ $(document).ready(function () {
     });
 
     term_form.validate({
-      submitHandler: term_form_submitted,
-      errorPlacement: basicErrorPlacement,
-      rules: {
-        data_row: {
-          required: function () {
-            return current_row != null &&
-                  (current_row.type == 'integer' || current_row.type == 'text');
-          }
-        }
-      }
+      submitHandler: term_form_submitted
     });
 
     and_form.validate({
