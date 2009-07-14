@@ -828,12 +828,17 @@ class Label_sequence_model extends BioModel
     return "";
   }
 
+  function __compound_oper($oper)
+  {
+    return $oper == 'and' || $oper == 'or' || $oper == 'not';
+  }
+
   function __get_search_labels($term, $label_model, &$ret)
   {
     if($term != null) {
       $oper = $term['oper'];
 
-      if($oper == 'and' || $oper == 'or') {
+      if($this->__compound_oper($oper)) {
         $operands = $term['operands'];
         foreach($operands as $operand) {
           $this->__get_search_labels($operand, $label_model, $ret);
@@ -915,11 +920,21 @@ class Label_sequence_model extends BioModel
 
     $oper = $term['oper'];
 
-    if($oper == 'and' || $oper == 'or') {
+    if($this->__compound_oper($oper)) {
       $operands = $term['operands'];
 
       if(count($operands) == 0) {
         return $default;
+      }
+
+      if($oper == 'not') {
+        $new_default = 'FALSE';
+
+        $operand = $operands[0];
+
+        $part = $this->__get_search_where($operand, $labels, $new_default);
+
+        return "NOT ($part)";
       }
 
       $ret = "";
@@ -930,6 +945,7 @@ class Label_sequence_model extends BioModel
         $new_default = 'FALSE';
         $junction = 'OR';
       }
+
       for($i = 0; $i < count($operands); ++$i) {
         $part = $this->__get_search_where($operands[$i], $labels, $new_default);
 

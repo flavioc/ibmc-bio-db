@@ -19,6 +19,7 @@ var term_other_fields = null;
 var submit_term = null;
 var or_form = null;
 var and_form = null;
+var not_form = null;
 var insert_terms = null;
 var data_tax = null;
 var data_tax_input = null;
@@ -180,22 +181,22 @@ function term_form_submitted()
     return;
   }
 
-  add_li_term(li, obj);
+  var new_ol = add_li_term(li, obj);
+  var old_li = li.parent().parent();
 
-  if(!we_are_starting) {
-    var ol = li.parent();
-  }
+  handle_post_add(old_li, new_ol);
 
-  if(we_are_starting) {
-    we_are_starting = false;
-    cant_add_leafs();
-  }
-  update_search();
+  return new_ol;
 }
 
 function and_form_submitted()
 {
-  handle_or_and('and');
+  handle_compound('and');
+}
+
+function not_form_submitted()
+{
+  handle_compound('not');
 }
 
 function build_operator_text(obj)
@@ -228,7 +229,7 @@ function add_li_term(li, obj)
   li[0].term = obj;
 }
 
-function add_new_andor(li_obj, txt)
+function add_new_compound(li_obj, txt)
 {
   var ol = $('<ol class="search-list"></ol>');
   var li_parent = li_obj.parent();
@@ -266,7 +267,7 @@ function update_search()
   }
 }
 
-function handle_or_and(what)
+function handle_compound(what)
 {
   if(!term_was_selected()) {
     return;
@@ -278,21 +279,36 @@ function handle_or_and(what)
     return;
   }
 
-  var new_ol = add_new_andor(obj, what);
+  var new_ol = add_new_compound(obj, what);
+  var old_li = obj.parent().parent();
 
-  if(!we_are_starting) {
-    var upper_ol = obj.parent();
+  handle_post_add(old_li, new_ol);
+
+  return new_ol;
+}
+
+function handle_post_add(old_li, new_ol)
+{
+  if(old_li.size() == 1) {
+    var li_this = old_li[0];
+    var term = li_this.term;
+
+    if(term == 'not') {
+      cant_add_leafs();
+    }
   }
 
   if(we_are_starting) {
     we_are_starting = false;
     cant_add_leafs();
   }
+
+  update_search();
 }
 
 function or_form_submitted()
 {
-  handle_or_and('or');
+  handle_compound('or');
 }
 
 function term_was_selected()
@@ -471,7 +487,11 @@ function restore_old_tree()
   we_are_starting = false;
 
   restore_aux(obj, first_ol);
-  update_search();
+}
+
+function compound_term(oper)
+{
+  return oper == 'or' || oper == 'and' || oper == 'not';
 }
 
 function restore_aux(obj, ol)
@@ -481,8 +501,8 @@ function restore_aux(obj, ol)
 
   new_li.appendTo(ol);
 
-  if(oper == 'or' || oper == 'and') {
-    var new_ol = add_new_andor(new_li, oper);
+  if(compound_term(oper)) {
+    var new_ol = add_new_compound(new_li, oper);
     var operands = obj.operands;
 
     $.each(operands, function () {
@@ -506,8 +526,6 @@ $(document).ready(function () {
     data_boolean_checkbox = $('#data_boolean_checkbox');
     data_row = $('#data_row');
     show_seqs = $('#show_sequences');
-    and_form = $('#and_form');
-    or_form = $('#or_form');
     labelname = $('#labelname');
     tree_form = $('#tree_form');
     label_row = $('#label_row');
@@ -516,6 +534,7 @@ $(document).ready(function () {
     term_other_fields = $('#term_other_fields');
     and_form = $('#and_form');
     or_form = $('#or_form');
+    not_form = $('#not_form');
     insert_terms = $('#insert_terms');
     data_tax = $('#data_tax');
     change_tax = $('#change_tax');
@@ -585,8 +604,20 @@ $(document).ready(function () {
     });
 
     $('#search_tree .expand-name').livequery('click', function () {
+        var what = $(this).text();
+
         node_unselected();
-        can_add_leafs();
+
+        if(what == 'not') {
+          if($('li', $(this).parent()).size() == 0) {
+            can_add_leafs();
+          } else {
+            cant_add_leafs();
+          }
+        } else {
+          can_add_leafs();
+        }
+
         activate_term(this);
     });
 
@@ -657,6 +688,10 @@ $(document).ready(function () {
 
     or_form.validate({
       submitHandler: or_form_submitted
+    });
+
+    not_form.validate({
+      submitHandler: not_form_submitted
     });
 
   show_seqs
