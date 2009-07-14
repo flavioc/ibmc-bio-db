@@ -968,6 +968,25 @@ class Label_sequence_model extends BioModel
       $label_type = $label['type'];
       $label_id = $label['id'];
       $oper = $term['oper'];
+
+      if(label_special_operator($oper)) {
+        if(label_special_purpose($label_name)) {
+          if($oper == 'exists') {
+            return 'TRUE';
+          } else {
+            return 'FALSE';
+          }
+        }
+        
+        $sql = "EXISTS (SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id)";
+
+        if($oper == 'notexists') {
+          $sql = "NOT $sql";
+        }
+
+        return $sql;
+      }
+
       $value = $term['value'];
 
       if(!label_special_purpose($label_name)) {

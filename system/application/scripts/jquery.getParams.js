@@ -26,7 +26,9 @@ jQuery.extend({
 	    for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
 	      if (aQueryString[iParam].substr(0,cmplen)==cmpstring){
 	        var aParam = aQueryString[iParam].split("=");
-	        strReturn = aParam[1];
+          var first = aParam[1];
+          var vec = first.split("#");
+	        strReturn = vec[0];
 	        bFound=true;
 	        break;
 	      }
