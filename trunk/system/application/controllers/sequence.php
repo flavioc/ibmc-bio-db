@@ -86,6 +86,7 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_livequery();
 
+    $this->smarty->assign('type', $this->get_parameter('type'));
     $this->smarty->view('sequence/search');
   }
 
