@@ -875,6 +875,8 @@ class Label_sequence_model extends BioModel
       case 'starts':
       case 'ends':
         return 'LIKE';
+      case 'regexp':
+        return 'REGEXP';
       default: return '';
       }
     case 'bool': return 'IS';
@@ -896,6 +898,7 @@ class Label_sequence_model extends BioModel
         case 'contains': return "\"%$value%\"";
         case 'starts': return "\"$value%\"";
         case 'ends': return "\"%$value\"";
+        case 'regexp': return "\"$value\"";
       }
     case 'bool':
       if($value) {
