@@ -78,12 +78,12 @@ class Label_sequence_model extends BioModel
     $this->add($seq_id, $label['id'], $label['type'], null, $data1, $data2);
   }
 
-  function add_generated_label($seq_id, $label_id, $type)
+  function add_generated_label($seq_id, $label_id, $type = null)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if($label['type'] == $type && $label['code']) {
+    if(($type == null || $label['type'] == $type) && $label['code']) {
       $this->add_generated($seq_id, $label);
       return true;
     } else {
