@@ -53,6 +53,19 @@ class Label extends BioController {
     output_autocomplete_data($labels, 'name');
   }
 
+  function autocomplete_addable()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_empty();
+    }
+
+    $name = $this->get_parameter('q');
+
+    $labels = $this->label_model->get_all_addable($name);
+
+    output_autocomplete_data($labels, 'name');
+  }
+
   function get_all()
   {
     if(!$this->logged_in) {

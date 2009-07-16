@@ -346,12 +346,19 @@ function get_main_search_term()
   return enclose_search_tree(get_simple_search_tree());
 }
 
+function update_form_hidden(encoded)
+{
+  $('input[name=encoded_tree]').val(encoded);
+}
+
 function update_search()
 {
   var obj = get_main_search_term();
 
   if(obj) {
     var encoded = $.toJSON(obj);
+
+    update_form_hidden(encoded);
 
     save_search_tree();
     show_seqs.gridFilter('search', encoded);
@@ -589,14 +596,14 @@ function restore_old_tree()
 
   var obj = $.evalJSON(encoded);
 
-  //alert(encoded);
-
   if(obj) {
     var first_ol = $('#search_tree ol:first');
 
     cant_add_leafs();
     restore_aux(obj, first_ol);
     we_are_starting = false;
+
+    update_form_hidden($.toJSON(get_main_search_term()));
   } else {
     can_add_leafs();
   }
@@ -666,14 +673,6 @@ $(document).ready(function () {
     data_row.focus(operator_was_selected);
 
     tree_form.submit(function () {
-        if(we_are_starting) {
-          return false;
-        }
-
-        var obj = get_main_search_term();
-        var encoded = $.toJSON(obj);
-        $('input[name=encoded_tree]', tree_form).val(encoded);
-
         return true;
     });
 
@@ -749,14 +748,7 @@ $(document).ready(function () {
 
     operator_select.change(operator_was_selected);
 
-    label_row.autocomplete(get_app_url() + "/label/autocomplete_labels",
-      {
-        minChars: 0,
-        delay: 400,
-        scroll: true,
-        selectFirst: false,
-        mustMatch: true
-      });
+    label_row.autocomplete_labels();
 
     label_row.autocompleteEmpty(function () {
         hide_term();
@@ -770,7 +762,7 @@ $(document).ready(function () {
           return;
         }
 
-        $.getJSON(get_app_url() + "/label/get_label_by_name/" + name,
+        get_label_by_name(name, 
           function (data) {
             if(data == null) {
               hide_term();

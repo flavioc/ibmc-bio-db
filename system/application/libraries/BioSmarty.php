@@ -336,7 +336,13 @@ function smarty_function_form_row($params, &$smarty)
 
   $ret = '';
   if(!$simple) {
-    $ret .= '<div class="row">' . "\n";
+    $row_id = $params['row_id'];
+    $ret .= '<div class="row"';
+    if($row_id) {
+      $ret .= " id=\"$row_id\"";
+    }
+
+    $ret .= ">\n";
   }
 
   $ret .= smarty_function_form_label($label_data, &$smarty) . "\n";
@@ -688,6 +694,11 @@ class BioSmarty extends Smarty
   function view_s($resource_name)
   {
     return parent::display($this->__get_resource_name($resource_name));
+  }
+
+  function view_js($js_temp)
+  {
+    return parent::display($this->__get_resource_name("$js_temp.js.tpl"));
   }
 
   function set_controller($what)

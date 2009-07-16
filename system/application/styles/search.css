@@ -22,7 +22,11 @@
 #change_seq,
 #position_type,
 #data_position_input,
-#position_type_text
+#position_type_text,
+#tree_form,
+#tree_form *,
+#add_label_form,
+#add_label_form *
 {
   display: inline;
 }

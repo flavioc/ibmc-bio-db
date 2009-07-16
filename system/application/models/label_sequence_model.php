@@ -21,6 +21,13 @@ class Label_sequence_model extends BioModel
     return $this->get_id_by_field('label_id', $label_id);
   }
 
+  // retrieve label sequence row using seq id and label id
+  function get_label_info($seq_id, $label_id)
+  {
+    $this->db->where('seq_id', $seq_id);
+    return $this->get_row('label_id', $label_id, 'label_sequence_info');
+  }
+
   function get($id)
   {
     $this->db->select($this->__get_select() . ", code");
@@ -745,6 +752,15 @@ class Label_sequence_model extends BioModel
     return $this->count_total('label_sequence_info') > 0;
   }
 
+  function sequence_has_label($seq, $label)
+  {
+    $this->db
+      ->where('seq_id', $seq)
+      ->where('label_id', $label);
+
+    return $this->count_total('label_sequence_info') > 0;
+  }
+
   function count_taxonomies($tax)
   {
     $this->db->select('id');
@@ -784,6 +800,7 @@ class Label_sequence_model extends BioModel
     return $this->select_data($data);
   }
 
+  // retrieve the data field using the label name
   function get_label($seq_id, $label_name)
   {
     $this->db->select('id, type, ' . self::$label_data_fields);

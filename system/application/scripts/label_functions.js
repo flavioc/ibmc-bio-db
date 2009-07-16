@@ -1,5 +1,5 @@
   
-function start_label_list(params, select_fn)
+function start_label_list(params, select_fn, add_fn)
 {
   if(params == null) {
     params = {};
@@ -57,6 +57,11 @@ function start_label_list(params, select_fn)
     fields = $.merge(['select'], fields);
   }
 
+  if(add_fn) {
+    fieldNames = $.merge(['Add'], fieldNames);
+    fields = $.merge(['add'], fields);
+  }
+
   grid.gridEnable();
   grid.grid({
     url: base_site,
@@ -76,6 +81,9 @@ function start_label_list(params, select_fn)
     dataTransform: {
       select: function (row) {
         return img_go;
+      },
+      add: function (row) {
+        return img_add;
       }
     },
     tdClass: {
@@ -86,7 +94,8 @@ function start_label_list(params, select_fn)
       auto_on_creation: 'centered',
       must_exist: 'centered',
       user_name: 'centered',
-      select: 'centered'
+      select: 'centered',
+      add: 'centered'
     },
     width: {
       multiple: w_boolean,
@@ -96,7 +105,8 @@ function start_label_list(params, select_fn)
       auto_on_modification: w_boolean,
       must_exist: w_boolean,
       type: w_type,
-      user_name: w_user
+      user_name: w_user,
+      add: w_add
     },
     types: {
       must_exist: 'boolean',
@@ -113,7 +123,30 @@ function start_label_list(params, select_fn)
     clickFun: {
       select: function (row) {
         select_fn(row, grid);
+      },
+      add: function (row) {
+        add_fn(row, grid);
       }
     }
   });
 }
+
+$.fn.autocomplete_labels = function (url_part) {
+  if(!url_part) {
+    url_part = "autocomplete_labels";
+  }
+  var url = get_app_url() + "/label/" + url_part;
+  return $(this).autocomplete(url,
+                              {
+                              minChars: 0,
+                              delay: 400,
+                              scroll: true,
+                              selectFirst: false,
+                              mustMatch: true
+                              });
+};
+
+function get_label_by_name(name, fn)
+{
+  $.getJSON(get_app_url() + "/label/get_label_by_name/" + name, fn);
+};

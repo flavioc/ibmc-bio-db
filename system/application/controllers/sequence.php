@@ -161,6 +161,30 @@ class Sequence extends BioController
       $this->label_sequence_model->get_search_total($search));
   }
 
+  function multiple_add_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $this->use_mygrid();
+    $this->smarty->load_stylesheets('add_label.css');
+    $this->use_autocomplete();
+    $this->use_thickbox();
+    $this->use_livequery();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js', 'add_multiple.js', FORM_SCRIPT);
+
+    $encoded = $this->get_post('encoded_tree');
+
+    $json = stripslashes($encoded);
+    $tree = json_decode($json, true);
+
+    $this->smarty->assign('title', 'Multiple add label');
+    $this->smarty->assign('encoded', $encoded);
+
+    $this->smarty->view('sequence/multiple_add_label');
+  }
+
   function get_all()
   {
     if(!$this->logged_in) {
