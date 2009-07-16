@@ -172,7 +172,9 @@ class Sequence extends BioController
     $this->use_autocomplete();
     $this->use_thickbox();
     $this->use_livequery();
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js', 'add_multiple.js', FORM_SCRIPT);
+
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
+      'add_multiple.js', FORM_SCRIPT, 'label_helpers.js');
 
     $encoded = $this->get_post('encoded_tree');
 
@@ -266,7 +268,7 @@ class Sequence extends BioController
     $this->smarty->load_scripts(JSON_SCRIPT, VALIDATE_SCRIPT,
       AUTOCOMPLETE_SCRIPT, FORM_SCRIPT, JEDITABLE_SCRIPT,
       'sequence_functions.js', 'taxonomy_functions.js',
-      'common_sequence.js');
+      'common_sequence.js', 'label_helpers.js');
   }
 
   function view($id)

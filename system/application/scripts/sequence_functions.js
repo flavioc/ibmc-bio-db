@@ -466,8 +466,3 @@ function reload_bad_multiple_list()
     }
   });
 }
-
-function generate_disabled()
-{
-  return !checkbox_enabled('#generate_check');
-}
