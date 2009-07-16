@@ -135,7 +135,7 @@
 
       row_tag.childNodes[j] = {
         tagName: 'td',
-        class: 'td_' + id + '_' + opts.originalFields[j],
+        className: ('td_' + id + '_' + opts.originalFields[j]),
         innerHTML: field_data
       };
     }
@@ -165,11 +165,11 @@
 
       row_tag.childNodes[index] = {
         tagName: 'td',
-        class: del_class,
+        className: del_class,
         childNodes: [
           {
             tagName: 'a',
-            class: 'deletable',
+            className: 'deletable',
             href: '#' + delete_id,
             id: delete_id,
             innerHTML: deleteText
@@ -179,7 +179,7 @@
     } else {
       row_tag.childNodes[index] = {
         tagName: 'td',
-        class: del_class,
+        className: del_class,
         innerHTML: '---'
       }
     }
@@ -306,7 +306,7 @@
 
       ret[i] = {
         tagName: 'th',
-        class: 'th_' + id + '_' + fields[i],
+        className: 'th_' + id + '_' + fields[i],
         innerHTML: inner
       };
     }
@@ -325,7 +325,7 @@
     data_place.appendDom([
       {
         tagName: 'table',
-        class: 'data',
+        className: 'data',
         childNodes: [
           {
             tagName: 'tbody',
