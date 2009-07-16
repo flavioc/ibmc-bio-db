@@ -285,4 +285,14 @@ class BioModel extends Model
 
     $this->db->order_by($ret[0], $ret[1]);
   }
+
+  function limit($start, $size)
+  {
+    if($size != null) {
+      if(!$start) {
+        $start = 0;
+      }
+      $this->db->limit($size, $start);
+    }
+  }
 }

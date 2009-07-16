@@ -47,7 +47,6 @@
 {form_end}
 </div>
 
-
 {form_open to='#' name=and_form}
 {form_submit name=submit msg='Add AND'}
 {form_end}
@@ -68,10 +67,14 @@
 </div>
 
 {form_open to='sequence/export_search' name=tree_form}
-{form_hidden name=encoded_tree}
+{form_hidden name=encoded_tree value=null}
 {form_submit name=submit msg='Export' id="submit_tree"}
 {form_end}
 
+{form_open to='sequence/multiple_add_label' name=add_label_form}
+{form_hidden name=encoded_tree value=null}
+{form_submit name=submit msg='Add label' id='submit_add_label'}
+{form_end}
 
 <h3>Results</h3>
 <p>

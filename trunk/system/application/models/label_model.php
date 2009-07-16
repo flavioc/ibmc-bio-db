@@ -79,19 +79,23 @@ class Label_model extends BioModel
     }
   }
 
+  function get_all_addable($name)
+  {
+    $this->db->order_by('name', 'asc');
+    $this->db->where('name <> "content"');
+    $this->db->where('name <> "name"');
+    $this->db->like('name', $name);
+
+    return $this->get_all();
+  }
+
   function get_all($start = null, $size = null,
     $filtering = array(), $ordering = array())
   {
     $this->order_by($ordering, 'name', 'asc');
     $this->__select();
     $this->__filter_labels($filtering);
-
-    if($size != null) {
-      if(!$start) {
-        $start = 0;
-      }
-      $this->db->limit($size, $start);
-    }
+    $this->limit($start, $size);
 
     return parent::get_all('label_info_history');
   }

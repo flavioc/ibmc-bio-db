@@ -89,7 +89,7 @@ class BioController extends Controller
 
   function use_livequery()
   {
-    $this->smarty->load_scripts('jquery.livequery.js');
+    $this->smarty->load_scripts(LIVEQUERY_SCRIPT);
   }
 
   function use_mygrid()

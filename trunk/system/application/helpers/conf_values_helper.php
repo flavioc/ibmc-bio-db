@@ -23,3 +23,4 @@ define('ZOOM_SCRIPT', 'jquery.zoom.js');
 define('COOKIE_SCRIPT', 'jquery.cookie.js');
 define('SELECTBOXES_SCRIPT', 'jquery.selectboxes.js');
 define('GETPARAMS_SCRIPT', 'jquery.getParams.js');
+define('LIVEQUERY_SCRIPT', 'jquery.livequery.js');
