@@ -1,10 +1,13 @@
+{include file=sequence/form_search.tpl}
+
 <div id="seq_search">
 </div>
 
 {literal}
 <script>
-$(document).ready(function () {
+$(function () {
   var place = $('#seq_search');
+  
   start_sequence_grid(place, {
       name: function (row) {
         place.gridHighLight(row.id);
@@ -13,6 +16,8 @@ $(document).ready(function () {
         tb_remove();
       }
   });
+  
+  activate_sequence_search(place);
 });
 </script>
 {/literal}

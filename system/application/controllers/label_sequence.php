@@ -221,6 +221,8 @@ class Label_Sequence extends BioController {
 
   function __display_ref_form($file)
   {
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
     $this->smarty->view_s($file);
   }
 

@@ -1,6 +1,9 @@
-
 function start_sequence_grid(place, click)
 {
+  if(click == null) {
+    click = {};
+  }
+  
   place
   .gridEnable()
   .grid({
@@ -26,5 +29,40 @@ function start_sequence_grid(place, click)
       }
     },
     clickFun: click
+  });
+}
+
+function activate_sequence_search(show_seqs)
+{
+  var changed = false;
+  var form = $('#form_search');
+  var name_field = $('#name', form)
+  var user_field = $('#user', form);
+
+  function changed_function ()
+  {
+    changed = true;
+  }
+
+  function when_submit()
+  {
+    if(changed) {
+      var name_val = name_field.val();
+      var user_val = user_field.val();
+
+      show_seqs.gridColumnFilter('name', name_val);
+      show_seqs.gridColumnFilter('user', user_val);
+      show_seqs.gridReload();
+    }
+
+    changed = false;
+  }
+
+  name_field.change(changed_function);
+  user_field.change(changed_function);
+
+  form.validate({
+    submitHandler: when_submit,
+    errorPlacement: basicErrorPlacement
   });
 }
