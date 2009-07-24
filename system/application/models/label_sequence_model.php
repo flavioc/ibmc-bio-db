@@ -57,6 +57,12 @@ class Label_sequence_model extends BioModel
     } else {
       $data[$fields] = $data1;
     }
+    
+    if($type == 'integer') {
+      if(!is_numeric($data1)) {
+        return false;
+      }
+    }
 
     return $this->insert_data_with_history($data);
   }
