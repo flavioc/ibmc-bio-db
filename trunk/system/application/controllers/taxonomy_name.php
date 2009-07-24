@@ -24,11 +24,9 @@ class Taxonomy_name extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id_str = $this->input->post('id');
+    $id_str = $this->get_post('id');
     $id = parse_id($id_str);
-    $value = intval($this->input->post('value'));
+    $value = intval($this->get_post('value'));
 
     $this->load->model('taxonomy_name_model');
 
@@ -47,11 +45,9 @@ class Taxonomy_name extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id_str = $this->input->post('id');
+    $id_str = $this->get_post('id');
     $id = parse_id($id_str);
-    $value = $this->input->post('value');
+    $value = $this->get_post('value');
 
     $this->load->model('taxonomy_name_model');
 

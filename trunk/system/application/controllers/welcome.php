@@ -46,7 +46,6 @@ class Welcome extends BioController {
       return;
     }
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // form rules

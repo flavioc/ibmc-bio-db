@@ -72,7 +72,6 @@ class Rank extends BioController {
   {
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
@@ -159,10 +158,8 @@ class Rank extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('rank');
-    $value = $this->input->post('value');
+    $id = $this->get_post('rank');
+    $value = $this->get_post('value');
 
     $result = $this->taxonomy_rank_model->edit_name($id, $value);
 
@@ -180,10 +177,8 @@ class Rank extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('rank');
-    $value = intval($this->input->post('value'));
+    $id = $this->get_post('rank');
+    $value = intval($this->get_post('value'));
 
     if($value == 0) {
       $value = null;
@@ -252,4 +247,3 @@ class Rank extends BioController {
     }
   }
 }
-

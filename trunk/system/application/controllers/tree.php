@@ -61,7 +61,6 @@ class Tree extends BioController {
   {
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
@@ -129,10 +128,8 @@ class Tree extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('tree');
-    $value = $this->input->post('value');
+    $id = $this->get_post('tree');
+    $value = $this->get_post('value');
 
     $result = $this->taxonomy_tree_model->edit($id, $value);
 
@@ -176,4 +173,3 @@ class Tree extends BioController {
     redirect('tree');
   }
 }
-

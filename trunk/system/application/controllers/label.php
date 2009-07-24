@@ -181,7 +181,6 @@ class Label extends BioController {
   {
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
@@ -320,10 +319,8 @@ class Label extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
 
     $result = $this->label_model->edit_name($id, $value);
 
@@ -341,12 +338,11 @@ class Label extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
 
     $result = $this->label_model->edit_type($id, $value);
+    
     echo $value;
   }
 
@@ -355,10 +351,8 @@ class Label extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
 
     $result = $this->label_model->edit_code($id, $value);
     echo $value;
@@ -369,10 +363,8 @@ class Label extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
 
     $result = $this->label_model->edit_validcode($id, $value);
     echo $value;
@@ -383,10 +375,8 @@ class Label extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
 
     $result = $this->label_model->edit_comment($id, $value);
     echo $value;
@@ -397,10 +387,8 @@ class Label extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('label');
-    $value = $this->input->post('value');
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
     $value = ($value == '1' ? TRUE : FALSE);
 
     $result = $this->label_model->edit_bool($id, $what, $value);
