@@ -130,7 +130,6 @@ class Profile extends BioController {
 
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
@@ -219,7 +218,6 @@ class Profile extends BioController {
 
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
     $this->load->model('configuration_model');
 
@@ -291,7 +289,6 @@ class Profile extends BioController {
 
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields

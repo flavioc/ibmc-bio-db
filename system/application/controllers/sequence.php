@@ -385,7 +385,6 @@ class Sequence extends BioController
 
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
@@ -461,10 +460,8 @@ class Sequence extends BioController
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('seq');
-    $value = $this->input->post('value');
+    $id = $this->get_post('seq');
+    $value = $this->get_post('value');
 
     $size = strlen($value);
     if($size < 3 || $size > 255) {
@@ -484,10 +481,8 @@ class Sequence extends BioController
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('seq');
-    $value = $this->input->post('value');
+    $id = $this->get_post('seq');
+    $value = $this->get_post('value');
 
     $value = sequence_join($value);
 

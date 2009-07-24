@@ -60,7 +60,6 @@ class Taxonomy extends BioController {
   {
     $errors = false;
 
-    $this->load->library('input');
     $this->load->library('form_validation');
 
     // define form rules and validate all form fields
@@ -198,10 +197,8 @@ class Taxonomy extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('tax');
-    $value = $this->input->post('value');
+    $id = $this->get_post('tax');
+    $value = $this->get_post('value');
 
     $size = strlen($value);
     if($size < 3 || $size > 512) {
@@ -221,10 +218,8 @@ class Taxonomy extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('tax');
-    $value = intval($this->input->post('value'));
+    $id = $this->get_post('tax');
+    $value = intval($this->get_post('value'));
     if($value == 0) {
       $value = null;
     }
@@ -246,10 +241,8 @@ class Taxonomy extends BioController {
       return $this->invalid_permission_field();
     }
 
-    $this->load->library('input');
-
-    $id = $this->input->post('tax');
-    $value = intval($this->input->post('value'));
+    $id = $this->get_post('tax');
+    $value = intval($this->get_post('value'));
     if($value == 0) {
       $value = null;
     }
@@ -257,7 +250,6 @@ class Taxonomy extends BioController {
     $this->taxonomy_model->edit_tree($id, $value);
 
     $this->load->model('taxonomy_tree_model');
-
 
     if($value == null) {
       $this->return_empty();
