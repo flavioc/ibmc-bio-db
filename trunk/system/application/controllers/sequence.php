@@ -15,7 +15,8 @@ class Sequence extends BioController
     }
 
     $this->smarty->assign('title', 'Browse sequences');
-    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT,
+      'common_sequence.js');
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
 
@@ -114,6 +115,8 @@ class Sequence extends BioController
       return $this->invalid_permission_thickbox();
     }
 
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
     $this->smarty->view_s('sequence/search_ref');
   }
 
@@ -173,8 +176,13 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_livequery();
 
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
-      'add_multiple.js', FORM_SCRIPT, 'label_helpers.js');
+    $this->smarty->load_scripts(VALIDATE_SCRIPT,
+      'label_functions.js',
+      'add_multiple.js',
+      FORM_SCRIPT,
+      'label_helpers.js',
+      'taxonomy_functions.js',
+      'common_sequence.js');
 
     $encoded = $this->get_post('encoded_tree');
 

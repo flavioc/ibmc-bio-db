@@ -55,6 +55,25 @@ class Multiple_Labels extends BioController {
         case 'bool':
           $this->smarty->view_s('add_multiple_label/bool');
           break;
+        case 'position':
+          $this->smarty->view_s('add_multiple_label/position');
+          break;
+        
+        case 'tax':
+          $this->load->model('taxonomy_rank_model');
+          $this->load->model('taxonomy_tree_model');
+          $this->smarty->assign('ranks', $this->taxonomy_rank_model->get_ranks());
+          $this->smarty->assign('trees', $this->taxonomy_tree_model->get_trees());
+          
+          $this->smarty->view_s('add_multiple_label/tax');
+          break;
+          
+        case 'ref':
+          $this->load->model('user_model');
+          $this->smarty->assign('users', $this->user_model->get_users_all());
+          
+          $this->smarty->view_s('add_multiple_label/ref');
+          break;
       }
     } else {
     
@@ -141,6 +160,15 @@ class Multiple_Labels extends BioController {
     
     return $value ? TRUE : FALSE;
   }
+  
+  function __get_position_value()
+  {
+    $start = $this->get_post('start');
+    $length = $this->get_post('length');
+    
+    return array('start' => $start,
+                 'length' => $length);
+  }
 
   function __add_label_common($seq_id)
   {
@@ -156,6 +184,17 @@ class Multiple_Labels extends BioController {
       break;
     case 'bool':
       $this->label_sequence_model->add_bool_label($seq_id, $this->label_id, $this->__get_bool_value());
+      break;
+    case 'position':
+      $data = $this->__get_position_value();
+      $this->label_sequence_model->add_position_label($seq_id, $this->label_id,
+        $data['start'], $data['length']);
+      break;
+    case 'tax':
+      $this->label_sequence_model->add_tax_label($seq_id, $this->label_id, $this->get_post('hidden_tax'));
+      break;
+    case 'ref':
+      $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->get_post('hidden_ref'));
       break;
     }
   }
@@ -180,6 +219,16 @@ class Multiple_Labels extends BioController {
       break;
     case 'bool':
       $this->label_sequence_model->edit_bool_label($id, $this->__get_bool_value());
+      break;
+    case 'position':
+      $data = $this->__get_position_value();
+      $this->label_sequence_model->edit_position_label($id, $data['start'], $data['length']);
+      break;
+    case 'tax':
+      $this->label_sequence_model->edit_tax_label($id, $this->get_post('hidden_tax'));
+      break;
+    case 'ref':
+      $this->label_sequence_model->edit_ref_label($id, $this->get_post('hidden_ref'));
       break;
     }
 
