@@ -355,7 +355,12 @@ class Label extends BioController {
     $value = $this->get_post('value');
 
     $result = $this->label_model->edit_code($id, $value);
-    echo $value;
+    
+    if($value) {
+      echo $value;
+    } else {
+      $this->return_empty();
+    }
   }
 
   function edit_validcode() {
@@ -367,7 +372,12 @@ class Label extends BioController {
     $value = $this->get_post('value');
 
     $result = $this->label_model->edit_validcode($id, $value);
-    echo $value;
+    
+    if($value) {
+      echo $value;
+    } else {
+      $this->return_empty();
+    }
   }
 
   function edit_comment() {
@@ -379,7 +389,12 @@ class Label extends BioController {
     $value = $this->get_post('value');
 
     $result = $this->label_model->edit_comment($id, $value);
-    echo $value;
+    
+    if($value) {
+      echo $value;
+    } else {
+      $this->return_empty();
+    }
   }
 
   function edit_bool($what) {
