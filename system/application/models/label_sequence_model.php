@@ -40,6 +40,38 @@ class Label_sequence_model extends BioModel
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }
+  
+  function __validate_label_data($type, $data1, $data2)
+  {
+    switch($type) {
+      case 'integer':
+        return is_numeric($data1);
+      case 'url':
+        return strlen($data1) <= 2048 && (parse_url($data1) ? TRUE : FALSE);
+      case 'text':
+        $len = strlen($data1);
+        return $len > 0 && $len <= 1024;
+      case 'bool':
+        return true;
+      case 'obj':
+        $len = strlen($data1);
+        return $len > 0 && $len <= 1024;
+      case 'position':
+        return is_numeric($data1) &&
+          is_numeric($data2) &&
+          $data1 >= 0 && $data2 > 0;
+      case 'ref':
+        $seq_model = $this->load_model('sequence_model');
+        return is_numeric($data1) && $data1 > 0 &&
+          $seq_model->has_sequence($data1);
+      case 'tax':
+        $tax_model = $this->load_model('taxonomy_model');
+        return is_numeric($data1) && $data1 > 0 &&
+          $tax_model->has_taxonomy($data1);
+    }
+    
+    return false;
+  }
 
   function add($seq, $label, $type, $subname, $data1 = null, $data2 = null)
   {
@@ -58,10 +90,8 @@ class Label_sequence_model extends BioModel
       $data[$fields] = $data1;
     }
     
-    if($type == 'integer') {
-      if(!is_numeric($data1)) {
-        return false;
-      }
+    if(!$this->__validate_label_data($type, $data1, $data2)) {
+      return false;
     }
 
     return $this->insert_data_with_history($data);
@@ -108,6 +138,10 @@ class Label_sequence_model extends BioModel
       $data[$fields[1]] = $data2;
     } else {
       $data[$fields] = $data1;
+    }
+    
+    if(!$this->__validate_label_data($type, $data1, $data2)) {
+      return false;
     }
 
     return $this->edit_data_with_history($id, $data);
