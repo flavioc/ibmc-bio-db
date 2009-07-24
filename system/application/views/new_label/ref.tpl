@@ -1,4 +1,3 @@
-
 <h2>New reference label</h2>
 
 {include file=new_label/info.tpl}

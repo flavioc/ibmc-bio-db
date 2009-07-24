@@ -10,10 +10,4 @@
 {form_submit name=submit msg='Add label'}
 {form_end}
 
-{literal}
-<script>
-$(function () {
-  $("#form_add_label").validateTextLabel();
-});
-</script>
-{/literal}
+{include file=common_label/validate_add/text.tpl}

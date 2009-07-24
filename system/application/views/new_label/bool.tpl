@@ -1,4 +1,4 @@
-<h2>Add boolean label</h2>
+<h2>New boolean label</h2>
 
 {include file=new_label/info.tpl}
 
