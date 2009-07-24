@@ -113,19 +113,13 @@ class Add_Labels extends BioController {
         
         return $this->label_sequence_model->add_position_label($seq_id, $label_id, $start, $length);
       case 'obj':
-        $this->load->library('upload', $this->__get_obj_label_config());
-        
-        if(!$this->upload->do_upload('file')) {
-          return $this->upload->display_errors('', '');;
+        try {
+          $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
+          return $this->label_sequence_model->add_obj_label($seq_id, $label_id,
+                $data['filename'], $data['bytes']);
+        } catch(Exception $e) {
+          return $e->getMessage();
         }
-
-        $data = $this->upload->data();
-
-        $filename = $data['orig_name'];
-        $bytes = read_file_content($data);
-
-        return $this->label_sequence_model->add_obj_label($seq_id,
-                  $label_id, $filename, $bytes);
       case 'integer':
         return $this->label_sequence_model->add_integer_label($seq_id, $label_id, $this->get_post('integer'));
       case 'bool':

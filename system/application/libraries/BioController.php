@@ -255,4 +255,21 @@ class BioController extends Controller
 
     return $config;
   }
+  
+  function __read_uploaded_file($name, $config)
+  {
+    $this->load->library('upload', $config);
+    
+    if(!$this->upload->do_upload($name)) {
+      throw new Exception($this->upload->display_errors('', ''));
+    }
+
+    $data = $this->upload->data();
+
+    $filename = $data['orig_name'];
+    $bytes = read_file_content($data);
+    
+    return array('filename' => $filename,
+                  'bytes' => $bytes);
+  }
 }

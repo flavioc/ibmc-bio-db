@@ -9,6 +9,21 @@ class Multiple_Labels extends BioController {
   private $label_id = null;
   private $seqs = null;
   private $generate = FALSE;
+  
+  // data
+  private $text = null;
+  private $integer = null;
+  private $url = null;
+  private $boolean = null;
+  private $start = null;
+  private $length = null;
+  private $tax = null;
+  private $ref = null;
+  private $upload_error = false;
+  private $filename = null;
+  private $bytes = null;
+  
+  // stats
   private $count_new_multiple = 0;
   private $count_regenerate = 0;
   private $count_new = 0;
@@ -73,6 +88,9 @@ class Multiple_Labels extends BioController {
           $this->smarty->assign('users', $this->user_model->get_users_all());
           
           $this->smarty->view_s('add_multiple_label/ref');
+          break;
+        case 'obj':
+          $this->smarty->view_s('add_multiple_label/obj');
           break;
       }
     } else {
@@ -154,47 +172,69 @@ class Multiple_Labels extends BioController {
     ++$this->count_new_multiple;
   }
   
-  function __get_bool_value()
+  function __get_values()
   {
-    $value = $this->get_post('boolean');
-    
-    return $value ? TRUE : FALSE;
-  }
-  
-  function __get_position_value()
-  {
-    $start = $this->get_post('start');
-    $length = $this->get_post('length');
-    
-    return array('start' => $start,
-                 'length' => $length);
+    switch($this->label_type) {
+      case 'text':
+        $this->text = $this->get_post('text');
+        break;
+      case 'integer':
+        $this->integer = $this->get_post('integer');
+        break;
+      case 'url':
+        $this->url = $this->get_post('url');
+        break;
+      case 'bool':
+        $this->boolean = $this->get_post('boolean') ? TRUE : FALSE;
+        break;
+      case 'position':
+        $this->start = $this->get_post('start');
+        $this->length = $this->get_post('length');
+        break;
+      case 'tax':
+        $this->tax = $this->get_post('hidden_tax');
+        break;
+      case 'ref':
+        $this->ref = $this->get_post('hidden_ref');
+        break;
+      case 'obj':
+        try {
+          $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
+          $this->filename = $data['filename'];
+          $this->bytes = $data['bytes'];
+        } catch(Exception $e) {
+          $this->upload_error = true;
+        }
+        break;
+    }
   }
 
   function __add_label_common($seq_id)
   {
     switch($this->label_type) {
     case 'text':
-      $this->label_sequence_model->add_text_label($seq_id, $this->label_id, $this->get_post('text'));
+      $this->label_sequence_model->add_text_label($seq_id, $this->label_id, $this->text);
       break;
     case 'integer':
-      $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->get_post('integer'));
+      $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->integer);
       break;
     case 'url':
-      $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->get_post('url'));
+      $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->url);
       break;
     case 'bool':
-      $this->label_sequence_model->add_bool_label($seq_id, $this->label_id, $this->__get_bool_value());
+      $this->label_sequence_model->add_bool_label($seq_id, $this->label_id, $this->boolean);
       break;
     case 'position':
-      $data = $this->__get_position_value();
-      $this->label_sequence_model->add_position_label($seq_id, $this->label_id,
-        $data['start'], $data['length']);
+      $this->label_sequence_model->add_position_label($seq_id, $this->label_id, $this->start, $this->length);
       break;
     case 'tax':
-      $this->label_sequence_model->add_tax_label($seq_id, $this->label_id, $this->get_post('hidden_tax'));
+      $this->label_sequence_model->add_tax_label($seq_id, $this->label_id, $this->tax);
       break;
     case 'ref':
-      $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->get_post('hidden_ref'));
+      $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->ref);
+      break;
+    case 'obj':
+      $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes);
       break;
     }
   }
@@ -209,40 +249,36 @@ class Multiple_Labels extends BioController {
   {
     switch($this->label_type) {
     case 'text':
-      $this->label_sequence_model->edit_text_label($id, $this->get_post('text'));
+      $this->label_sequence_model->edit_text_label($id, $this->text);
       break;
     case 'integer':
-      $this->label_sequence_model->edit_integer_label($id, $this->get_post('integer'));
+      $this->label_sequence_model->edit_integer_label($id, $this->integer);
       break;
     case 'url':
-      $this->label_sequence_model->edit_url_label($id, $this->get_post('url'));
+      $this->label_sequence_model->edit_url_label($id, $this->url);
       break;
     case 'bool':
-      $this->label_sequence_model->edit_bool_label($id, $this->__get_bool_value());
+      $this->label_sequence_model->edit_bool_label($id, $this->boolean);
       break;
     case 'position':
-      $data = $this->__get_position_value();
-      $this->label_sequence_model->edit_position_label($id, $data['start'], $data['length']);
+      $this->label_sequence_model->edit_position_label($id, $this->start, $this->length);
       break;
     case 'tax':
-      $this->label_sequence_model->edit_tax_label($id, $this->get_post('hidden_tax'));
+      $this->label_sequence_model->edit_tax_label($id, $this->tax);
       break;
     case 'ref':
-      $this->label_sequence_model->edit_ref_label($id, $this->get_post('hidden_ref'));
+      $this->label_sequence_model->edit_ref_label($id, $this->ref);
+      break;
+    case 'obj':
+      $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes);
       break;
     }
 
     ++$this->count_updated;
   }
-
-  function add_label()
+  
+  function __iterate_seqs()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
-    $this->__get_info();
-
     foreach($this->seqs as &$seq) {
       $seq_id = $seq['id'];
 
@@ -274,7 +310,21 @@ class Multiple_Labels extends BioController {
         }
       }
     }
+  }
 
+  function add_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_empty();
+    }
+
+    $this->__get_info();
+    $this->__get_values();
+    
+    if(!$this->upload_error) {
+      $this->__iterate_seqs();
+    }
+    
     $this->__show_stats();
   }
 }
