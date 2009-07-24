@@ -205,11 +205,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_text_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'text');
-  }
-
   function edit_text_label($id, $text)
   {
     $label = $this->get($id);
@@ -219,11 +214,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_text_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function __is_integer($label)
@@ -255,16 +245,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_generated_integer_label($id)
-  {
-    return $this->edit_auto_label($id);
-  }
-
-  function add_generated_integer_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'integer');
-  }
-
   function __is_bool($label)
   {
     return $label['type'] == 'bool';
@@ -283,11 +263,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_bool_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'bool');
-  }
-
   function edit_bool_label($id, $bool)
   {
     $label = $this->get($id);
@@ -297,11 +272,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_bool_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function __is_url($label)
@@ -322,11 +292,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_url_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'url');
-  }
-
   function edit_url_label($id, $url)
   {
     $label = $this->get($id);
@@ -336,11 +301,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_url_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function __is_obj($label)
@@ -361,11 +321,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_obj_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'obj');
-  }
-
   function edit_obj_label($id, $filename, $data)
   {
     $label = $this->get($id);
@@ -375,11 +330,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_obj_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function __is_ref($label)
@@ -400,11 +350,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_ref_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'ref');
-  }
-
   function edit_ref_label($id, $ref)
   {
     $label = $this->get($id);
@@ -414,11 +359,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_ref_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function __is_tax($label)
@@ -439,11 +379,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_tax_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'tax');
-  }
-
   function edit_tax_label($id, $tax)
   {
     $label = $this->get($id);
@@ -453,11 +388,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_tax_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function __is_position($label)
@@ -478,11 +408,6 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add_generated_position_label($seq_id, $label_id)
-  {
-    return $this->add_generated_label($seq_id, $label_id, 'position');
-  }
-
   function edit_position_label($id, $start, $length)
   {
     $label = $this->get($id);
@@ -492,11 +417,6 @@ class Label_sequence_model extends BioModel
     } else {
       return false;
     }
-  }
-
-  function edit_generated_position_label($id)
-  {
-    return $this->edit_auto_label($id);
   }
 
   function get_labels_to_auto_modify($seq)
