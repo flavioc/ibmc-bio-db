@@ -60,6 +60,16 @@ $.fn.validateRefLabel = function () {
   });
 };
 
+$.fn.validateObjLabel = function () {
+  return this.validate({
+    rules: {
+      file: {
+        required: generate_disabled
+      }
+    }
+  });
+};
+
 function change_label_ref(place, form)
 {
   return function (row) {

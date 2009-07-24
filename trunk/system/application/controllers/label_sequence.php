@@ -5,7 +5,6 @@ class Label_Sequence extends BioController {
   private static $label_generate_error = "An error has ocurred while generating the label.";
   private static $sequence_inexistant_error = "Sequence doesn't exist.";
   private static $taxonomy_inexistant_error = "Taxonomy doesn't exist.";
-  private static $label_used_error = "This label is already being used and cannot be reused";
   private static $label_invalid_text_type = "This label has invalid text type";
   private static $label_invalid_bool_type = "This label has invalid integer type";
   private static $label_invalid_url_type = "This label has invalid url type";
@@ -169,56 +168,6 @@ class Label_Sequence extends BioController {
     }
   }
 
-  function add_label($seq_id, $label_id)
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_thickbox();
-    }
-
-    $label = $this->label_model->get($label_id);
-
-    $this->smarty->assign('sequence', $this->sequence_model->get($seq_id));
-    $this->smarty->assign('label', $label);
-
-    $editable = $label['editable'];
-    $auto = $label['auto_on_creation'];
-
-    if(!$editable && $auto) {
-      $this->smarty->view_s('new_label/auto');
-    } else if($editable) {
-      $type = $label['type'];
-
-      switch($type) {
-        case 'text':
-          $this->smarty->view_s('new_label/text');
-          break;
-        case 'integer':
-          $this->smarty->view_s('new_label/integer');
-          break;
-        case 'url':
-          $this->smarty->view_s('new_label/url');
-          break;
-        case 'obj':
-          $this->smarty->view_s('new_label/obj');
-          break;
-        case 'bool':
-          $this->smarty->view_s('new_label/bool');
-          break;
-        case 'position':
-          $this->smarty->view_s('new_label/position');
-          break;
-        case 'ref':
-          $this->__display_ref_form('new_label/ref');
-          break;
-        case 'tax':
-          $this->__display_tax_form('new_label/tax');
-          break;
-      }
-    } else {
-      echo "NOT HANDLED, PLEASE REPORT";
-    }
-  }
-
   function __display_ref_form($file)
   {
     $this->load->model('user_model');
@@ -245,41 +194,6 @@ class Label_Sequence extends BioController {
     $ret = $this->get_post('generate_check');
 
     return $ret ? TRUE : FALSE;
-  }
-
-  function __add_text_label($seq_id, $label_id, $text, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_text_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_text_type;
-    }
-
-    if($this->label_sequence_model->add_text_label($seq_id, $label_id, $text)) {
-      return true;
-    }
-
-    return self::$label_invalid_text_type;
-  }
-
-  function add_text_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $text = $this->get_post('text');
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_text_label($seq_id, $label_id, $text, $generate));
   }
 
   function __edit_text_label($id, $text, $generate)
@@ -314,43 +228,6 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__edit_text_label($id, $text, $generate));
-  }
-
-  function __add_bool_label($seq_id, $label_id, $bool, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_bool_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_bool_type;
-    }
-
-    if($this->label_sequence_model->add_bool_label($seq_id, $label_id, $bool)) {
-      return true;
-    }
-
-    return self::$label_invalid_bool_type;
-  }
-
-  function add_bool_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $bool = $this->get_post('boolean');
-    $generate = $this->__get_generate();
-
-    $bool = ($bool ? TRUE : FALSE);
-
-    $this->json_return($this->__add_bool_label($seq_id, $label_id, $bool, $generate));
   }
 
   function __edit_bool_label($id, $bool, $generate)
@@ -389,41 +266,6 @@ class Label_Sequence extends BioController {
     $this->json_return($this->__edit_bool_label($id, $bool, $generate));
   }
 
-  function __add_integer_label($seq_id, $label_id, $int, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_integer_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_integer_type;
-    }
-
-    if($this->label_sequence_model->add_integer_label($seq_id, $label_id, $int)) {
-      return true;
-    } else {
-      return self::$label_invalid_integer_type;
-    }
-  }
-
-  function add_integer_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $int = intval($this->get_post('integer'));
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_integer_label($seq_id, $label_id, $int, $generate));
-  }
-
   function __edit_integer_label($id, $integer, $generate)
   {
     if(!$this->label_sequence_model->label_exists($id)) {
@@ -458,54 +300,6 @@ class Label_Sequence extends BioController {
     $this->json_return($this->__edit_integer_label($id, $integer, $generate));
   }
 
-  function __add_obj_label($seq_id, $label_id, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_obj_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_obj_type;
-    }
-
-    $this->load->library('upload', $this->_get_upload_config());
-    $upload_ret = $this->upload->do_upload('file');
-
-    if(!$upload_ret) {
-      return $this->upload->display_errors('', '');;
-    }
-
-    $data = $this->upload->data();
-
-    $filename = $data['orig_name'];
-    $bytes = read_file_content($data);
-
-    if($this->label_sequence_model->add_obj_label($seq_id,
-      $label_id, $filename, $bytes))
-    {
-      return true;
-    } else {
-      return self::$label_invalid_obj_type;
-    }
-  }
-
-  function add_obj_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_obj_label($seq_id, $label_id, $generate));
-  }
-
   function __edit_obj_label($id, $generate)
   {
     if(!$this->label_sequence_model->label_exists($id)) {
@@ -520,7 +314,7 @@ class Label_Sequence extends BioController {
       return self::$label_generate_error;
     }
 
-    $this->load->library('upload', $this->_get_upload_config());
+    $this->load->library('upload', $this->__get_obj_label_config());
     $upload_ret = $this->upload->do_upload('file');
 
     if(!$upload_ret) {
@@ -550,44 +344,6 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__edit_obj_label($id, $generate));
-  }
-
-  function __add_position_label($seq_id, $label_id, $start, $length, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_position_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_position_type;
-    }
-
-    if($this->label_sequence_model->add_position_label($seq_id, $label_id,
-      intval($start), intval($length)))
-    {
-      return true;
-    } else {
-      return self::$label_invalid_position_type;
-    }
-  }
-
-  function add_position_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $start = $this->get_post('start');
-    $length = $this->get_post('length');
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_position_label($seq_id, $label_id, $start, $length, $generate));
   }
 
   function __edit_position_label($id, $start, $length, $generate)
@@ -623,20 +379,6 @@ class Label_Sequence extends BioController {
     $length = $this->get_post('length');
 
     $this->json_return($this->__edit_position_label($id, $start, $length, $generate));
-  }
-
-  function add_tax_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $tax = $this->get_post('hidden_tax');
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_tax_label($seq_id, $label_id, $tax, $generate));
   }
 
   function edit_tax_label()
@@ -680,34 +422,6 @@ class Label_Sequence extends BioController {
     return self::$label_invalid_tax_type;
   }
 
-  function __add_tax_label($seq_id, $label_id, $tax, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_tax_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_tax_type;
-    }
-
-    $tax = intval($tax);
-
-    $this->load->model('taxonomy_model');
-    if(!$this->taxonomy_model->has_taxonomy($tax)) {
-      return self::$taxonomy_inexistant_error;
-    }
-
-    if($this->label_sequence_model->add_tax_label($seq_id, $label_id, $tax)) {
-      return true;
-    }
-
-    return self::$label_invalid_tax_label;
-  }
-
   function __edit_ref_label($id, $ref, $generate)
   {
     if(!$this->label_sequence_model->label_exists($id)) {
@@ -735,47 +449,6 @@ class Label_Sequence extends BioController {
     return self::$label_invalid_ref_type;
   }
 
-  function __add_ref_label($seq_id, $label_id, $ref, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_ref_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_ref_type;
-    }
-
-    $ref = intval($ref);
-
-    if(!$this->sequence_model->has_sequence($ref)) {
-      return self::$sequence_inexistant_error;
-    }
-
-    if($this->label_sequence_model->add_ref_label($seq_id, $label_id, $ref)) {
-      return true;
-    }
-
-    return self::$label_invalid_ref_label;
-  }
-
-  function add_ref_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $ref = $this->get_post('hidden_ref');
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_ref_label($seq_id, $label_id, $ref, $generate));
-  }
-
   function edit_ref_label()
   {
     if(!$this->logged_in) {
@@ -787,41 +460,6 @@ class Label_Sequence extends BioController {
     $ref = $this->get_post('hidden_ref');
 
     $this->json_return($this->__edit_ref_label($id, $ref, $generate));
-  }
-
-  function __add_url_label($seq_id, $label_id, $url, $generate)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    }
-
-    if($generate) {
-      if($this->label_sequence_model->add_generated_url_label($seq_id, $label_id)) {
-        return true;
-      }
-
-      return self::$label_invalid_url_type;
-    }
-
-    if($this->label_sequence_model->add_url_label($seq_id, $label_id, $url)) {
-      return true;
-    } else {
-      return self::$label_invalid_url_type;
-    }
-  }
-
-  function add_url_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-    $url = $this->get_post('url');
-    $generate = $this->__get_generate();
-
-    $this->json_return($this->__add_url_label($seq_id, $label_id, $url, $generate));
   }
 
   function __edit_url_label($id, $url, $generate)
@@ -904,15 +542,5 @@ class Label_Sequence extends BioController {
     $id = $this->get_post('id');
 
     $this->json_return($this->__edit_auto_label($id));
-  }
-
-  function _get_upload_config()
-  {
-    $config['upload_path'] = UPLOAD_DIRECTORY;
-    $config['overwrite'] = true;
-    $config['encrypt_name'] = true;
-    $config['allowed_types'] = 'doc|fasta|pdf|xls|docx|xlsx|png|bmp|gif|jpg|hs';
-
-    return $config;
   }
 }

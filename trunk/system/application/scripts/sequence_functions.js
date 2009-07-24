@@ -326,7 +326,7 @@ function setup_addable_list()
     },
     clickFun: {
       add: function (row) {
-        var url = label_site + '/add_label/' + seq_id + '/' + row.id;
+        var url = get_app_url() + '/add_labels/add_dialog/' + seq_id + '/' + row.id;
         tb_show('Add label', url);
       },
       type: function (row) {
