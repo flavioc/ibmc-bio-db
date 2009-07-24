@@ -466,3 +466,53 @@ function reload_bad_multiple_list()
     }
   });
 }
+
+function after_edit_label(responseText, statusText) {
+  var resp = $.evalJSON(responseText);
+
+  if(resp == true) {
+    reload_labels_list();
+  } else {
+    alert(responseText);
+  }
+
+  tb_remove();
+}
+
+$.fn.ajaxFormEdit = function () {
+  return this.ajaxForm({
+    success: after_edit_label,
+    beforeSubmit: function (data, form) {
+      return $(form).valid();
+    }
+  });
+};
+
+function after_add_label(responseText, statusText) {
+  var resp = $.evalJSON(responseText);
+
+  if(resp == true) {
+    if(label.multiple == 0) {
+      reload_addable_list();
+    }
+
+    if(label.must_exist == 1) {
+      reload_missing_list();
+    }
+
+    reload_labels_list();
+  } else {
+    alert(responseText);
+  }
+
+  tb_remove();
+}
+
+$.fn.ajaxFormAdd = function () {
+  return this.ajaxForm({
+    success: after_add_label,
+    beforeSubmit: function (data, form) {
+      return $(form).valid();
+    }
+  });
+};

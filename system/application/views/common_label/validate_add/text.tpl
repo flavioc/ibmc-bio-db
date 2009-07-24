@@ -1,7 +1,3 @@
-{literal}
-<script>
-$(function () {
-$("#form_add_label").validateTextLabel();
-});
-</script>
-{/literal}
+{literal}<script>
+$(function () {$("#{/literal}{$form}{literal}").validateTextLabel();});
+</script>{/literal}

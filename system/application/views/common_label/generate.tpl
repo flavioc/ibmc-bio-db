@@ -11,9 +11,9 @@ $(document).ready(function () {
 
   checkbox.click(function (event) {
     if(checkbox.is(":checked")) {
-      hide_obj.fadeOut();
+      hide_obj.hide();
     } else {
-      hide_obj.fadeIn();
+      hide_obj.show();
     }
   });
 

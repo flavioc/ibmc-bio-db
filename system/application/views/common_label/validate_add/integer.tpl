@@ -1,7 +1,3 @@
-{literal}
-<script>
-$(function () {
-  $("#form_add_label").validateIntegerLabel();
-});
-</script>
-{/literal}
+{literal}<script>
+$(function () { $("#{/literal}{$form}{literal}").validateIntegerLabel(); });
+</script>{/literal}
