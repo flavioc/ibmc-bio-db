@@ -2,7 +2,7 @@
 
 class Label_sequence_model extends BioModel
 {
-  private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_a_data, position_b_data, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name";
+  private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name";
 
   private static $label_basic_fields = "label_id, id, seq_id, subname, history_id, type, name, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
 
@@ -793,7 +793,7 @@ class Label_sequence_model extends BioModel
     case 'obj':
       return array('text_data', 'obj_data');
     case 'position':
-      return array('position_a_data', 'position_b_data');
+      return array('position_start', 'position_length');
     case 'ref':
       return 'ref_data';
     case 'tax':
@@ -973,9 +973,9 @@ class Label_sequence_model extends BioModel
         if($label_type == 'position') {
           $type = $value['type'];
           if($type == 'start') {
-            $fields = 'position_a_data';
+            $fields = 'position_start';
           } else {
-            $fields = 'position_b_data';
+            $fields = 'position_length';
           }
 
           $value = $value['num'];
