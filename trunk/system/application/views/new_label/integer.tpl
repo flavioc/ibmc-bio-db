@@ -7,10 +7,7 @@
 
 <fieldset>
 {include file=new_label/hidden.tpl}
-{include file=new_label/generate.tpl to_hide=#data_area}
-<span id="data_area">
-{form_row name=integer msg='Integer:'}
-</span>
+{include file=common_label/integer.tpl}
 </fieldset>
 
 {form_submit name=submit msg='Add label'}
