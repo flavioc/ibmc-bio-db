@@ -50,7 +50,7 @@ class Multiple_Labels extends BioController {
     $this->smarty->assign('label', $label);
 
     $editable = $label['editable'];
-    $auto = $label['auto_on_creation'];
+    $auto = $label['code'];
 
     if(!$editable && $auto) {
       $this->smarty->view_s('add_multiple_label/auto');
@@ -94,7 +94,7 @@ class Multiple_Labels extends BioController {
           break;
       }
     } else {
-    
+      $this->smarty->view_s('common_label/malformed.tpl');
     }
   }
 

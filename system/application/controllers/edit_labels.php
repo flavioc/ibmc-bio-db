@@ -23,7 +23,7 @@ class Edit_Labels extends BioController {
     $this->smarty->assign('sequence', $sequence);
 
     $editable = $label['editable'];
-    $auto = $label['auto_on_creation'];
+    $auto = $label['code'];
 
     if(!$editable && $auto) {
       $this->smarty->view_s('edit_label/auto');
@@ -64,6 +64,8 @@ class Edit_Labels extends BioController {
           $this->smarty->view_s('edit_label/tax');
           break;
       }
+    } else {
+      $this->smarty->view_s('common_label/malformed.tpl');
     }
   }
   
