@@ -23,3 +23,14 @@ $.fn.validateIntegerLabel = function () {
     }
   });
 };
+
+$.fn.validateUrlLabel = function () {
+	return this.validate({
+    rules: {
+      url: {
+        required: generate_disabled,
+        url: true
+      }
+    }
+  });
+};

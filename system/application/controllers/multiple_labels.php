@@ -49,8 +49,12 @@ class Multiple_Labels extends BioController {
         case 'integer':
           $this->smarty->view_s('add_multiple_label/integer');
           break;
+        case 'url':
+          $this->smarty->view_s('add_multiple_label/url');
+          break;
       }
     } else {
+    
     }
   }
 
@@ -137,6 +141,9 @@ class Multiple_Labels extends BioController {
     case 'integer':
       $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->get_post('integer'));
       break;
+    case 'url':
+      $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->get_post('url'));
+      break;
     }
   }
 
@@ -154,6 +161,9 @@ class Multiple_Labels extends BioController {
       break;
     case 'integer':
       $this->label_sequence_model->edit_integer_label($id, $this->get_post('integer'));
+      break;
+    case 'url':
+      $this->label_sequence_model->edit_url_label($id, $this->get_post('url'));
       break;
     }
 
