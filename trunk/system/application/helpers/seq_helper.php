@@ -501,7 +501,7 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
       $toadd = $label['text_data'];
       break;
     case 'position':
-      $toadd = $label['position_a_data'] . ' ' . $label['position_b_data'];
+      $toadd = $label['position_start'] . ' ' . $label['position_length'];
       break;
     case 'bool':
       $toadd = $label['bool_data'];

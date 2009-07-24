@@ -20,8 +20,8 @@ var data_transform_labels = {
       taxonomy_data: function (row) {
         return row.taxonomy_name;
       },
-      position_a_data: function (row) {
-        return row.position_a_data + ' ' + row.position_b_data;
+      position_start: function (row) {
+        return row.position_start + ' ' + row.position_length;
       },
       obj_data: function (row) {
         return row.text_data;
@@ -88,7 +88,7 @@ function select_field(row)
         field_to_add = 'taxonomy_data';
         break;
       case 'position':
-        field_to_add = 'position_a_data';
+        field_to_add = 'position_start';
         break;
       case 'obj':
         field_to_add = 'obj_data';
