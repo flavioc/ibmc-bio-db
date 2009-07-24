@@ -1,4 +1,8 @@
-{include file=new_label/generate.tpl to_hide=#data_area}
+{include file=common_label/generate.tpl to_hide=#data_area}
 <span id="data_area">
+{if $label}
+{form_row name=text msg='Text:' value=$label.text_data}
+{else}
 {form_row name=text msg='Text:'}
+{/if}
 </span>

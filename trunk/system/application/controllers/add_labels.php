@@ -146,13 +146,6 @@ class Add_Labels extends BioController {
     }
   }
   
-  function __get_generate()
-  {
-    $ret = $this->get_post('generate_check');
-
-    return $ret ? TRUE : FALSE;
-  }
-
   function add()
   {
     if(!$this->logged_in) {
@@ -161,7 +154,7 @@ class Add_Labels extends BioController {
 
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
-    $generate = $this->__get_generate();
+    $generate = $this->get_post('generate_check') ? TRUE : FALSE;
     
     $this->json_return($this->__add($seq_id, $label_id, $generate));
   }
