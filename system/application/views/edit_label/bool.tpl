@@ -7,5 +7,4 @@
 {include file=edit_label/hidden.tpl}
 {include file=common_label/bool.tpl}
 </fieldset>
-{form_submit name=submit msg='Edit label'}
-{form_end}
+{include file=common_label/form_edit.tpl}

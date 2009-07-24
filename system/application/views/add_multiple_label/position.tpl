@@ -7,7 +7,6 @@
 {include file=add_multiple_label/hidden.tpl}
 {include file=common_label/position.tpl}
 </fieldset>
-{form_submit name=submit_pos msg='Add label'}
-{form_end}
+{include file=common_label/form_add.tpl}
 
 {include file=common_label/validate/position.tpl form=form_add_label}

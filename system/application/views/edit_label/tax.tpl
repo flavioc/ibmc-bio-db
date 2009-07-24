@@ -7,7 +7,6 @@
 {include file=edit_label/hidden.tpl}
 {include file=common_label/tax_form.tpl}
 </fieldset>
-{form_submit name=submit_tax msg='Edit label'}
-{form_end}
+{include file=common_label/form_edit.tpl}
 
 {include file=common_label/tax.tpl form=form_edit_label}
