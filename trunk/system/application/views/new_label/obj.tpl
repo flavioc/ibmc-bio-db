@@ -10,4 +10,4 @@
 {form_submit name=submit_file msg='Add label'}
 {form_end}
 
-{include file=common_label/validate_add/obj.tpl form=form_add_label}
+{include file=common_label/validate/obj.tpl form=form_add_label}
