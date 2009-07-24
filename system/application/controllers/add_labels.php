@@ -67,6 +67,22 @@ class Add_Labels extends BioController {
     }
   }
   
+  function add_auto()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_false();
+    }
+    
+    $seq_id = $this->get_post('seq_id');
+    $label_id = $this->get_post('label_id');
+    
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return $this->json_return("Label with id $label_id is already being used");
+    } else {
+      $this->label_sequence_model->add_auto_label_id($seq_id, $label_id);
+      return $this->json_return(true);
+    }
+  }
   
   function __add($seq_id, $label_id, $generate)
   {

@@ -118,56 +118,6 @@ class Label_Sequence extends BioController {
     $this->json_return($this->label_sequence_model->delete($id));
   }
 
-  function edit_label($id)
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_thickbox();
-    }
-
-    $label = $this->label_sequence_model->get($id);
-    $this->smarty->assign('label', $label);
-
-    $seq_id = $label['seq_id'];
-    $sequence = $this->sequence_model->get($seq_id);
-    $this->smarty->assign('sequence', $sequence);
-
-    $editable = $label['editable'];
-    $auto = $label['auto_on_creation'];
-
-    if(!$editable && $auto) {
-      $this->smarty->view_s('edit_label/auto');
-    } else if($editable) {
-      $type = $label['type'];
-
-      switch($type) {
-        case 'text':
-          $this->smarty->view_s('edit_label/text');
-          break;
-        case 'integer':
-          $this->smarty->view_s('edit_label/integer');
-          break;
-        case 'url':
-          $this->smarty->view_s('edit_label/url');
-          break;
-        case 'obj':
-          $this->smarty->view_s('edit_label/obj');
-          break;
-        case 'bool':
-          $this->smarty->view_s('edit_label/bool');
-          break;
-        case 'position':
-          $this->smarty->view_s('edit_label/position');
-          break;
-        case 'ref':
-          $this->__display_ref_form('edit_label/ref');
-          break;
-        case 'tax':
-          $this->__display_tax_form('edit_label/tax');
-          break;
-      }
-    }
-  }
-
   function __display_ref_form($file)
   {
     $this->load->model('user_model');
@@ -494,28 +444,6 @@ class Label_Sequence extends BioController {
     $generate = $this->__get_generate();
 
     $this->json_return($this->__edit_url_label($id, $url, $generate));
-  }
-
-  function __add_auto_label($seq_id, $label_id)
-  {
-    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
-      return self::$label_used_error;
-    } else {
-      $this->label_sequence_model->add_auto_label_id($seq_id, $label_id);
-      return true;
-    }
-  }
-
-  function add_auto_label()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    $seq_id = $this->get_post('seq_id');
-    $label_id = $this->get_post('label_id');
-
-    $this->json_return($this->__add_auto_label($seq_id, $label_id));
   }
 
   function __edit_auto_label($id)
