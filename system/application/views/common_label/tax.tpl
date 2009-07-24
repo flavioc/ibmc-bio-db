@@ -1,7 +1,4 @@
-<p>
 <hr />
-<br />
-
 <div id="taxonomy_search">
   {include file=taxonomy/form_search.tpl}
 
@@ -9,7 +6,7 @@
 
   <script>
   {literal}
-  $(document).ready(function () {
+  $(function () {
     var place = $('#show_data');
     var form = $('#{/literal}{$form}{literal}');
 
@@ -27,7 +24,5 @@
       });
   });
   {/literal}
-</script>
-
+  </script>
 </div>
-</p>
