@@ -1,4 +1,3 @@
-
 <h2>New position label</h2>
 
 {include file=new_label/info.tpl}

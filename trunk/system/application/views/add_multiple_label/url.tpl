@@ -1,4 +1,4 @@
-<h2>New URL label</h2>
+<h2>Add URL label</h2>
 
 {include file=add_multiple_label/info.tpl}
 
@@ -10,10 +10,4 @@
 {form_submit name=submit msg='Add label'}
 {form_end}
 
-{literal}
-<script>
-$(function () {
-	$("#form_add_label").validateUrlLabel();
-});
-</script>
-{/literal}
+{include file=common_label/validate_add/url.tpl}

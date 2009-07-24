@@ -12,10 +12,4 @@
 {form_submit name=submit msg='Add label'}
 {form_end}
 
-{literal}
-<script>
-$(function () {
-  $("#form_add_label").validateIntegerLabel();
-});
-</script>
-{/literal}
+{include file=common_label/validate_add/integer.tpl}
