@@ -151,7 +151,7 @@ function setup_labels_list()
     },
     clickFun: {
       edit: function (row) {
-        var url = label_site + '/edit_label/' + row.id;
+        var url = get_app_url() + '/edit_labels/edit_dialog/' + row.id;
         tb_show('Edit label', url);
       }
     }
