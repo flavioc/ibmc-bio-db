@@ -188,6 +188,12 @@ class Label_model extends BioModel
     $this->delete_id($id);
     return true;
   }
+  
+  function delete_all_custom()
+  {
+    $this->db->where('`default` IS FALSE');
+    return $this->delete_rows();
+  }
 
   function is_default($id)
   {
