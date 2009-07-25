@@ -1,11 +1,23 @@
+{if $mode == 'add'}
 <h2>Add label to multiple sequences</h2>
+{elseif $mode == 'edit'}
+<h2>Edit label in multiple sequences</h2>
+{/if}
 
 <h3>Form</h3>
 
 {form_open to='#' name=label_form}
 {form_hidden name=search value=$encoded}
 {form_row name=label msg='Label:' row_id=label_row}<span id="selected_label"></span>
+
+{if $mode == 'add'}
 {form_row type=checkbox name=update msg="Update:"}
+{/if}
+
+{if $mode == 'edit'}
+{form_row type=checkbox name=addnew msg='Add new:'}
+{/if}
+
 {form_row type=checkbox name=multiple msg="Add multiple:"}
 {form_submit name='submit_add_label' msg='Open dialog'}
 {form_end}
@@ -28,13 +40,13 @@ $(function () {
     params: {
       search: '{/literal}{$encoded}{literal}'
     },
-    fieldNames: ['Add', 'Name', 'Last update', 'User'],
-    fields: ['add', 'name', 'update', 'user_name'],
-    tdClass: {user_name: 'centered', update: 'centered', add: 'centered'},
+    fieldNames: ['Change', 'Name', 'Last update', 'User'],
+    fields: ['change', 'name', 'update', 'user_name'],
+    tdClass: {user_name: 'centered', update: 'centered', change: 'centered'},
     width: {
       user_name: w_user,
       update: w_update,
-      add: w_add
+      change: w_add
     },
     ordering: {
       name: 'asc',
@@ -50,12 +62,12 @@ $(function () {
       }
     },
     dataTransform: {
-      add: function (row) {
+      change: function (row) {
         return img_add;
       }
     },
     clickFun: {
-      add: function (row) {
+      change: function (row) {
         if(!current_label) {
           return false;
         }

@@ -71,9 +71,14 @@
 {form_submit name=submit msg='Export' id="submit_tree"}
 {form_end}
 
-{form_open to='sequence/multiple_add_label' name=add_label_form}
+{form_open to='sequence/multiple_add_label?mode=add' name=add_label_form}
 {form_hidden name=encoded_tree value=null}
 {form_submit name=submit msg='Add label' id='submit_add_label'}
+{form_end}
+
+{form_open to='sequence/multiple_add_label?mode=edit' name=edit_label_form}
+{form_hidden name=encoded_tree value=null}
+{form_submit name=submit msg='Edit label' id='submit_edit_label'}
 {form_end}
 
 <h3>Results</h3>

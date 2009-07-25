@@ -9,6 +9,10 @@ class Multiple_Labels extends BioController {
   private $label_id = null;
   private $seqs = null;
   private $generate = FALSE;
+  private $addnew = FALSE;
+  private $mode = null;
+  private $edit_mode = false;
+  private $add_mode = false;
   
   // data
   private $text = null;
@@ -45,8 +49,10 @@ class Multiple_Labels extends BioController {
       return $this->invalid_permission_thickbox();
     }
 
+    $mode = $this->get_parameter('mode');
+    $this->smarty->assign('mode', $mode);
+    
     $label = $this->label_model->get($label_id);
-
     $this->smarty->assign('label', $label);
 
     $editable = $label['editable'];
@@ -59,19 +65,12 @@ class Multiple_Labels extends BioController {
 
       switch($type) {
         case 'text':
-          $this->smarty->view_s('add_multiple_label/text');
-          break;
         case 'integer':
-          $this->smarty->view_s('add_multiple_label/integer');
-          break;
         case 'url':
-          $this->smarty->view_s('add_multiple_label/url');
-          break;
         case 'bool':
-          $this->smarty->view_s('add_multiple_label/bool');
-          break;
         case 'position':
-          $this->smarty->view_s('add_multiple_label/position');
+        case 'obj':
+          $this->smarty->view_s("add_multiple_label/$type");
           break;
         
         case 'tax':
@@ -88,9 +87,6 @@ class Multiple_Labels extends BioController {
           $this->smarty->assign('users', $this->user_model->get_users_all());
           
           $this->smarty->view_s('add_multiple_label/ref');
-          break;
-        case 'obj':
-          $this->smarty->view_s('add_multiple_label/obj');
           break;
       }
     } else {
@@ -111,8 +107,27 @@ class Multiple_Labels extends BioController {
     }
     $this->seqs = $this->label_sequence_model->get_search($this->search_tree);
     $this->multiple = json_decode($this->get_post('multiple'));
-    $this->update = json_decode($this->get_post('update'));
+    
+    $update = $this->get_post('update');
+    if($update) {
+      $this->update = json_decode($update);
+    }
+    
     $this->generate = json_decode($this->get_post('generate_check'));
+    
+    $addnew = $this->get_post('addnew');
+    if($addnew) {
+      $this->addnew = json_decode($addnew);
+    }
+    
+    $this->mode = $this->get_post('mode');
+    if($this->mode == 'add') {
+      $this->add_mode = true;
+      $this->edit_mode = false;
+    } else if($this->mode == 'edit') {
+      $this->add_mode = false;
+      $this->edit_mode = true;
+    }
   }
 
   function __can_do_multiple()
@@ -135,10 +150,10 @@ class Multiple_Labels extends BioController {
         if($this->__can_do_multiple()) {
           $this->label_sequence_model->add_auto_label($seq_id, $this->label);
           ++$this->count_new_multiple;
-        } else if($this->update) {
+        } else if($this->edit_mode || $this->update) {
           $this->__regenerate_label($seq_id);
         }
-      } else {
+      } else if($this->add_mode || ($this->edit_mode && $this->addnew)){
         $this->label_sequence_model->add_auto_label($seq_id, $this->label);
         ++$this->count_new_generated;
       }
@@ -291,7 +306,7 @@ class Multiple_Labels extends BioController {
             $this->__add_label_multiple($seq_id);
           }
         } else {
-          if($this->update) {
+          if(($this->add_mode && $this->update) || $this->edit_mode) {
             $id = $this->label_sequence_model->get_label_id($seq_id, $this->label_id);
             if($this->generate) {
               $this->label_sequence_model->edit_auto_label($id);
@@ -301,7 +316,7 @@ class Multiple_Labels extends BioController {
             }
           }
         }
-      } else {
+      } else if($this->add_mode || ($this->edit_mode && $this->addnew)){
         if($this->generate) {
           $this->label_sequence_model->add_generated_label($seq_id, $this->label_id);
           ++$this->count_new_generated;

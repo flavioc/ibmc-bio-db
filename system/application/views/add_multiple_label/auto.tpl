@@ -1,6 +1,10 @@
+{if $mode == 'add'}
 <h2>Add Generated label</h2>
+{elseif $mode == 'edit'}
+<h2>Edit Generated label</h2>
+{/if}
 
-<p>This label will be auto added for each sequence</p>
+<p>This label will be auto generated for each sequence</p>
 
 {include file=add_multiple_label/info.tpl}
 

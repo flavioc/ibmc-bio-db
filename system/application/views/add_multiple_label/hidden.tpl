@@ -2,9 +2,5 @@
 {form_hidden name=update}
 {form_hidden name=multiple}
 {form_hidden name=label_id}
-
-{literal}
-<script>
-$(update_new_label_form);
-</script>
-{/literal}
+{form_hidden name=mode}
+{form_hidden name=addnew}

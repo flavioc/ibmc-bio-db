@@ -177,9 +177,10 @@ class Sequence extends BioController
     $this->use_livequery();
 
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
+      FORM_SCRIPT,
+      GETPARAMS_SCRIPT,
       'label_functions.js',
       'add_multiple.js',
-      FORM_SCRIPT,
       'label_helpers.js',
       'taxonomy_functions.js',
       'common_sequence.js');
@@ -188,8 +189,15 @@ class Sequence extends BioController
 
     $json = stripslashes($encoded);
     $tree = json_decode($json, true);
-
-    $this->smarty->assign('title', 'Multiple add label');
+    $mode = $this->get_parameter('mode');
+    
+    if($mode == 'add') {
+      $this->smarty->assign('title', 'Multiple add label');
+    } else if($mode == 'edit') {
+      $this->smarty->assign('title', 'Multiple edit label');
+    }
+    
+    $this->smarty->assign('mode', $mode);
     $this->smarty->assign('encoded', $encoded);
 
     $this->smarty->view('sequence/multiple_add_label');
