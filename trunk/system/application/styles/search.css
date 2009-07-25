@@ -26,7 +26,9 @@
 #tree_form,
 #tree_form *,
 #add_label_form,
-#add_label_form *
+#add_label_form *,
+#edit_label_form,
+#edit_label_form *
 {
   display: inline;
 }

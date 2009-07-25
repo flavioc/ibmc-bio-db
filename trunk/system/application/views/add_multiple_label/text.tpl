@@ -7,6 +7,6 @@
 {include file=add_multiple_label/hidden.tpl}
 {include file=common_label/text.tpl}
 </fieldset>
-{include file=common_label/form_add.tpl}
+{include file=add_multiple_label/form_end.tpl}
 
 {include file=common_label/validate/text.tpl form=form_add_label}
