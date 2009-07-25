@@ -199,9 +199,6 @@ class Sequence extends BioController
       'common_sequence.js');
 
     $encoded = $this->get_post('encoded_tree');
-
-    $json = stripslashes($encoded);
-    $tree = json_decode($json, true);
     $mode = $this->get_parameter('mode');
     
     if($mode == 'add') {
@@ -214,6 +211,32 @@ class Sequence extends BioController
     $this->smarty->assign('encoded', $encoded);
 
     $this->smarty->view('sequence/multiple_add_label');
+  }
+  
+  function multiple_delete_label()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+
+    $this->use_mygrid();
+    $this->smarty->load_stylesheets('add_label.css');
+    $this->use_autocomplete();
+    $this->use_impromptu();
+
+    $this->smarty->load_scripts(VALIDATE_SCRIPT,
+      FORM_SCRIPT,
+      CONFIRM_SCRIPT,
+      'label_functions.js',
+      'select_label.js',
+      'common_sequence.js',
+      'delete_multiple.js');
+
+    $encoded = $this->get_post('encoded_tree');
+    $this->smarty->assign('encoded', $encoded);
+    
+    $this->smarty->assign('title', 'Multiple delete label');
+    $this->smarty->view('sequence/multiple_delete_label');
   }
 
   function get_all()

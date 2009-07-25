@@ -162,6 +162,15 @@ class BioModel extends Model
 
     $this->db->delete($table, array($field => $data));
   }
+  
+  function delete_rows($table = null)
+  {
+    if($table == null) {
+      $table = $this->table;
+    }
+    
+    $this->db->delete($table);
+  }
 
   function edit_field($id, $field, $data, $table = null)
   {

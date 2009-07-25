@@ -544,6 +544,13 @@ class Label_sequence_model extends BioModel
 
     return true;
   }
+  
+  function delete_label_seq($seq_id, $label_id)
+  {
+    $this->db->where('seq_id', $seq_id);
+    $this->db->where('label_id', $label_id);
+    return $this->delete_rows();
+  }
 
   function get_obligatory($id)
   {
@@ -735,11 +742,16 @@ class Label_sequence_model extends BioModel
 
   function sequence_has_label($seq, $label)
   {
+    return $this->num_label($seq, $label) > 0;
+  }
+  
+  function num_label($seq_id, $label_id)
+  {
     $this->db
-      ->where('seq_id', $seq)
-      ->where('label_id', $label);
-
-    return $this->count_total('label_sequence_info') > 0;
+      ->where('seq_id', $seq_id)
+      ->where('label_id', $label_id);
+      
+      return $this->count_total();
   }
 
   function count_taxonomies($tax)
