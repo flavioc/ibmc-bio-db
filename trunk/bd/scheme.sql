@@ -265,8 +265,8 @@ CREATE TABLE `label_sequence` (
   `text_data` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Text data.',
   `obj_data` longblob COMMENT 'Object data.',
   `ref_data` bigint(20) unsigned DEFAULT NULL COMMENT 'Reference Data.',
-  `position_a_data` int(11) DEFAULT NULL COMMENT 'Position data A.',
-  `position_b_data` int(11) DEFAULT NULL COMMENT 'Position data B.',
+  `position_start` int(11) DEFAULT NULL COMMENT 'Position start.',
+  `position_length` int(11) DEFAULT NULL COMMENT 'Position length.',
   `taxonomy_data` bigint(20) unsigned DEFAULT NULL COMMENT 'Taxonomy data.',
   `url_data` varchar(2048) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'URL label data.',
   `bool_data` tinyint(1) DEFAULT NULL COMMENT 'Boolean data.',
@@ -276,11 +276,11 @@ CREATE TABLE `label_sequence` (
   KEY `seq_id` (`seq_id`),
   KEY `ref_index` (`ref_data`),
   KEY `taxonomy_index` (`taxonomy_data`),
-  CONSTRAINT `label_sequence_ibfk_7` FOREIGN KEY (`taxonomy_data`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_1` FOREIGN KEY (`seq_id`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `label_sequence_ibfk_6` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`) ON DELETE CASCADE
+  CONSTRAINT `label_sequence_ibfk_6` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `label_sequence_ibfk_7` FOREIGN KEY (`taxonomy_data`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
 SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -347,8 +347,8 @@ SET character_set_client = utf8;
   `text_data` varchar(1024),
   `obj_data` longblob,
   `ref_data` bigint(20) unsigned,
-  `position_a_data` int(11),
-  `position_b_data` int(11),
+  `position_start` int(11),
+  `position_length` int(11),
   `taxonomy_data` bigint(20) unsigned,
   `url_data` varchar(2048),
   `bool_data` tinyint(1),
@@ -375,8 +375,8 @@ SET character_set_client = utf8;
   `text_data` varchar(1024),
   `obj_data` longblob,
   `ref_data` bigint(20) unsigned,
-  `position_a_data` int(11),
-  `position_b_data` int(11),
+  `position_start` int(11),
+  `position_length` int(11),
   `taxonomy_data` bigint(20) unsigned,
   `url_data` varchar(2048),
   `bool_data` tinyint(1),
@@ -508,8 +508,8 @@ CREATE TABLE `taxonomy` (
   KEY `tree_id` (`tree_id`),
   KEY `parent_id` (`parent_id`),
   KEY `import_parent_id` (`import_parent_id`),
-  CONSTRAINT `taxonomy_ibfk_11` FOREIGN KEY (`import_parent_id`) REFERENCES `taxonomy` (`import_id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_10` FOREIGN KEY (`parent_id`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `taxonomy_ibfk_11` FOREIGN KEY (`import_parent_id`) REFERENCES `taxonomy` (`import_id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_7` FOREIGN KEY (`rank_id`) REFERENCES `taxonomy_rank` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_8` FOREIGN KEY (`tree_id`) REFERENCES `taxonomy_tree` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_9` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
@@ -1333,7 +1333,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `label_sequence_extra` AS select `label_sequence`.`id` AS `id`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`label_id` AS `label_id`,`label_sequence`.`subname` AS `subname`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_a_data` AS `position_a_data`,`label_sequence`.`position_b_data` AS `position_b_data`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_sequence`.`bool_data` AS `bool_data`,`taxonomy`.`name` AS `taxonomy_name`,`sequence`.`name` AS `sequence_name` from ((`label_sequence` left join `taxonomy` on((`taxonomy`.`id` = `label_sequence`.`taxonomy_data`))) left join `sequence` on((`sequence`.`id` = `label_sequence`.`ref_data`))) */;
+/*!50001 VIEW `label_sequence_extra` AS select `label_sequence`.`id` AS `id`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`label_id` AS `label_id`,`label_sequence`.`subname` AS `subname`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_start` AS `position_start`,`label_sequence`.`position_length` AS `position_length`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_sequence`.`bool_data` AS `bool_data`,`taxonomy`.`name` AS `taxonomy_name`,`sequence`.`name` AS `sequence_name` from ((`label_sequence` left join `taxonomy` on((`taxonomy`.`id` = `label_sequence`.`taxonomy_data`))) left join `sequence` on((`sequence`.`id` = `label_sequence`.`ref_data`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1352,7 +1352,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `label_sequence_info` AS select `label_sequence_extra`.`label_id` AS `label_id`,`label_sequence_extra`.`id` AS `id`,`label_sequence_extra`.`seq_id` AS `seq_id`,`label_sequence_extra`.`subname` AS `subname`,`label_sequence_extra`.`history_id` AS `history_id`,`label_sequence_extra`.`int_data` AS `int_data`,`label_sequence_extra`.`text_data` AS `text_data`,`label_sequence_extra`.`obj_data` AS `obj_data`,`label_sequence_extra`.`ref_data` AS `ref_data`,`label_sequence_extra`.`position_a_data` AS `position_a_data`,`label_sequence_extra`.`position_b_data` AS `position_b_data`,`label_sequence_extra`.`taxonomy_data` AS `taxonomy_data`,`label_sequence_extra`.`url_data` AS `url_data`,`label_sequence_extra`.`bool_data` AS `bool_data`,`label_sequence_extra`.`taxonomy_name` AS `taxonomy_name`,`label_sequence_extra`.`sequence_name` AS `sequence_name`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`history_info`.`creation` AS `creation`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`update` AS `update`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`user_name` AS `user_name` from ((`label_sequence_extra` join `label_norm` on((`label_sequence_extra`.`label_id` = `label_norm`.`label_id`))) left join `history_info` on((`history_info`.`history_id` = `label_sequence_extra`.`history_id`))) */;
+/*!50001 VIEW `label_sequence_info` AS select `label_sequence_extra`.`label_id` AS `label_id`,`label_sequence_extra`.`id` AS `id`,`label_sequence_extra`.`seq_id` AS `seq_id`,`label_sequence_extra`.`subname` AS `subname`,`label_sequence_extra`.`history_id` AS `history_id`,`label_sequence_extra`.`int_data` AS `int_data`,`label_sequence_extra`.`text_data` AS `text_data`,`label_sequence_extra`.`obj_data` AS `obj_data`,`label_sequence_extra`.`ref_data` AS `ref_data`,`label_sequence_extra`.`position_start` AS `position_start`,`label_sequence_extra`.`position_length` AS `position_length`,`label_sequence_extra`.`taxonomy_data` AS `taxonomy_data`,`label_sequence_extra`.`url_data` AS `url_data`,`label_sequence_extra`.`bool_data` AS `bool_data`,`label_sequence_extra`.`taxonomy_name` AS `taxonomy_name`,`label_sequence_extra`.`sequence_name` AS `sequence_name`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`history_info`.`creation` AS `creation`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`update` AS `update`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`user_name` AS `user_name` from ((`label_sequence_extra` join `label_norm` on((`label_sequence_extra`.`label_id` = `label_norm`.`label_id`))) left join `history_info` on((`history_info`.`history_id` = `label_sequence_extra`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1632,4 +1632,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-04-29 10:18:26
+-- Dump completed on 2009-07-25 14:30:52
