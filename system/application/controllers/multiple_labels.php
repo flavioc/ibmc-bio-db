@@ -100,11 +100,10 @@ class Multiple_Labels extends BioController {
     $this->label_id = $this->get_post('label_id');
     $this->label = $this->label_model->get($this->label_id);
     $this->label_type = $this->label['type'];
-    $search = $this->get_post('search');
+
     $search = stripslashes($this->get_post('search'));
-    if($search) {
-      $this->search_tree = json_decode($search, true);
-    }
+    $this->search_tree = json_decode($search, true);
+    
     $this->seqs = $this->label_sequence_model->get_search($this->search_tree);
     $this->multiple = json_decode($this->get_post('multiple'));
     

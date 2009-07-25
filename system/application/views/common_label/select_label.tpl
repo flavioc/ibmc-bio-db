@@ -1,0 +1,1 @@
+{form_row name=label msg='Label:' row_id=label_row}<span id="selected_label"></span>
