@@ -251,6 +251,7 @@ function term_form_submitted()
   var old_li = li.parent().parent();
 
   handle_post_add(old_li, new_ol);
+  update_search();
 
   return new_ol;
 }
@@ -351,21 +352,28 @@ function update_form_hidden(encoded)
   $('input[name=encoded_tree]').val(encoded);
 }
 
-function update_search()
+function update_tree ()
 {
   var obj = get_main_search_term();
+  var encoded = $.toJSON(obj);
 
-  if(obj) {
-    var encoded = $.toJSON(obj);
+  update_form_hidden(encoded);
+  save_search_tree();
+}
 
-    update_form_hidden(encoded);
+function reload_results()
+{
+  var obj = get_main_search_term();
+  var encoded = $.toJSON(obj);
+  
+  show_seqs.gridFilter('search', encoded);
+  show_seqs.gridReload();
+}
 
-    save_search_tree();
-    show_seqs.gridFilter('search', encoded);
-    show_seqs.gridReload();
-
-    //alert(encoded);
-  }
+function update_search()
+{
+  update_tree();
+  reload_results();
 }
 
 function handle_compound(what)
@@ -384,6 +392,7 @@ function handle_compound(what)
   var old_li = obj.parent().parent();
 
   handle_post_add(old_li, new_ol);
+  update_tree();
 
   return new_ol;
 }
@@ -403,8 +412,6 @@ function handle_post_add(old_li, new_ol)
     we_are_starting = false;
     cant_add_leafs();
   }
-
-  update_search();
 }
 
 function or_form_submitted()
@@ -491,7 +498,6 @@ function enable_operator_select()
 {
   operator_select.show();
   operator_text.hide();
-
 }
 
 function enable_position_type_select()
@@ -690,9 +696,16 @@ $(document).ready(function () {
 
     $('.term-delete').livequery('click', function () {
         var li_term = $(this).parent().parent();
+        var obj = li_term[0].term;
 
         li_term.remove();
-        update_search();
+        
+        if(compound_term(obj) && $('.term-name', li_term).size() == 0) {
+          // no terms in this subtree
+          update_tree();
+        } else {
+          update_search();
+        }
 
         if($('#search_tree li').size() == 0) {
           we_are_starting = true;
