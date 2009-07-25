@@ -130,6 +130,18 @@ class Sequence extends BioController
 
     return $search_term;
   }
+  
+  function humanize_search()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_empty();
+    }
+    
+    $tree = $this->__get_search_term();
+    $tree_str = search_tree_to_string($tree);
+    
+    echo $tree_str;
+  }
 
   function get_search()
   {
