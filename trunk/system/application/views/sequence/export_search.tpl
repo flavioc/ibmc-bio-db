@@ -35,6 +35,7 @@ $(function () {
 {/foreach}
 </ul>
 </fieldset>
+{include file=sequence/export_types.tpl}
 {form_submit name=submit msg='Download file'}
 {form_end}
 

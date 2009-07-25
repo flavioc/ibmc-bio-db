@@ -15,5 +15,8 @@ $(function () {
 <div id="show_sequences"></div>
 
 {button name="add_seq" msg="Add new" to="sequence/add"}
-{button name="export_seqs" msg="Export sequences" to="sequence/export_all"}
 
+{form_open to='sequence/export_all' name=export_form}
+{include file=sequence/export_types.tpl}
+{form_submit name=submit msg='Export all'}
+{form_end}

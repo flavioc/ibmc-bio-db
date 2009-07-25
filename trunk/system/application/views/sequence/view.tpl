@@ -43,10 +43,14 @@ $(document).ready(function() {
 
 </div>
 
-<ul>
-  <li><a href="{site}/sequence/labels/{$sequence.id}">Labels</a></li>
-  <li><a href="{site}/sequence/export/{$sequence.id}">Export</a></li>
-</ul>
+{form_open to='sequence/export' name=export_form}
+{form_hidden name=id value=$sequence.id}
+{include file=sequence/export_types.tpl}
+{form_submit name=submit msg='Export'}
+{form_end}
+
+{button name="labels_btn" msg="View Labels" to="sequence/labels/$id"}
+
 {if $logged_in}
 {form_open name=form_delete to="sequence/delete_redirect"}
 {form_hidden name=id value=$sequence.id}
