@@ -2,7 +2,7 @@
 
 function read_file_line($file)
 {
-  return fgets($file);
+  return trim(fgets($file));
 }
 
 function read_raw_file($file)

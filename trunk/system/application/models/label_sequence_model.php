@@ -72,6 +72,23 @@ class Label_sequence_model extends BioModel
     
     return false;
   }
+  
+  function __fix_data($type, &$data1, &$data2)
+  {
+    switch($type) {
+      case 'integer':
+      case 'position':
+      case 'bool':
+      case 'ref':
+      case 'tax':
+        return;
+      case 'text':
+      case 'url':
+      case 'obj':
+        $data1 = trim($data1);
+        return;
+    }
+  }
 
   function add($seq, $label, $type, $subname, $data1 = null, $data2 = null)
   {
@@ -93,6 +110,8 @@ class Label_sequence_model extends BioModel
     if(!$this->__validate_label_data($type, $data1, $data2)) {
       return false;
     }
+    
+    $this->__fix_data($type, $data1, $data2);
 
     return $this->insert_data_with_history($data);
   }
@@ -143,6 +162,8 @@ class Label_sequence_model extends BioModel
     if(!$this->__validate_label_data($type, $data1, $data2)) {
       return false;
     }
+    
+    $this->__fix_data($type, $data1, $data2);
 
     return $this->edit_data_with_history($id, $data);
   }
