@@ -252,6 +252,9 @@ function term_form_submitted()
 
   handle_post_add(old_li, new_ol);
   update_search();
+  
+  // recompute selected compound term
+  compute_total_term(old_li);
 
   return new_ol;
 }
@@ -555,6 +558,20 @@ function cant_add_leafs()
   $('#change_tax, #change_seq', insert_terms).hide();
 }
 
+function compute_total_term(li)
+{
+  var search = enclose_search_tree(get_search_term(li));
+  var encoded = $.toJSON(search);
+  
+  $.get(get_app_url() + '/sequence/get_search_total',
+    {
+      search: encoded
+    },
+    function (data) {
+      $('.term-count:first', li).text(data);
+    });
+}
+
 function activate_term(name)
 {
   var parent = $(name).parent();
@@ -562,17 +579,7 @@ function activate_term(name)
   parent.addClass('selected-node');
   options.show();
 
-  // fetch total results
-  var search = enclose_search_tree(get_search_term(parent));
-  var encoded = $.toJSON(search);
-
-  $.get(get_app_url() + '/sequence/get_search_total',
-      {
-        search: encoded
-      },
-      function (data) {
-          $('.term-count:first', options).text(data);
-      });
+  compute_total_term(parent);
 }
 
 function save_search_tree()
