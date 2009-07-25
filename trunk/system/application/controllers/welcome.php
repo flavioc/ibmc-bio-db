@@ -15,7 +15,7 @@ class Welcome extends BioController {
     // load comment
     $this->load->model('comment_model');
     $this->load->helper('text');
-    $comment = ascii_to_entities(newline_tab_html($this->comment_model->get()));
+    $comment = newline_tab_html($this->comment_model->get());
     $this->smarty->assign('comment', $comment);
 
     if(!$this->logged_in) {
