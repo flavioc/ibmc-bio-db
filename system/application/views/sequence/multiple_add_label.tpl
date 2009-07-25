@@ -53,6 +53,18 @@ $(function () {
       add: function (row) {
         return img_add;
       }
+    },
+    clickFun: {
+      add: function (row) {
+        if(!current_label) {
+          return false;
+        }
+        
+        var url = get_app_url() + '/change_labels/change_dialog/' + row.id + '/' + current_label.id;
+        
+        tb_show('Add label', url);
+        return false;
+      }
     }
   });
 });

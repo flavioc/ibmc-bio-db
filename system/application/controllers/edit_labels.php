@@ -90,65 +90,6 @@ class Edit_Labels extends BioController {
     }
   }
   
-  function __edit($id, $generate)
-  {
-    if(!$this->label_sequence_model->label_exists($id)) {
-      return "Label/Sequence with id $id doesn't exist";
-    }
-    
-    if($generate) {
-      if($this->label_sequence_model->edit_auto_label($id)) {
-        return true;
-      }
-
-      return "Error generating label/sequence $id";
-    }
-    
-    $label = $this->label_sequence_model->get($id);
-    
-    switch($label['type']) {
-      case 'bool':
-        return $this->label_sequence_model->edit_bool_label($id, $this->get_post('boolean') ? TRUE : FALSE);
-      case 'integer':
-        return $this->label_sequence_model->edit_integer_label($id, $this->get_post('integer'));
-      case 'obj':
-        try {
-          $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
-          return $this->label_sequence_model->edit_obj_label($id, $data['filename'], $data['bytes']);
-        } catch(Exception $e) {
-          return $e->getMessage();
-        }
-      case 'position':
-        return $this->label_sequence_model->edit_position_label($id,
-            $this->get_post('start'), $this->get_post('length'));
-      case 'ref':
-        $ref = $this->get_post('hidden_ref');
-
-        if(!$this->sequence_model->has_sequence($ref)) {
-          $ref_name = $this->get_post('ref');
-          return "Sequence with id $ref [$ref_name] doesn't exist";
-        }
-
-        return $this->label_sequence_model->edit_ref_label($id, $ref);      
-      case 'tax':
-        $tax = $this->get_post('hidden_tax');
-
-        $this->load->model('taxonomy_model');
-        if(!$this->taxonomy_model->has_taxonomy($tax)) {
-          $tax_name = $this->get_post('tax');
-          return "Taxonomy with id $tax [$tax_name] doesn't exist";
-        }
-
-        return $this->label_sequence_model->edit_tax_label($id, $tax);
-      case 'text':
-        return $this->label_sequence_model->edit_text_label($id, $this->get_post('text'));
-      case 'url':
-        return $this->label_sequence_model->edit_url_label($id, $this->get_post('url'));
-      default:
-        return "Label/Sequence id $id with invalid type";
-    }
-  }
-  
   function edit()
   {
     if(!$this->logged_in) {
@@ -158,6 +99,6 @@ class Edit_Labels extends BioController {
     $id = $this->get_post('id');
     $generate = $this->get_post('generate_check') ? TRUE : FALSE;
     
-    return $this->json_return($this->__edit($id, $generate));
+    return $this->json_return($this->__edit_label($id, $generate));
   }
 }

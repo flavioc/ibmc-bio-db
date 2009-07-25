@@ -272,4 +272,133 @@ class BioController extends Controller
     return array('filename' => $filename,
                   'bytes' => $bytes);
   }
+  
+  function __add_label($seq_id, $label_id, $generate)
+  {
+    $this->load->model('sequence_model');
+    $this->load->model('label_model');
+    $this->load->model('label_sequence_model');
+    
+    if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
+      return "Label is already being used";
+    }
+    
+    $label = $this->label_model->get($label_id);
+    if(!$label) {
+      return "Could not found label";
+    }
+
+    if($generate) {
+      return $this->label_sequence_model->add_generated_label($seq_id, $label_id);
+    }
+
+    switch($label['type']) {
+      case 'url':
+        return $this->label_sequence_model->add_url_label($seq_id, $label_id, $this->get_post('url'));
+      case 'text':
+        return $this->label_sequence_model->add_text_label($seq_id, $label_id, $this->get_post('text'));
+      case 'tax':
+        $tax = $this->get_post('hidden_tax');
+
+        $this->load->model('taxonomy_model');
+        if(!$this->taxonomy_model->has_taxonomy($tax)) {
+          $tax_name = $this->get_post('tax');
+          return "Taxonomy with id $tax [$tax_name] doesn't exist";
+        }
+
+        return $this->label_sequence_model->add_tax_label($seq_id, $label_id, $tax);
+      case 'ref':
+        $ref = $this->get_post('hidden_ref');
+
+        if(!$this->sequence_model->has_sequence($ref)) {
+          $ref_name = $this->get_post('ref');
+          return "Sequence with id $ref [$ref_name] doesn't exist";
+        }
+
+        return $this->label_sequence_model->add_ref_label($seq_id, $label_id, $ref);
+      case 'position':
+        $start = $this->get_post('start');
+        $length = $this->get_post('length');
+        
+        return $this->label_sequence_model->add_position_label($seq_id, $label_id, $start, $length);
+      case 'obj':
+        try {
+          $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
+          return $this->label_sequence_model->add_obj_label($seq_id, $label_id,
+                $data['filename'], $data['bytes']);
+        } catch(Exception $e) {
+          return $e->getMessage();
+        }
+      case 'integer':
+        return $this->label_sequence_model->add_integer_label($seq_id, $label_id, $this->get_post('integer'));
+      case 'bool':
+        return $this->label_sequence_model->add_bool_label($seq_id, $label_id,
+            $this->get_post('boolean') ? TRUE : FALSE);
+      default:
+        return "Label type is invalid";
+    }
+  }
+  
+  function __edit_label($id, $generate)
+  {
+    $this->load->model('sequence_model');
+    $this->load->model('label_model');
+    $this->load->model('label_sequence_model');
+    
+    if(!$this->label_sequence_model->label_exists($id)) {
+      return "Label/Sequence with id $id doesn't exist";
+    }
+    
+    if($generate) {
+      if($this->label_sequence_model->edit_auto_label($id)) {
+        return true;
+      }
+
+      return "Error generating label/sequence $id";
+    }
+    
+    $label = $this->label_sequence_model->get($id);
+    
+    switch($label['type']) {
+      case 'bool':
+        return $this->label_sequence_model->edit_bool_label($id, $this->get_post('boolean') ? TRUE : FALSE);
+      case 'integer':
+        return $this->label_sequence_model->edit_integer_label($id, $this->get_post('integer'));
+      case 'obj':
+        try {
+          $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
+          return $this->label_sequence_model->edit_obj_label($id, $data['filename'], $data['bytes']);
+        } catch(Exception $e) {
+          return $e->getMessage();
+        }
+      case 'position':
+        return $this->label_sequence_model->edit_position_label($id,
+            $this->get_post('start'), $this->get_post('length'));
+      case 'ref':
+        $ref = $this->get_post('hidden_ref');
+
+        if(!$this->sequence_model->has_sequence($ref)) {
+          $ref_name = $this->get_post('ref');
+          return "Sequence with id $ref [$ref_name] doesn't exist";
+        }
+
+        return $this->label_sequence_model->edit_ref_label($id, $ref);      
+      case 'tax':
+        $tax = $this->get_post('hidden_tax');
+
+        $this->load->model('taxonomy_model');
+        if(!$this->taxonomy_model->has_taxonomy($tax)) {
+          $tax_name = $this->get_post('tax');
+          return "Taxonomy with id $tax [$tax_name] doesn't exist";
+        }
+
+        return $this->label_sequence_model->edit_tax_label($id, $tax);
+      case 'text':
+        return $this->label_sequence_model->edit_text_label($id, $this->get_post('text'));
+      case 'url':
+        return $this->label_sequence_model->edit_url_label($id, $this->get_post('url'));
+      default:
+        return "Label/Sequence id $id with invalid type";
+    }
+  }
 }

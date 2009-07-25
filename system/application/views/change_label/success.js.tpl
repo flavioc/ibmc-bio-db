@@ -1,0 +1,1 @@
+$('#sequence_list').gridHighLight({$seq_id});
