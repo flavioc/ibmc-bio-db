@@ -3,7 +3,6 @@
 <div class="data_show">
   <p><span class="desc">Name: </span><a href="{site}/sequence/view/{$sequence.id}">{$sequence.name}</a></p>
   <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span>{$sequence.content}...</p>
-
 </div>
 
 <script>
