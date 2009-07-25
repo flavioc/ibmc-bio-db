@@ -231,7 +231,7 @@ class Label_model extends BioModel
 
   function edit_name($id, $name)
   {
-    if($this->has_name($name)) {
+    if($name == '' || $this->has_name($name)) {
       return false;
     }
 
