@@ -249,13 +249,18 @@ function term_form_submitted()
   }
 
   var new_ol = add_li_term(li, obj);
-  var old_li = li.parent().parent();
+  var old_li = li.parents('li:first');
 
   handle_post_add(old_li, new_ol);
   update_search();
   
-  // recompute selected compound term
-  compute_total_term(old_li);
+  if(old_li.size() == 1) {
+    // recompute selected compound term
+    compute_total_term(old_li);
+  } else {
+    // select single term
+    $('.term-name', li).clickTermName();
+  }
 
   return new_ol;
 }
@@ -412,17 +417,19 @@ function handle_compound(what)
     return;
   }
 
-  var obj = get_li_selected();
+  var li = get_li_selected();
 
-  if(obj.size() == 0) {
+  if(li.size() == 0) {
     return;
   }
 
-  var new_ol = add_new_compound(obj, what);
-  var old_li = obj.parent().parent();
+  var new_ol = add_new_compound(li, what);
+  var old_li = li.parent().parent();
 
   handle_post_add(old_li, new_ol);
   update_tree();
+  
+  $('.expand-name', li).clickCompoundName();
 
   return new_ol;
 }
@@ -645,8 +652,16 @@ function restore_old_tree()
 
     update_form_hidden(encoded);
     update_humanize(encoded);
+    
+    // select the first term
+    var first_compound = $('#search_tree .expand-name:first');
+    if(first_compound.size() == 1) {
+      first_compound.clickCompoundName();
+    } else {
+      $('#search_tree .term-name:first').clickTermName();
+    }
   } else {
-    can_add_leafs();
+    and_form_submitted();
   }
 }
 
@@ -673,6 +688,34 @@ function restore_aux(obj, ol)
     add_li_term(new_li, obj);
   }
 }
+
+$.fn.clickCompoundName = function () {
+  return this.each(function () {
+    var what = $(this).text();
+
+    node_unselected();
+
+    if(what == 'not') {
+      if($('li', $(this).parent()).size() == 0) {
+        can_add_leafs();
+      } else {
+        cant_add_leafs();
+      }
+    } else {
+      can_add_leafs();
+    }
+
+    activate_term(this);
+  });
+};
+
+$.fn.clickTermName = function () {
+  return this.each(function () {
+    node_unselected();
+    cant_add_leafs();
+    activate_term(this);
+  });
+};
 
 $(document).ready(function () {
     
@@ -732,6 +775,7 @@ $(document).ready(function () {
     $('.term-delete').livequery('click', function () {
         var li_term = $(this).parent().parent();
         var obj = li_term[0].term;
+        var parent_li = li_term.parents('li:first');
 
         li_term.remove();
         
@@ -742,11 +786,11 @@ $(document).ready(function () {
           update_search();
         }
 
-        if($('#search_tree li').size() == 0) {
+        if(parent_li.size() == 0) {
           we_are_starting = true;
           can_add_leafs();
         } else {
-          cant_add_leafs();
+          $('.expand-name:first', parent_li).clickCompoundName();
         }
 
         return false;
@@ -763,29 +807,8 @@ $(document).ready(function () {
         });
     });
 
-    $('#search_tree .expand-name').livequery('click', function () {
-        var what = $(this).text();
-
-        node_unselected();
-
-        if(what == 'not') {
-          if($('li', $(this).parent()).size() == 0) {
-            can_add_leafs();
-          } else {
-            cant_add_leafs();
-          }
-        } else {
-          can_add_leafs();
-        }
-
-        activate_term(this);
-    });
-
-    $('#search_tree .term-name').livequery('click', function () {
-        node_unselected();
-        cant_add_leafs();
-        activate_term(this);
-    });
+    $('#search_tree .expand-name').livequery('click', function () { $(this).clickCompoundName(); });
+    $('#search_tree .term-name').livequery('click', function () { $(this).clickTermName(); });
 
     label_name.click(enable_label_row);
 
