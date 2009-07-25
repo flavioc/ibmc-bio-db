@@ -295,7 +295,7 @@ function import_labels($el, $labels, $labeldata, $controller)
 
 function get_sequence_labels($line, $labels)
 {
-  $stripped_line = trim($line, " \n\t");
+  $stripped_line = trim($line);
   $line_vec = explode('#', $stripped_line);
 
   if(count($line_vec) <= 1) {
@@ -391,7 +391,7 @@ function export_sequences($sequences, $seq_labels, $comments = null)
     $labels = $seq_labels[$i];
 
     $ret .= __get_sequence_header($sequence, $labels, $merged_labels);
-    $content = $sequence['content'];
+    $content = trim($sequence['content']);
     $ret .= "\n$content\n";
   }
 
@@ -484,7 +484,7 @@ function __get_export_label($merged_label, $labels)
 
 function __get_sequence_header($sequence, $labels, $merged_labels)
 {
-  $seq_name = $sequence['name'];
+  $seq_name = trim($sequence['name']);
   $ret = ">$seq_name|#";
   $first_done = false;
 
@@ -516,6 +516,8 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
       $toadd = $label['sequence_name'];
       break;
     }
+    
+    $toadd = trim(strval($toadd));
 
     $ret .= "$toadd|";
 

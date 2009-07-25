@@ -71,7 +71,7 @@ class Sequence_model extends BioModel
   function add($name, $content)
   {
     $data = array(
-      'name' => $name,
+      'name' => trim($name),
       'content' => sequence_normalize($content),
     );
 
@@ -125,7 +125,7 @@ class Sequence_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', $name);
+    $this->edit_field($id, 'name', trim($name));
 
     $this->db->trans_complete();
   }
