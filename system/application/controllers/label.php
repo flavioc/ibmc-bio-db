@@ -140,6 +140,10 @@ class Label extends BioController {
 
     $label = $this->label_model->get($id);
 
+    $label['comment'] = newline_tab_html($label['comment']);
+    $label['code'] = newline_tab_html($label['code']);
+    $label['valid_code'] = newline_tab_html($label['valid_code']);
+    
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
     $this->smarty->assign('title', 'Label "' . $label['name'] . '"');
     $this->smarty->load_scripts(JEDITABLE_SCRIPT);
@@ -357,7 +361,7 @@ class Label extends BioController {
     $result = $this->label_model->edit_code($id, $value);
     
     if($value) {
-      echo $value;
+      echo newline_tab_html($value);
     } else {
       $this->return_empty();
     }
@@ -374,7 +378,7 @@ class Label extends BioController {
     $result = $this->label_model->edit_validcode($id, $value);
     
     if($value) {
-      echo $value;
+      echo newline_tab_html($value);
     } else {
       $this->return_empty();
     }
@@ -391,10 +395,37 @@ class Label extends BioController {
     $result = $this->label_model->edit_comment($id, $value);
     
     if($value) {
-      echo $value;
+      echo newline_tab_html($value);
     } else {
       $this->return_empty();
     }
+  }
+  
+  function get_comment($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+    
+    echo $this->label_model->get_comment($id);
+  }
+  
+  function get_code($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+    
+    echo $this->label_model->get_code($id);
+  }
+  
+  function get_validcode($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+    
+    echo $this->label_model->get_validcode($id);
   }
 
   function edit_bool($what) {

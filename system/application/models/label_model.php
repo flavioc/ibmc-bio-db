@@ -191,6 +191,21 @@ class Label_model extends BioModel
   {
     return $this->get_field($id, 'name');
   }
+  
+  function get_comment($id)
+  {
+    return $this->get_field($id, 'comment');
+  }
+  
+  function get_code($id)
+  {
+    return $this->get_field($id, 'code');
+  }
+  
+  function get_validcode($id)
+  {
+    return $this->get_field($id, 'valid_code');
+  }
 
   function get_to_add()
   {

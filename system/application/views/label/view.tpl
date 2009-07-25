@@ -39,7 +39,8 @@ $(document).ready(function () {
     type: 'textarea',
     cols: 70,
     rows: 15,
-    submitdata: senddata
+    submitdata: senddata,
+    loadurl: base_site + 'get_code/' + label.id
   });
 
   $('#labelvalidcode').editable(base_site + 'edit_validcode', {
@@ -51,7 +52,8 @@ $(document).ready(function () {
     type: 'textarea',
     cols: 70,
     rows: 15,
-    submitdata: senddata
+    submitdata: senddata,
+    loadurl: base_site + 'get_validcode/' + label.id
   });
 
   $('#labelcomment').editable(base_site + 'edit_comment', {
@@ -63,7 +65,8 @@ $(document).ready(function () {
     type: 'textarea',
     cols: 70,
     rows: 15,
-    submitdata: senddata
+    submitdata: senddata,
+    loadurl: base_site + 'get_comment/' + label.id
   });
 
   function enable_edition_bool(what) {
@@ -89,17 +92,26 @@ $(document).ready(function () {
 </script>
 {/literal}
 
+{literal}
+<style type="text/css">
+#labelcomment, #labelcode, #labelvalidcode {
+  margin-left: 180px;
+  width: 50%;
+}
+</style>
+{/literal}
+
 <div class="data_show">
   <p><span class="desc">Name: </span><span class="writeable" id="labelname">{$label.name}</span></p>
   <p><span class="desc">Type: </span><span class="writeable" id="labeltype">{$label.type}</span></p>
   <p><span class="desc">Code: </span>
-    <span class="code writeable" id="labelcode">{if $label.code}{$label.code}{else}---{/if}</span>
+    <div class="code writeable" id="labelcode">{if $label.code}{$label.code}{else}---{/if}</div>
   </p>
   <p><span class="desc">Validation code: </span>
-    <span class="code writeable" id="labelvalidcode">{if $label.valid_code}{$label.valid_code}{else}---{/if}</span>
+    <div class="code writeable" id="labelvalidcode">{if $label.valid_code}{$label.valid_code}{else}---{/if}</div>
   </p>
   <p><span class="desc">Comment: </span>
-     <span class="comment writeable" id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</span>
+     <div class="writeable" id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</div>
   </p>
 
 {include file='history/form_view.tpl' data=$label}

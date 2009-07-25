@@ -16,5 +16,5 @@ function parse_yes($yes)
 
 function newline_tab_html($text)
 {
-  return str_replace("\t", "   ", str_replace("\n", "<br />", $text));
+  return ascii_to_entities(str_replace("\t", "   ", str_replace("\n", "<br />", $text)));
 }
