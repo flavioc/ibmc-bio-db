@@ -381,6 +381,19 @@ function import_fasta_file($controller, $file)
   return array($sequences, $labels);
 }
 
+function export_sequences_simple($sequences)
+{
+  $ret = '';
+  
+  foreach($sequences as &$seq) {
+    $ret .= __get_sequence_simple_header($seq);
+    $content = trim($seq['content']);
+    $ret .= "\n$content\n";
+  }
+  
+  return $ret;
+}
+
 function export_sequences($sequences, $seq_labels, $comments = null)
 {
   $merged_labels = __merge_export_labels($seq_labels);
@@ -480,6 +493,13 @@ function __get_export_label($merged_label, $labels)
   }
 
   return null;
+}
+
+function __get_sequence_simple_header(&$sequence)
+{
+  $seq_name = trim($sequence['name']);
+  
+  return ">$seq_name";
 }
 
 function __get_sequence_header($sequence, $labels, $merged_labels)
