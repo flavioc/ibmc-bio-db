@@ -133,13 +133,7 @@ class Tree extends BioController {
 
     $result = $this->taxonomy_tree_model->edit($id, $value);
 
-    if($result) {
-      // Update OK
-      echo $value;
-    } else {
-      // Name already used.
-      echo $this->taxonomy_tree_model->get_name($id);
-    }
+    echo $this->taxonomy_tree_model->get_name($id);
   }
 
   function delete_dialog($id)

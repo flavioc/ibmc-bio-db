@@ -153,7 +153,7 @@ class BioController extends Controller
   function get_parameter($what)
   {
     if(array_key_exists($what, $_GET)) {
-      return $_GET[$what];
+      return trim($_GET[$what]);
     } else {
       return null;
     }

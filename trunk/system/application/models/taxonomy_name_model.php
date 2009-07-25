@@ -45,7 +45,7 @@ class Taxonomy_name_model extends BioModel
 
     $this->db->trans_start();
 
-    $this->edit_field($id, 'name', $name);
+    $this->edit_field($id, 'name', trim($name));
     $this->update_history($tax, 'taxonomy');
 
     $this->db->trans_complete();
@@ -60,7 +60,7 @@ class Taxonomy_name_model extends BioModel
   {
     $data = array(
       'tax_id' => $tax,
-      'name' => $name,
+      'name' => trim($name),
       'type_id' => $type,
     );
 
@@ -97,24 +97,5 @@ class Taxonomy_name_model extends BioModel
     }
 
     return $data['id'];
-  }
-
-  function ensure_existance($tax, $name, $type)
-  {
-    $id = $this->get_id_by_name_and_tax($tax, $name);
-
-    if($id == null) {
-      return $this->add($tax, $name, $type);
-    } else {
-      /*
-      $data = array(
-        'tax_id' => $tax,
-        'type_id' => $type,
-      );
-
-      $this->edit_data($id, $data);
-       */
-      return $id;
-    }
   }
 }

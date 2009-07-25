@@ -95,7 +95,7 @@ class Label_sequence_model extends BioModel
     $data = array(
       'seq_id' => $seq,
       'label_id' => $label,
-      'subname' => $subname,
+      'subname' => trim($subname),
     );
 
     $fields = $this->__get_data_fields($type);
@@ -527,7 +527,7 @@ class Label_sequence_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'subname', $subname);
+    $this->edit_field($id, 'subname', trim($subname));
 
     $this->db->trans_complete();
   }

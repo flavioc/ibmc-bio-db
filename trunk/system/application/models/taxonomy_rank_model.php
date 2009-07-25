@@ -79,6 +79,8 @@ class Taxonomy_rank_model extends BioModel
 
   function edit_name($id, $new_name)
   {
+    $new_name = trim($new_name);
+    
     if($new_name == '' || $this->has_name($new_name)) {
       return false;
     }
@@ -129,7 +131,7 @@ class Taxonomy_rank_model extends BioModel
     }
 
     $data = array(
-      'name' => $name,
+      'name' => trim($name),
       'parent_id' => $parent,
     );
 

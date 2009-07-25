@@ -14,7 +14,7 @@ class Taxonomy_model extends BioModel
     }
 
     $data = array(
-      'name' => $name,
+      'name' => trim($name),
       'rank_id' => $rank,
       'tree_id' => $tree,
       'parent_id' => $parent,
@@ -79,7 +79,7 @@ class Taxonomy_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', $name);
+    $this->edit_field($id, 'name', trim($name));
 
     $this->db->trans_complete();
   }

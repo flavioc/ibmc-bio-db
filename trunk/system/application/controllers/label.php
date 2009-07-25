@@ -328,13 +328,7 @@ class Label extends BioController {
 
     $result = $this->label_model->edit_name($id, $value);
 
-    if($result) {
-      // Update OK
-      echo $value;
-    } else {
-      // Name already used.
-      echo $this->label_model->get_name($id);
-    }
+    echo $this->label_model->get_name($id);
   }
 
   function edit_type() {
@@ -347,7 +341,7 @@ class Label extends BioController {
 
     $result = $this->label_model->edit_type($id, $value);
     
-    echo $value;
+    echo $this->label_model->get_type($id);
   }
 
   function edit_code() {
