@@ -84,14 +84,22 @@ label.search-desc {
 .search-expand[level="3"] { background: #A8A8A8; }
 .search-expand[level="4"] { background: #C8C8C8; }
 
-#search_tree {
-  margin-top: 30px;
+#search_tree, #search_human {
   margin-left: 10px;
   margin-bottom: 15px;
   border: 4px solid black;
   width: 95%;
   background: darkgray;
   padding: 0px;
+}
+
+#search_human p {
+  padding: 5px;
+  padding-left: 10px;
+}
+
+#search_tree {
+  margin-top: 30px;
 }
 
 #search_tree li {

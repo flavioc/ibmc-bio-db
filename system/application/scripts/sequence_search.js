@@ -32,6 +32,7 @@ var position_type = null;
 var position_type_text = null;
 var submit_tree = null;
 var we_are_starting = true;
+var search_human = null;
 var search_type = 'all';
 
 $(function () {
@@ -355,19 +356,43 @@ function update_form_hidden(encoded)
   $('input[name=encoded_tree]').val(encoded);
 }
 
-function update_tree ()
+function get_main_search_term_encoded()
 {
-  var obj = get_main_search_term();
-  var encoded = $.toJSON(obj);
-
-  update_form_hidden(encoded);
-  save_search_tree();
+  return $.toJSON(get_main_search_term());
 }
 
-function reload_results()
+function update_humanize(encoded)
 {
-  var obj = get_main_search_term();
-  var encoded = $.toJSON(obj);
+  if(!encoded) {
+    encoded = get_main_search_term_encoded();
+  }
+  
+  $.get(get_app_url() + '/sequence/humanize_search',
+    {
+      search: encoded
+    },
+    function (data) {
+      search_human.html('<p>' + data + '</p>');
+    });
+}
+
+function update_tree (encoded)
+{
+  if(!encoded) {
+    encoded = get_main_search_term_encoded();
+  }
+  
+  update_form_hidden(encoded);
+  save_search_tree();
+  
+  update_humanize(encoded);
+}
+
+function reload_results(encoded)
+{
+  if(!encoded) {
+   encoded = get_main_search_term_encoded(); 
+  }
   
   show_seqs.gridFilter('search', encoded);
   show_seqs.gridReload();
@@ -375,8 +400,10 @@ function reload_results()
 
 function update_search()
 {
-  update_tree();
-  reload_results();
+  var encoded = get_main_search_term_encoded();
+  
+  update_tree(encoded);
+  reload_results(encoded);
 }
 
 function handle_compound(what)
@@ -616,7 +643,8 @@ function restore_old_tree()
     restore_aux(obj, first_ol);
     we_are_starting = false;
 
-    update_form_hidden($.toJSON(get_main_search_term()));
+    update_form_hidden(encoded);
+    update_humanize(encoded);
   } else {
     can_add_leafs();
   }
@@ -644,7 +672,6 @@ function restore_aux(obj, ol)
   } else {
     add_li_term(new_li, obj);
   }
-
 }
 
 $(document).ready(function () {
@@ -680,6 +707,7 @@ $(document).ready(function () {
     position_type_text = $('#position_type_text');
     submit_tree = $('#submit_tree');
     submit_term = $('#submit_term').hide();
+    search_human = $('#search_human');
 
     can_add_leafs();
 
