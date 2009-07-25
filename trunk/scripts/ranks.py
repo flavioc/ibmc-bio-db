@@ -19,7 +19,7 @@ def has_rank(name):
 
 def add_rank(name):
   cursor = db.cursor()
-  sql = "INSERT INTO taxonomy_rank(name) VALUES(%s)" \
+  sql = "INSERT INTO taxonomy_rank(name, is_default) VALUES(%s, TRUE)" \
     % (sql_to_string(name))
   cursor.execute(sql)
   id = int(db.insert_id())
