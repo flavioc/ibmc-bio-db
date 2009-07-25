@@ -19,7 +19,7 @@ class Taxonomy_name_type_model extends BioModel
 
   function add($name)
   {
-    return $this->insert_data(array('name' => $name));
+    return $this->insert_data(array('name' => trim($name)));
   }
 
   function get_type_id($type)

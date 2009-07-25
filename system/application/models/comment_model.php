@@ -31,7 +31,7 @@ class Comment_model extends Model
 
     $fh = fopen($file, "w");
 
-    fwrite($fh, $comment);
+    fwrite($fh, trim($comment));
 
     fclose($fh);
   }

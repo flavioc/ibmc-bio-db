@@ -90,18 +90,18 @@ class User_model extends BioModel
     $birthday, $password, $image)
   {
     $data = array(
-      'name' => $name,
-      'email' => $email,
-      'password' => $password,
+      'name' => trim($name),
+      'email' => trim($email),
+      'password' => trim($password),
     );
 
     if($complete_name != null) {
-      $data['complete_name'] = $complete_name;
+      $data['complete_name'] = trim($complete_name);
     }
 
     if($birthday != null) {
       $this->load->helper('date_utils');
-      $data['birthday'] = convert_html_date_to_sql($birthday);
+      $data['birthday'] = convert_html_date_to_sql(trim($birthday));
     }
 
     if($image != null) {
@@ -115,19 +115,20 @@ class User_model extends BioModel
     $imagecontent, $new_password)
   {
     $data = array(
-      'complete_name' => $complete_name,
-      'email' => $email,
+      'complete_name' => trim($complete_name),
+      'email' => trim($email),
     );
 
     if($birthday) {
       $this->load->helper('date_utils');
-      $data['birthday'] = convert_html_date_to_sql($birthday);
+      $data['birthday'] = convert_html_date_to_sql(trim($birthday));
     }
 
     if($imagecontent) {
       $data['image'] = $imagecontent;
     }
 
+    $new_password = trim($new_password);
     if($new_password && count($new_password) > 0) {
       $data['password'] = $new_password;
     }

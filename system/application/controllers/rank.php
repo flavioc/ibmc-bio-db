@@ -163,13 +163,7 @@ class Rank extends BioController {
 
     $result = $this->taxonomy_rank_model->edit_name($id, $value);
 
-    if($result) {
-      // Update OK
-      echo $value;
-    } else {
-      // Name already used.
-      echo $this->taxonomy_rank_model->get_name($id);
-    }
+    echo $this->taxonomy_rank_model->get_name($id);
   }
 
   function edit_parent() {
@@ -231,19 +225,5 @@ class Rank extends BioController {
     $this->taxonomy_rank_model->delete_id($id);
 
     redirect('rank/list_all');
-  }
-
-  function add_json($name) {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
-    if($this->taxonomy_rank_model->has_name($name)) {
-      $this->json_return(false);
-    } else {
-      $id = $this->taxonomy_rank_model->add($name);
-      $data = $this->taxonomy_rank_model->get_id($id);
-      $this->json_return($data);
-    }
   }
 }

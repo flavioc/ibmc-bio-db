@@ -122,8 +122,14 @@ class Label_model extends BioModel
     $code,
     $valid_code, $comment)
   {
+    $type = trim($type);
+    
+    if(!$this->__valid_type($type)) {
+      return false;
+    }
+    
     $data = array(
-      'name' => $name,
+      'name' => trim($name),
       'type' => $type,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
@@ -133,9 +139,9 @@ class Label_model extends BioModel
       'multiple' => $multiple,
       'default' => $default,
       'public' => $public,
-      'code' => $code,
-      'valid_code' => $valid_code,
-      'comment' => $comment,
+      'code' => trim($code),
+      'valid_code' => trim($valid_code),
+      'comment' => trim($comment),
     );
 
     return $this->insert_data_with_history($data);
@@ -147,8 +153,14 @@ class Label_model extends BioModel
     $default, $public,
     $code, $valid_code, $comment)
   {
+    $type = trim($type);
+    
+    if(!$this->__valid_type($type)) {
+      return false;
+    }
+    
     $data = array(
-      'name' => $name,
+      'name' => trim($name),
       'type' => $type,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
@@ -158,9 +170,9 @@ class Label_model extends BioModel
       'multiple' => $multiple,
       'default' => $default,
       'public' => $public,
-      'code' => $code,
-      'valid_code' => $valid_code,
-      'comment' => $comment,
+      'code' => trim($code),
+      'valid_code' => trim($valid_code),
+      'comment' => trim($comment),
     );
 
     return $this->edit_data_with_history($id, $data);
@@ -190,6 +202,11 @@ class Label_model extends BioModel
   function get_name($id)
   {
     return $this->get_field($id, 'name');
+  }
+  
+  function get_type($id)
+  {
+    return $this->get_field($id, 'type');
   }
   
   function get_comment($id)
@@ -231,6 +248,8 @@ class Label_model extends BioModel
 
   function edit_name($id, $name)
   {
+    $name = trim($name);
+    
     if($name == '' || $this->has_name($name)) {
       return false;
     }
@@ -240,26 +259,49 @@ class Label_model extends BioModel
 
   function edit_type($id, $type)
   {
+    $type = trim($type);
+    
+    if(!$this->__valid_type($type)) {
+      return false;
+    }
+    
     return $this->edit_field($id, 'type', $type);
   }
 
   function edit_code($id, $code)
   {
-    return $this->edit_field($id, 'code', $code);
+    return $this->edit_field($id, 'code', trim($code));
   }
 
   function edit_validcode($id, $code)
   {
-    return $this->edit_field($id, 'valid_code', $code);
+    return $this->edit_field($id, 'valid_code', trim($code));
   }
 
   function edit_comment($id, $comment)
   {
-    return $this->edit_field($id, 'comment', $comment);
+    return $this->edit_field($id, 'comment', trim($comment));
   }
 
   function edit_bool($id, $what, $val)
   {
     return $this->edit_field($id, $what, $val);
+  }
+  
+  function __valid_type($type)
+  {
+    switch($type) {
+      case 'bool':
+      case 'integer':
+      case 'obj':
+      case 'position':
+      case 'ref':
+      case 'tax':
+      case 'text':
+      case 'url':
+        return true;
+    }
+    
+    return false;
   }
 }
