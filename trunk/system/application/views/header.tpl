@@ -31,6 +31,7 @@
     toggle_menu('user');
     toggle_menu('rank');
     toggle_menu('tree');
+    toggle_menu('admin');
   });
 </script>
 {/literal}
@@ -70,12 +71,16 @@
     <ul id="user_id">
       <li><a href="{site}/profile/edit">Edit profile</a></li>
       <li><a href="{site}/profile/settings">Settings</a></li>
-    {if $logged_in && ($user_type == 'admin')}
-      <li><a href="{site}/profile/list_all">List</a></li>
-      <li><a href="{site}/profile/register">Register</a></li>
-    {/if}
     </ul>
     <li><a href="{site}/comment/edit">Comment</a></li>
+    {if $logged_in && ($user_type == 'admin')}
+    <li id="admin_menu"><a href="#">Administration</a></li>
+    <ul id="admin_id">
+      <li><a href="{site}/admin/drop_database">Reset database</a></li>
+      <li><a href="{site}/profile/list_all">List users</a></li>
+      <li><a href="{site}/profile/register">Register user</a></li>
+    </ul>
+    {/if}
   </ul>
 
   Logged as: <a href="{site}/profile/view/{$user_id}">{$username}</a> ({$user_type})

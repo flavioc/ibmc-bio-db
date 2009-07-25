@@ -190,5 +190,11 @@ class Taxonomy_rank_model extends BioModel
 
     return $this->has_field('parent_id', $parent);
   }
+  
+  function delete_all_custom()
+  {
+    $this->db->where('is_default IS FALSE');
+    return $this->delete_rows();
+  }
 }
 
