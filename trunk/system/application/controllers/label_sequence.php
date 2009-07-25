@@ -89,9 +89,13 @@ class Label_Sequence extends BioController {
     $id = parse_id($id_str);
     $value = $this->get_post('value');
 
-    $this->label_sequence_model->edit_subname($id, $value);
+    $result = $this->label_sequence_model->edit_subname($id, $value);
 
-    echo $value;
+    if($value) {
+      echo $value;
+    } else {
+      $this->return_empty();
+    }
   }
 
   function delete_label($id)

@@ -79,7 +79,7 @@ class Taxonomy_rank_model extends BioModel
 
   function edit_name($id, $new_name)
   {
-    if($this->has_name($new_name)) {
+    if($new_name == '' || $this->has_name($new_name)) {
       return false;
     }
 

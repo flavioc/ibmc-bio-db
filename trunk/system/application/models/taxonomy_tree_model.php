@@ -61,7 +61,7 @@ class Taxonomy_tree_model extends BioModel
 
   function edit($id, $new_name)
   {
-    if($this->has_name($new_name)) {
+    if($new_name == '' || $this->has_name($new_name)) {
       return false;
     }
 
