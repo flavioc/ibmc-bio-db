@@ -47,7 +47,6 @@ function update_new_label_form()
 $(function () {
   var label_form = $('#label_form');
   var label_input = $('input[name=label]', label_form);
-  var selected_label = $('#selected_label');
 
   update = $('#update');
   multiple = $('#multiple');
@@ -61,47 +60,17 @@ $(function () {
     $(this).submitAjax();
     update_new_label_form();
   });
-
-  function no_label_present()
-  {
+  
+  label_input.selectLabel(function () {
     current_label = null;
-    selected_label.text('(no label selected)');
     multiple_row.hide();
-  }
-
-  function changed_label(l)
-  {
-    current_label = l;
-    selected_label.hide();
-    if(l.multiple == '1') {
+  },
+  function (label) {
+    current_label = label;
+    if(label.multiple == '1') {
       multiple_row.show();
     }
-  }
-
-  no_label_present();
-
-  label_input.autocomplete_labels('autocomplete_addable');
-
-  label_input.autocompleteEmpty(no_label_present);
-
-  label_input.result(function (event, data, formatted) {
-      no_label_present();
-
-      var name = data;
-
-      if(!name) {
-        return;
-      }
-
-      get_label_by_name(name, 
-        function (data) {
-          if(data) {
-            changed_label(data);
-          }
-      });
-
-      return false;
-  });
+  })
 
   $('#submit_add_label').click(function () {
     if(!current_label) {

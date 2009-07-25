@@ -86,6 +86,11 @@
 {form_submit name=submit msg='Edit label' id='submit_edit_label'}
 {form_end}
 
+{form_open to='sequence/multiple_delete_label' name=delete_label_form}
+{form_hidden name=encoded_tree value=null}
+{form_submit name=submit msg='Delete label' id='submit_delete_label'}
+{form_end}
+
 <h3>Preview</h3>
 <p>
 <div id="show_sequences"></div>

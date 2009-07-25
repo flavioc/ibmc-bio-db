@@ -28,7 +28,9 @@
 #add_label_form,
 #add_label_form *,
 #edit_label_form,
-#edit_label_form *
+#edit_label_form *,
+#delete_label_form,
+#delete_label_form *
 {
   display: inline;
 }
