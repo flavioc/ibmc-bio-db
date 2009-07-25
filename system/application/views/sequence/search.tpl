@@ -66,6 +66,8 @@
 
 </div>
 
+<h3>Operations</h3>
+
 {form_open to='sequence/export_search' name=tree_form}
 {form_hidden name=encoded_tree value=null}
 {form_submit name=submit msg='Export' id="submit_tree"}
@@ -81,7 +83,7 @@
 {form_submit name=submit msg='Edit label' id='submit_edit_label'}
 {form_end}
 
-<h3>Results</h3>
+<h3>Preview</h3>
 <p>
 <div id="show_sequences"></div>
 </p>
