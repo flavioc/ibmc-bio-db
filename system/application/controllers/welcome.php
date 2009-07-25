@@ -42,7 +42,7 @@ class Welcome extends BioController {
   function login()
   {
     if($this->logged_in) {
-      // already logged in
+      redirect('');
       return;
     }
 
