@@ -8,7 +8,8 @@
 
 {form_open to='#' name=label_form}
 {form_hidden name=search value=$encoded}
-{form_row name=label msg='Label:' row_id=label_row}<span id="selected_label"></span>
+
+{include file=common_label/select_label.tpl}
 
 {if $mode == 'add'}
 {form_row type=checkbox name=update msg="Update:"}

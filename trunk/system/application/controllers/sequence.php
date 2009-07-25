@@ -192,6 +192,7 @@ class Sequence extends BioController
       FORM_SCRIPT,
       GETPARAMS_SCRIPT,
       'label_functions.js',
+      'select_label.js',
       'add_multiple.js',
       'label_helpers.js',
       'taxonomy_functions.js',
