@@ -4,7 +4,7 @@ class Label_sequence_model extends BioModel
 {
   private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name";
 
-  private static $label_basic_fields = "label_id, id, seq_id, subname, history_id, type, name, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
+  private static $label_basic_fields = "label_id, id, seq_id, history_id, type, name, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
 
   function Label_sequence_model() {
     parent::BioModel('label_sequence');
@@ -90,12 +90,11 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add($seq, $label, $type, $subname, $data1 = null, $data2 = null)
+  function add($seq, $label, $type, $data1 = null, $data2 = null)
   {
     $data = array(
       'seq_id' => $seq,
-      'label_id' => $label,
-      'subname' => trim($subname),
+      'label_id' => $label
     );
 
     $fields = $this->__get_data_fields($type);
@@ -520,16 +519,6 @@ class Label_sequence_model extends BioModel
     $this->db->where('label_id', $id);
 
     return $this->count_total();
-  }
-
-  function edit_subname($id, $subname)
-  {
-    $this->db->trans_start();
-
-    $this->update_history($id);
-    $this->edit_field($id, 'subname', trim($subname));
-
-    $this->db->trans_complete();
   }
 
   function delete($id)
