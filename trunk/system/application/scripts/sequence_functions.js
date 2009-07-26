@@ -7,13 +7,6 @@ var validation_loaded = false;
 var bad_multiple_loaded = false;
 var logged_in = get_logged_in();
 var data_transform_labels = {
-      subname: function (row) {
-        if(row.subname == null) {
-          return null;
-        } else {
-          return row.subname;
-        }
-      },
       ref_data: function (row) {
         return row.sequence_name;
       },
@@ -119,12 +112,11 @@ function setup_labels_list()
       type: w_type,
       edit: w_edit,
       name: w_label_name,
-      subname: w_subname,
       user_name: w_user
     },
-    fieldNames: ['Name', 'Data', 'Subname', 'Type', 'Update', 'User'],
+    fieldNames: ['Name', 'Data', 'Type', 'Update', 'User'],
     fieldGenerator: function (row) {
-      var base = ['name', select_field(row), 'subname', 'type', 'update', 'user_name'];
+      var base = ['name', select_field(row), 'type', 'update', 'user_name'];
 
       if(logged_in) {
         base.push('edit');
@@ -132,7 +124,7 @@ function setup_labels_list()
 
       return base;
     },
-    hiddenFields: ['user_name', 'update', 'subname'],
+    hiddenFields: ['user_name', 'update'],
     links: link_labels,
     dataTransform: data_transform_labels,
     enableRemove: logged_in,
@@ -158,16 +150,6 @@ function setup_labels_list()
   };
 
   if(logged_in) {
-    options.editables = {
-      subname: {
-        select: true,
-        submit: 'OK',
-        cancel: 'cancel',
-        cssclass: 'editable',
-        width: '150px'
-      }
-    };
-
     options.fieldNames.push('Edit');
   }
 

@@ -12,7 +12,6 @@ var w_boolean = '8%';
 var w_email = '20%';
 var w_image = '20%';
 var w_label_name = '12%';
-var w_subname = '15%';
 var w_status = '15%';
 var img_go = build_image_url('go.png', 'image_url');
 var img_add = build_image_url('add.png', 'image_url');

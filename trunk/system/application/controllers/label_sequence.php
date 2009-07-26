@@ -80,24 +80,6 @@ class Label_Sequence extends BioController {
     echo stripslashes($label['obj_data']);
   }
 
-  function edit_subname() {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_field();
-    }
-
-    $id_str = $this->get_post('id');
-    $id = parse_id($id_str);
-    $value = $this->get_post('value');
-
-    $result = $this->label_sequence_model->edit_subname($id, $value);
-
-    if($value) {
-      echo $value;
-    } else {
-      $this->return_empty();
-    }
-  }
-
   function delete_label($id)
   {
     if(!$this->logged_in) {
