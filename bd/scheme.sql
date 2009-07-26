@@ -259,7 +259,6 @@ CREATE TABLE `label_sequence` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Key.',
   `seq_id` bigint(20) unsigned NOT NULL COMMENT 'Sequence id.',
   `label_id` bigint(20) unsigned NOT NULL COMMENT 'Label id.',
-  `subname` varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub name.',
   `history_id` bigint(20) unsigned DEFAULT NULL COMMENT 'History.',
   `int_data` int(11) DEFAULT NULL COMMENT 'Integer data.',
   `text_data` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Text data.',
@@ -341,7 +340,6 @@ SET character_set_client = utf8;
   `id` bigint(20) unsigned,
   `seq_id` bigint(20) unsigned,
   `label_id` bigint(20) unsigned,
-  `subname` varchar(512),
   `history_id` bigint(20) unsigned,
   `int_data` int(11),
   `text_data` varchar(1024),
@@ -369,7 +367,6 @@ SET character_set_client = utf8;
   `label_id` bigint(20) unsigned,
   `id` bigint(20) unsigned,
   `seq_id` bigint(20) unsigned,
-  `subname` varchar(512),
   `history_id` bigint(20) unsigned,
   `int_data` int(11),
   `text_data` varchar(1024),
@@ -991,7 +988,7 @@ CREATE TABLE `user` (
   `name` char(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User name.',
   `complete_name` varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'User full name.',
   `password` char(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User password md5 hashed.',
-  `email` varchar(129) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'User email.',
+  `email` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'User email.',
   `user_type` enum('user','admin') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'user' COMMENT 'User type.',
   `birthday` date DEFAULT NULL COMMENT 'User''s birthday.',
   `image` blob COMMENT 'User''s image file.',
@@ -1062,7 +1059,7 @@ SET character_set_client = utf8;
   `user_name` char(32),
   `complete_name` varchar(512),
   `password` char(32),
-  `email` varchar(129),
+  `email` varchar(128),
   `user_type` enum('user','admin'),
   `birthday` date,
   `image` blob,
@@ -1334,7 +1331,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `label_sequence_extra` AS select `label_sequence`.`id` AS `id`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`label_id` AS `label_id`,`label_sequence`.`subname` AS `subname`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_start` AS `position_start`,`label_sequence`.`position_length` AS `position_length`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_sequence`.`bool_data` AS `bool_data`,`taxonomy`.`name` AS `taxonomy_name`,`sequence`.`name` AS `sequence_name` from ((`label_sequence` left join `taxonomy` on((`taxonomy`.`id` = `label_sequence`.`taxonomy_data`))) left join `sequence` on((`sequence`.`id` = `label_sequence`.`ref_data`))) */;
+/*!50001 VIEW `label_sequence_extra` AS select `label_sequence`.`id` AS `id`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`label_id` AS `label_id`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_start` AS `position_start`,`label_sequence`.`position_length` AS `position_length`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_sequence`.`bool_data` AS `bool_data`,`taxonomy`.`name` AS `taxonomy_name`,`sequence`.`name` AS `sequence_name` from ((`label_sequence` left join `taxonomy` on((`taxonomy`.`id` = `label_sequence`.`taxonomy_data`))) left join `sequence` on((`sequence`.`id` = `label_sequence`.`ref_data`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1353,7 +1350,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`fdb_app`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `label_sequence_info` AS select `label_sequence_extra`.`label_id` AS `label_id`,`label_sequence_extra`.`id` AS `id`,`label_sequence_extra`.`seq_id` AS `seq_id`,`label_sequence_extra`.`subname` AS `subname`,`label_sequence_extra`.`history_id` AS `history_id`,`label_sequence_extra`.`int_data` AS `int_data`,`label_sequence_extra`.`text_data` AS `text_data`,`label_sequence_extra`.`obj_data` AS `obj_data`,`label_sequence_extra`.`ref_data` AS `ref_data`,`label_sequence_extra`.`position_start` AS `position_start`,`label_sequence_extra`.`position_length` AS `position_length`,`label_sequence_extra`.`taxonomy_data` AS `taxonomy_data`,`label_sequence_extra`.`url_data` AS `url_data`,`label_sequence_extra`.`bool_data` AS `bool_data`,`label_sequence_extra`.`taxonomy_name` AS `taxonomy_name`,`label_sequence_extra`.`sequence_name` AS `sequence_name`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`history_info`.`creation` AS `creation`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`update` AS `update`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`user_name` AS `user_name` from ((`label_sequence_extra` join `label_norm` on((`label_sequence_extra`.`label_id` = `label_norm`.`label_id`))) left join `history_info` on((`history_info`.`history_id` = `label_sequence_extra`.`history_id`))) */;
+/*!50001 VIEW `label_sequence_info` AS select `label_sequence_extra`.`label_id` AS `label_id`,`label_sequence_extra`.`id` AS `id`,`label_sequence_extra`.`seq_id` AS `seq_id`,`label_sequence_extra`.`history_id` AS `history_id`,`label_sequence_extra`.`int_data` AS `int_data`,`label_sequence_extra`.`text_data` AS `text_data`,`label_sequence_extra`.`obj_data` AS `obj_data`,`label_sequence_extra`.`ref_data` AS `ref_data`,`label_sequence_extra`.`position_start` AS `position_start`,`label_sequence_extra`.`position_length` AS `position_length`,`label_sequence_extra`.`taxonomy_data` AS `taxonomy_data`,`label_sequence_extra`.`url_data` AS `url_data`,`label_sequence_extra`.`bool_data` AS `bool_data`,`label_sequence_extra`.`taxonomy_name` AS `taxonomy_name`,`label_sequence_extra`.`sequence_name` AS `sequence_name`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`history_info`.`creation` AS `creation`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`update` AS `update`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`user_name` AS `user_name` from ((`label_sequence_extra` join `label_norm` on((`label_sequence_extra`.`label_id` = `label_norm`.`label_id`))) left join `history_info` on((`history_info`.`history_id` = `label_sequence_extra`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1633,4 +1630,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-07-26  0:07:55
+-- Dump completed on 2009-07-26  1:57:17
