@@ -637,10 +637,6 @@ function restore_old_tree()
 {
   var encoded = $.cookie(get_cookie_tree_name());
 
-  if(!encoded) {
-    return;
-  }
-
   var obj = $.evalJSON(encoded);
 
   if(obj) {
@@ -660,7 +656,9 @@ function restore_old_tree()
     } else {
       $('#search_tree .term-name:first').clickTermName();
     }
-  } else {
+  }
+  
+  if(we_are_starting) {
     and_form_submitted();
   }
 }
