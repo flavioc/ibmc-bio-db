@@ -29,6 +29,11 @@ class Taxonomy_name_model extends BioModel
 
   function edit_type($id, $type_id)
   {
+    $type_model = $this->load_model('taxonomy_name_type_model');
+    if(!$type_model->has_id($type_id)) {
+      return false;
+    }
+    
     $tax = $this->get_tax_id($id);
 
     $this->db->trans_start();
@@ -37,6 +42,8 @@ class Taxonomy_name_model extends BioModel
     $this->update_history($tax, 'taxonomy');
 
     $this->db->trans_complete();
+  
+    return true;
   }
 
   function edit_name($id, $name)
@@ -58,9 +65,20 @@ class Taxonomy_name_model extends BioModel
 
   function add($tax, $name, $type)
   {
+    $tax_model = $this->load_model('taxonomy_model');
+    
+    if(!$tax_model->has_id($tax)) {
+      return false;
+    }
+    
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 512) {
+      return false;
+    }
+    
     $data = array(
       'tax_id' => $tax,
-      'name' => trim($name),
+      'name' => $name,
       'type_id' => $type,
     );
 

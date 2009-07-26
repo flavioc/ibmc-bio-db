@@ -70,9 +70,19 @@ class Sequence_model extends BioModel
 
   function add($name, $content)
   {
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 255) {
+      return false;
+    }
+    
+    $content = sequence_normalize($content);
+    if(strlen($content) <= 0 || strlen($content) > 65535) {
+      return false;
+    }
+    
     $data = array(
-      'name' => trim($name),
-      'content' => sequence_normalize($content),
+      'name' => $name,
+      'content' => $content,
     );
 
     $label_sequence = $this->load_model('label_sequence_model');
@@ -122,10 +132,15 @@ class Sequence_model extends BioModel
 
   function edit_name($id, $name)
   {
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 255) {
+      return false;
+    }
+    
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', trim($name));
+    $this->edit_field($id, 'name', $name);
 
     $this->db->trans_complete();
   }
@@ -144,10 +159,16 @@ class Sequence_model extends BioModel
 
   function edit_content($id, $content)
   {
+    $content = sequence_normalize($content);
+    
+    if(strlen($content) <= 0 || strlen($content) > 65535) {
+      return false;
+    }
+    
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'content', sequence_normalize($content));
+    $this->edit_field($id, 'content', $content);
     $label_sequence = $this->load_model('label_sequence_model');
     $label_sequence->regenerate_labels($id);
 

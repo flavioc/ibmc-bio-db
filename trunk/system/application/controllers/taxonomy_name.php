@@ -50,17 +50,9 @@ class Taxonomy_name extends BioController {
     $value = $this->get_post('value');
 
     $this->load->model('taxonomy_name_model');
-
-    $size_value = strlen($value);
-
-    if($size_value < 3 || $size_value > 512) {
-      echo $this->taxonomy_name_model->get_name($id);
-      return;
-    }
-
     $this->taxonomy_name_model->edit_name($id, $value);
 
-    echo $value;
+    echo $this->taxonomy_name_model->get_name($id);
   }
 
   function add($tax, $name, $type)

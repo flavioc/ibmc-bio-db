@@ -56,14 +56,20 @@ class Taxonomy_tree_model extends BioModel
 
   function add($name)
   {
-    return $this->insert_data_with_history(array('name' => trim($name)));
+    $name = trim($name);
+    
+    if(strlen($name) <= 0 || strlen($name) > 255 || $this->has_name($name)) {
+      return false;
+    }
+    
+    return $this->insert_data_with_history(array('name' => $name));
   }
 
   function edit($id, $new_name)
   {
     $new_name = trim($new_name);
     
-    if($new_name == '' || $this->has_name($new_name)) {
+    if(strlen($new_name) <= 0 || strlen($new_name) > 255 || $this->has_name($new_name)) {
       return false;
     }
 

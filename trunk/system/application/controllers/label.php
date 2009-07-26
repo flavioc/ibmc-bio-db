@@ -189,6 +189,7 @@ class Label extends BioController {
 
     // define form rules and validate all form fields
     $this->form_validation->set_rules('name', 'Name', 'trim|min_length[2]|max_length[255]');
+    $this->form_validation->set_rules('comment', 'Comment', 'trim|max_length[1024]');
 
     if($this->form_validation->run() == FALSE) {
       $errors = true;
@@ -388,10 +389,14 @@ class Label extends BioController {
 
     $result = $this->label_model->edit_comment($id, $value);
     
-    if($value) {
-      echo newline_tab_html($value);
+    if($result) {
+      if($value) {
+        echo newline_tab_html($value);
+      } else {
+        $this->return_empty();
+      }
     } else {
-      $this->return_empty();
+      echo newline_tab_html($this->label_model->get_comment($id));
     }
   }
   

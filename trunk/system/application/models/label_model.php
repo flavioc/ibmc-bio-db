@@ -14,11 +14,6 @@ class Label_model extends BioModel
     return $this->has_id($id);
   }
 
-  function has_name($name)
-  {
-    return $this->has_field('name', $name);
-  }
-
   function __select()
   {
     $this->db->select(self::$label_view_fields);
@@ -123,13 +118,27 @@ class Label_model extends BioModel
     $valid_code, $comment)
   {
     $type = trim($type);
+    $name = trim($name);
+    $comment = trim($comment);
+    
+    if(strlen($name) <= 0 || strlen($name) > 255) {
+      return false;
+    }
+    
+    if($this->has($name)) {
+      return false;
+    }
     
     if(!$this->__valid_type($type)) {
       return false;
     }
     
+    if(strlen($comment) > 1024) {
+      return false;
+    }
+    
     $data = array(
-      'name' => trim($name),
+      'name' => $name,
       'type' => $type,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
@@ -141,7 +150,7 @@ class Label_model extends BioModel
       'public' => $public,
       'code' => trim($code),
       'valid_code' => trim($valid_code),
-      'comment' => trim($comment),
+      'comment' => $comment,
     );
 
     return $this->insert_data_with_history($data);
@@ -154,13 +163,27 @@ class Label_model extends BioModel
     $code, $valid_code, $comment)
   {
     $type = trim($type);
+    $name = trim($name);
+    $comment = trim($comment);
+    
+    if(strlen($name) <= 0 || strlen($name) > 255) {
+      return false;
+    }
+    
+    if($this->has($name)) {
+      return false;
+    }
+    
+    if(strlen($comment) > 1024) {
+      return false;
+    }
     
     if(!$this->__valid_type($type)) {
       return false;
     }
     
     $data = array(
-      'name' => trim($name),
+      'name' => $name,
       'type' => $type,
       'must_exist' => $mustexist,
       'auto_on_creation' => $auto_on_creation,
@@ -172,7 +195,7 @@ class Label_model extends BioModel
       'public' => $public,
       'code' => trim($code),
       'valid_code' => trim($valid_code),
-      'comment' => trim($comment),
+      'comment' => $comment,
     );
 
     return $this->edit_data_with_history($id, $data);
@@ -256,7 +279,7 @@ class Label_model extends BioModel
   {
     $name = trim($name);
     
-    if($name == '' || $this->has_name($name)) {
+    if(strlen($name) <= 0 || strlen($name) > 255 || $this->has($name)) {
       return false;
     }
 
@@ -286,7 +309,13 @@ class Label_model extends BioModel
 
   function edit_comment($id, $comment)
   {
-    return $this->edit_field($id, 'comment', trim($comment));
+    $comment = trim($comment);
+    
+    if(strlen($comment) > 1024) {
+      return false;
+    }
+    
+    return $this->edit_field($id, 'comment', $comment);
   }
 
   function edit_bool($id, $what, $val)
