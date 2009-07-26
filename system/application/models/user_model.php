@@ -89,14 +89,33 @@ class User_model extends BioModel
   function new_user($name, $complete_name, $email,
     $birthday, $password, $image)
   {
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 32 || $this->username_used($name)) {
+      return false;
+    }
+    
+    $email = trim($email);
+    if(strlen($email) <= 0 || strlen($email) > 128) {
+      return false;
+    }
+    
+    $password = trim($password);
+    if(strlen($password) < 6 || strlen($password) > 32) {
+      return false;
+    }
+    
     $data = array(
-      'name' => trim($name),
-      'email' => trim($email),
-      'password' => trim($password),
+      'name' => $name,
+      'email' => $email,
+      'password' => $password,
     );
 
     if($complete_name != null) {
       $data['complete_name'] = trim($complete_name);
+      
+      if(strlen($data['complete_name']) > 512) {
+        return false;
+      }
     }
 
     if($birthday != null) {
@@ -114,9 +133,19 @@ class User_model extends BioModel
   function edit_user($id, $complete_name, $email, $birthday,
     $imagecontent, $new_password)
   {
+    $complete_name = trim($complete_name);
+    if(strlen($complete_name) > 512) {
+      return false;
+    }
+    
+    $email = trim($email);
+    if(strlen($email) <= 0 || strlen($email) > 128) {
+      return false;
+    }
+    
     $data = array(
-      'complete_name' => trim($complete_name),
-      'email' => trim($email),
+      'complete_name' => $complete_name,
+      'email' => $email,
     );
 
     if($birthday) {
@@ -129,7 +158,10 @@ class User_model extends BioModel
     }
 
     $new_password = trim($new_password);
-    if($new_password && count($new_password) > 0) {
+    if($new_password && strlen($new_password) > 0) {
+      if(strlen($new_password) < 6 || strlen($new_password) > 32) {
+        return false;
+      }
       $data['password'] = $new_password;
     }
 

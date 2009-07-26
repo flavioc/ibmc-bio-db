@@ -12,9 +12,28 @@ class Taxonomy_model extends BioModel
     if(!$parent) {
       $parent = null;
     }
-
+    
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) >= 512) {
+      return false;
+    }
+    
+    if($parent && !$this->has_id($parent)) {
+      return false;
+    }
+    
+    $tree_model = $this->load_model('taxonomy_tree_model');
+    if($tree && $tree_model->has_id($tree)) {
+      return false;
+    }
+    
+    $rank_model = $this->load_model('taxonomy_rank_model');
+    if($rank && !$rank_model->has_id($rank)) {
+      return false;
+    }
+    
     $data = array(
-      'name' => trim($name),
+      'name' => $name,
       'rank_id' => $rank,
       'tree_id' => $tree,
       'parent_id' => $parent,
@@ -76,26 +95,46 @@ class Taxonomy_model extends BioModel
 
   function edit_name($id, $name)
   {
+    $name = trim($name);
+    
+    if(strlen($name) <= 0 || strlen($name) > 512) {
+      return false;
+    }
+    
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', trim($name));
+    $this->edit_field($id, 'name', $name);
 
     $this->db->trans_complete();
   }
 
   function edit_rank($id, $rank_id)
   {
+    $rank_model = $this->load_model('taxonomy_rank_model');
+    
+    if($rank_id && !$rank_model->has_id($rank_id)) {
+      return false;
+    }
+    
     $this->db->trans_start();
 
     $this->update_history($id);
     $this->edit_field($id, 'rank_id', $rank_id);
 
     $this->db->trans_complete();
+    
+    return true;
   }
 
   function edit_tree($id, $tree_id)
   {
+    $tree_model = $this->load_model('taxonomy_tree_model');
+    
+    if($tree_id && !$tree_model->has_id($tree_id)) {
+      return false;
+    }
+    
     $this->db->trans_start();
 
     $this->update_history($id);
@@ -105,16 +144,24 @@ class Taxonomy_model extends BioModel
     $this->edit_field($id, 'parent_id', NULL);
 
     $this->db->trans_complete();
+    
+    return true;
   }
 
   function edit_parent($id, $parent_id)
   {
+    if($parent_id && $this->has_id($parent_id)) {
+      return false;
+    }
+    
     $this->db->trans_start();
 
     $this->update_history($id);
     $this->edit_field($id, 'parent_id', $parent_id);
 
     $this->db->trans_complete();
+    
+    return true;
   }
 
   function _get_search_sql($name, $rank, $tree, $start = null, $size = null)

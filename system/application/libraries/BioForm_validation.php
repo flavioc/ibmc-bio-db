@@ -2,7 +2,7 @@
 
 class BioForm_validation extends CI_Form_validation
 {
-  var $base_password_rules = 'trim|min_length[6]';
+  var $base_password_rules = 'trim|min_length[6]|max_length[32]';
   var $base_username_rules = 'trim|required|min_length[2]|max_length[32]';
 
   function BioForm_validation()
@@ -61,7 +61,7 @@ class BioForm_validation extends CI_Form_validation
   
   function set_email_rule($what = 'email')
   {
-    $this->set_rules($what, 'Email', 'trim|required|valid_email');
+    $this->set_rules($what, 'Email', 'trim|required|valid_email|max_length[128]');
   }
 
   function set_date_rule($what, $msg)

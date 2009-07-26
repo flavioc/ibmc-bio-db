@@ -101,9 +101,11 @@ class Rank extends BioController {
     } else {
       $name = $this->get_post('name');
 
+      
       $id = $this->taxonomy_rank_model->add($name, $parent);
-
-      redirect("rank/view/$id");
+      if($id) {
+        redirect("rank/view/$id");
+      }
     }
   }
 

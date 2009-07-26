@@ -518,16 +518,9 @@ class Sequence extends BioController
     $id = $this->get_post('seq');
     $value = $this->get_post('value');
 
-    $size = strlen($value);
-    if($size < 3 || $size > 255) {
-      $name = $this->sequence_model->get_name($id);
-      echo $name;
-      return;
-    }
-
     $this->sequence_model->edit_name($id, $value);
 
-    echo $value;
+    echo $this->sequence_model->get_name($id);
   }
 
   function edit_content()
@@ -538,6 +531,10 @@ class Sequence extends BioController
 
     $id = $this->get_post('seq');
     $value = $this->get_post('value');
+    
+    if($value == '') {
+      return;
+    }
 
     $value = sequence_join($value);
 

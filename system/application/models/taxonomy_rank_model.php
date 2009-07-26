@@ -77,18 +77,17 @@ class Taxonomy_rank_model extends BioModel
     return $ret;
   }
 
-  function edit_name($id, $new_name)
+  function edit_name($id, $name)
   {
-    $new_name = trim($new_name);
-    
-    if($new_name == '' || $this->has_name($new_name)) {
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 128 || $this->has_name($name)) {
       return false;
     }
 
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', $new_name);
+    $this->edit_field($id, 'name', $name);
 
     $this->db->trans_complete();
 
@@ -130,8 +129,13 @@ class Taxonomy_rank_model extends BioModel
       }
     }
 
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 128 || $this->has_name($name)) {
+      return false;
+    }
+    
     $data = array(
-      'name' => trim($name),
+      'name' => $name,
       'parent_id' => $parent,
     );
 

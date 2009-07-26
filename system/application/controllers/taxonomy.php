@@ -199,17 +199,10 @@ class Taxonomy extends BioController {
 
     $id = $this->get_post('tax');
     $value = $this->get_post('value');
-
-    $size = strlen($value);
-    if($size < 3 || $size > 512) {
-      $name = $this->taxonomy_model->get_name($id);
-      echo $name;
-      return;
-    }
-
+    
     $this->taxonomy_model->edit_name($id, $value);
 
-    echo $value;
+    echo $this->taxonomy_model->get_name($id);
   }
 
   function edit_rank()
@@ -224,7 +217,9 @@ class Taxonomy extends BioController {
       $value = null;
     }
 
-    $this->taxonomy_model->edit_rank($id, $value);
+    if(!$this->taxonomy_model->edit_rank($id, $value)) {
+      $value = $this->taxonomy_model->get_rank($id);
+    }
 
     $this->load->model('taxonomy_rank_model');
 
@@ -247,7 +242,9 @@ class Taxonomy extends BioController {
       $value = null;
     }
 
-    $this->taxonomy_model->edit_tree($id, $value);
+    if(!$this->taxonomy_model->edit_tree($id, $value)) {
+      $value = $this->taxonomy_model->get_tree($id);
+    }
 
     $this->load->model('taxonomy_tree_model');
 

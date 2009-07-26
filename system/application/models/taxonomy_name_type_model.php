@@ -19,7 +19,12 @@ class Taxonomy_name_type_model extends BioModel
 
   function add($name)
   {
-    return $this->insert_data(array('name' => trim($name)));
+    $name = trim($name);
+    if(strlen($name) <= 0 || strlen($name) > 512 || $this->has_name($name)) {
+      return false;
+    }
+    
+    return $this->insert_data(array('name' => $name));
   }
 
   function get_type_id($type)
@@ -31,5 +36,10 @@ class Taxonomy_name_type_model extends BioModel
     } else {
       return $id;
     }
+  }
+  
+  function has_name($name)
+  {
+    return $this->has_field('name', $name);
   }
 }
