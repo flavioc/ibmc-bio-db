@@ -17,6 +17,10 @@ $(document).ready(function() {
     $(this).ajaxFormAdd();
   });
   
+  $('#form_edit_label').livequery(function () {
+    $(this).ajaxFormEdit();
+  });
+  
   $('#hide_show_labels').minusPlus({
     enabled: true,
     plusEnabled: load_labels_list,
