@@ -737,6 +737,7 @@ CREATE TABLE `taxonomy_rank` (
   `name` char(128) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Rank name.',
   `history_id` bigint(20) unsigned DEFAULT NULL COMMENT 'History.',
   `parent_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Parent rank.',
+  `is_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is this a default rank?',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
@@ -1632,4 +1633,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-07-25 14:30:52
+-- Dump completed on 2009-07-26  0:07:55
