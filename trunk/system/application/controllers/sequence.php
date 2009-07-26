@@ -315,6 +315,7 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_mygrid();
     $this->use_plusminus();
+    $this->use_livequery();
 
     $this->__load_sequence($id);
     $this->smarty->assign('missing',

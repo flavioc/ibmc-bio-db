@@ -13,6 +13,10 @@ $(document).ready(function() {
   $('#labels_list').gridEnable({paginate: false});
   $('#validation_list').gridEnable({paginate: false});
 
+  $('#form_add_label').livequery(function () {
+    $(this).ajaxFormAdd();
+  });
+  
   $('#hide_show_labels').minusPlus({
     enabled: true,
     plusEnabled: load_labels_list,

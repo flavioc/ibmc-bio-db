@@ -291,7 +291,7 @@ class BioController extends Controller
     if($generate) {
       return $this->label_sequence_model->add_generated_label($seq_id, $label_id);
     }
-
+    
     switch($label['type']) {
       case 'url':
         return $this->label_sequence_model->add_url_label($seq_id, $label_id, $this->get_post('url'));
