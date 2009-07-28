@@ -104,7 +104,7 @@ add_label(name = "name",
     editable = False,
     multiple = False,
     must_exist = False,
-    default = False)
+    default = True)
 
 add_label(name = "content",
     type = "text",
@@ -113,7 +113,7 @@ add_label(name = "content",
     editable = False,
     multiple = False,
     must_exist = False,
-    default = False)
+    default = True)
 
 db.close()
 
