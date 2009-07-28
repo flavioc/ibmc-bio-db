@@ -118,7 +118,7 @@ function get_sequence_content($file)
 
 function read_header_labels($line, $controller)
 {
-  $stripped_line = trim($line, " \t\n\#");
+  $stripped_line = trim($line, " \t\n\r\#");
   $labels_vec = explode("|", $stripped_line);
   $ret = array();
 
@@ -189,6 +189,7 @@ function import_update_label_content($id, $label_type, $text, $controller)
   }
   return false;
 }
+
 function import_label_content($seq_id, $label_id, $label_type, $text, $controller)
 {
   $model = $controller->label_sequence_model;

@@ -646,12 +646,12 @@ class Sequence extends BioController
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.xml"');
     
-    echo export_sequences_xml($sequences, $seq_labels);
+    echo export_sequences_xml($sequences, $seq_labels, $this->username);
   }
 
   function __get_basic_comments()
   {
-    return $this->username . ' - ' . date('l jS F Y h:i:s A');
+    return $this->username . ' - ' . timestamp_string();
   }
 }
 

@@ -51,7 +51,8 @@ $autoload['libraries'] = array('database', 'BioSmarty', 'session', 'input');
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url', 'form', 'form_utils', 'conf_values', 'parse', 'data_utils', 'seq', 'file_utils', 'sql', 'autocomplete', 'label', 'text', 'exporter');
+$autoload['helper'] = array('url', 'form', 'form_utils', 'conf_values', 'parse', 'data_utils', 'date_utils',
+                            'seq', 'file_utils', 'sql', 'autocomplete', 'label', 'text', 'exporter');
 
 
 /*

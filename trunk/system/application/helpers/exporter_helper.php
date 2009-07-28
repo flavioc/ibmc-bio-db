@@ -13,10 +13,13 @@ function export_sequences_simple($sequences)
   return $ret;
 }
 
-function export_sequences_xml($sequences, $seq_labels)
+function export_sequences_xml($sequences, $seq_labels, $author)
 {
   $merged_labels = __merge_export_labels($seq_labels);
-  $ret = "<sequences>\n" . __get_export_header_xml($merged_labels);
+  $ret = "<sequences>\n";
+  $ret .= "\t<author>$author</author>\n";
+  $ret .= "\t<date>" . timestamp_string() . "</date>\n";
+  $ret .= __get_export_header_xml($merged_labels);
   
   for($i = 0; $i < count($sequences); $i++) {
     $sequence = $sequences[$i];
