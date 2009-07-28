@@ -175,7 +175,7 @@ class Taxonomy_model extends BioModel
     $sql = "SELECT id FROM taxonomy_info";
     
     if($tree && is_numeric($tree)) {
-      $sql .= "tree_id = $tree";
+      $sql .= " WHERE tree_id = $tree";
       $condition = true;
     }
 
@@ -184,6 +184,7 @@ class Taxonomy_model extends BioModel
         $sql .= " AND";
       } else {
         $condition = true;
+        $sql .= " WHERE";
       }
       
       $sql .= " rank_id = $rank";
@@ -194,9 +195,10 @@ class Taxonomy_model extends BioModel
         $sql .= " AND";
       } else {
         $condition = true;
+        $sql .= " WHERE";
       }
-      $name = $this->db->escape("%$name%");
-      $sql .= " name LIKE $name";
+      $name = $this->db->escape($name);
+      $sql .= " name REGEXP $name";
     }
     
     $sql .= sql_limit($start, $size);
