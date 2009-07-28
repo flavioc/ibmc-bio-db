@@ -165,14 +165,16 @@ class Taxonomy_rank_model extends BioModel
     if(array_key_exists('name', $filtering)) {
       $name = $filtering['name'];
       if(!sql_is_nothing($name)) {
-        $this->db->like('rank_name', "%$name%");
+        $name = $this->db->escape($name);
+        $this->db->where("rank_name REGEXP $name");
       }
     }
 
     if(array_key_exists('parent_name', $filtering)) {
       $parent_name = $filtering['parent_name'];
       if(!sql_is_nothing($parent_name)) {
-        $this->db->like('rank_parent_name', "%$parent_name%");
+        $parent_name = $this->db->escape($parent_name);
+        $this->db->where("rank_parent_name REGEXP $parent_name");
       }
     }
 

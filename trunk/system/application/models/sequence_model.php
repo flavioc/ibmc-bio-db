@@ -34,7 +34,8 @@ class Sequence_model extends BioModel
     if(array_key_exists('name', $filtering)) {
       $name = $filtering['name'];
       if(!sql_is_nothing($name)) {
-        $this->db->like('name', "%$name%");
+        $name = $this->db->escape($name);
+        $this->db->where("name REGEXP $name");
       }
     }
 

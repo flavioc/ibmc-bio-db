@@ -22,7 +22,8 @@ class Taxonomy_tree_model extends BioModel
     if(array_key_exists('name', $filtering)) {
       $name = $filtering['name'];
       if(!sql_is_nothing($name)) {
-        $this->db->like('tree_name', "%$name%");
+        $name = $this->db->escape($name);
+        $this->db->where("tree_name REGEXP $name");
       }
     }
 
