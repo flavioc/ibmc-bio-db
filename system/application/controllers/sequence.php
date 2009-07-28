@@ -48,7 +48,7 @@ class Sequence extends BioController
       foreach($seqs as &$seq) {
         $ids[] = $seq['id'];
       }
-      return $this->export_sequences($ids, $type);
+      return $this->export_sequences($ids, $type, '');
     }
   }
 

@@ -5,4 +5,5 @@
   <option value="phylip3">phylip3</option>
   <option value="nexus">nexus</option>
   <option value="mega">mega</option>
+  <option value="paup">paup</option>
 </select>
