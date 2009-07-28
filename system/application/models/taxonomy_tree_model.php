@@ -19,18 +19,18 @@ class Taxonomy_tree_model extends BioModel
 
   function __filter($filtering = array())
   {
-    if(count($filtering) == 0) {
-      return;
+    if(array_key_exists('name', $filtering)) {
+      $name = $filtering['name'];
+      if(!sql_is_nothing($name)) {
+        $this->db->like('tree_name', "%$name%");
+      }
     }
 
-    $name = $filtering['name'];
-    if(!sql_is_nothing($name)) {
-      $this->db->like('tree_name', "%$name%");
-    }
-
-    $user = $filtering['user'];
-    if(!sql_is_nothing($user)) {
-      $this->db->where('update_user_id', $user);
+    if(array_key_exists('user', $filtering)) {
+      $user = $filtering['user'];
+      if(!sql_is_nothing($user)) {
+        $this->db->where('update_user_id', $user);
+      }
     }
   }
 
@@ -75,12 +75,15 @@ class Taxonomy_tree_model extends BioModel
 
     $this->db->trans_start();
 
-    $this->update_history($id);
-    $this->edit_field($id, 'name', $new_name);
+    $ret = $this->update_history($id);
+    
+    if($ret) {
+      $ret = $this->edit_field($id, 'name', $new_name);
+    }
 
     $this->db->trans_complete();
 
-    return true;
+    return $ret;
   }
 
   function get_name($id)

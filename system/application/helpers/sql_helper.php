@@ -5,6 +5,10 @@ function sql_limit($start, $size)
   if($start == null) {
     $start = '0';
   }
+  
+  if(!is_numeric($start) || !is_numeric($size)) {
+    return '';
+  }
 
   if($size != NULL) {
     return " LIMIT $start, $size ";

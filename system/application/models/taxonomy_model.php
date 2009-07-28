@@ -23,7 +23,7 @@ class Taxonomy_model extends BioModel
     }
     
     $tree_model = $this->load_model('taxonomy_tree_model');
-    if($tree && $tree_model->has_id($tree)) {
+    if($tree && !$tree_model->has_id($tree)) {
       return false;
     }
     
@@ -104,9 +104,11 @@ class Taxonomy_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', $name);
+    $ret = $this->edit_field($id, 'name', $name);
 
     $this->db->trans_complete();
+    
+    return $ret;
   }
 
   function edit_rank($id, $rank_id)
@@ -120,11 +122,11 @@ class Taxonomy_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'rank_id', $rank_id);
+    $ret = $this->edit_field($id, 'rank_id', $rank_id);
 
     $this->db->trans_complete();
     
-    return true;
+    return $ret;
   }
 
   function edit_tree($id, $tree_id)
@@ -139,13 +141,16 @@ class Taxonomy_model extends BioModel
 
     $this->update_history($id);
 
-    $this->edit_field($id, 'tree_id', $tree_id);
-    // reset parent field
-    $this->edit_field($id, 'parent_id', NULL);
+    $ret = $this->edit_field($id, 'tree_id', $tree_id);
+    
+    if($ret) {
+      // reset parent field
+      $ret = $this->edit_field($id, 'parent_id', NULL);
+    }
 
     $this->db->trans_complete();
     
-    return true;
+    return $ret;
   }
 
   function edit_parent($id, $parent_id)
@@ -157,58 +162,45 @@ class Taxonomy_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'parent_id', $parent_id);
+    $ret = $this->edit_field($id, 'parent_id', $parent_id);
 
     $this->db->trans_complete();
     
-    return true;
+    return $ret;
   }
 
   function _get_search_sql($name, $rank, $tree, $start = null, $size = null)
   {
-    $nocase = false;
-
-    if($nocase) {
-      $lower_name = strtolower($name);
-    } else {
-      $lower_name = $name;
+    $condition = false;
+    $sql = "SELECT id FROM taxonomy_info";
+    
+    if($tree && is_numeric($tree)) {
+      $sql .= "tree_id = $tree";
+      $condition = true;
     }
 
-    $where_name_sql = "";
-    if($nocase) {
-      $where_name_sql .= "LCASE(name)";
-    } else {
-      $where_name_sql .= "name";
-    }
-    $where_name_sql .= " LIKE '%$lower_name%'";
-
-    $sql = "SELECT id ";
-
-    $sql .= " FROM taxonomy_info WHERE TRUE ";
-    if($tree) {
-      $sql .= " AND tree_id = $tree ";
+    if($rank && is_numeric($rank)) {
+      if($condition) {
+        $sql .= " AND";
+      } else {
+        $condition = true;
+      }
+      
+      $sql .= " rank_id = $rank";
     }
 
-    if($rank) {
-      $sql .= " AND rank_id = $rank ";
+    if($name != '') {
+      if($condition) {
+        $sql .= " AND";
+      } else {
+        $condition = true;
+      }
+      $name = $this->db->escape("%$name%");
+      $sql .= " name LIKE $name";
     }
-
-    $sql .= " AND $where_name_sql ";
+    
     $sql .= sql_limit($start, $size);
-
-    /*
-    $sql .= " UNION SELECT tax_id AS id FROM taxonomy_name_tax WHERE TRUE ";
-
-    if($tree) {
-      $sql .= " AND tree_id = $tree ";
-    }
-
-    if($rank) {
-      $sql .= " AND rank_id = $rank ";
-    }
-    $sql .= " AND $where_name_sql ";
-     */
-
+    
     return $sql;
   }
 
@@ -267,6 +259,14 @@ class Taxonomy_model extends BioModel
 
   function __get_children($tax, $tree)
   {
+    if($tax != null && !is_numeric($tax)) {
+      return array();
+    }
+    
+    if($tree != null && !is_numeric($tree)) {
+      return array();
+    }
+    
     $tree_str = "";
     if($tree) {
       $tree_str = "tree_id = $tree AND";

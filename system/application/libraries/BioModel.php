@@ -13,7 +13,7 @@ class BioModel extends Model
   {
     $CI =& get_instance();
     $CI->load->model($name, $name, true);
-        
+
     return $CI->$name;
   }
 
@@ -29,9 +29,9 @@ class BioModel extends Model
     $history = $this->load_model('history_model');
 
     if($this->has_history($id, $table)) {
-      $history->update($this->get_history($id, $table));
+      return $history->update($this->get_history($id, $table));
     } else {
-      $this->edit_field($id, 'history_id', $history->add(), $table);
+      return $this->edit_field($id, 'history_id', $history->add(), $table);
     }
   }
 
@@ -151,7 +151,7 @@ class BioModel extends Model
 
   function delete_id($id, $table = null)
   {
-    $this->delete_by_field('id', $id, $table);
+    return $this->delete_by_field('id', $id, $table);
   }
 
   function delete_by_field($field, $data, $table = null)
@@ -160,7 +160,7 @@ class BioModel extends Model
       $table = $this->table;
     }
 
-    $this->db->delete($table, array($field => $data));
+    return $this->db->delete($table, array($field => $data));
   }
   
   function delete_rows($table = null)
@@ -169,7 +169,7 @@ class BioModel extends Model
       $table = $this->table;
     }
     
-    $this->db->delete($table);
+    return $this->db->delete($table);
   }
   
   function delete_all($table = null)
@@ -178,7 +178,7 @@ class BioModel extends Model
       $table = $this->table;
     }
     
-    $this->db->empty_table($table);
+    return $this->db->empty_table($table);
   }
 
   function edit_field($id, $field, $data, $table = null)
@@ -187,7 +187,7 @@ class BioModel extends Model
       $field => $data,
     );
 
-    $this->edit_data($id, $data, $table);
+    return $this->edit_data($id, $data, $table);
   }
 
   function edit_data($id, $data, $table = null)
@@ -197,9 +197,7 @@ class BioModel extends Model
     }
 
     $this->db->where('id', $id);
-    $this->db->update($table, $data);
-
-    return true;
+    return $this->db->update($table, $data);
   }
 
   function edit_data_with_history($id, $data, $table = null)
@@ -207,8 +205,10 @@ class BioModel extends Model
     $this->db->trans_start();
 
     $ret = $this->edit_data($id, $data, $table);
-    $this->update_history($id, $table);
-
+    if($ret) {
+      $ret = $this->update_history($id, $table);
+    }
+      
     $this->db->trans_complete();
 
     return $ret;
@@ -291,9 +291,14 @@ class BioModel extends Model
   function get_order_sql($order, $default, $typed)
   {
     $arr = $this->get_order_by($order, $default, $typed);
-    $field = $arr[0];
+    
     $order = $arr[1];
-
+    if($order != 'asc' || $order != 'desc') {
+      return '';
+    }
+    
+    $field = $this->db->protect_identifiers($arr[0]);
+    
     return "ORDER BY $field $order";
   }
 

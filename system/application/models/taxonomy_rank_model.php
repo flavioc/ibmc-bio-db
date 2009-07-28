@@ -86,20 +86,24 @@ class Taxonomy_rank_model extends BioModel
 
     $this->db->trans_start();
 
-    $this->update_history($id);
-    $this->edit_field($id, 'name', $name);
+    $ret = $this->update_history($id);
+    if($ret) {
+      $ret = $this->edit_field($id, 'name', $name);
+    }
 
     $this->db->trans_complete();
 
-    return true;
+    return $ret;
   }
 
   function edit_parent($id, $new_parent)
   {
     $this->db->trans_start();
 
-    $this->update_history($id);
-    $this->edit_field($id, 'parent_id', $new_parent);
+    $ret = $this->update_history($id);
+    if($ret) {
+      $ret = $this->edit_field($id, 'parent_id', $new_parent);
+    }
 
     $this->db->trans_complete();
 
@@ -144,11 +148,16 @@ class Taxonomy_rank_model extends BioModel
 
   function add_array($arr)
   {
+    $ret = true;
     foreach($arr as $name) {
       if(!$this->has($name)) {
-        $this->add($name);
+        if(!$this->add($name)) {
+          $ret = false;
+        }
       }
     }
+    
+    return $ret;
   }
 
   function __filter($filtering)

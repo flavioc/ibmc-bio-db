@@ -18,3 +18,8 @@ function newline_tab_html($text)
 {
   return ascii_to_entities(str_replace("\t", "   ", str_replace("\n", "<br />", $text)));
 }
+
+function xmlspecialchars($text)
+{
+   return str_replace('&#039;', '&apos;', htmlspecialchars($text, ENT_QUOTES));
+}
