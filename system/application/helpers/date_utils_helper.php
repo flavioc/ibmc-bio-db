@@ -12,7 +12,7 @@ function convert_html_date_to_sql($date)
   $month = $vec[1];
   $year = $vec[2];
 
-  return $year . '-' . $month . '-' . $day;
+  return "$year-$month-$day";
 }
 
 function convert_sql_date_to_html($date)
@@ -30,3 +30,7 @@ function convert_sql_date_to_html($date)
   return $day . '-' . $month . '-' . $year;
 }
 
+function timestamp_string()
+{
+  return date('l jS F Y h:i:s A');
+}
