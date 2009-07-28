@@ -99,20 +99,20 @@ add_label(name = "type",
 
 add_label(name = "name",
     type = "text",
-    auto_on_creation = False,
+    auto_on_creation = True,
     auto_on_modification = False,
-    editable = False,
+    editable = True,
     multiple = False,
-    must_exist = False,
+    must_exist = True,
     default = True)
 
 add_label(name = "content",
     type = "text",
-    auto_on_creation = False,
-    auto_on_modification = False,
-    editable = False,
+    auto_on_creation = True,
+    auto_on_modification = True,
+    editable = True,
     multiple = False,
-    must_exist = False,
+    must_exist = True,
     default = True)
 
 db.close()
