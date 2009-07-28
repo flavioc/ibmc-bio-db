@@ -38,12 +38,15 @@ class Taxonomy_name_model extends BioModel
 
     $this->db->trans_start();
 
-    $this->edit_field($id, 'type_id', $type_id);
-    $this->update_history($tax, 'taxonomy');
+    $ret = $this->edit_field($id, 'type_id', $type_id);
+    
+    if($ret) {
+      $ret = $this->update_history($tax, 'taxonomy');
+    }
 
     $this->db->trans_complete();
   
-    return true;
+    return $ret;
   }
 
   function edit_name($id, $name)
@@ -52,10 +55,14 @@ class Taxonomy_name_model extends BioModel
 
     $this->db->trans_start();
 
-    $this->edit_field($id, 'name', trim($name));
-    $this->update_history($tax, 'taxonomy');
+    $ret = $this->edit_field($id, 'name', trim($name));
+    if($ret) {
+      $ret = $this->update_history($tax, 'taxonomy');
+    }
 
     $this->db->trans_complete();
+    
+    return $ret;
   }
 
   function get_name($id)
@@ -85,7 +92,9 @@ class Taxonomy_name_model extends BioModel
     $this->db->trans_start();
 
     $ret = $this->insert_data($data);
-    $this->update_history($tax, 'taxonomy');
+    if($ret) {
+      $ret = $this->update_history($tax, 'taxonomy');
+    }
 
     $this->db->trans_complete();
 
@@ -94,7 +103,7 @@ class Taxonomy_name_model extends BioModel
 
   function delete($id)
   {
-    $this->delete_id($id);
+    return $this->delete_id($id);
   }
 
   function get_id_by_name($name)

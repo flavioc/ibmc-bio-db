@@ -558,7 +558,7 @@ class Sequence extends BioController
     
     $type = $this->get_post('format');
 
-    return $this->export_sequences(array($id), $type);
+    return $this->export_sequences(array($id), $type, "sequence id $id");
   }
 
   function export_all()
@@ -569,7 +569,7 @@ class Sequence extends BioController
 
     $type = $this->get_post('format');
     $ids = $this->sequence_model->get_ids_array();
-    return $this->export_sequences($ids, $type);
+    return $this->export_sequences($ids, $type, "all sequences");
   }
 
   function export_sequences_partial($sequences, $labels_id, $tree, $type)
@@ -592,15 +592,15 @@ class Sequence extends BioController
       $seq_labels[] = $labels;
     }
 
+    $tree_str = search_tree_to_string($tree);
     if($type == 'fasta') {
-      $tree_str = search_tree_to_string($tree);
       $this->__do_export_fasta($sequences, $seq_labels, "- $tree_str");
     } else {
-      $this->__do_export_xml($sequences, $seq_labels);
+      $this->__do_export_xml($sequences, $seq_labels, $tree_str);
     }
   }
 
-  function export_sequences($sequences_id, $type)
+  function export_sequences($sequences_id, $type, $comment)
   {
     $sequences = array();
     foreach($sequences_id as $id) {
@@ -615,9 +615,9 @@ class Sequence extends BioController
       }
 
       if($type == 'fasta') {
-        $this->__do_export_fasta($sequences, $seq_labels, "- all sequences");
+        $this->__do_export_fasta($sequences, $seq_labels, "- $comment");
       } else {
-        $this->__do_export_xml($sequences, $seq_labels);
+        $this->__do_export_xml($sequences, $seq_labels, $comment);
       }
     } else {
       $this->__do_export_others($sequences, $type);
@@ -637,16 +637,16 @@ class Sequence extends BioController
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.fasta"');
     
-    echo export_sequences($sequences, $seq_labels,
+    echo export_sequences_fasta($sequences, $seq_labels,
       $this->__get_basic_comments() . " $extra_comments");
   }
   
-  function __do_export_xml($sequences, $seq_labels)
+  function __do_export_xml($sequences, $seq_labels, $comment)
   {
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.xml"');
     
-    echo export_sequences_xml($sequences, $seq_labels, $this->username);
+    echo export_sequences_xml($sequences, $seq_labels, $this->username, $comment);
   }
 
   function __get_basic_comments()

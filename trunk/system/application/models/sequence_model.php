@@ -140,9 +140,11 @@ class Sequence_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'name', $name);
+    $ret = $this->edit_field($id, 'name', $name);
 
     $this->db->trans_complete();
+    
+    return $ret;
   }
 
   function permission_public($id)
@@ -168,10 +170,14 @@ class Sequence_model extends BioModel
     $this->db->trans_start();
 
     $this->update_history($id);
-    $this->edit_field($id, 'content', $content);
-    $label_sequence = $this->load_model('label_sequence_model');
-    $label_sequence->regenerate_labels($id);
+    $ret = $this->edit_field($id, 'content', $content);
+    if($ret) {
+      $label_sequence = $this->load_model('label_sequence_model');
+      $ret = $label_sequence->regenerate_labels($id);
+    }
 
     $this->db->trans_complete();
+    
+    return $ret;
   }
 }

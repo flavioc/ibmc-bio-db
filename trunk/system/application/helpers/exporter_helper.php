@@ -13,12 +13,15 @@ function export_sequences_simple($sequences)
   return $ret;
 }
 
-function export_sequences_xml($sequences, $seq_labels, $author)
+function export_sequences_xml($sequences, $seq_labels, $author, $what)
 {
   $merged_labels = __merge_export_labels($seq_labels);
   $ret = "<sequences>\n";
   $ret .= "\t<author>$author</author>\n";
   $ret .= "\t<date>" . timestamp_string() . "</date>\n";
+  
+  $what = xmlspecialchars($what);
+  $ret .= "\t<what>$what</what>\n";
   $ret .= __get_export_header_xml($merged_labels);
   
   for($i = 0; $i < count($sequences); $i++) {
@@ -74,7 +77,7 @@ function __export_sequence_xml($sequence, $labels, $merged_labels)
   return "$ret\t</sequence>\n";
 }
 
-function export_sequences($sequences, $seq_labels, $comments = null)
+function export_sequences_fasta($sequences, $seq_labels, $comments = null)
 {
   $merged_labels = __merge_export_labels($seq_labels);
   $ret = __get_export_header($merged_labels, $comments) . "\n";
