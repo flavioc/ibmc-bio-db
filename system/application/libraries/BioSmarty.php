@@ -684,6 +684,11 @@ class BioSmarty extends Smarty
   }
 
 	function view($resource_name)   {
+	  
+	  $this->controller->load->model('comment_model');
+    $comment = htmlspecialchars($this->controller->comment_model->get());
+    $this->assign('comment_header', $comment);
+    
     parent::display($this->header);
     $ret = parent::display($this->__get_resource_name($resource_name));
     parent::display($this->footer);
