@@ -481,11 +481,18 @@ class Label_sequence_model extends BioModel
       return false;
     }
   }
+  
+  function __filter_special_labels()
+  {
+    $this->db->where("name <> 'name'");
+    $this->db->where("name <> 'content'");
+  }
 
   function get_labels_to_auto_modify($seq)
   {
     $this->db->where('auto_on_modification', true);
     $this->db->where('seq_id', $seq);
+    $this->__filter_special_labels();
 
     return $this->get_all('label_sequence_info');
   }
@@ -559,6 +566,7 @@ class Label_sequence_model extends BioModel
     $this->db->select('label_id');
     $this->db->where('seq_id', $id);
     $this->db->where('must_exist', TRUE);
+    $this->__filter_special_labels();
 
     $labels = $this->get_all('label_sequence_info');
 
