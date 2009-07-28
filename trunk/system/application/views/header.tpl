@@ -20,6 +20,7 @@
 <div id="top">
 <img src="{top_dir}/images/dna.jpg" alt="BIO DB"/>
 <h1><a href="{site}/welcome">Bio DB</a></h1>
+<span id="comment_db">{$comment_header}</span>
 </div>
 
 <div id="leftmenu">
