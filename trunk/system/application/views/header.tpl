@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{top_dir}/styles/{$stylesheet}?random={random}" type="text/css" media="screen" />
 {/foreach}
 <link rel="stylesheet" href="{top_dir}/styles/main.css?random={random}" type="text/css" charset="utf-8" />
+<link rel="shortcut icon" href="{top_dir}/images/favicon.ico" />
 <title>{$title}</title>
 </head>
 <body>
