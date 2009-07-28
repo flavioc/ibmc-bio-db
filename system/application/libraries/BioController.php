@@ -116,7 +116,7 @@ class BioController extends Controller
 
   function get_post($what)
   {
-    return trim($this->input->post($what));
+    return $this->input->xss_clean(trim($this->input->post($what)));
   }
 
   function get_post_filename($what)
@@ -153,7 +153,7 @@ class BioController extends Controller
   function get_parameter($what)
   {
     if(array_key_exists($what, $_GET)) {
-      return trim($_GET[$what]);
+      return trim($this->input->xss_clean($_GET[$what]));
     } else {
       return null;
     }
