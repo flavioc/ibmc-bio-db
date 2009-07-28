@@ -235,7 +235,7 @@ function generate_new_file_name_export()
   return tempnam(sys_get_temp_dir(), 'bio');
 }
 
-function write_fasta_file_export($content)
+function __write_fasta_file_export($content)
 {
   $temp_file = generate_new_file_name_export();
   $fp = fopen($temp_file, 'w');
@@ -246,12 +246,15 @@ function write_fasta_file_export($content)
   return $temp_file;
 }
 
-function convert_export($file_fasta, $type)
+function __convert_export($file_fasta, $type)
 {
   $new_file = generate_new_file_name_export();
+  $seqret = __find_seqret();
   
-  $cmd = "/opt/local/bin/seqret $file_fasta $type::$new_file";
-  shell_exec($cmd);
+  if($seqret) {
+    $cmd = "$seqret $file_fasta $type::$new_file";
+    shell_exec($cmd);
+  }
   
   return $new_file;
 }
@@ -259,15 +262,39 @@ function convert_export($file_fasta, $type)
 function export_sequences_others($sequences, $type)
 {
   $fasta_content = export_sequences_simple($sequences);
-  $fasta_file = write_fasta_file_export($fasta_content);
+  $fasta_file = __write_fasta_file_export($fasta_content);
 
-  $other_file = convert_export($fasta_file, $type);
+  $other_file = __convert_export($fasta_file, $type);
   unlink($fasta_file);
 
   $ret = file_get_contents($other_file);
   unlink($other_file);
 
   return $ret;
+}
+
+function __find_seqret()
+{
+  $normal_paths = array('/bin', '/usr/bin', '/usr/local/bin', '/opt/local/bin');
+  $path = '';
+  
+  foreach($normal_paths as $dir) {
+    $full_path = "$dir/seqret";
+    if(is_executable($full_path)) {
+      return $full_path;
+    }
+  }
+  
+  // seqret has not been found, use find
+  $output = shell_exec("find / -name seqret");
+  foreach(explode("\n", $output) as $line) {
+    $line = trim($line);
+    if(is_executable($line)) {
+      return $line;
+    }
+  }
+  
+  return null;
 }
 
 ?>
