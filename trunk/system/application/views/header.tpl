@@ -18,6 +18,7 @@
 </head>
 <body>
 <div id="top">
+<img src="{top_dir}/images/dna.jpg" alt="BIO DB"/>
 <h1><a href="{site}/welcome">Bio DB</a></h1>
 </div>
 

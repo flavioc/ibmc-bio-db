@@ -77,8 +77,7 @@ class Label_model extends BioModel
   function get_all_addable($name)
   {
     $this->db->order_by('name', 'asc');
-    $this->db->where('name <> "content"');
-    $this->db->where('name <> "name"');
+    $this->__filter_labels();
     $this->db->like('name', $name);
 
     return $this->get_all();
@@ -252,10 +251,17 @@ class Label_model extends BioModel
   {
     return $this->get_field($id, 'valid_code');
   }
+  
+  function __filter_special_labels()
+  {
+    $this->db->where("name <> 'name'");
+    $this->db->where("name <> 'content'");
+  }
 
   function get_to_add()
   {
     $this->db->where('auto_on_creation', TRUE);
+    $this->__filter_special_labels();
 
     return parent::get_all();
   }
@@ -264,6 +270,7 @@ class Label_model extends BioModel
   {
     $this->db->select('id');
     $this->db->where('must_exist', TRUE);
+    $this->__filter_special_labels();
 
     $all = parent::get_all();
 
