@@ -21,6 +21,10 @@ $(document).ready(function() {
     $(this).ajaxFormEdit();
   });
   
+  $('#date').livequery(function () {
+    $(this).datePickerDate();
+  });
+  
   $('#hide_show_labels').minusPlus({
     enabled: true,
     plusEnabled: load_labels_list,

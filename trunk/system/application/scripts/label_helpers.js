@@ -70,6 +70,19 @@ $.fn.validateObjLabel = function () {
   });
 };
 
+$.fn.validateDateLabel = function () {
+  return this.validate({
+    rules: {
+      date: {
+        required: generate_disabled
+      }
+    },
+    errorPlacement: function(label, element) {
+      label.insertAfter(element.next());
+    }
+  });
+};
+
 function change_label_ref(place, form)
 {
   return function (row) {
@@ -84,3 +97,35 @@ function change_label_ref(place, form)
     return false;
   };
 }
+
+$.fn.autocomplete_labels = function (type) {
+  var url = get_app_url() + "/label/autocomplete_labels";
+  return $(this).autocomplete(url,
+                              {
+                              minChars: 0,
+                              delay: 400,
+                              scroll: true,
+                              selectFirst: false,
+                              mustMatch: true,
+                              extraParams: {type: type}
+                              });
+};
+
+function get_label_by_name(name, fn)
+{
+  $.getJSON(get_app_url() + "/label/get_label_by_name/" + name, fn);
+};
+
+$.fn.datePickerDate = function () {
+  return this.each(function () {
+    $(this).datepicker({
+      minDate: new Date(2009, 1-12, 1),
+      maxDate: new Date(2038, 12-1, 31),
+      defaultDate: new Date(),
+      yearRange:'2008-2038',
+      showOn: "both",
+      dateFormat: "dd-mm-yy",
+      buttonImage: get_images_url() + "/calendar.gif"
+    });
+  });
+};

@@ -85,7 +85,7 @@ class Sequence extends BioController
     }
 
     $this->smarty->assign('title', 'Search sequences');
-    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js',
+    $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_helpers.js',
       'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js',
       'common_sequence.js', GETPARAMS_SCRIPT);
     $this->smarty->load_stylesheets('search.css');
@@ -198,6 +198,7 @@ class Sequence extends BioController
     $this->use_autocomplete();
     $this->use_thickbox();
     $this->use_livequery();
+    $this->use_datepicker();
 
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
       FORM_SCRIPT,
@@ -238,7 +239,7 @@ class Sequence extends BioController
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
       FORM_SCRIPT,
       CONFIRM_SCRIPT,
-      'label_functions.js',
+      'label_helpers.js',
       'select_label.js',
       'common_sequence.js',
       'delete_multiple.js');
@@ -317,6 +318,7 @@ class Sequence extends BioController
     $this->use_mygrid();
     $this->use_plusminus();
     $this->use_livequery();
+    $this->use_datepicker();
 
     $this->__load_sequence($id);
     $this->smarty->assign('missing',

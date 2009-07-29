@@ -2,9 +2,9 @@
 
 class Label_sequence_model extends BioModel
 {
-  private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, date_data, taxonomy_name, sequence_name";
+  private static $label_data_fields = 'int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, DATE_FORMAT(date_data, "%d-%m-%Y") AS date_data, taxonomy_name, sequence_name';
 
-  private static $label_basic_fields = "label_id, id, seq_id, history_id, type, name, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
+  private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
 
   function Label_sequence_model() {
     parent::BioModel('label_sequence');
@@ -24,19 +24,20 @@ class Label_sequence_model extends BioModel
   // retrieve label sequence row using seq id and label id
   function get_label_info($seq_id, $label_id)
   {
+    $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $seq_id);
     return $this->get_row('label_id', $label_id, 'label_sequence_info');
   }
 
   function get($id)
   {
-    $this->db->select($this->__get_select() . ", code");
+    $this->db->select($this->__get_select() . ", `code`", FALSE);
     return $this->get_id($id, 'label_sequence_info');
   }
 
   function get_sequence($id)
   {
-    $this->db->select($this->__get_select() . ", update_user_id, update, user_name");
+    $this->db->select($this->__get_select() . ", update_user_id, `update`, user_name", FALSE);
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }
@@ -127,7 +128,11 @@ class Label_sequence_model extends BioModel
       $data[$fields] = $data1;
     }
 
-    return $this->insert_data_with_history($data);
+    if($this->insert_data_with_history($data)) {
+      return true;
+    }
+    
+    return false;
   }
 
   function add_generated($seq_id, $label)
@@ -848,7 +853,7 @@ class Label_sequence_model extends BioModel
   // get label by sequence and label id
   function get_label_ids($seq_id, $label_id)
   {
-    $this->db->select($this->__get_select() . ", update_user_id, update, user_name");
+    $this->db->select($this->__get_select() . ", update_user_id, `update`, user_name", FALSE);
     $this->db->where('seq_id', $seq_id);
 
     return $this->get_row('label_id', $label_id, 'label_sequence_info');

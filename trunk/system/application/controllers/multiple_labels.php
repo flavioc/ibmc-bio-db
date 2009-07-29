@@ -26,6 +26,7 @@ class Multiple_Labels extends BioController {
   private $upload_error = false;
   private $filename = null;
   private $bytes = null;
+  private $date = null;
   
   // stats
   private $count_new_multiple = 0;
@@ -70,6 +71,7 @@ class Multiple_Labels extends BioController {
         case 'bool':
         case 'position':
         case 'obj':
+        case 'date':
           $this->smarty->view_s("add_multiple_label/$type");
           break;
         
@@ -201,6 +203,9 @@ class Multiple_Labels extends BioController {
       case 'bool':
         $this->boolean = $this->get_post('boolean') ? TRUE : FALSE;
         break;
+      case 'date':
+        $this->date = $this->get_post('date');
+        break;
       case 'position':
         $this->start = $this->get_post('start');
         $this->length = $this->get_post('length');
@@ -250,6 +255,9 @@ class Multiple_Labels extends BioController {
     case 'obj':
       $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes);
       break;
+    case 'date':
+      $this->label_sequence_model->add_date_label($seq_id, $this->label_id, $this->date);
+      break;
     }
   }
 
@@ -285,6 +293,9 @@ class Multiple_Labels extends BioController {
       break;
     case 'obj':
       $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes);
+      break;
+    case 'date':
+      $this->label_sequence_model->edit_date_label($id, $this->date);
       break;
     }
 
