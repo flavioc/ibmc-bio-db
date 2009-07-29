@@ -63,15 +63,18 @@ function __export_sequence_xml($sequence, $labels, $merged_labels)
   
   # labels
   foreach($merged_labels as &$merged_label) {
-    $label = __get_export_label($merged_label, $labels);
-    if(!$label) {
+    $res_labels = __get_export_labels($merged_label, $labels);
+    
+    if(count($res_labels) == 0) {
       continue;
+    } else {
+      foreach($res_labels as &$label) {
+        $str = __get_label_export_data($label);
+
+        $name = $label['name'];
+        $ret .= "\t\t<label name=\"$name\">$str</label>\n";
+      }
     }
-
-    $str = __get_label_export_data($label);
-
-    $name = $label['name'];
-    $ret .= "\t\t<label name=\"$name\">$str</label>\n";
   }
   
   return "$ret\t</sequence>\n";
@@ -105,7 +108,7 @@ function __get_export_header($labels, $comments = null)
   $ret .= '#';
   $first_done = false;
 
-  foreach($labels as $label) {
+  foreach($labels as &$label) {
     if(__label_type_is_printable($label['type'])) {
       if($first_done) {
         $ret .= '|';
@@ -149,7 +152,9 @@ function __merge_export_labels($seq_labels)
         continue;
       }
       if(!__has_export_label($ret, $label)) {
-        $ret[] = array('name' => $label['name'], 'type' => $label['type']);
+        $ret[] = array('name' => $label['name'],
+                  'type' => $label['type'],
+                  'multiple' => $label['multiple']);
       }
     }
   }
@@ -168,15 +173,17 @@ function __has_export_label($all, $label)
   return false;
 }
 
-function __get_export_label($merged_label, $labels)
+function __get_export_labels($merged_label, $labels)
 {
-  foreach($labels as $label) {
+  $ret = array();
+  
+  foreach($labels as &$label) {
     if($label['name'] == $merged_label['name']) {
-      return $label;
+      $ret[] = $label;
     }
   }
 
-  return null;
+  return $ret;
 }
 
 function __get_sequence_simple_header(&$sequence)
@@ -225,10 +232,28 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
   $seq_name = trim($sequence['name']);
   $ret = ">$seq_name|#";
 
-  foreach($merged_labels as $merged_label) {
-    $label = __get_export_label($merged_label, $labels);
-    $str = __get_label_export_data($label);
-    $ret .= "$str|";
+  foreach($merged_labels as &$merged_label) {
+    $res_labels = __get_export_labels($merged_label, $labels);
+    if(count($res_labels) == 0) {
+      $ret .= '|';
+    } else if(count($res_labels) == 1) {
+      $ret .= __get_label_export_data($res_labels[0]) . '|';
+    } else if($merged_label['multiple']) {
+      // multiple labels
+      $ret .= '[';
+      $first = true;
+      foreach($res_labels as &$label) {
+        $str = __get_label_export_data($label);
+        if($first) {
+          $first = false;
+        } else {
+          $ret .= '§';
+        }
+        
+        $ret .= $str;
+      }
+      $ret .= ']';
+    }
   }
 
   return $ret;

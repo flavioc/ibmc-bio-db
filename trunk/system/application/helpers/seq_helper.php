@@ -252,7 +252,6 @@ function import_labels($el, $labels, $labeldata, $controller)
     $label_status = $label['status'];
     $label_id = $label_info['id'];
     $label_type = $label_info['type'];
-    $label_text_natural = get_import_label_text_natural($label_text, $label_type);
 
     $ret[$label_name] = array();
     $label_array =& $ret[$label_name];
@@ -277,6 +276,7 @@ function import_labels($el, $labels, $labeldata, $controller)
       $id = $controller->label_sequence_model->get_label_id($seq_id, $label_id);
       if(import_update_label_content($id, $label_type, $label_text, $controller))
       {
+        $label_text_natural = get_import_label_text_natural($label_text, $label_type);
         $label_array['status'] = "Updated value: $label_text_natural";
       } else {
         $label_array['status'] = "Parse error: $label_text";
@@ -286,16 +286,55 @@ function import_labels($el, $labels, $labeldata, $controller)
         $label_array['status'] = 'Generated';
         $controller->label_sequence_model->add_auto_label($seq_id, $label_info);
       } else {
-        if(import_label_content($seq_id, $label_id, $label_type, $label_text, $controller)) {
-          $label_array['status'] = "Value: $label_text_natural";
+        
+        if($label_info['multiple'] && __is_multiple_values($label_text)) {
+          // this is a multiple value label
+          $label_texts = __split_label_texts($label_text);
+          $status_text = 'Values:';
+          
+          foreach($label_texts as $single_text) {
+            if($single_text == '') {
+              continue;
+            }
+            if(import_label_content($seq_id, $label_id, $label_type, $single_text, $controller)) {
+              $label_text_natural = get_import_label_text_natural($single_text, $label_type);
+              $status_text .= " ($label_text_natural, OK)";
+            } else {
+              $status_text .= " ($single_text, ERROR)";
+            }
+          }
+          
+          $label_array['status'] = $status_text;
         } else {
-          $label_array['status'] = "Parse error: $label_text";
+          
+          // single value label
+          if(import_label_content($seq_id, $label_id, $label_type, $label_text, $controller)) {
+            $label_text_natural = get_import_label_text_natural($label_text, $label_type);
+            $label_array['status'] = "Value: $label_text_natural";
+          } else {
+            $label_array['status'] = "Parse error: $label_text";
+          }
         }
+        
       }
     }
   }
 
   return $ret;
+}
+
+function __split_label_texts($text)
+{
+  $trimmed = trim($text, "[]");
+  
+  return explode('§', $trimmed);
+}
+
+function __is_multiple_values($text)
+{
+  $len = strlen($text);
+  
+  return $text[0] == '[' && $text[$len-1] == ']';
 }
 
 function get_sequence_labels($line, $labels)
