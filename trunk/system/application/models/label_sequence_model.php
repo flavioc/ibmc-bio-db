@@ -481,12 +481,6 @@ class Label_sequence_model extends BioModel
       return false;
     }
   }
-  
-  function __filter_special_labels()
-  {
-    $this->db->where("name <> 'name'");
-    $this->db->where("name <> 'content'");
-  }
 
   function get_labels_to_auto_modify($seq)
   {
@@ -628,7 +622,9 @@ class Label_sequence_model extends BioModel
                       FROM label_sequence
                       WHERE seq_id = $id)
             AND name <> 'name'
-            AND name <> 'content'");
+            AND name <> 'content'
+            AND name <> 'creation_user'
+            AND name <> 'update_user'");
   }
 
   function __get_validation_status($label, $sequence, $valid_code, $data1, $data2)
@@ -1009,10 +1005,25 @@ class Label_sequence_model extends BioModel
 
       if(label_special_operator($oper)) {
         if(label_special_purpose($label_name)) {
-          if($oper == 'exists') {
-            return 'TRUE';
-          } else {
-            return 'FALSE';
+          switch($label_name) {
+            case 'creation_user':
+              if($oper == 'exists') {
+                return 'creation_user_name IS NOT NULL';
+              } else {
+                return 'creation_user_name IS NULL';
+              }
+            case 'update_user':
+              if($oper == 'exists') {
+                return 'user_name IS NOT NULL';
+              } else {
+                return 'user_name IS NULL';
+              }
+            default:
+              if($oper == 'exists') {
+                return 'TRUE';
+              } else {
+                return 'FALSE';
+              }
           }
         }
         
@@ -1052,12 +1063,15 @@ class Label_sequence_model extends BioModel
       $sql_value = $this->__translate_sql_value($oper, $value, $label_type);
 
       // handle special purpose labels
-      if($label_name == 'name') {
-        return "name $sql_oper $sql_value";
-      }
-
-      if($label_name == 'content') {
-        return "content $sql_oper $sql_value";
+      switch($label_name) {
+        case 'name':
+          return "name $sql_oper $sql_value";
+        case 'content':
+          return "content $sql_oper $sql_value";
+        case 'creation_user':
+          return "creation_user_name $sql_oper $sql_value";
+        case 'update_user':
+          return "user_name $sql_oper $sql_value";
       }
 
       return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $fields IS NOT NULL AND $fields $sql_oper $sql_value)";

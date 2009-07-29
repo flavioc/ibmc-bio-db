@@ -318,4 +318,11 @@ class BioModel extends Model
       $this->db->limit($size, $start);
     }
   }
+  
+  function __filter_special_labels()
+  {
+    foreach(array('name', 'content', 'creation_user', 'update_user') as $name) {
+      $this->db->where("name <> '$name'");
+    }
+  }
 }
