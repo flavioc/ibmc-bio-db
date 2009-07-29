@@ -144,3 +144,8 @@ label.search-desc {
 #data_tax, #data_seq {
   font-style: italic;
 }
+
+span.compound-operator {
+  font-weight: bold;
+  text-decoration: underline;
+}

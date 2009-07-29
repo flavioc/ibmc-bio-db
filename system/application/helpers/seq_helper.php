@@ -476,7 +476,7 @@ function compound_term($term)
   return label_compound_oper($term['oper']);
 }
 
-function search_tree_to_string($term)
+function search_tree_to_string($term, $start_compound = null, $end_compound = null)
 {
   $oper = $term['oper'];
 
@@ -491,6 +491,14 @@ function search_tree_to_string($term)
     } else {
       $oper_str = 'NOT';
     }
+    
+    if($start_compound) {
+      $oper_str = "$start_compound$oper_str";
+    }
+    
+    if($end_compound) {
+      $oper_str = "$oper_str$end_compound";
+    }
 
     if($total == 0) {
       return "$oper_str ()";
@@ -498,7 +506,7 @@ function search_tree_to_string($term)
 
     if($oper == 'not') {
       $operand = $operands[0];
-      $operand_str = search_tree_to_string($operand);
+      $operand_str = search_tree_to_string($operand, $start_compound, $end_compound);
       if(compound_term($operand)) {
         return "NOT ($operand_str)";
       } else {
@@ -510,7 +518,7 @@ function search_tree_to_string($term)
 
     for($i = 0; $i < $total; ++$i) {
       $operand = $operands[$i];
-      $operand_str = search_tree_to_string($operand);
+      $operand_str = search_tree_to_string($operand, $start_compound, $end_compound);
 
       if($i == 0) {
         if($total == 1) {
