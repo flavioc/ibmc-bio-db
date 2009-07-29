@@ -185,4 +185,10 @@ class User_model extends BioModel
   {
     return $this->edit_data_with_history($id, array('enabled' => FALSE));
   }
+  
+  function delete_all_users()
+  {
+    $this->db->where("user_type = 'user'");
+    return $this->delete_rows();
+  }
 }
