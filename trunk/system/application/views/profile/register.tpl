@@ -4,7 +4,7 @@
 <fieldset>
 <script>
 {literal}
-  $(document).ready(function() {
+  $(function() {
     $("#register_form").validate({
       rules: {
         username: {

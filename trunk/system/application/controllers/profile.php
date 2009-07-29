@@ -10,8 +10,9 @@ class Profile extends BioController {
 
   function __view($id)
   {
-    if(!$this->user_model->has_user($id)) {
-      $this->smarty->assign('id', $id);
+    $this->smarty->assign('id', $id);
+    
+    if(!$this->user_model->has_user($id)) {   
       $this->smarty->assign('title', 'User not found');
       $this->smarty->view('profile/not_found');
       return;
@@ -98,10 +99,17 @@ class Profile extends BioController {
     $this->smarty->view_s('profile/delete');
   }
 
-  function edit()
+  function edit($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->__can_edit_profile($id)) {
       return $this->invalid_permission();
+    }
+    
+    if(!$this->user_model->has_user($id)) {
+      $this->smarty->assign('id', $id);
+      $this->smarty->assign('title', 'User not found');
+      $this->smarty->view('profile/not_found');
+      return;
     }
 
     $this->smarty->assign('title', 'Edit profile');
@@ -109,7 +117,8 @@ class Profile extends BioController {
     $this->smarty->load_scripts(DATEPICKER_SCRIPT, VALIDATE_SCRIPT);
     $this->smarty->load_stylesheets(DATEPICKER_THEME);
 
-    $userdata = $this->user_model->get_user_by_id($this->user_id);
+    $userdata = $this->user_model->get_user_by_id($id);
+    $this->smarty->assign('user', $userdata);
 
     $this->smarty->fetch_form_row('old_password');
     $this->smarty->fetch_form_row('complete_name', $userdata['complete_name']);
@@ -121,11 +130,25 @@ class Profile extends BioController {
 
     $this->smarty->view('profile/edit');
   }
+  
+  function __can_edit_profile($id)
+  {
+    return $this->logged_in && $this->user_id == $id || $this->is_admin;
+  }
 
   function do_edit()
   {
-    if(!$this->logged_in) {
+    $id = $this->get_post('id');
+    
+    if(!$this->__can_edit_profile($id)) {
       return $this->invalid_permission();
+    }
+    
+    if(!$this->user_model->has_user($id)) {
+      $this->smarty->assign('id', $id);
+      $this->smarty->assign('title', 'User not found');
+      $this->smarty->view('profile/not_found');
+      return;
     }
 
     $errors = false;
@@ -186,10 +209,10 @@ class Profile extends BioController {
         $imagecontent = read_file_and_delete($image_data);
       }
 
-      $this->user_model->edit_user($this->user_id, $complete_name,
+      $this->user_model->edit_user($id, $complete_name,
         $email, $birthday, $imagecontent, $new_password);
 
-      redirect('profile/view_self');
+      redirect("profile/view/$id");
     }
   }
 
