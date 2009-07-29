@@ -38,11 +38,13 @@ class Admin extends BioController
     $this->load->model('taxonomy_rank_model');
     $this->load->model('label_model');
     $this->load->model('sequence_model');
+    $this->load->model('user_model');
     
     $this->taxonomy_tree_model->delete_all_custom();
     $this->taxonomy_rank_model->delete_all_custom();
     $this->label_model->delete_all_custom();
     $this->sequence_model->delete_all();
+    $this->user_model->delete_all_users();
     
     $this->smarty->assign('title', 'Database reset');
     $this->smarty->view('admin/do_drop');
