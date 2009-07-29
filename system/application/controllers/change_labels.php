@@ -40,6 +40,7 @@ class Change_Labels extends BioController {
         case 'obj':
         case 'bool':
         case 'position':
+        case 'date':
           $this->smarty->view_s("change_label/$type");
           break;
         case 'ref':

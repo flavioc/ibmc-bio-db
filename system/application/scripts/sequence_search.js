@@ -783,16 +783,7 @@ $(document).ready(function () {
     submit_term = $('#submit_term').hide();
     search_human = $('#search_human');
     
-    date_input
-    .datepicker({
-      minDate: new Date(2009, 1-12, 1),
-      maxDate: new Date(2038, 12-1, 31),
-      defaultDate: new Date(),
-      yearRange:'2008-2038',
-      showOn: "both",
-      dateFormat: "dd-mm-yy",
-      buttonImage: get_images_url() + "/calendar.gif"
-    });
+    date_input.datePickerDate();
 
     can_add_leafs();
 

@@ -2,7 +2,7 @@
 
 class Label_model extends BioModel
 {
-  public static $label_view_fields = 'label_id AS id, type, name, default, public, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, update, user_name, comment';
+  public static $label_view_fields = 'label_id AS id, type, name, `default`, `public`, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, update_user_id, `update`, user_name, comment';
 
   function Label_model()
   {

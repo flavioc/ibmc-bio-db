@@ -340,6 +340,9 @@ class BioController extends Controller
       case 'bool':
         return $this->label_sequence_model->add_bool_label($seq_id, $label_id,
             $this->get_post('boolean') ? TRUE : FALSE);
+      case 'date':
+        return $this->label_sequence_model->add_date_label($seq_id, $label_id,
+            $this->get_post('date'));
       default:
         return "Label type is invalid";
     }
@@ -403,6 +406,8 @@ class BioController extends Controller
         return $this->label_sequence_model->edit_text_label($id, $this->get_post('text'));
       case 'url':
         return $this->label_sequence_model->edit_url_label($id, $this->get_post('url'));
+      case 'date':
+        return $this->label_sequence_model->edit_date_label($id, $this->get_post('date'));
       default:
         return "Label/Sequence id $id with invalid type";
     }

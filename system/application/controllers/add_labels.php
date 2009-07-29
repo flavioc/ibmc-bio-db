@@ -30,22 +30,13 @@ class Add_Labels extends BioController {
 
       switch($type) {
         case 'text':
-          $this->smarty->view_s('new_label/text');
-          break;
         case 'integer':
-          $this->smarty->view_s('new_label/integer');
-          break;
         case 'url':
-          $this->smarty->view_s('new_label/url');
-          break;
         case 'obj':
-          $this->smarty->view_s('new_label/obj');
-          break;
         case 'bool':
-          $this->smarty->view_s('new_label/bool');
-          break;
         case 'position':
-          $this->smarty->view_s('new_label/position');
+        case 'date':
+          $this->smarty->view_s("new_label/$type");
           break;
         case 'ref':
           $this->load->model('user_model');

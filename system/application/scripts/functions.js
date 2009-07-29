@@ -207,3 +207,14 @@ function is_valid_url(val)
   v.compile("^[A-Za-z]+://[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$");
   return v.test(val);
 } 
+
+function timestamp_to_date(timestamp)
+{
+  var date = timestamp.split(' ')[0];
+  var parts = date.split('-');
+  var year = parts[0];
+  var month = parts[1];
+  var day = parts[2];
+  
+  return day + '-' + month + '-' + year;
+}

@@ -130,7 +130,7 @@ function read_header_labels($line, $controller)
     $label_name = $label_vec[0];
     $label_type = $label_vec[1];
 
-    if(!$controller->label_model->has_name($label_name)) {
+    if(!$controller->label_model->has($label_name)) {
       $ret[] = array('name' => $label_name, 'type' => $label_type, 'status' => 'not_found');
     } else {
       $new_label = $controller->label_model->get_by_name($label_name);
@@ -174,6 +174,8 @@ function import_update_label_content($id, $label_type, $text, $controller)
       return $model->edit_url_label($id, $text);
     case 'bool':
       return $model->edit_bool_label($id, $text);
+    case 'date':
+      return $model->edit_date_label($id, $text);
     case 'ref':
       $row = $controller->sequence_model->get_by_name($text);
       if($row == null) {
@@ -221,6 +223,8 @@ function import_label_content($seq_id, $label_id, $label_type, $text, $controlle
       return $model->add_url_label($seq_id, $label_id, $text);
     case 'bool':
       return $model->add_bool_label($seq_id, $label_id, $text);
+    case 'date':
+      return $model->add_text_label($seq_id, $label_id, $text);
   }
   return false;
 }

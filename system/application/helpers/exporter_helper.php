@@ -125,13 +125,14 @@ function __get_export_header($labels, $comments = null)
 function __label_type_is_printable($type)
 {
   switch($type) {
-  case "integer":
-  case "text":
-  case "tax":
-  case "url":
-  case "bool":
-  case "ref":
-  case "position":
+  case 'integer':
+  case 'text':
+  case 'tax':
+  case 'url':
+  case 'bool':
+  case 'ref':
+  case 'position':
+  case 'date':
     return true;
   default:
     return false;
@@ -210,6 +211,9 @@ function __get_label_export_data($label)
     break;
   case 'ref':
     $toadd = $label['sequence_name'];
+    break;
+  case 'date':
+    $toadd = $label['date_data'];
     break;
   }
   

@@ -61,6 +61,10 @@ $(function () {
     update_new_label_form();
   });
   
+  $('#date').livequery(function () {
+    $(this).datePickerDate();
+  });
+  
   label_input.selectLabel(function () {
     current_label = null;
     multiple_row.hide();

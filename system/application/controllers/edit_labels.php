@@ -32,22 +32,13 @@ class Edit_Labels extends BioController {
 
       switch($type) {
         case 'text':
-          $this->smarty->view_s('edit_label/text');
-          break;
         case 'integer':
-          $this->smarty->view_s('edit_label/integer');
-          break;
         case 'url':
-          $this->smarty->view_s('edit_label/url');
-          break;
         case 'obj':
-          $this->smarty->view_s('edit_label/obj');
-          break;
         case 'bool':
-          $this->smarty->view_s('edit_label/bool');
-          break;
         case 'position':
-          $this->smarty->view_s('edit_label/position');
+        case 'date':
+          $this->smarty->view_s("edit_label/$type");
           break;
         case 'ref':
           $this->load->model('user_model');

@@ -19,6 +19,9 @@ var data_transform_labels = {
       obj_data: function (row) {
         return row.text_data;
       },
+      date_data: function (row) {
+        return row.date_data;
+      },
       select: function (row) {
         return "Select";
       },
@@ -85,6 +88,9 @@ function select_field(row)
         break;
       case 'obj':
         field_to_add = 'obj_data';
+        break;
+      case 'date':
+        field_to_add = 'date_data';
         break;
       case 'bool':
         field_to_add = 'bool_data';
