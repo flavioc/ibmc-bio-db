@@ -94,7 +94,8 @@ class Label extends BioController {
             'user' => $user_filter,
             'only_searchable' => $searchable_filter),
       array('name' => $ordering_name,
-            'type' => $ordering_type));
+            'type' => $ordering_type),
+      true); # get sequence totals
 
     $this->json_return($labels);
   }

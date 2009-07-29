@@ -49,8 +49,8 @@ function start_label_list(params, select_fn, add_fn)
     errorPlacement: basicErrorPlacement
   });
 
-  var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'User'];
-  var fields = ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'user_name'];
+  var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'User', 'Sequences'];
+  var fields = ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'user_name', 'num_seqs'];
 
   if(select_fn) {
     fieldNames = $.merge(['Select'], fieldNames);
@@ -84,6 +84,9 @@ function start_label_list(params, select_fn, add_fn)
       },
       add: function (row) {
         return img_add;
+      },
+      num_seqs: function(row) {
+        return row.num_seqs;
       }
     },
     tdClass: {
@@ -95,7 +98,8 @@ function start_label_list(params, select_fn, add_fn)
       must_exist: 'centered',
       user_name: 'centered',
       select: 'centered',
-      add: 'centered'
+      add: 'centered',
+      num_seqs: 'centered'
     },
     width: {
       multiple: w_boolean,
@@ -106,7 +110,8 @@ function start_label_list(params, select_fn, add_fn)
       must_exist: w_boolean,
       type: w_type,
       user_name: w_user,
-      add: w_add
+      add: w_add,
+      num_seqs: '8%'
     },
     types: {
       must_exist: 'boolean',

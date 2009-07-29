@@ -701,6 +701,10 @@ class BioSmarty extends Smarty
     $comment = htmlspecialchars($this->controller->comment_model->get());
     $this->assign('comment_header', $comment);
     
+    $this->controller->load->model('sequence_model');
+    $total_seqs = $this->controller->sequence_model->get_total();
+    $this->assign('total_seqs', $total_seqs);
+    
     parent::display($this->header);
     $ret = parent::display($this->__get_resource_name($resource_name));
     parent::display($this->footer);
