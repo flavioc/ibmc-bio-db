@@ -42,6 +42,24 @@ body>div#top {
   voice-family: inherit;
   height: 90px;
   padding-left: 10px;
+  position: relative;
+}
+
+body>div#top #left_top {
+  width: 50%;
+  float: left;
+  top: 0;
+  left: 0;
+  position: absolute;
+  margin-left: 5px;
+  margin-top: 3px;
+}
+
+body>div#top #right_top {
+  width: 50%;
+  top:0;
+  right:0;
+  position: absolute;
 }
 
 body>div#top h1 {
@@ -62,6 +80,28 @@ body>div#top img {
   display: block;
   margin-left: 92px;
   margin-top: -2px;
+}
+
+#number_sequences {
+  font-size: 80%;
+  border: 1px solid black;
+  padding: 2px;
+  color: black;
+  font-weight: normal;
+  position: absolute;
+  top: 65px;
+  right: 10px;
+}
+
+#form_search_global {
+  position: absolute;
+  top: 30px;
+  right: 15px;
+}
+
+#number_sequences:hover {
+  background: #CC0000;
+  color: white;
 }
 
 body>div#footer {

@@ -14,9 +14,13 @@ class Label_model extends BioModel
     return $this->has_id($id);
   }
 
-  function __select()
+  function __select($totals = false)
   {
-    $this->db->select(self::$label_view_fields);
+    $select = self::$label_view_fields;
+    if($totals) {
+      $select .= ", label_sequences(label_id) AS num_seqs, total_sequences() as total";
+    }
+    $this->db->select($select);
   }
 
   function get($id)
@@ -83,10 +87,10 @@ class Label_model extends BioModel
   }
 
   function get_all($start = null, $size = null,
-    $filtering = array(), $ordering = array())
+    $filtering = array(), $ordering = array(), $totals = false)
   {
     $this->order_by($ordering, 'name', 'asc');
-    $this->__select();
+    $this->__select($totals);
     $this->__filter_labels($filtering);
     $this->limit($start, $size);
 

@@ -18,9 +18,18 @@
 </head>
 <body>
 <div id="top">
+<div id="left_top">
 <img src="{top_dir}/images/dna.jpg" alt="BIO DB"/>
 <h1><a href="{site}/welcome">Bio DB</a></h1>
 <span id="comment_db">{$comment_header}</span>
+</div>
+<div id="right_top">
+<form id="form_search_global">
+<input type="text" name="firstname" />
+<input type="submit" value="Search"/>
+</form>
+<a id="number_sequences" href="{site}/sequence/browse">{$total_seqs} saved sequences</a>
+</div>
 </div>
 
 <div id="leftmenu">
