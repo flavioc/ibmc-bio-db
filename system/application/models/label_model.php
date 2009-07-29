@@ -73,15 +73,13 @@ class Label_model extends BioModel
         $this->db->where("type <> 'obj'");
       }
     }
-  }
-
-  function get_all_addable($name)
-  {
-    $this->db->order_by('name', 'asc');
-    $this->__filter_labels();
-    $this->db->like('name', $name);
-
-    return $this->get_all();
+    
+    if(array_key_exists('only_deletable', $filtering)) {
+      $deletable = $filtering['only_deletable'];
+      if($deletable) {
+        $this->db->where('deletable IS TRUE');
+      }
+    }
   }
 
   function get_all($start = null, $size = null,

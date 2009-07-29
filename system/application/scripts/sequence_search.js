@@ -817,7 +817,7 @@ $(document).ready(function () {
 
     operator_select.change(operator_was_selected);
 
-    label_row.autocomplete_labels();
+    label_row.autocomplete_labels('searchable');
 
     label_row.autocompleteEmpty(function () {
         hide_term();

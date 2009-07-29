@@ -1,4 +1,4 @@
-$.fn.selectLabel = function (no_select_fun, new_label_fun) {
+$.fn.selectLabel = function (no_select_fun, new_label_fun, type) {
   var selected_label = $('#select_label');
   
   function no_label_present() {
@@ -16,7 +16,7 @@ $.fn.selectLabel = function (no_select_fun, new_label_fun) {
   return this.each(function () {
     var $this = $(this);
     
-    $this.autocomplete_labels('autocomplete_addable');
+    $this.autocomplete_labels(type);
     $this.autocompleteEmpty(no_label_present);
     
     $this.result(function (event, data, formatted) {

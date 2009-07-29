@@ -131,18 +131,16 @@ function start_label_list(params, select_fn, add_fn)
   });
 }
 
-$.fn.autocomplete_labels = function (url_part) {
-  if(!url_part) {
-    url_part = "autocomplete_labels";
-  }
-  var url = get_app_url() + "/label/" + url_part;
+$.fn.autocomplete_labels = function (type) {
+  var url = get_app_url() + "/label/autocomplete_labels";
   return $(this).autocomplete(url,
                               {
                               minChars: 0,
                               delay: 400,
                               scroll: true,
                               selectFirst: false,
-                              mustMatch: true
+                              mustMatch: true,
+                              extraParams: {type: type}
                               });
 };
 
