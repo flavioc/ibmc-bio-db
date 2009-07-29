@@ -10,10 +10,13 @@
   {/if}
   <li>User type: {if $user.user_type == 'admin'}Administrador{else}Normal{/if}</li>
 </ul>
-{if $user.id == $user_id}
-<p><a href="{site}/profile/edit">Edit profile</a></p>
-{else}
+{if $user.id == $user_id || $is_admin}
+{form_open name=form_edit to="profile/edit/$id"}
+{form_submit name=edit_button msg="Edit profile"}
+{form_end}
+{/if}
 {if $is_admin}
+
 {form_open name=form_delete to="profile/delete_redirect"}
 {form_hidden name=id value=$user.id}
 {form_submit name=delete_button msg=Delete}
@@ -28,5 +31,11 @@ $(document).ready(function () {
 {/literal}
 </script>
 {/if}
-{/if}
 
+{literal}
+<style>
+#form_edit, #form_delete {
+  display: inline;
+}
+</style>
+{/literal}

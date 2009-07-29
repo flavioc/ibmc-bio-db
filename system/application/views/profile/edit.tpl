@@ -42,6 +42,7 @@
 
 {form_open to='profile/do_edit' name=edit_form multipart=yes}
 <fieldset>
+{form_hidden name=id value=$user.id}
 {form_row name=old_password msg='Current password:' type=password autocomplete='off''}
 {include file=profile/form.tpl}
 </fieldset>
