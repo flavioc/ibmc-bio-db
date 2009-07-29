@@ -2,7 +2,7 @@
 
 class Label_sequence_model extends BioModel
 {
-  private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, taxonomy_name, sequence_name";
+  private static $label_data_fields = "int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, date_data, taxonomy_name, sequence_name";
 
   private static $label_basic_fields = "label_id, id, seq_id, history_id, type, name, default, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
 
@@ -80,7 +80,7 @@ class Label_sequence_model extends BioModel
         return $num > 0 &&
           $tax_model->has_taxonomy($num);
       case 'date':
-        return true;
+        return $data1 != null;
     }
     
     return false;
@@ -100,6 +100,9 @@ class Label_sequence_model extends BioModel
       case 'obj':
         $data1 = trim($data1);
         return;
+      case 'date':
+        $data1 = convert_html_date_to_sql(trim($data1));
+        return;
     }
   }
 
@@ -111,12 +114,11 @@ class Label_sequence_model extends BioModel
     );
 
     $fields = $this->__get_data_fields($type);
-
+    $this->__fix_data($type, $data1, $data2);
+    
     if(!$this->__validate_label_data($type, $data1, $data2)) {
       return false;
     }
-
-    $this->__fix_data($type, $data1, $data2);
         
     if(is_array($fields)) {
       $data[$fields[0]] = $data1;
@@ -161,11 +163,11 @@ class Label_sequence_model extends BioModel
   {
     $fields = $this->__get_data_fields($type);
 
+    $this->__fix_data($type, $data1, $data2);
+    
     if(!$this->__validate_label_data($type, $data1, $data2)) {
       return false;
     }
-    
-    $this->__fix_data($type, $data1, $data2);
     
     $data = array();
 
@@ -213,7 +215,7 @@ class Label_sequence_model extends BioModel
     $data1 = null;
     $data2 = null;
 
-    if($label['default'] || $label['auto_on_creation']) {
+    if($label['code'] || $label['auto_on_creation']) {
       $res = $this->generate_label_value($id, $label['code']);
 
       if(is_array($res)) {
@@ -257,6 +259,34 @@ class Label_sequence_model extends BioModel
     $label = $this->get($id);
 
     return $this->regenerate_label($label['seq_id'], $label);
+  }
+  
+  function __is_date($label)
+  {
+    return $label['type'] == 'date';
+  }
+  
+  function add_date_label($seq_id, $label_id, $date)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+    
+    if($this->__is_date($label) && $label['editable']) {
+      return $this->add($seq_id, $label_id, 'date', $date);
+    } else {
+      return false;
+    }
+  }
+  
+  function edit_date_label($id, $date)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_date($label) && $label['editable']) {
+      return $this->edit($id, 'date', $date);
+    } else {
+      return false;
+    }
   }
 
   function __is_text($label)
@@ -843,6 +873,8 @@ class Label_sequence_model extends BioModel
       return 'url_data';
     case 'bool':
       return 'bool_data';
+    case 'date':
+      return 'date_data';
     }
 
     return null;
