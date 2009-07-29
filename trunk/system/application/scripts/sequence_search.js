@@ -33,6 +33,8 @@ var position_type_text = null;
 var submit_tree = null;
 var we_are_starting = true;
 var search_human = null;
+var data_date_input = null;
+var date_input = null;
 var search_type = 'all';
 
 $(function () {
@@ -59,22 +61,33 @@ function get_cookie_tree_name()
 
 function convert_operator(oper, type)
 {
-  if(type == 'integer' || type == 'position') {
-    switch(oper) {
-      case 'eq': return '=';
-      case 'gt': return '>';
-      case 'lt': return '<';
-      case 'ge': return '>=';
-      case 'le': return '<=';
-    }
-  } else if(type == 'text' || type == 'url') {
-    switch(oper) {
-      case 'eq': return 'equal';
-      case 'contains': return 'contains';
-      case 'starts': return 'starts';
-      case 'ends': return 'ends';
-      case 'regexp': return 'regexp';
-    }
+  switch(type) {
+    case 'integer':
+    case 'position':
+     switch(oper) {
+        case 'eq': return '=';
+        case 'gt': return '>';
+        case 'lt': return '<';
+        case 'ge': return '>=';
+        case 'le': return '<=';
+      }
+      break;
+    case 'text':
+    case 'url':
+      switch(oper) {
+        case 'eq': return 'equal';
+        case 'contains': return 'contains';
+        case 'starts': return 'starts';
+        case 'ends': return 'ends';
+        case 'regexp': return 'regexp';
+      }
+      break;
+    case 'date':
+      switch(oper) {
+        case 'before': return 'before';
+        case 'after': return 'after';
+      }
+      break;
   }
 
   switch(oper) {
@@ -105,6 +118,10 @@ function fill_operators_options(type)
                             starts: 'starts',
                             ends: 'ends',
                             regexp: 'regexp'});
+    case 'date':
+      return $.extend(base, {eq: 'equal',
+                             after: 'after',
+                             before: 'before'});
     default:
       return $.extend(base, {eq: 'equal'});
   }
@@ -124,6 +141,7 @@ function fill_operators(type)
   data_seq_input.hide();
   data_position_input.hide();
   operator_text.hide();
+  data_date_input.hide();
   init_operator_select(type);
   operator_select.show();
   operator_input.show();
@@ -150,6 +168,9 @@ function show_type_input(type)
     case 'integer':
       data_input.show();
       break;
+    case 'date':
+      data_date_input.show();
+      break;
     default:
       data_input.show();
   }
@@ -173,6 +194,9 @@ function hide_type_input(type)
       break;
     case 'integer':
       data_input.hide();
+      break;
+    case 'date':
+      data_date_input.hide();
       break;
     default:
       data_input.hide();
@@ -224,6 +248,13 @@ function term_form_submitted()
         if(!is_numeric(data.num)) {
           return;
         }
+        break;
+      case 'date':
+        var val = date_input.val();
+        if(!val) {
+          return;
+        }
+        obj.value = val;
         break;
       default:
         obj.value = data_row.val();
@@ -569,7 +600,7 @@ function operator_was_selected()
   if(op == 'exists' || op == 'notexists') {
     hide_type_input(current_label.type);
   } else {
-    show_type_input();
+    show_type_input(current_label.type);
     select_position_type();
   }
 }
@@ -747,8 +778,21 @@ $(document).ready(function () {
     position_type = $('#position_type');
     position_type_text = $('#position_type_text');
     submit_tree = $('#submit_tree');
+    data_date_input = $('#data_date_input');
+    date_input = $('#date_input');
     submit_term = $('#submit_term').hide();
     search_human = $('#search_human');
+    
+    date_input
+    .datepicker({
+      minDate: new Date(2009, 1-12, 1),
+      maxDate: new Date(2038, 12-1, 31),
+      defaultDate: new Date(),
+      yearRange:'2008-2038',
+      showOn: "both",
+      dateFormat: "dd-mm-yy",
+      buttonImage: get_images_url() + "/calendar.gif"
+    });
 
     can_add_leafs();
 

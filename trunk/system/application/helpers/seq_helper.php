@@ -415,20 +415,20 @@ function humanize_search_terminal($term)
   }
 
   $value = $term['value'];
-
   $ret = null;
+  
   switch($label_type) {
-  case 'integer':
-    $oper = sql_oper($oper);
-    $ret = "$label_name $oper $value";
-    break;
-  case 'position':
-    $oper = sql_oper($oper);
-    $type = $value['type'];
-    $num = $value['num'];
-    $ret = "$label_name $type $oper $num";
-    break;
-  case 'text':
+    case 'integer':
+      $oper = sql_oper($oper);
+      $ret = "$label_name $oper $value";
+      break;
+    case 'position':
+      $oper = sql_oper($oper);
+      $type = $value['type'];
+      $num = $value['num'];
+      $ret = "$label_name $type $oper $num";
+      break;
+    case 'text':
     case 'url':
       $ret = "$label_name $oper \"$value\"";
       break;
@@ -446,6 +446,9 @@ function humanize_search_terminal($term)
     case 'ref':
       $name = $value['name'];
       $ret = "$label_name = $name";
+      break;
+    case 'date':
+      $ret = "$label_name $oper $value";
       break;
   }
 

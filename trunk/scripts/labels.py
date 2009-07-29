@@ -133,5 +133,23 @@ add_label(name = "update_user",
     must_exist = False,
     default = True)
 
+add_label(name = "creation_date",
+    type = "date",
+    auto_on_creation = True,
+    auto_on_modification = False,
+    editable = False,
+    multiple = False,
+    must_exist = True,
+    default = True)
+
+add_label(name = "update_date",
+    type = "date",
+    auto_on_creation = True,
+    auto_on_modification = True,
+    editable = False,
+    multiple = False,
+    must_exist = True,
+    default = True)
+
 db.close()
 
