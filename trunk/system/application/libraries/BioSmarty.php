@@ -48,8 +48,13 @@ function smarty_function_form_password($params, &$smarty)
   $password_data = array(
     'name' => $name,
     'id' => $name,
-    'size' => $params['size'],
+    'size' => $params['size']
   );
+  
+  $autocomplete = $params['autocomplete'];
+  if($autocomplete) {
+    $password_data['autocomplete'] = $autocomplete;
+  }
   return form_password($password_data);
 }
 
@@ -178,6 +183,11 @@ function smarty_function_form_input($params, &$smarty)
   $readonly = $params['readonly'];
   if($readonly) {
     $data['readonly'] = $readonly;
+  }
+  
+  $autocomplete = $params['autocomplete'];
+  if($autocomplete) {
+    $data['autocomplete'] = $autocomplete;
   }
 
   return form_input($data);
@@ -356,6 +366,7 @@ function smarty_function_form_row($params, &$smarty)
       'name' => $what,
       'size' => $size,
       'class' => $class,
+      'autocomplete' => $params['autocomplete']
     );
     $ret .= smarty_function_form_password($password_data, &$smarty);
   } else if($type == 'upload') {
@@ -420,7 +431,8 @@ function smarty_function_form_row($params, &$smarty)
       'cols' => $params['cols'],
       'rows' => $params['rows'],
       'maxlength' => $params['maxlength'],
-      'readonly' => $params['readonly']
+      'readonly' => $params['readonly'],
+      'autocomplete' => $params['autocomplete']
     );
 
     if($type == 'textarea') {

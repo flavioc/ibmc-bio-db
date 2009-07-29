@@ -24,6 +24,6 @@ $(document).ready(function() {
 </script>
 
 {form_row name=birthday msg='Birthday:' type=birthday}
-{form_row name=password1 msg='Password:' type=password}
-{form_row name=password2 msg='Retype password:' type=password}
+{form_row name=password1 msg='Password:' type=password autocomplete='off'}
+{form_row name=password2 msg='Retype password:' type=password autocomplete='off'}
 {form_row name=image msg="User image:" type=upload}
