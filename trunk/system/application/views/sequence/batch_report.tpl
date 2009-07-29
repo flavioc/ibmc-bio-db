@@ -1,18 +1,18 @@
-<h2>Batch results</h2>
+<h2>{$type} batch results</h2>
 
-<p>The following sequences marked 'Yes' in 'New' were imported:</p>
+<p>The following sequences marked 'Yes' in 'New' were inserted into the database, the others were updated:</p>
 
 {if count($labels) > 0}
 <h3>Labels</h3>
 <table class="data">
   <tr>
-    <th>Label</th>
-    <th>Type</th>
+    <th style="width: 20%;">Label</th>
+    <th style="width: 20%;">Type</th>
     <th>Status</th>
   </tr>
-  {foreach from=$labels item=label}
+  {foreach from=$labels key=name item=label}
   <tr>
-    <td class="centered">{$label.name}</td>
+    <td class="centered">{$name}</td>
     <td class="centered">{$label.type}</td>
     <td>{if $label.status == 'not_found'}Label is not installed{/if}{if $label.status == 'type_differ'}Label types are different ({$label.new_type}){/if}{if $label.status == 'ok'}OK{/if}</td>
   </tr>
@@ -21,22 +21,21 @@
 <br />
 {/if}
 
-{foreach from=$sequences item=seq}
-{assign var=data value=$seq.data}
+{foreach from=$sequences key=name item=seq}
 <h4>Sequence</h4>
 <table class="data">
   <tr>
-    <th>New</th>
-    <th>Name</th>
-    <th>Content</th>
+    <th style="width: 10%;">New</th>
+    <th style="width: 20%;">Name</th>
+    <th style="width: 30%;">Content</th>
     {if $seq.comment}
     <th>Comment</th>
     {/if}
   </tr>
   <tr>
-    <td class="centered" style="width: 7%;">{boolean value=$seq.add}</td>
-    <td><a href="{site}/sequence/view/{$data.id}">{$data.name}</a></td>
-    <td class="centered" style="width: 25%;">{$seq.short_content}...</td>
+    <td class="centered">{boolean value=$seq.add}</td>
+    <td><a href="{site}/sequence/view/{$seq.id}">{$name}</a></td>
+    <td class="centered">{$seq.short_content}...</td>
     {if $seq.comment}
     <td>{$seq.comment}</td>
     {/if}
@@ -48,17 +47,17 @@
 {assign var=labelsseq value=$seq.labels}
 <table class="data">
   <tr>
-    <th>Label</th>
+    <th style="width: 20%;">Label</th>
     <th>Status</th>
   </tr>
-  {foreach from=$labels item=label}
-  {assign var=labelname value=$label.name}
+  {foreach from=$labels key=name item=label}
   <tr>
-    <td>{$label.name}</td>
-    <td>{$labelsseq[$labelname].status}</td>
+    <td>{$name}</td>
+    <td>{$labelsseq[$name].status}</td>
   </tr>
   {/foreach}
 </table>
 <br />
 {/if}
+
 {/foreach}

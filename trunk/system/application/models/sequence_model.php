@@ -125,6 +125,13 @@ class Sequence_model extends BioModel
   {
     return $this->has_field('name', $name);
   }
+  
+  function has_same_sequence($name, $content)
+  {
+    $this->db->where('name', $name);
+    $this->db->where('content', $content);
+    return $this->has_something();
+  }
 
   function get_id_by_name($name)
   {

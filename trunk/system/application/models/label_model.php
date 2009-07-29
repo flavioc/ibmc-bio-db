@@ -211,6 +211,7 @@ class Label_model extends BioModel
   function delete_label($id)
   {
     $this->delete_id($id);
+    
     return true;
   }
   

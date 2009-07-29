@@ -381,26 +381,34 @@ class Sequence extends BioController
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
     $config['encrypt_name'] = true;
-    $config['allowed_types'] = 'txt|application/octet-stream|exe';
+    $config['allowed_types'] = 'txt|application/octet-stream|exe|xml';
 
     return $config;
   }
 
   function __import_fasta_file($file)
   {
-    $seqs_labels = import_fasta_file($this, $file);
-    $seqs = $seqs_labels[0];
-    $labels = $seqs_labels[1];
-
-    foreach($seqs as &$seq)
-    {
-      $seq['short_content'] = sequence_short_content($seq['data']['content']);
-    }
+    $this->load->helper('fasta_importer');
+    list($seqs, $labels) = import_fasta_file($this, $file);
 
     $this->smarty->assign('sequences', $seqs);
     $this->smarty->assign('labels', $labels);
 
-    $this->smarty->assign('title', 'Batch results');
+    $this->smarty->assign('title', 'Batch FASTA import');
+    $this->smarty->assign('type', 'FASTA');
+    $this->smarty->view('sequence/batch_report');
+  }
+  
+  function __import_xml_file($file)
+  {
+    $this->load->helper('xml_importer');
+    list($seqs, $labels) = import_xml_file($this, $file);
+    
+    $this->smarty->assign('sequences', $seqs);
+    $this->smarty->assign('labels', $labels);
+    
+    $this->smarty->assign('title', 'Batch XML import');
+    $this->smarty->assign('type', 'XML');
     $this->smarty->view('sequence/batch_report');
   }
 
@@ -418,7 +426,14 @@ class Sequence extends BioController
       $data = $this->upload->data();
       $this->load->model('label_model');
       $this->load->model('taxonomy_model');
-      $this->__import_fasta_file($data['full_path']);
+      $file = $data['full_path'];
+      $this->load->library('ImportInfo');
+      
+      if(file_extension($file) == 'xml') {
+        $this->__import_xml_file($file);
+      } else {
+        $this->__import_fasta_file($file);
+      }
     } else {
       $this->set_upload_form_error('file');
       redirect('sequence/add_batch');

@@ -45,3 +45,8 @@ function read_file_and_delete($data)
   return $content;
 }
 
+function file_extension($file)
+{
+  $path_info = pathinfo($file);
+  return $path_info['extension'];
+}
