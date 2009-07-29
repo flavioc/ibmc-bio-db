@@ -238,7 +238,7 @@ class BioController extends Controller
 
   function __get_label_types($only_searchable)
   {
-    $ret = array('integer', 'text', 'position', 'ref', 'tax', 'url', 'bool');
+    $ret = array('integer', 'text', 'position', 'ref', 'tax', 'url', 'bool', 'date');
 
     if(!$only_searchable) {
       array_push($ret, 'obj');
