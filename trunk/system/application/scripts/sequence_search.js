@@ -319,7 +319,7 @@ function add_new_compound(li_obj, txt)
   li_obj.attr("level", level);
   ol.attr("level", (1 + parseInt(level)).toString());
 
-  li_obj.html('<span class="expand-name">' + txt + '</span>' + term_options_html);
+  li_obj.html('<span class="expand-name">' + txt.toUpperCase() + '</span>' + term_options_html);
 
   ol.appendTo(li_obj);
   li_obj[0].term = txt;
