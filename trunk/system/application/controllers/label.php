@@ -44,25 +44,30 @@ class Label extends BioController {
     }
 
     $name = $this->get_parameter('q');
+    $type = $this->get_parameter('type');
 
-    $labels = $this->label_model->get_all(null, null,
-      array('name' => $name,
-            'only_searchable' => 'yes'),
-      array('name' => 'asc'));
-
-    output_autocomplete_data($labels, 'name');
-  }
-
-  function autocomplete_addable()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
+    switch($type) {
+      case 'searchable':
+        $labels = $this->label_model->get_all(null, null,
+          array('name' => $name,
+                'only_searchable' => 'yes'),
+          array('name' => 'asc'));
+        break;
+      case 'addable':
+        $labels = $this->label_model->get_all(null, null,
+          array('name' => $name),
+          array('name' => 'asc'));
+        break;
+      case 'deletable':
+        $labels = $this->label_model->get_all(null, null,
+          array('name' => $name,
+                'only_deletable' => 'yes'),
+          array('name' => 'asc'));
+        break;
+      default:
+        $labels = array();
     }
-
-    $name = $this->get_parameter('q');
-
-    $labels = $this->label_model->get_all_addable($name);
-
+    
     output_autocomplete_data($labels, 'name');
   }
 

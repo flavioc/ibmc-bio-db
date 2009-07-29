@@ -70,7 +70,8 @@ $(function () {
     if(label.multiple == '1') {
       multiple_row.show();
     }
-  })
+  },
+  'addable');
 
   $('#submit_add_label').click(function () {
     if(!current_label) {
