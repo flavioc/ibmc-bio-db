@@ -15,6 +15,11 @@ class History_model extends Model
 
     return $query->num_rows() == 1;
   }
+  
+  function delete_id($id)
+  {
+    return $this->db->delete('history', array('id' => $id));
+  }
 
   function update($id)
   {

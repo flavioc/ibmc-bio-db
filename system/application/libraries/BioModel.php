@@ -39,6 +39,16 @@ class BioModel extends Model
   {
     return $this->get_field($id, 'history_id', $table);
   }
+  
+  function delete_history($id, $table = null)
+  {
+    $id_hist = $this->get_history($id, $table);
+    $history = $this->load_model('history_model');
+    
+    if($id_hist) {
+      return $history->delete_id($id_hist);
+    }
+  }
 
   function get_field($id, $field, $table = null, $id_field = 'id')
   {
@@ -128,6 +138,17 @@ class BioModel extends Model
     }
 
     return $this->has_field('id', $id, $table);
+  }
+  
+  function has_something($table = null)
+  {
+    if($table == null) {
+      $table = $this->table;
+    }
+    
+    $query = $this->db->get($table);
+    
+    return $query->num_rows() > 0;
   }
 
   function get_all($table = null)
