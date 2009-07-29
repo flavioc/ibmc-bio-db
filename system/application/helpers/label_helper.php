@@ -2,7 +2,7 @@
 
 function label_special_purpose($name)
 {
-  return $name == 'name' || $name == 'content';
+  return in_array($name, array('name', 'content', 'creation_user', 'update_user'));
 }
 
 function label_special_operator($oper)

@@ -254,12 +254,6 @@ class Label_model extends BioModel
   {
     return $this->get_field($id, 'valid_code');
   }
-  
-  function __filter_special_labels()
-  {
-    $this->db->where("name <> 'name'");
-    $this->db->where("name <> 'content'");
-  }
 
   function get_to_add()
   {

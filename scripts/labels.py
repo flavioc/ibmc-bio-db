@@ -115,5 +115,23 @@ add_label(name = "content",
     must_exist = True,
     default = True)
 
+add_label(name = "creation_user",
+    type = "text",
+    auto_on_creation = True,
+    auto_on_modification = False,
+    editable = False,
+    multiple = False,
+    must_exist = False,
+    default = True)
+
+add_label(name = "update_user",
+    type = "text",
+    auto_on_creation = True,
+    auto_on_modification = True,
+    editable = False,
+    multiple = False,
+    must_exist = False,
+    default = True)
+
 db.close()
 
