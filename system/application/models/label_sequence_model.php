@@ -79,6 +79,8 @@ class Label_sequence_model extends BioModel
         $tax_model = $this->load_model('taxonomy_model');
         return $num > 0 &&
           $tax_model->has_taxonomy($num);
+      case 'date':
+        return true;
     }
     
     return false;
@@ -624,7 +626,9 @@ class Label_sequence_model extends BioModel
             AND name <> 'name'
             AND name <> 'content'
             AND name <> 'creation_user'
-            AND name <> 'update_user'");
+            AND name <> 'update_user'
+            AND name <> 'creation_date'
+            AND name <> 'update_date'");
   }
 
   function __get_validation_status($label, $sequence, $valid_code, $data1, $data2)
@@ -841,7 +845,7 @@ class Label_sequence_model extends BioModel
       return 'bool_data';
     }
 
-    return "";
+    return null;
   }
 
   function __compound_oper($oper)
@@ -898,7 +902,15 @@ class Label_sequence_model extends BioModel
     case 'bool': return 'IS';
     case 'tax': return '=';
     case 'ref': return '=';
+    case 'date':
+      switch($oper) {
+        case 'eq': return '=';
+        case 'after': return '>';
+        case 'before': return '<';
+      }
     }
+    
+    return null;
   }
 
   function __translate_sql_value($oper, $value, $type)
@@ -942,9 +954,26 @@ class Label_sequence_model extends BioModel
         return 0;
       }
       return $id;
+    case 'date':
+      $newvalue = convert_html_date_to_sql($value);
+      if(!$newvalue) {
+        return 'NOW()';
+      }
+      
+      return "DATE('$newvalue')";
     }
 
     return '';
+  }
+  
+  function __translate_sql_field($field, $type)
+  {
+    switch($type) {
+      case 'date':
+        return "DATE($field)";
+      default:
+        return $field;
+    }
   }
 
   function __get_search_where($term, &$labels, $default = "TRUE")
@@ -1018,6 +1047,19 @@ class Label_sequence_model extends BioModel
               } else {
                 return 'user_name IS NULL';
               }
+            case 'creation_date':
+              if($oper == 'exists') {
+                return 'creation IS NOT NULL';
+              } else {
+                return 'creation IS NULL';
+              }
+            case 'update_date':
+              $identifier = $this->db->protect_identifiers('update');
+              if($oper == 'exists') {
+                return "$identifier IS NOT NULL";
+              } else {
+                return "$identifier IS NULL";
+              }
             default:
               if($oper == 'exists') {
                 return 'TRUE';
@@ -1072,9 +1114,14 @@ class Label_sequence_model extends BioModel
           return "creation_user_name $sql_oper $sql_value";
         case 'update_user':
           return "user_name $sql_oper $sql_value";
+        case 'creation_date':
+          return $this->__translate_sql_field('creation', 'date') . " $sql_oper $sql_value";
+        case 'update_date':
+          return $this->__translate_sql_field($this->db->protect_identifiers('update'), 'date') . " $sql_oper $sql_value";
       }
 
-      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $fields IS NOT NULL AND $fields $sql_oper $sql_value)";
+      $sql_field = $this->__translate_sql_field($fields, $label_type);
+      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $sql_field IS NOT NULL AND $sql_field $sql_oper $sql_value)";
     }
   }
 

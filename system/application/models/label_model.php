@@ -338,6 +338,7 @@ class Label_model extends BioModel
       case 'tax':
       case 'text':
       case 'url':
+      case 'date':
         return true;
     }
     

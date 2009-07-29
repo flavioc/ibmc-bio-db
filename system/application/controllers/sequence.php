@@ -90,6 +90,7 @@ class Sequence extends BioController
       'common_sequence.js', GETPARAMS_SCRIPT);
     $this->smarty->load_stylesheets('search.css');
     $this->use_mygrid();
+    $this->use_datepicker();
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
     $this->assign_label_types(true);

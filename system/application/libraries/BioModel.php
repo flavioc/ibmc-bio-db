@@ -321,7 +321,7 @@ class BioModel extends Model
   
   function __filter_special_labels()
   {
-    foreach(array('name', 'content', 'creation_user', 'update_user') as $name) {
+    foreach(array('name', 'content', 'creation_user', 'update_user', 'creation_date') as $name) {
       $this->db->where("name <> '$name'");
     }
   }

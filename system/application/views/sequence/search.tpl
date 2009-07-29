@@ -36,6 +36,9 @@
     <span id="data_tax"></span>
     <span id="change_tax">(Find taxonomy)</span>
   </div>
+  <div id="data_date_input">
+    {form_input name=date_input}
+  </div>
   <div id="data_seq_input">
     <span id="data_seq"></span>
     <span id="change_seq">(Find sequence)</span>

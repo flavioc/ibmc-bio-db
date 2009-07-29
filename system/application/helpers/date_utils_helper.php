@@ -7,6 +7,12 @@ function convert_html_date_to_sql($date)
   if(count($vec) != 3) {
     return null;
   }
+  
+  foreach($vec as $num) {
+    if(!is_numeric($num)) {
+      return null;
+    }
+  }
 
   $day = $vec[0];
   $month = $vec[1];

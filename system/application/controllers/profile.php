@@ -114,8 +114,8 @@ class Profile extends BioController {
 
     $this->smarty->assign('title', 'Edit profile');
 
-    $this->smarty->load_scripts(DATEPICKER_SCRIPT, VALIDATE_SCRIPT);
-    $this->smarty->load_stylesheets(DATEPICKER_THEME);
+    $this->use_datepicker();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
 
     $userdata = $this->user_model->get_user_by_id($id);
     $this->smarty->assign('user', $userdata);

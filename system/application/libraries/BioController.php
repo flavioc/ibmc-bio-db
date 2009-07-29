@@ -63,6 +63,12 @@ class BioController extends Controller
     $this->smarty->load_scripts(AUTOCOMPLETE_SCRIPT);
     $this->smarty->load_stylesheets(AUTOCOMPLETE_THEME);
   }
+  
+  function use_datepicker()
+  {
+    $this->smarty->load_scripts(DATEPICKER_SCRIPT);
+    $this->smarty->load_stylesheets(DATEPICKER_THEME);
+  }
 
   function use_thickbox()
   {

@@ -6,7 +6,7 @@
 
 {literal}
 <script>
-$(document).ready(function() {
+$(function() {
   $('#birthday')
   .datepicker({
     minDate: new Date(1920, 1-12, 1),
