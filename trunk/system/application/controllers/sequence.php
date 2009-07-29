@@ -148,7 +148,7 @@ class Sequence extends BioController
     }
     
     $tree = $this->__get_search_term();
-    $tree_str = search_tree_to_string($tree);
+    $tree_str = search_tree_to_string($tree, '<span class="compound-operator">', '</span>');
     
     echo $tree_str;
   }
