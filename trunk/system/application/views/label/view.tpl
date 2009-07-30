@@ -144,21 +144,31 @@ $(document).ready(function () {
 
 </div>
 
-<p>
 {form_open name=form_delete to="label/delete_redirect"}
 {form_hidden name=id value=$label.id}
 {form_submit name=delete_button msg=Delete}
 {form_end}
 
+{form_open name=form_export to="label/export_id"}
+{form_hidden name=id value=$label.id}
+{form_submit name=export_button msg=Export}
+{form_end}
+
+{button name="browse_labels" msg="List labels" to="label/browse"}
+
 <script>
 {to_js var=label value=$label}
 {literal}
-$(document).ready(function () {
+$(function () {
   activate_delete_dialog(get_app_url() + '/label/delete_dialog/' + label.id);
 });
-{/literal}
 </script>
-</p>
-{/if}
-{button name="browse_labels" msg="List labels" to="label/browse"}
 
+<style>
+#form_export, #form_delete, #form_browse_labels {
+  display: inline;
+}
+</style>
+{/literal}
+
+{/if}

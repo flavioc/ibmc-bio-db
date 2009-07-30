@@ -446,4 +446,42 @@ class Label extends BioController {
 
     echo $value ? "Yes" : "No";
   }
+  
+  function export()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $name_filter = $this->get_post('export_name');
+    $type_filter = $this->get_post('export_type');
+    $user_filter = $this->get_post('export_user');
+    
+    $this->__do_export($this->label_model->get_all(null, null,
+      array('name' => $name_filter,
+            'type' => $type_filter,
+            'user' => $user_filter)));
+  }
+  
+  function export_id()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $id = $this->get_post('id');
+    $labels = array($this->label_model->get($id));
+    
+    $this->__do_export($labels);
+  }
+  
+  function __do_export($labels)
+  {
+    header('Content-type: text/plain');
+    header('Content-Disposition: attachment; filename="labels.xml"');
+
+    $this->load->helper('label_exporter');
+
+    echo export_labels_xml($labels);
+  }
 }
