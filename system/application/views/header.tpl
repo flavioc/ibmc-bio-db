@@ -78,6 +78,7 @@
     <ul id="label_id">
       <li><a href="{site}/label/add">Add</a></li>
       <li><a href="{site}/label/browse">List</a></li>
+      <li><a href="{site}/label/export">Export</<a></li>
     </ul>
     <li id="user_menu"><a href="#">Users</a></li>
     <ul id="user_id">

@@ -44,11 +44,7 @@ class Sequence extends BioController
 
       return $this->export_sequences_partial($seqs, $labels, $tree, $type);
     } else {
-      $ids = array();
-      foreach($seqs as &$seq) {
-        $ids[] = $seq['id'];
-      }
-      return $this->export_sequences($ids, $type, '');
+      return $this->export_sequences($seqs, $type, '');
     }
   }
 
@@ -575,8 +571,9 @@ class Sequence extends BioController
     }
     
     $type = $this->get_post('format');
+    $seqs = array($this->sequence_model->get($id));
 
-    return $this->export_sequences(array($id), $type, "sequence id $id");
+    return $this->export_sequences($seqs, $type, "sequence id $id");
   }
 
   function export_all()
@@ -584,10 +581,35 @@ class Sequence extends BioController
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
+    
+    $filter_name = $this->get_post('export_name');
+    $filter_user = $this->get_post('export_user');
 
     $type = $this->get_post('format');
-    $ids = $this->sequence_model->get_ids_array();
-    return $this->export_sequences($ids, $type, "all sequences");
+    
+    if(!$filter_user && !$filter_name) {
+      $comment = "all sequences";
+    } else {
+      $comment = '';
+      if($filter_name) {
+        $comment = "filter name $filter_name";
+      }
+      
+      if($filter_user) {
+        if($comment) {
+          $comment .= ' ';
+        }
+        $this->load->model('user_model');
+        $user = $this->user_model->get_name($filter_user);
+        $comment .= "by user $user";
+      }
+    }
+    
+    return $this->export_sequences(
+      $this->sequence_model->get_all(null, null,
+                    array('name' => $filter_name,
+                          'user' => $filter_user)),
+                $type, $comment);
   }
 
   function export_sequences_partial($sequences, $labels_id, $tree, $type)
@@ -618,18 +640,17 @@ class Sequence extends BioController
     }
   }
 
-  function export_sequences($sequences_id, $type, $comment)
-  {
-    $sequences = array();
-    foreach($sequences_id as $id) {
-      $sequences[] = $this->sequence_model->get($id);
-    }
-    
+  function export_sequences($sequences, $type, $comment)
+  { 
     if($type == 'fasta' || $type == 'xml') {
       $seq_labels = array();
 
-      foreach($sequences_id as $id) {
+      foreach($sequences as &$seq) {
+        $id = $seq['id'];
         $seq_labels[] = $this->label_sequence_model->get_sequence($id);
+        if(!array_key_exists('content', $seq)) {
+          $seq['content'] = $this->sequence_model->get_content($id);
+        }
       }
 
       if($type == 'fasta') {

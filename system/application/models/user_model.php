@@ -11,6 +11,11 @@ class User_model extends BioModel
   {
     return $this->has_id($id);
   }
+  
+  function get_name($id)
+  {
+    return $this->get_field($id, 'name');
+  }
 
   function validate($name, $pwd)
   {

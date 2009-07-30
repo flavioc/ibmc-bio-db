@@ -16,19 +16,6 @@ class Sequence_model extends BioModel
     return $this->get_row('name', $name);
   }
 
-  function get_ids_array()
-  {
-    $this->db->select('id');
-    $rows = $this->get_all();
-
-    $ret = array();
-    foreach($rows as $row) {
-      $ret[] = $row['id'];
-    }
-
-    return $ret;
-  }
-
   function __filter($filtering)
   {
     if(array_key_exists('name', $filtering)) {
