@@ -456,32 +456,40 @@
   }
 
 function get_results(obj, opts) {
-  var data_url = opts.url + '/' + opts.retrieve;
-
   show_loading(obj);
 
-  var params = $.extend({}, opts.inner.params, opts.inner.ordering, opts.params);
+  if(opts.method == 'remote') {
+    var data_url = opts.url + '/' + opts.retrieve;
+    var params = $.extend({}, opts.inner.params, opts.inner.ordering, opts.params);
 
-  if(opts.paginate) {
-    params = $.extend({
-      start: opts.inner.start,
-      size: Math.min(opts.size, opts.inner.total - opts.inner.start)
-    }, params);
-  }
-
-  $.ajax({
-    url: data_url,
-    data: params,
-    type: 'get',
-    global: false,
-    success: function(data) {
-      var rows = $.evalJSON(data);
-
-      get_data_results(obj, opts, opts.inner.total, opts.inner.start, rows);
-    },
-    error: function (request, textstatus, error) {
+    if(opts.paginate) {
+      params = $.extend({
+         start: opts.inner.start,
+         size: Math.min(opts.size, opts.inner.total - opts.inner.start)
+      }, params);
     }
-  });
+     
+    $.ajax({
+      url: data_url,
+      data: params,
+      type: 'get',
+      global: false,
+      success: function(data) {
+        var rows = $.evalJSON(data);
+
+        get_data_results(obj, opts, opts.inner.total, opts.inner.start, rows);
+      },
+      error: function (request, textstatus, error) {
+      }
+    });
+  } else {
+    // local
+    var rows = $.grep(opts.local_data, function (item, index) {
+      return index >= opts.inner.start && index < (opts.inner.start + opts.size);
+    });
+    
+    get_data_results(obj, opts, opts.inner.total, opts.inner.start, rows);
+  }
 }
 
 $.fn.gridAdd = function(data) {
@@ -586,27 +594,37 @@ $.fn.gridShowDefault = function (type) {
 
 function reload_grid(this_obj, $this, opts)
 {
-  var url_total = opts.url + '/' + opts.total;
-  var params = $.extend({}, opts.inner.params, opts.params);
-
   show_loading($this);
+  
+  if(opts.method == 'remote') {
+    if(opts.paginate) {
+      var url_total = opts.url + '/' + opts.total;
+      var params = $.extend({}, opts.inner.params, opts.params);
+    
+      $.ajax({
+        mode: "abort",
+        port: "grid" + this_obj.id,
+        url: url_total,
+        data: params,
+        success: function (data) {
+          var total = parseInt(data);
 
-  if(opts.paginate) {
-    $.ajax({
-      mode: "abort",
-      port: "grid" + this_obj.id,
-      url: url_total,
-      data: params,
-      success: function (data) {
-        var total = parseInt(data);
-
-        set_results($this, data);
-        opts.inner.total = total;
-        opts.inner.start = 0;
-        get_results($this, opts);
-      }
-    });
+          set_results($this, data);
+          opts.inner.total = total;
+          opts.inner.start = 0;
+          get_results($this, opts);
+        }
+      });
+    } else {
+      get_results($this, opts);
+    }
   } else {
+    // local method
+    var total = opts.local_data.length;
+    
+    set_results($this, total);
+    opts.inner.total = total;
+    opts.inner.start = 0;
     get_results($this, opts);
   }
 }
@@ -712,14 +730,20 @@ $.fn.grid.defaults = {
     start: 0,
     params: {}
   },
-  total: 'total',
+  method: 'remote', // 'remote' or 'local'
+  local_data: null,
+  
   size: get_paging_size(),
   start: 0,
+  
+  // remote data
+  url: '',
+  total: 'total',
   retrieve: 'get',
+  
   fields: [],
   fieldNames: [],
   fieldGenerator: null,
-  url: '',
   dataTransform: {},
   links: {},
   editables: {},
