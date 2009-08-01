@@ -228,4 +228,25 @@ class Rank extends BioController {
 
     redirect('rank/list_all');
   }
+  
+  function export()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $filter_name = $this->get_post('export_name');
+    $filter_parent = $this->get_post('export_parent');
+    $filter_user = $this->get_post('export_user');
+
+    $ranks = $this->taxonomy_rank_model->get_ranks(null, null,
+      array('name' => $filter_name,
+            'parent_name' => $filter_parent,
+            'user' => $filter_user));
+    $this->load->helper('rank_exporter');
+    
+    header('Content-type: text/plain');
+    header('Content-Disposition: attachment; filename="ranks.xml"');
+    echo export_ranks_xml($ranks);
+  }
 }

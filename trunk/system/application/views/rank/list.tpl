@@ -120,4 +120,27 @@ $(document).ready(function () {
 
 <div id="show_ranks"></div>
 
+{form_open name=form_export to="rank/export"}
+{form_hidden name=export_name}
+{form_hidden name=export_parent}
+{form_hidden name=export_user}
+{form_submit name="submit_export" msg="Export all"}
+{form_end}
+
 {button name="add_rank" to="rank/add" msg="Add rank"}
+
+{literal}<style>
+#form_export, #form_add_rank {
+  display: inline;
+}
+</style>
+<script>
+$(function () {
+  $('#submit_export').click(function () {
+    $('input[name=export_name]').val($('#name').val());
+    $('input[name=export_parent]').val($('#parent_name').val());
+    $('input[name=export_user]').val($('#user').val());
+    return true;
+  });
+});
+</script>{/literal}

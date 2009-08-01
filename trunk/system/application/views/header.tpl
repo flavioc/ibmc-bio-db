@@ -64,6 +64,7 @@
     <ul id="rank_id">
       <li><a href="{site}/rank/add">Add</a></li>
       <li><a href="{site}/rank/list_all">List</a></li>
+      <li><a href="{site}/rank/export">Export</a></li>
     </ul>
     <li id="sequence_menu"><a href="#">Sequences</a></li>
     <ul id="sequence_id">
