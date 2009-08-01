@@ -28,7 +28,16 @@ $(function () {
     },
     dataTransform: {
       success: function (row) {
-        return row.ret == '1';
+        if(row.ret == true) {
+          // edit
+          return true;
+        }
+        
+        if(row.ret == false) {
+          return false;
+        }
+        
+        return int > 0;
       },
       mode: function (row) {
         if(row.mode == 'edit') {
