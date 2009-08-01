@@ -33,6 +33,11 @@ class Label_model extends BioModel
   {
     return $this->get_row('name', $name);
   }
+  
+  function get_id_by_name($name)
+  {
+    return $this->get_id_by_field('name', $name);
+  }
 
   function get_simple($id, $get_code = false)
   {
@@ -131,7 +136,7 @@ class Label_model extends BioModel
       return false;
     }
     
-    if(!$this->__valid_type($type)) {
+    if(!label_valid_type($type)) {
       return false;
     }
     
@@ -172,7 +177,7 @@ class Label_model extends BioModel
       return false;
     }
     
-    if($this->has($name)) {
+    if(!$this->has($name)) {
       return false;
     }
     
@@ -180,7 +185,7 @@ class Label_model extends BioModel
       return false;
     }
     
-    if(!$this->__valid_type($type)) {
+    if(!label_valid_type($type)) {
       return false;
     }
     
@@ -295,7 +300,7 @@ class Label_model extends BioModel
   {
     $type = trim($type);
     
-    if(!$this->__valid_type($type)) {
+    if(!label_valid_type($type)) {
       return false;
     }
     
@@ -326,23 +331,5 @@ class Label_model extends BioModel
   function edit_bool($id, $what, $val)
   {
     return $this->edit_field($id, $what, $val);
-  }
-  
-  function __valid_type($type)
-  {
-    switch($type) {
-      case 'bool':
-      case 'integer':
-      case 'obj':
-      case 'position':
-      case 'ref':
-      case 'tax':
-      case 'text':
-      case 'url':
-      case 'date':
-        return true;
-    }
-    
-    return false;
   }
 }

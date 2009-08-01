@@ -484,4 +484,47 @@ class Label extends BioController {
 
     echo export_labels_xml($labels);
   }
+  
+  function import()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $this->smarty->assign('title', 'Import labels from file');
+    $this->smarty->view('label/import');
+  }
+  
+  function do_import()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $this->load->library('upload', $this->__get_xml_upload_config());
+
+    $upload_ret = $this->upload->do_upload('file');
+
+    if($upload_ret) {
+      $data = $this->upload->data();
+      
+      $file = $data['full_path'];
+      
+      $this->load->helper('label_importer');
+      
+      $ret = import_label_xml_file($this->label_model, $file);
+      if(!$ret) {
+        $this->set_form_error('file', 'Error reading the XML file');
+        redirect('label/import');
+      } else {
+        $this->smarty->assign('labels', $ret);
+        $this->smarty->assign('title', 'Import labels');
+        $this->use_mygrid();
+        $this->smarty->view('label/do_import');
+      }
+    } else {
+      $this->set_upload_form_error('file');
+      redirect('label/import');
+    }
+  }
 }

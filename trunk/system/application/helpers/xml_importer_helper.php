@@ -3,15 +3,21 @@
 function import_xml_file($controller, $file)
 {
   $xmlDoc = new DOMDocument();
-  $xmlDoc->load($file);
+  if(!$xmlDoc->load($file)) {
+    return null;
+  }
   
   $top = $xmlDoc->documentElement;
+  
+  if(!$top) {
+    return null;
+  }
   
   if($top->nodeName != 'sequences') {
     return null;
   }
   
-  $labels_node = __find_child($top, 'labels');
+  $labels_node = find_xml_child($top, 'labels');
   if(!$labels_node) {
     return null;
   }
@@ -40,12 +46,12 @@ function import_xml_file($controller, $file)
       continue;
     }
     
-    $name_node = __find_child($child, 'name');
+    $name_node = find_xml_child($child, 'name');
     if(!$name_node) {
       continue;
     }
     
-    $content_node = __find_child($child, 'content');
+    $content_node = find_xml_child($child, 'content');
     
     $name = $name_node->textContent;
     if(!$name) {
@@ -79,15 +85,4 @@ function import_xml_file($controller, $file)
   }
   
   return $info->import();
-}
-
-function __find_child($node, $what)
-{
-  foreach($node->childNodes as $child) {
-    if($child->nodeName == $what) {
-      return $child;
-    }
-  }
-  
-  return null;
 }

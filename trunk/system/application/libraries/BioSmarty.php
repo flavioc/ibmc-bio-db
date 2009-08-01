@@ -588,7 +588,7 @@ function smarty_function_random($params, &$smarty)
   return $random_number;
 }
 
-function findexts ($filename)
+function findexts($filename)
 {
   $exts = split("[/\\.]", $filename) ;
   $n = count($exts)-1;
@@ -619,6 +619,13 @@ function smarty_function_to_js($params, &$smarty)
   $var = $params['var'];
 
   return "var $var = " . json_encode($data) . ";";
+}
+
+function smarty_function_encode_json($params, &$smarty)
+{
+  $value = $params['value'];
+  
+  return json_encode($value);
 }
 
 class BioSmarty extends Smarty
@@ -656,6 +663,7 @@ class BioSmarty extends Smarty
     $this->register_function('include_js', 'smarty_function_include_js');
     $this->register_function('to_js', 'smarty_function_to_js');
     $this->register_function('display_none', 'smarty_function_display_none');
+    $this->register_function('encode_json', 'smarty_function_encode_json');
 
 		$config =& get_config();
 		
