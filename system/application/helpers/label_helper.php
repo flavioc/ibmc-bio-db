@@ -14,3 +14,21 @@ function label_compound_oper($oper)
 {
   return $oper == 'or' || $oper == 'and' || $oper == 'not';
 }
+
+function label_valid_type($type)
+{
+  switch($type) {
+    case 'bool':
+    case 'integer':
+    case 'obj':
+    case 'position':
+    case 'ref':
+    case 'tax':
+    case 'text':
+    case 'url':
+    case 'date':
+      return true;
+  }
+  
+  return false;
+}

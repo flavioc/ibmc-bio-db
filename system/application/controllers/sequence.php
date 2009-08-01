@@ -372,7 +372,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/add_batch');
   }
 
-  function __get_fasta_upload_config()
+  function __get_sequence_upload_config()
   {
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
@@ -414,7 +414,7 @@ class Sequence extends BioController
       return $this->invalid_permission();
     }
 
-    $this->load->library('upload', $this->__get_fasta_upload_config());
+    $this->load->library('upload', $this->__get_sequence_upload_config());
 
     $upload_ret = $this->upload->do_upload('file');
 

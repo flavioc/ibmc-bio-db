@@ -252,6 +252,16 @@ class BioController extends Controller
     $this->smarty->assign('types', $this->__get_label_types($only_searchable));
   }
   
+  function __get_xml_upload_config()
+  {
+    $config['upload_path'] = UPLOAD_DIRECTORY;
+    $config['overwrite'] = true;
+    $config['encrypt_name'] = true;
+    $config['allowed_types'] = 'xml';
+
+    return $config;
+  }
+  
   function __get_obj_label_config()
   {
     $config['upload_path'] = UPLOAD_DIRECTORY;

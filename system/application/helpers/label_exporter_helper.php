@@ -22,6 +22,7 @@ function __export_label_xml(&$label)
   $ret .= "\t\t<auto_on_modification>" . $label['auto_on_modification'] . "</auto_on_modification>\n";
   $ret .= "\t\t<code>" . xmlspecialchars($label['code']) . "</code>\n";
   $ret .= "\t\t<valid_code>" . xmlspecialchars($label['valid_code']) . "</valid_code>\n";
+  $ret .= "\t\t<editable>" . $label['editable'] . "</editable>\n";
   $ret .= "\t\t<deletable>" . $label['deletable'] . "</deletable>\n";
   $ret .= "\t\t<multiple>" . $label['multiple'] . "</multiple>\n";
   $ret .= "\t\t<public>" . $label['public'] . "</public>\n";
