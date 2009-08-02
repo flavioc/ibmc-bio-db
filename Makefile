@@ -9,5 +9,9 @@ all:
 	ln -sf $(PWD)/system/application/scripts www/
 	ln -sf $(PWD)/system/application/styles www/
 	rm -f $(CACHE_DIR)/*
+	rm -rf $(CACHE_DIR)
+	rm -rf $(UPLOAD_DIR)
+	mkdir -p $(CACHE_DIR)
+	mkdir -p $(UPLOAD_DIR)
 	chmod -R ugo+w $(CACHE_DIR)
 	chmod -R ugo+w $(UPLOAD_DIR)
