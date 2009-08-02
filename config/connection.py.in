@@ -1,4 +1,4 @@
 import MySQLdb
 
 def create_conn():
-  return MySQLdb.connect(host = "localhost", user = "USER_DB", passwd = "USER_PWD", db="DATABASE", use_unicode = True, charset = 'utf8')
+  return MySQLdb.connect(host = "localhost", user = "USER_DB", passwd = "USER_PWD", db="DATABASE", use_unicode = True, charset = 'utf8', unix_socket = '/tmp/mysql.sock')
