@@ -262,11 +262,11 @@ class Taxonomy_model extends BioModel
   function __get_children($tax, $tree)
   {
     if($tax != null && !is_numeric($tax)) {
-      return array();
+      return null;
     }
     
     if($tree != null && !is_numeric($tree)) {
-      return array();
+      return null;
     }
     
     $tree_str = "";
@@ -291,8 +291,12 @@ class Taxonomy_model extends BioModel
 
   function get_taxonomy_children($tax, $tree, $start = null, $size = null)
   {
-    $sql = "SELECT * FROM taxonomy_info " . $this->__get_children($tax, $tree) .
-      " ORDER BY name ";
+    $children_sql = $this->__get_children($tax, $tree);
+    if(!$children_sql) {
+      return array();
+    }
+    
+    $sql = "SELECT * FROM taxonomy_info $children_sql ORDER BY name ";
 
     $sql .= sql_limit($start, $size);
 

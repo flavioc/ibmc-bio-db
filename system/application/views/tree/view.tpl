@@ -33,12 +33,20 @@ $(document).ready(function() {
 {form_submit name=delete_button msg=Delete}
 {form_end}
 
+{form_open name=form_export to="tree/export"}
+{form_hidden name=id value=$tree.id}
+{form_submit name=export_button msg=Export}
+{form_end}
+
 {button name="list_tree" to="tree" msg="List trees"}
 
-<script>
-{literal}
+{literal}<script>
 $(function () {
   activate_delete_dialog(get_app_url() + '/tree/delete_dialog/' + tree.id);
 });
-{/literal}
 </script>
+<style>
+#form_delete, #form_export, #form_list_tree {
+  display: inline;
+}
+</style>{/literal}

@@ -20,11 +20,14 @@ $(document).ready(function () {
   .grid({
     url: base_site,
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Last update', 'User', 'Root'],
-    fields: ['name', 'update', 'user_name', 'add'],
+    fieldNames: ['Name', 'Export', 'Last update', 'User', 'Root'],
+    fields: ['name', 'export', 'update', 'user_name', 'add'],
     dataTransform: {
       add: function (row) {
         return img_add;
+      },
+      export: function (row) {
+        return img_export;
       }
     },
     ordering: {
@@ -41,16 +44,21 @@ $(document).ready(function () {
       },
       name: function (row) {
         return base_site + '/view/' + row.id;
+      },
+      export: function (row) {
+        return base_site + '/export/' + row.id;
       }
     },
     tdClass: {
       update: 'centered',
-      add: 'centered'
+      add: 'centered',
+      export: 'centered'
     },
     width: {
       add: w_add,
       user_name: w_user,
-      update: w_update
+      update: w_update,
+      export: w_export
     }
   });
 
