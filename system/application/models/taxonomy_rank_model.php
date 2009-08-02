@@ -38,10 +38,15 @@ class Taxonomy_rank_model extends BioModel
 
     return $this->get_all('taxonomy_rank_info_history');
   }
+  
+  function get_id_name($rank)
+  {
+    return $this->get_id_by_field('name', $rank);
+  }
 
   function get_rank_id($rank)
   {
-    $id = $this->get_id_by_field('name', $rank);
+    $id = $this->get_id_name($rank);
 
     if($id == null) {
       return $this->add($rank);
