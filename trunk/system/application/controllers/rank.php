@@ -249,4 +249,48 @@ class Rank extends BioController {
     header('Content-Disposition: attachment; filename="ranks.xml"');
     echo export_ranks_xml($ranks);
   }
+  
+  function import()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $this->smarty->fetch_form_row('file');
+    $this->smarty->assign('title', 'Import ranks from file');
+    $this->smarty->view('rank/import');
+  }
+  
+  function do_import()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $this->load->library('upload', $this->__get_xml_upload_config());
+
+    $upload_ret = $this->upload->do_upload('file');
+
+    if($upload_ret) {
+      $data = $this->upload->data();
+      
+      $file = $data['full_path'];
+      
+      $this->load->helper('rank_importer');
+      
+      $ret = import_rank_xml_file($this->taxonomy_rank_model, $file);
+      if(!$ret) {
+        $this->set_form_error('file', 'Error reading the XML file');
+        redirect('rank/import');
+      } else {
+        $this->smarty->assign('ranks', $ret);
+        $this->smarty->assign('title', 'Import ranks');
+        $this->use_mygrid();
+        $this->smarty->view('rank/do_import');
+      }
+    } else {
+      $this->set_upload_form_error('file');
+      redirect('rank/import');
+    }
+  }
 }

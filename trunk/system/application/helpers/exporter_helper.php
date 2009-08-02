@@ -17,10 +17,13 @@ function export_sequences_xml($sequences, $seq_labels, $author, $what)
 {
   $merged_labels = __merge_export_labels($seq_labels);
   $ret = "<sequences>\n";
-  $ret .= "\t<author>$author</author>\n";
-  $ret .= "\t<date>" . timestamp_string() . "</date>\n";
   
-  $what = xmlspecialchars($what);
+  $author = xmlspecialchars($author);
+  $ret .= "\t<author>$author</author>\n";
+  
+  $timestamp = xmlspecialchars(timestamp_string());
+  $ret .= "\t<date>" . $timestamp . "</date>\n";
+  
   $ret .= "\t<what>$what</what>\n";
   $ret .= __get_export_header_xml($merged_labels);
   
@@ -54,11 +57,11 @@ function __export_sequence_xml($sequence, $labels, $merged_labels)
   $ret = "\t<sequence>\n";
   
   # name
-  $name = trim($sequence['name']);
+  $name = xmlspecialchars(trim($sequence['name']));
   $ret .= "\t\t<name>$name</name>\n";
   
   # content
-  $content = trim($sequence['content']);
+  $content = xmlspecialchars(trim($sequence['content']));
   $ret .= "\t\t<content>$content</content>\n";
   
   # labels
@@ -69,9 +72,9 @@ function __export_sequence_xml($sequence, $labels, $merged_labels)
       continue;
     } else {
       foreach($res_labels as &$label) {
-        $str = __get_label_export_data($label);
+        $str = xmlspecialchars(__get_label_export_data($label));
 
-        $name = $label['name'];
+        $name = xmlspecialchars($label['name']);
         $ret .= "\t\t<label name=\"$name\">$str</label>\n";
       }
     }

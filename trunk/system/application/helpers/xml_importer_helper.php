@@ -53,12 +53,12 @@ function import_xml_file($controller, $file)
     
     $content_node = find_xml_child($child, 'content');
     
-    $name = $name_node->textContent;
+    $name = xmlspecialchars_decode($name_node->textContent);
     if(!$name) {
       continue;
     }
     
-    $content = $content_node->textContent;
+    $content = xmlspecialchars_decode($content_node->textContent);
     if(!$content) {
       continue;
     }
@@ -70,12 +70,12 @@ function import_xml_file($controller, $file)
         continue;
       }
       
-      $label_name = $label->getAttribute('name');
+      $label_name = xmlspecialchars_decode($label->getAttribute('name'));
       if(!$label_name) {
         continue;
       }
       
-      $label_value = $label->textContent;
+      $label_value = xmlspecialchars_decode($label->textContent);
       if(!$label_value && $label_value != '0') {
         continue;
       }
