@@ -38,6 +38,11 @@ $(document).ready(function() {
 {form_submit name=export_button msg=Export}
 {form_end}
 
+{form_open name=form_browse to="taxonomy/tree_browse" method=get}
+{form_hidden name=start value=$tree.id}
+{form_submit name=browse_button msg=Browse}
+{form_end}
+
 {button name="list_tree" to="tree" msg="List trees"}
 
 {literal}<script>
@@ -46,7 +51,7 @@ $(function () {
 });
 </script>
 <style>
-#form_delete, #form_export, #form_list_tree {
+#form_delete, #form_export, #form_list_tree, #form_browse {
   display: inline;
 }
 </style>{/literal}

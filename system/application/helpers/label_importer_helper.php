@@ -31,13 +31,13 @@ function import_label_xml_file($model, $file)
     }
     
     # get name
-    $name = xmlspecialchars_decode($name_node->textContent);
+    $name = xmlspecialchars_decode(trim($name_node->textContent));
     if(!$name) {
       continue;
     }
     
     # get type
-    $type = xmlspecialchars_decode($type_node->textContent);
+    $type = xmlspecialchars_decode(trim($type_node->textContent));
     if(!$type || !label_valid_type($type)) {
       continue;
     }

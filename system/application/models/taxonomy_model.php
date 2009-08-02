@@ -72,6 +72,18 @@ class Taxonomy_model extends BioModel
   {
     return $this->has_id($id);
   }
+  
+  function has_name_tree($name, $tree)
+  {
+    $this->db->where('tree_id', $tree);
+    return $this->has_field('name', $name);
+  }
+  
+  function get_name_tree_id($name, $tree)
+  {
+    $this->db->where('tree_id', $tree);
+    return $this->get_id_by_field('name', $name);
+  }
 
   function get_name($id)
   {
