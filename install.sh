@@ -50,6 +50,7 @@ if [ -z "$PASSWORD" ]; then
 	exit 1
 fi
 
+rm -f scripts/*.pyc
 sh config_site.sh "$SITE_URL" || exit 1
 sh config_fs.sh "$SITE_DIR" || exit 1
 sh config_db.sh "$DATABASE" "$USER" "$PASSWORD" || exit 1

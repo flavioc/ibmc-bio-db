@@ -10,3 +10,4 @@ if [ -z "$3" ]; then
 fi
 
 sed -e "s/USER_DB/$USER/" -e "s/USER_PWD/$PASSWORD/" -e "s/DATABASE/$DATABASE/" config/database.in > application/config/database.php
+sed -e "s/USER_DB/$USER/" -e "s/USER_PWD/$PASSWORD/" -e "s/DATABASE/$DATABASE/" config/connection.py.in > scripts/connection.py
