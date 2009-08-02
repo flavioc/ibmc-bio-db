@@ -491,6 +491,7 @@ class Label extends BioController {
       return $this->invalid_permission();
     }
     
+    $this->smarty->fetch_form_row('file');
     $this->smarty->assign('title', 'Import labels from file');
     $this->smarty->view('label/import');
   }
