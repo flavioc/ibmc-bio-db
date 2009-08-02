@@ -166,4 +166,25 @@ class Tree extends BioController {
 
     redirect('tree');
   }
+  
+  function export($id = null)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    if(!$id) {
+      $id = $this->get_post('id');
+    }
+    
+    $this->load->helper('tree_exporter');
+    $this->load->model('taxonomy_model');
+    
+    header('Content-type: text/plain');
+    header("Content-Disposition: attachment; filename=\"tree.xml\"");
+    
+    echo export_tree_xml($this->taxonomy_tree_model,
+                         $this->taxonomy_model,
+                         $id);
+  }
 }
