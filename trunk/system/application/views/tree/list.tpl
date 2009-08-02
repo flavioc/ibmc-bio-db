@@ -2,7 +2,7 @@
 
 {literal}
 <script>
-$(document).ready(function () {
+$(function () {
 
   var base_site = get_app_url() + '/tree';
   var changed = false;
@@ -26,7 +26,7 @@ $(document).ready(function () {
       add: function (row) {
         return img_add;
       },
-      export: function (row) {
+      'export': function (row) {
         return img_export;
       }
     },
@@ -45,20 +45,20 @@ $(document).ready(function () {
       name: function (row) {
         return base_site + '/view/' + row.id;
       },
-      export: function (row) {
+      'export': function (row) {
         return base_site + '/export/' + row.id;
       }
     },
     tdClass: {
       update: 'centered',
       add: 'centered',
-      export: 'centered'
+      'export': 'centered'
     },
     width: {
       add: w_add,
       user_name: w_user,
       update: w_update,
-      export: w_export
+      'export': w_export
     }
   });
 
