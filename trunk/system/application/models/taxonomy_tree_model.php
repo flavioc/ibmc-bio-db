@@ -92,9 +92,14 @@ class Taxonomy_tree_model extends BioModel
     return $this->get_field($id, 'name');
   }
   
+  function get_id_by_name($name)
+  {
+    return $this->get_id_by_field('name', $name);
+  }
+  
   function get_ncbi_id()
   {
-    return $this->get_id_by_field('name', 'NCBI');
+    return $this->get_id_by_field('NCBI');
   }
   
   function delete_all_custom()

@@ -314,12 +314,20 @@ class Taxonomy extends BioController {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
-
+    
+    $this->load->model('taxonomy_tree_model');
+    
+    $start_tree = $this->get_parameter('start');
+    if(!$start_tree || !is_numeric($start_tree) || !$this->taxonomy_tree_model->has_tree($start_tree)) {
+      $start_tree = 0;
+    }
+    $this->smarty->assign('start_tree', $start_tree);
+    
     $this->smarty->assign('title', 'Browse taxonomies');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
     $this->use_mygrid();
 
-    $this->load->model('taxonomy_tree_model');
+    
     $trees = $this->taxonomy_tree_model->get_trees();
     $this->smarty->assign('trees', $trees);
 

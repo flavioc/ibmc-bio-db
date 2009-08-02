@@ -59,6 +59,7 @@
     <ul id="tree_id">
       <li><a href="{site}/tree/add">Add</a></li>
       <li><a href="{site}/tree">List</a></li>
+      <li><a href="{site}/tree/import">Import</a></li>
     </ul>
     <li id="rank_menu"><a href="#">Ranks</a></li>
     <ul id="rank_id">

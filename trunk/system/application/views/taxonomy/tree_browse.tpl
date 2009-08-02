@@ -158,9 +158,15 @@ $(document).ready(function () {
 {/literal}
 </script>
 
+{if $start_tree}{literal}<script>
+$(function () {
+  $('#form_search').submit();
+});
+</script>{/literal}{/if}
+
 <p>
 {form_open name=form_search}
-{form_row type=select data=$trees name=tree msg='Tree:' blank=yes start=0}
+{form_row type=select data=$trees name=tree msg='Tree:' blank=yes start=$start_tree}
 {form_submit name=submit_search msg=Search}
 {form_end}
 </p>

@@ -187,4 +187,48 @@ class Tree extends BioController {
                          $this->taxonomy_model,
                          $id);
   }
+  
+  function import()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $this->smarty->fetch_form_row('file');
+    $this->smarty->assign('title', 'Import tree from file');
+    $this->smarty->view('tree/import');
+  }
+  
+  function do_import()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $this->load->library('upload', $this->__get_xml_upload_config());
+
+    $upload_ret = $this->upload->do_upload('file');
+    
+    if($upload_ret) {
+      $data = $this->upload->data();
+      $file = $data['full_path'];
+      
+      $this->load->helper('tree_importer');
+      $this->load->model('taxonomy_model');
+      $this->load->model('taxonomy_rank_model');
+      
+      $ret = import_tree_xml_file($this->taxonomy_tree_model, $this->taxonomy_rank_model, $this->taxonomy_model, $file);
+      
+      if(!$ret) {
+        $this->set_form_error('file', 'Error reading the XML file');
+        redirect('tree/import');
+      } else {
+        $this->smarty->assign('stats', $ret);
+        $this->smarty->view('tree/do_import');
+      }
+    } else {
+      $this->set_upload_form_error('file');
+      redirect('tree/import');
+    }
+  }
 }
