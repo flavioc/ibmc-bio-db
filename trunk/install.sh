@@ -54,8 +54,17 @@ sh config_site.sh "$SITE_URL" || exit 1
 sh config_fs.sh "$SITE_DIR" || exit 1
 sh config_db.sh "$DATABASE" "$USER" "$PASSWORD" || exit 1
 
+echo
+echo
+echo "Creating database tables..."
+(cd db && sh import.sh "$DATABASE" "$USER" "$PASSWORD") || exit 1
+
+echo
+echo
+echo "Inserting default database data..."
 (cd scripts && sh run_all.sh) || exit 1
 
+echo
 echo
 echo "**********************"
 echo "Everything's done!"

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DATABASE=$1
-PASSWORD=$2
+USER=$2
+PASSWORD=$3
 
-mysql -u fdb_app --password=$PASSWORD $DATABASE < scheme.sql
+mysql -u $USER --password=$PASSWORD $DATABASE < scheme.sql

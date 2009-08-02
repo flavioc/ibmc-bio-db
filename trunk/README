@@ -5,6 +5,7 @@ Dependencies
 - php 5.0
 - mysql 5.1
 - php-xml
+- python 2.x
 
 ====================
 Install
@@ -16,3 +17,5 @@ First, create an empty database in mysql, then you have two options:
 	sh config_site.sh <base site url>
 	sh config_fs.sh <site location in apache dir>
 	sh config_db.sh <database> <database user> <database password>
+	cd db && sh import.sh <database> <user> <password
+	cd scripts && sh run_all.sh
