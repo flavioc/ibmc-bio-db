@@ -1,0 +1,18 @@
+========================
+Dependencies
+========================
+
+- php 5.0
+- mysql 5.1
+- php-xml
+
+====================
+Install
+====================
+
+First, create an empty database in mysql, then you have two options:
+ o Guided install: sh install.sh
+ o Manual install:
+	sh config_site.sh <base site url>
+	sh config_fs.sh <site location in apache dir>
+	sh config_db.sh <database> <database user> <database password>
