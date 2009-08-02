@@ -1,25 +1,3 @@
--- MySQL dump 10.13  Distrib 5.1.32, for apple-darwin9.5.0 (i386)
---
--- Host: localhost    Database: FDB
--- ------------------------------------------------------
--- Server version	5.1.32
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `configuration`
---
-
-DROP TABLE IF EXISTS `configuration`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `configuration` (
@@ -31,12 +9,6 @@ CREATE TABLE `configuration` (
   CONSTRAINT `configuration_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Configuration table.';
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `history`
---
-
-DROP TABLE IF EXISTS `history`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `history` (
@@ -91,13 +63,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `history_info`
---
-
-DROP TABLE IF EXISTS `history_info`;
-/*!50001 DROP VIEW IF EXISTS `history_info`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `history_info` (
@@ -113,12 +78,6 @@ SET character_set_client = utf8;
   `creation_complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `label`
---
-
-DROP TABLE IF EXISTS `label`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `label` (
@@ -189,13 +148,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `label_info_history`
---
-
-DROP TABLE IF EXISTS `label_info_history`;
-/*!50001 DROP VIEW IF EXISTS `label_info_history`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `label_info_history` (
@@ -222,13 +174,6 @@ SET character_set_client = utf8;
   `public` tinyint(1)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `label_norm`
---
-
-DROP TABLE IF EXISTS `label_norm`;
-/*!50001 DROP VIEW IF EXISTS `label_norm`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `label_norm` (
@@ -249,12 +194,6 @@ SET character_set_client = utf8;
   `public` tinyint(1)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `label_sequence`
---
-
-DROP TABLE IF EXISTS `label_sequence`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `label_sequence` (
@@ -330,13 +269,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `label_sequence_extra`
---
-
-DROP TABLE IF EXISTS `label_sequence_extra`;
-/*!50001 DROP VIEW IF EXISTS `label_sequence_extra`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `label_sequence_extra` (
@@ -358,13 +290,6 @@ SET character_set_client = utf8;
   `sequence_name` varchar(255)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `label_sequence_info`
---
-
-DROP TABLE IF EXISTS `label_sequence_info`;
-/*!50001 DROP VIEW IF EXISTS `label_sequence_info`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `label_sequence_info` (
@@ -401,12 +326,6 @@ SET character_set_client = utf8;
   `user_name` char(32)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `sequence`
---
-
-DROP TABLE IF EXISTS `sequence`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `sequence` (
@@ -464,13 +383,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `sequence_info_history`
---
-
-DROP TABLE IF EXISTS `sequence_info_history`;
-/*!50001 DROP VIEW IF EXISTS `sequence_info_history`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `sequence_info_history` (
@@ -488,12 +400,6 @@ SET character_set_client = utf8;
   `creation_user_name` char(32)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `taxonomy`
---
-
-DROP TABLE IF EXISTS `taxonomy`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `taxonomy` (
@@ -581,13 +487,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `taxonomy_info`
---
-
-DROP TABLE IF EXISTS `taxonomy_info`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_info`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_info` (
@@ -603,13 +502,6 @@ SET character_set_client = utf8;
   `history_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_info_history`
---
-
-DROP TABLE IF EXISTS `taxonomy_info_history`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_info_history`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_info_history` (
@@ -631,12 +523,6 @@ SET character_set_client = utf8;
   `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `taxonomy_name`
---
-
-DROP TABLE IF EXISTS `taxonomy_name`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `taxonomy_name` (
@@ -651,13 +537,6 @@ CREATE TABLE `taxonomy_name` (
   CONSTRAINT `taxonomy_name_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `taxonomy_name_type` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Taxonomy names.';
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_name_helper`
---
-
-DROP TABLE IF EXISTS `taxonomy_name_helper`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_helper`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_name_helper` (
@@ -666,13 +545,6 @@ SET character_set_client = utf8;
   `tree_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_name_info`
---
-
-DROP TABLE IF EXISTS `taxonomy_name_info`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_info`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_name_info` (
@@ -683,13 +555,6 @@ SET character_set_client = utf8;
   `type_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_name_tax`
---
-
-DROP TABLE IF EXISTS `taxonomy_name_tax`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_tax`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_name_tax` (
@@ -700,12 +565,6 @@ SET character_set_client = utf8;
   `tree_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `taxonomy_name_type`
---
-
-DROP TABLE IF EXISTS `taxonomy_name_type`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `taxonomy_name_type` (
@@ -714,13 +573,6 @@ CREATE TABLE `taxonomy_name_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Types of names for taxonomies.';
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_name_type_norm`
---
-
-DROP TABLE IF EXISTS `taxonomy_name_type_norm`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_type_norm`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_name_type_norm` (
@@ -728,12 +580,6 @@ SET character_set_client = utf8;
   `type_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `taxonomy_rank`
---
-
-DROP TABLE IF EXISTS `taxonomy_rank`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `taxonomy_rank` (
@@ -812,13 +658,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `taxonomy_rank_info`
---
-
-DROP TABLE IF EXISTS `taxonomy_rank_info`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_info`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_rank_info` (
@@ -829,13 +668,6 @@ SET character_set_client = utf8;
   `history_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_rank_info_history`
---
-
-DROP TABLE IF EXISTS `taxonomy_rank_info_history`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_info_history`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_rank_info_history` (
@@ -852,13 +684,6 @@ SET character_set_client = utf8;
   `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_rank_norm`
---
-
-DROP TABLE IF EXISTS `taxonomy_rank_norm`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_norm`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_rank_norm` (
@@ -868,13 +693,6 @@ SET character_set_client = utf8;
   `history_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_rank_parent_norm`
---
-
-DROP TABLE IF EXISTS `taxonomy_rank_parent_norm`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_parent_norm`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_rank_parent_norm` (
@@ -882,12 +700,6 @@ SET character_set_client = utf8;
   `rank_parent_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `taxonomy_tree`
---
-
-DROP TABLE IF EXISTS `taxonomy_tree`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `taxonomy_tree` (
@@ -946,13 +758,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `taxonomy_tree_info_history`
---
-
-DROP TABLE IF EXISTS `taxonomy_tree_info_history`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_tree_info_history`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_tree_info_history` (
@@ -967,13 +772,6 @@ SET character_set_client = utf8;
   `complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `taxonomy_tree_norm`
---
-
-DROP TABLE IF EXISTS `taxonomy_tree_norm`;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_tree_norm`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `taxonomy_tree_norm` (
@@ -982,12 +780,6 @@ SET character_set_client = utf8;
   `history_id` bigint(20) unsigned
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `user` (
@@ -1052,13 +844,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Temporary table structure for view `user_norm`
---
-
-DROP TABLE IF EXISTS `user_norm`;
-/*!50001 DROP VIEW IF EXISTS `user_norm`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `user_norm` (
@@ -1073,13 +858,6 @@ SET character_set_client = utf8;
   `enabled` tinyint(1)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `user_norm_creation`
---
-
-DROP TABLE IF EXISTS `user_norm_creation`;
-/*!50001 DROP VIEW IF EXISTS `user_norm_creation`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `user_norm_creation` (
@@ -1088,11 +866,6 @@ SET character_set_client = utf8;
   `creation_complete_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Dumping routines for database 'FDB'
---
-/*!50003 DROP FUNCTION IF EXISTS `CREATE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1109,7 +882,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP FUNCTION IF EXISTS `label_sequences` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1126,7 +898,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP FUNCTION IF EXISTS `total_sequences` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1143,7 +914,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1167,7 +937,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY_LABEL` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1186,7 +955,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY_LABEL_SEQUENCE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1205,7 +973,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY_SEQUENCE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1224,7 +991,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY_TAXONOMY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1243,7 +1009,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY_TAXONOMY_RANK` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1262,7 +1027,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_HISTORY_TAXONOMY_TREE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1281,7 +1045,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `DELETE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1298,7 +1061,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `UPDATE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1315,13 +1077,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Final view structure for view `history_info`
---
-
 /*!50001 DROP TABLE `history_info`*/;
-/*!50001 DROP VIEW IF EXISTS `history_info`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1333,13 +1089,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `label_info_history`
---
-
 /*!50001 DROP TABLE `label_info_history`*/;
-/*!50001 DROP VIEW IF EXISTS `label_info_history`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1351,13 +1101,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `label_norm`
---
-
 /*!50001 DROP TABLE `label_norm`*/;
-/*!50001 DROP VIEW IF EXISTS `label_norm`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1369,13 +1113,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `label_sequence_extra`
---
-
 /*!50001 DROP TABLE `label_sequence_extra`*/;
-/*!50001 DROP VIEW IF EXISTS `label_sequence_extra`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1387,13 +1125,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `label_sequence_info`
---
-
 /*!50001 DROP TABLE `label_sequence_info`*/;
-/*!50001 DROP VIEW IF EXISTS `label_sequence_info`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1405,13 +1137,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `sequence_info_history`
---
-
 /*!50001 DROP TABLE `sequence_info_history`*/;
-/*!50001 DROP VIEW IF EXISTS `sequence_info_history`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1423,13 +1149,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_info`
---
-
 /*!50001 DROP TABLE `taxonomy_info`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_info`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1441,13 +1161,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_info_history`
---
-
 /*!50001 DROP TABLE `taxonomy_info_history`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_info_history`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1459,13 +1173,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_name_helper`
---
-
 /*!50001 DROP TABLE `taxonomy_name_helper`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_helper`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1477,13 +1185,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_name_info`
---
-
 /*!50001 DROP TABLE `taxonomy_name_info`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_info`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1495,13 +1197,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_name_tax`
---
-
 /*!50001 DROP TABLE `taxonomy_name_tax`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_tax`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1513,13 +1209,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_name_type_norm`
---
-
 /*!50001 DROP TABLE `taxonomy_name_type_norm`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_name_type_norm`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1531,13 +1221,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_rank_info`
---
-
 /*!50001 DROP TABLE `taxonomy_rank_info`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_info`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1549,13 +1233,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_rank_info_history`
---
-
 /*!50001 DROP TABLE `taxonomy_rank_info_history`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_info_history`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1567,13 +1245,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_rank_norm`
---
-
 /*!50001 DROP TABLE `taxonomy_rank_norm`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_norm`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1585,13 +1257,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_rank_parent_norm`
---
-
 /*!50001 DROP TABLE `taxonomy_rank_parent_norm`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_rank_parent_norm`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1603,13 +1269,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_tree_info_history`
---
-
 /*!50001 DROP TABLE `taxonomy_tree_info_history`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_tree_info_history`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1621,13 +1281,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `taxonomy_tree_norm`
---
-
 /*!50001 DROP TABLE `taxonomy_tree_norm`*/;
-/*!50001 DROP VIEW IF EXISTS `taxonomy_tree_norm`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1639,13 +1293,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `user_norm`
---
-
 /*!50001 DROP TABLE `user_norm`*/;
-/*!50001 DROP VIEW IF EXISTS `user_norm`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1657,13 +1305,7 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `user_norm_creation`
---
-
 /*!50001 DROP TABLE `user_norm_creation`*/;
-/*!50001 DROP VIEW IF EXISTS `user_norm_creation`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1675,14 +1317,3 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2009-08-02 19:15:20
