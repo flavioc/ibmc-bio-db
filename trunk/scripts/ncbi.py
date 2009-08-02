@@ -252,7 +252,7 @@ def add_tax_name(id, name, type_id):
   db.commit()
   return id
 
-tax_dir = "../taxdump/"
+tax_dir = "taxdump/"
 
 def has_missing_name(current_names, name):
   name_cmp = name[1]
