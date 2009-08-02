@@ -3,7 +3,7 @@
 function import_xml_file($controller, $file)
 {
   $xmlDoc = new DOMDocument();
-  if(!$xmlDoc->load($file)) {
+  if(!$xmlDoc->load($file, LIBXML_NOERROR)) {
     return null;
   }
   

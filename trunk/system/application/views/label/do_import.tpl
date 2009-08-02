@@ -1,5 +1,6 @@
 <h2>Import labels report</h2>
 
+{if $labels}
 <p>The next table shows the import results:</p>
 
 {literal}<script>
@@ -80,3 +81,7 @@ $(function () {
     
 <div id="show_labels">
 </div>
+
+{else}
+<p>No labels were imported.</p>
+{/if}

@@ -398,14 +398,22 @@ class Sequence extends BioController
   function __import_xml_file($file)
   {
     $this->load->helper('xml_importer');
-    list($seqs, $labels) = import_xml_file($this, $file);
     
-    $this->smarty->assign('sequences', $seqs);
-    $this->smarty->assign('labels', $labels);
+    $ret = import_xml_file($this, $file);
     
-    $this->smarty->assign('title', 'Batch XML import');
-    $this->smarty->assign('type', 'XML');
-    $this->smarty->view('sequence/batch_report');
+    if($ret) {
+      list($seqs, $labels) = $ret;
+    
+      $this->smarty->assign('sequences', $seqs);
+      $this->smarty->assign('labels', $labels);
+    
+      $this->smarty->assign('title', 'Batch XML import');
+      $this->smarty->assign('type', 'XML');
+      $this->smarty->view('sequence/batch_report');
+    } else {
+      $this->set_form_error('file', 'Error reading XML file');
+      redirect('sequence/add_batch');
+    }
   }
 
   function do_add_batch()

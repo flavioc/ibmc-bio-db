@@ -3,7 +3,7 @@
 function import_label_xml_file($model, $file)
 {
   $xmlDoc = new DOMDocument();
-  if(!$xmlDoc->load($file)) {
+  if(!$xmlDoc->load($file, LIBXML_NOERROR)) {
     return null;
   }
   
