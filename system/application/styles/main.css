@@ -20,6 +20,10 @@ body>div#leftmenu {
   padding-right: 4px;
   padding-left: 4px;
   float:left;
+  
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
 }
 
 body>div#content {
@@ -30,6 +34,10 @@ body>div#content {
   border: 1px solid #000;
   padding-top: 5px;
   padding-left: 15px;
+  
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
 }
 
 body>div#top {
@@ -43,6 +51,10 @@ body>div#top {
   height: 90px;
   padding-left: 10px;
   position: relative;
+  
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
 }
 
 body>div#top #left_top {

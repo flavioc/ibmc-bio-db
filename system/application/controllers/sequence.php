@@ -399,14 +399,22 @@ class Sequence extends BioController
   function __import_fasta_file($file)
   {
     $this->load->helper('fasta_importer');
-    list($seqs, $labels) = import_fasta_file($this, $file);
+    $ret = import_fasta_file($this, $file);
 
-    $this->smarty->assign('sequences', $seqs);
-    $this->smarty->assign('labels', $labels);
+    if($ret) {
+      list($seqs, $labels) = $ret;
+    
+      $this->smarty->assign('sequences', $seqs);
+      $this->smarty->assign('labels', $labels);
+      $this->smarty->assign('search_tree', get_search_tree_sequences($seqs));
 
-    $this->smarty->assign('title', 'Batch FASTA import');
-    $this->smarty->assign('type', 'FASTA');
-    $this->smarty->view('sequence/batch_report');
+      $this->smarty->assign('title', 'Batch FASTA import');
+      $this->smarty->assign('type', 'FASTA');
+      $this->smarty->view('sequence/batch_report');
+    } else {
+      $this->set_form_error('file', 'Error reading FASTA file');
+      redirect('sequence/add_batch');
+    }
   }
   
   function __import_xml_file($file)
@@ -420,6 +428,7 @@ class Sequence extends BioController
     
       $this->smarty->assign('sequences', $seqs);
       $this->smarty->assign('labels', $labels);
+      $this->smarty->assign('search_tree', get_search_tree_sequences($seqs));
     
       $this->smarty->assign('title', 'Batch XML import');
       $this->smarty->assign('type', 'XML');
@@ -446,6 +455,8 @@ class Sequence extends BioController
       $this->load->model('taxonomy_model');
       $file = $data['full_path'];
       $this->load->library('ImportInfo');
+      
+      $this->load->helper('search');
       
       if(file_extension($file) == 'xml') {
         $this->__import_xml_file($file);

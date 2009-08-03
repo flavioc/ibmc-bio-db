@@ -2,6 +2,8 @@
 <h2>Search DNA sequences</h2>
 {elseif $type == 'protein'}
 <h2>Search protein sequences</h2>
+{elseif $type == 'batch'}
+<h2>Search batch sequences</h2>
 {elseif $type == 'label' || $type == 'notlabel'}
   {if $label}
     <h2>Search sequences by label {$label.name}</h2>
