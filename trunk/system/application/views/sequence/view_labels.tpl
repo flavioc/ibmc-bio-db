@@ -14,7 +14,6 @@ seq_id = sequence.id;
 {literal}
 $(document).ready(function() {
   $('#labels_list').gridEnable({paginate: false});
-  $('#validation_list').gridEnable({paginate: false});
 
   $('#form_add_label').livequery(function () {
     $(this).ajaxFormAdd();
@@ -46,12 +45,6 @@ $(document).ready(function() {
     plusText: 'Show details',
     minusText: 'Hide details'
   });
-
-  $('#hide_show_validation').minusPlus({
-    plusEnabled: load_validation_list,
-    minusEnabled: hide_validation_list
-  });
-
 });
 {/literal}
 </script>
@@ -166,16 +159,6 @@ $(document).ready(function () {
 {/if}
 
 <hr />
-
-<p>
-<h3>Label validation</h3>
-<div id="hide_show_validation"></div>
-<div id="validation_box">
-  <div id="validation_list">
-  </div>
-  <br />
-</div>
-</p>
 
 {if $bad_multiple}
 <script>

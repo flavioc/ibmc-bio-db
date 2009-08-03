@@ -42,17 +42,6 @@ class Label_Sequence extends BioController {
     $this->json_return($data);
   }
 
-  function get_validation_labels($id)
-  {
-    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
-      return $this->invalid_permission_empty();
-    }
-
-    $data = $this->label_sequence_model->get_validation_labels($id);
-
-    $this->json_return($data);
-  }
-
   function get_bad_multiple_labels($id)
   {
     if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {

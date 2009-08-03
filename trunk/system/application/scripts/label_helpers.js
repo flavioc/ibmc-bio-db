@@ -3,6 +3,8 @@ function generate_disabled()
   return !checkbox_enabled('#generate_check');
 }
 
+var validator_url = get_app_url() + '/validator/';
+
 $.fn.validateTextLabel = function () {
   return this.validate({
     rules: {

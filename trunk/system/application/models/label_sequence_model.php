@@ -120,7 +120,11 @@ class Label_sequence_model extends BioModel
     if(!$this->__validate_label_data($type, $data1, $data2)) {
       return false;
     }
-        
+    
+    if(!$this->label_is_valid($label, $seq, $data1, $data2)) {
+      return false;
+    }
+
     if(is_array($fields)) {
       $data[$fields[0]] = $data1;
       $data[$fields[1]] = $data2;
@@ -171,6 +175,11 @@ class Label_sequence_model extends BioModel
     $this->__fix_data($type, $data1, $data2);
     
     if(!$this->__validate_label_data($type, $data1, $data2)) {
+      return false;
+    }
+    
+    $label_info = $this->get($id);
+    if(!$this->label_is_valid($label_info['label_id'], $label_info['seq_id'], $data1, $data2)) {
       return false;
     }
     
@@ -262,8 +271,7 @@ class Label_sequence_model extends BioModel
   function edit_auto_label($id)
   {
     $label = $this->get($id);
-
-    return $this->regenerate_label($label['seq_id'], $label);
+    return $this->regenerate_label($label);
   }
   
   function __is_date($label)
@@ -464,7 +472,7 @@ class Label_sequence_model extends BioModel
         $this->edit_ref_label($label_data['id'], $ref);
       }
     } else {
-      $this->add_ref_label($id, $translated_id, $ref);
+      $ret = $this->add_ref_label($id, $translated_id, $ref);
     }
   }
 
@@ -475,7 +483,7 @@ class Label_sequence_model extends BioModel
     if($this->__is_ref($label) && $label['editable']) {
       $ret = $this->edit($id, 'ref', $ref);
       if($ret && $label['name'] == 'translated') {
-        $this->ensure_translated_label($label['label_id'], $ref, $id);
+        $this->ensure_translated_label($label['label_id'], $ref, $label['seq_id']);
       }
       return $ret;
     } else {
@@ -549,9 +557,10 @@ class Label_sequence_model extends BioModel
     return $this->get_all('label_sequence_info');
   }
 
-  function regenerate_label($seq, $label)
+  function regenerate_label($label)
   {
     $id = $label['id'];
+    $seq = $label['seq_id'];
     $type = $label['type'];
     $code = $label['code'];
     $value = $this->generate_label_value($seq, $code);
@@ -576,8 +585,8 @@ class Label_sequence_model extends BioModel
     $this->db->trans_start();
     $ret = true;
     
-    foreach($labels as $label) {
-      if(!$this->regenerate_label($seq, $label)) {
+    foreach($labels as &$label) {
+      if(!$this->regenerate_label($label)) {
         $ret = false;
       }
     }
@@ -704,7 +713,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function get_validation_status($label_id, $sequence, $data1, $data2)
+  function get_validation_status($label_id, $sequence, $data1, $data2 = null)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -717,50 +726,15 @@ class Label_sequence_model extends BioModel
 
     return $this->__get_validation_status($label, $sequence, $valid_code, $data1, $data2);
   }
-
-  function get_validation_label($sequence, $label)
+  
+  // returns true if label data (data1, data2) of label label_id is valid in context of the sequence sequence_id
+  function label_is_valid($label_id, $sequence_id, $data1, $data2 = null)
   {
-    $ret = $label;
-
-    $label_id = $label['label_id'];
-
-    $field1 = null;
-    $field2 = null;
-
-    $fields = $this->__get_data_fields($label['type']);
-    if(is_array($fields)) {
-      $field1 = $fields[0];
-      $field2 = $fields[1];
-    } else {
-      $field1 = $fields;
-    }
-
-    $data1 = $label[$field1];
-    $data2 = null;
-    if($field2) {
-      $data2 = $label[$field2];
-    }
-
-    $ret['status'] =
-      $this->get_validation_status($label_id, $sequence, $data1, $data2);
-
-    return $ret;
-  }
-
-  function get_validation_labels($id)
-  {
-    $sequence_model = $this->load_model('sequence_model');
-    $sequence = $sequence_model->get($id);
-
-    $labels = $this->get_sequence($id);
-
-    $ret = array();
-
-    foreach($labels as $label) {
-      $ret[] = $this->get_validation_label($sequence, $label);
-    }
-
-    return $ret;
+    $seq_model = $this->load_model('sequence_model');
+    
+    $result = $this->get_validation_status($label_id, $seq_model->get($sequence_id), $data1, $data2);
+    
+    return $result != 'invalid';
   }
 
   function __bad_multiple_sql($id)

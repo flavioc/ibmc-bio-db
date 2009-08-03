@@ -17,10 +17,12 @@ class Edit_Labels extends BioController {
 
     $label = $this->label_sequence_model->get($id);
     $this->smarty->assign('label', $label);
+    $this->smarty->assign('label_id', $label['label_id']);
 
     $seq_id = $label['seq_id'];
     $sequence = $this->sequence_model->get($seq_id);
     $this->smarty->assign('sequence', $sequence);
+    $this->smarty->assign('sequence_id', $sequence['id']);
 
     $editable = $label['editable'];
     $auto = $label['code'];
