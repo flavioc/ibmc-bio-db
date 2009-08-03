@@ -16,10 +16,12 @@ $(document).ready(function() {
   $('#labels_list').gridEnable({paginate: false});
 
   $('#form_add_label').livequery(function () {
+    $('#label_error').hide();
     $(this).ajaxFormAdd();
   });
   
   $('#form_edit_label').livequery(function () {
+    $('#label_error').hide();
     $(this).ajaxFormEdit();
   });
   

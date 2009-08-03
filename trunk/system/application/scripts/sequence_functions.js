@@ -395,7 +395,7 @@ function reload_bad_multiple_list()
   });
 }
 
-function after_edit_label(responseText, statusText) {
+function after_edit_label(form, responseText, statusText) {
   var resp = $.evalJSON(responseText);
 
   if(resp == true) {
@@ -403,23 +403,25 @@ function after_edit_label(responseText, statusText) {
     tb_remove();
   } else {
     if(resp == false) {
-      alert("Error inserting label: invalid label data?");
-    } else {
-      alert(responseText);
+      responseText = "Error editing label: invalid label data?";
     }
+    
+    show_error_label(form, responseText);
   }
 }
 
 $.fn.ajaxFormEdit = function () {
-  return this.ajaxForm({
-    success: after_edit_label,
+  var form = this;
+  
+  return form.ajaxForm({
+    success: function (txt, status) { after_edit_label(form, txt, status);},
     beforeSubmit: function (data, form) {
       return $(form).valid();
     }
   });
 };
 
-function after_add_label(responseText, statusText) {
+function after_add_label(form, responseText, statusText) {
   var resp = $.evalJSON(responseText);
 
   if(resp == true) {
@@ -436,16 +438,25 @@ function after_add_label(responseText, statusText) {
     tb_remove();
   } else {
     if(resp == false) {
-      alert("Error inserting label: invalid label data?");
-    } else {
-      alert(responseText);
+      responseText = "Error inserting label: invalid label data?";
     }
+    
+    show_error_label(form, responseText);
   }
 }
 
+function show_error_label(form, text)
+{
+  $('#label_error').show();
+  $('input[type=text]', form).focus();
+  $('#label_error_txt').text(text);
+}
+
 $.fn.ajaxFormAdd = function () {
-  return this.ajaxForm({
-    success: after_add_label,
+  var form = this;
+  
+  return form.ajaxForm({
+    success: function (txt, status) { after_add_label(form, txt, status);},
     beforeSubmit: function (data, form) {
       return $(form).valid();
     }

@@ -340,3 +340,11 @@ table.data th a:visited, table.data th a {
   color: #fff;
   text-decoration: underline;
 }
+
+#label_error {
+  border: 3px solid #cc0000;
+  margin: 2px;
+  margin-bottom: 15px;
+  font-size: 120%;
+  padding: 3px;
+}
