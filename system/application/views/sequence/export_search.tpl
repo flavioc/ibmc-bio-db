@@ -28,6 +28,7 @@ $(function () {
 {form_open to='sequence/get_export' name=add_form}
 <fieldset>
 {form_hidden name=tree value=$tree_json}
+{form_hidden name=transform value=$transform}
 {form_hidden name=label_obj value=""}
 <ul>
 {foreach from=$labels item=label}

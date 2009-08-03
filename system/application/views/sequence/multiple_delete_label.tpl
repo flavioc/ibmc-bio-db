@@ -16,6 +16,7 @@
 
 {form_open to='#' name=label_form}
 {form_hidden name=search value=$encoded}
+{form_hidden name=transform value=$transform}
 {include file=common_label/select_label.tpl}
 
 {form_submit name='submit_delete_label' msg='Open dialog'}
@@ -38,6 +39,11 @@ $(function () {
     total: 'get_search_total',
     params: {
       search: '{/literal}{$encoded}{literal}'
+      {/literal}
+      {if $transform}
+      ,transform: {$transform}
+      {/if}
+      {literal}
     },
     fieldNames: ['Name', 'Last update', 'User'],
     fields: ['name', 'update', 'user_name'],

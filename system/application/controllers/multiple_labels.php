@@ -107,7 +107,9 @@ class Multiple_Labels extends BioController {
     $search = stripslashes($this->get_post('search'));
     $this->search_tree = json_decode($search, true);
     
-    $this->seqs = $this->label_sequence_model->get_search($this->search_tree);
+    $transform = $this->__get_transform_label('transform', 'post');
+    
+    $this->seqs = $this->label_sequence_model->get_search($this->search_tree, null, null, array(), $transform);
     $this->multiple = json_decode($this->get_post('multiple'));
     
     $update = $this->get_post('update');

@@ -23,6 +23,7 @@ $(function () {
             $.post(get_app_url() + '/delete_labels/delete',
               {
                 search: $('input[name=search]').val(),
+                transform: $('input[name=transform]').val(),
                 label_id: current_label.id
               },
               function () {

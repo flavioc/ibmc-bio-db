@@ -17,6 +17,15 @@ function sql_limit($start, $size)
   }
 }
 
+function sql_limit_size($size)
+{
+  if(!is_numeric($size)) {
+    return '';
+  }
+  
+  return "LIMIT $size";
+}
+
 function sql_is_nothing($val)
 {
   return $val == null || $val == '' || $val == '0';

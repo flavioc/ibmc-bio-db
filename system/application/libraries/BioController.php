@@ -422,4 +422,28 @@ class BioController extends Controller
         return "Label/Sequence id $id with invalid type";
     }
   }
+  
+  function __get_transform_label($key = 'transform', $mode = 'get')
+  {
+    if($mode == 'get') {
+      $transform = $this->get_parameter($key);
+    } else {
+      $transform = $this->get_post($key);
+    }
+    
+    if(!$transform || $transform == '0' || !is_numeric($transform)) {
+      return null;
+    }
+    
+    $this->load->model('label_model');
+    
+    $transform = intval($transform);
+    $label = $this->label_model->get($transform);
+    
+    if(!$label || $label['type'] != 'ref') {
+      return null;
+    }
+    
+    return $transform;
+  }
 }

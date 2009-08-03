@@ -80,25 +80,33 @@
 
 </div>
 
+<fieldset>
+<label for="select_transform" class="search-desc">Transform results: </label>{form_select blank=yes name=select_transform start=0 data=$refs key=id}
+</fieldset>
+
 <h3>Operations</h3>
 
 {form_open to='sequence/export_search' name=tree_form}
 {form_hidden name=encoded_tree value=null}
+{form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Export' id="submit_tree"}
 {form_end}
 
 {form_open to='sequence/multiple_add_label?mode=add' name=add_label_form}
 {form_hidden name=encoded_tree value=null}
+{form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Add label' id='submit_add_label'}
 {form_end}
 
 {form_open to='sequence/multiple_add_label?mode=edit' name=edit_label_form}
 {form_hidden name=encoded_tree value=null}
+{form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Edit label' id='submit_edit_label'}
 {form_end}
 
 {form_open to='sequence/multiple_delete_label' name=delete_label_form}
 {form_hidden name=encoded_tree value=null}
+{form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Delete label' id='submit_delete_label'}
 {form_end}
 
