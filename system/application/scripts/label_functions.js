@@ -1,8 +1,12 @@
   
-function start_label_list(params, select_fn, add_fn)
+function start_label_list(params, select_fn, add_fn, link_to_seqs)
 {
   if(params == null) {
     params = {};
+  }
+  
+  if(link_to_seqs == null) {
+    link_to_seqs = false;
   }
 
   var base_site = get_app_url() + "/label";
@@ -49,7 +53,7 @@ function start_label_list(params, select_fn, add_fn)
     errorPlacement: basicErrorPlacement
   });
 
-  var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'User', 'Sequences'];
+  var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'User', 'Total'];
   var fields = ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'user_name', 'num_seqs'];
 
   if(select_fn) {
@@ -60,6 +64,11 @@ function start_label_list(params, select_fn, add_fn)
   if(add_fn) {
     fieldNames = $.merge(['Add'], fieldNames);
     fields = $.merge(['add'], fields);
+  }
+  
+  if(link_to_seqs) {
+    fieldNames = $.merge(fieldNames, ['Seqs', 'Others']);
+    fields = $.merge(fields, ['seqs', 'others']);
   }
 
   grid.gridEnable();
@@ -76,6 +85,12 @@ function start_label_list(params, select_fn, add_fn)
       },
       user_name: function(row) {
         return build_user_url(row.update_user_id);
+      },
+      seqs: function (row) {
+        return get_app_url() + '/sequence/search?type=label&id=' + row.id.toString();
+      },
+      others: function (row) {
+        return get_app_url() + '/sequence/search?type=notlabel&id=' + row.id.toString();
       }
     },
     dataTransform: {
@@ -87,6 +102,12 @@ function start_label_list(params, select_fn, add_fn)
       },
       num_seqs: function(row) {
         return row.num_seqs;
+      },
+      seqs: function (row) {
+        return img_lupa;
+      },
+      others: function (row) {
+        return img_lupa;
       }
     },
     tdClass: {
@@ -99,7 +120,9 @@ function start_label_list(params, select_fn, add_fn)
       user_name: 'centered',
       select: 'centered',
       add: 'centered',
-      num_seqs: 'centered'
+      num_seqs: 'centered',
+      seqs: 'centered',
+      others: 'centered'
     },
     width: {
       multiple: w_boolean,
@@ -111,7 +134,9 @@ function start_label_list(params, select_fn, add_fn)
       type: w_type,
       user_name: w_user,
       add: w_add,
-      num_seqs: '8%'
+      num_seqs: '5%',
+      seqs: '5%',
+      others: '5%'
     },
     types: {
       must_exist: 'boolean',
@@ -131,6 +156,16 @@ function start_label_list(params, select_fn, add_fn)
       },
       add: function (row) {
         add_fn(row, grid);
+      },
+      seqs: function (row) {
+        var query = {label: row.name, oper: "exists", type: row.type};
+        $.cookie('saved_search_tree_clabel', $.toJSON(query), cookie_options);
+        return true;
+      },
+      others: function (row) {
+        var query = {label: row.name, oper: "notexists", type: row.type};
+        $.cookie('saved_search_tree_not_label', $.toJSON(query), cookie_options);
+        return true;
       }
     }
   });

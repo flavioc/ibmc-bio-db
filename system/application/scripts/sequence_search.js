@@ -54,6 +54,10 @@ function get_cookie_tree_name()
       return 'saved_search_tree_dna';
     case 'protein':
       return 'saved_search_tree_protein';
+    case 'label':
+      return 'saved_search_tree_clabel';
+    case 'notlabel':
+      return 'saved_search_tree_not_label';
     default:
       return 'saved_search_tree';
   }
@@ -206,12 +210,10 @@ function hide_type_input(type)
 function term_form_submitted()
 {
   if(!term_was_selected()) {
-    alert("no selected");
     return;
   }
 
   if(current_label == null) {
-    alert("no label");
     return;
   }
 
@@ -649,14 +651,10 @@ function activate_term(name)
 
 function save_search_tree()
 {
-  var options = {path: '/',
-    expires: 10
-  };
-
   var obj = get_simple_search_tree();
   var encoded = $.toJSON(obj);
 
-  $.cookie(get_cookie_tree_name(), encoded);
+  $.cookie(get_cookie_tree_name(), encoded, cookie_options);
 }
 
 function get_start_search_param()
@@ -667,7 +665,6 @@ function get_start_search_param()
 function restore_old_tree()
 {
   var encoded = $.cookie(get_cookie_tree_name());
-
   var obj = $.evalJSON(encoded);
 
   if(obj) {

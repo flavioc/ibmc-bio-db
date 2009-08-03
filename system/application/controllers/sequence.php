@@ -94,7 +94,21 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_livequery();
 
-    $this->smarty->assign('type', $this->get_parameter('type'));
+    $type = $this->get_parameter('type');
+    switch($type) {
+      case 'label':
+      case 'notlabel':
+        $id = $this->get_parameter('id');
+        if($id) {
+          $this->load->model('label_model');
+          $this->smarty->assign('label', $this->label_model->get($id));
+        } else {
+          $this->smarty->assign('label', null);
+        }
+        break;
+    }
+    
+    $this->smarty->assign('type', $type);
     $this->smarty->view('sequence/search');
   }
 

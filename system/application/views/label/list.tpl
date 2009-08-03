@@ -3,7 +3,7 @@
 {literal}
 <script>
 $(document).ready(function () {
-  start_label_list();
+  start_label_list(null, null, null, true);
 });
 </script>
 {/literal}

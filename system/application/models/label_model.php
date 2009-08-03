@@ -99,7 +99,36 @@ class Label_model extends BioModel
     $this->__filter_labels($filtering);
     $this->limit($start, $size);
 
-    return parent::get_all('label_info_history');
+    $ret = parent::get_all('label_info_history');
+    
+    $sequence_model = $this->load_model('sequence_model');
+    
+    foreach($ret as &$label) {
+      $name = $label['name'];
+      
+      if(label_special_purpose($name)) {
+        switch($name) {
+          case 'name':
+          case 'content':
+            $label['num_seqs'] = $sequence_model->get_total();
+            break;
+          case 'creation_user':
+            $label['num_seqs'] = $sequence_model->get_total(array('creation_user' => true));
+            break;
+          case 'update_user':
+            $label['num_seqs'] = $sequence_model->get_total(array('update_user' => true));
+            break;
+          case 'creation_date':
+            $label['num_seqs'] = $sequence_model->get_total(array('creation_date' => true));
+            break;
+          case 'update_date':
+            $label['num_seqs'] = $sequence_model->get_total(array('update_date' => true));
+            break;
+        }
+      }
+    }
+    
+    return $ret;
   }
 
   function get_total($filtering = array())

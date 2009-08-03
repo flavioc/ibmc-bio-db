@@ -32,6 +32,22 @@ class Sequence_model extends BioModel
         $this->db->where('update_user_id', $user);
       }
     }
+    
+    if(array_key_exists('creation_user', $filtering)) {
+      $this->db->where('creation_user_id IS NOT NULL');
+    }
+    
+    if(array_key_exists('update_user', $filtering)) {
+      $this->db->where('update_user_id IS NOT NULL');
+    }
+    
+    if(array_key_exists('creation_date', $filtering)) {
+      $this->db->where('creation IS NOT NULL');
+    }
+    
+    if(array_key_exists('update_date', $filtering)) {
+      $this->db->where('`update` IS NOT NULL');
+    }
   }
 
   function get_all($start = null, $size = null,

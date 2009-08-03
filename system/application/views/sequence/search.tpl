@@ -2,6 +2,12 @@
 <h2>Search DNA sequences</h2>
 {elseif $type == 'protein'}
 <h2>Search protein sequences</h2>
+{elseif $type == 'label' || $type == 'notlabel'}
+  {if $label}
+    <h2>Search sequences by label {$label.name}</h2>
+  {else}
+    <h2>Search sequences by label</h2>
+  {/if}
 {else}
 <h2>Search sequences</h2>
 {/if}
