@@ -58,6 +58,8 @@ function get_cookie_tree_name()
       return 'saved_search_tree_clabel';
     case 'notlabel':
       return 'saved_search_tree_not_label';
+    case 'batch':
+      return 'saved_search_tree_batch';
     default:
       return 'saved_search_tree';
   }

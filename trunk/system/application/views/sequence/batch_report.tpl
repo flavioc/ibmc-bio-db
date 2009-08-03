@@ -1,6 +1,16 @@
 <h2>{$type} batch results</h2>
 
-<p>The following sequences marked 'Yes' in 'New' were inserted into the database, the others were updated:</p>
+<p>The following sequences marked 'Yes' in 'New' were inserted into the database, the others were updated.</p>
+<p>The imported sequences can be <a href="{site}/sequence/search?type=batch" id="batch_manipulate">batch manipulated</a>.</p>
+
+{literal}<script>
+$(function () {
+  $('#batch_manipulate').click(function () {
+    $.cookie('saved_search_tree_batch', $.toJSON({/literal}{encode_json value=$search_tree}{literal}), cookie_options);
+    return true;
+  })
+});
+</script>{/literal}
 
 {if count($labels) > 0}
 <h3>Labels</h3>
