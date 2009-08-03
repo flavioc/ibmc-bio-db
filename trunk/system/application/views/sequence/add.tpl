@@ -24,6 +24,7 @@
 <fieldset>
 {form_row name=name msg='Name:'}
 {form_row type=textarea name=content msg='Content:' cols=50 rows=15}
+{form_row type=checkbox name=protein msg="Generate protein:"}
 </fieldset>
 {form_submit name=submit msg='Add'}
 {form_end}

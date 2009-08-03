@@ -99,10 +99,10 @@ class ImportInfo {
     return $ret;
   }
   
-  function add_sequence($name, $content)
+  function add_sequence($name, $content, $id = null)
   {
     $name = trim($name);
-    $this->sequences[$name] = array('name' => $name, 'content' => sequence_normalize($content));
+    $this->sequences[$name] = array('name' => $name, 'content' => sequence_normalize($content), 'id' => $id);
     $this->sequence_labels[$name] = array();
     $this->sequences[$name]['labels'] =& $this->sequence_labels[$name];
     
