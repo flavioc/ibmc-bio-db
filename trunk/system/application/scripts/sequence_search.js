@@ -35,6 +35,8 @@ var we_are_starting = true;
 var search_human = null;
 var data_date_input = null;
 var date_input = null;
+var select_transform = null;
+var current_selected_li = null;
 var search_type = 'all';
 
 $(function () {
@@ -394,6 +396,7 @@ function get_main_search_term()
 function update_form_hidden(encoded)
 {
   $('input[name=encoded_tree]').val(encoded);
+  $('input[name=transform_hidden]').val(select_transform.val());
 }
 
 function get_main_search_term_encoded()
@@ -435,6 +438,7 @@ function reload_results(encoded)
   }
   
   show_seqs.gridFilter('search', encoded);
+  show_seqs.gridFilter('transform', select_transform.val());
   show_seqs.gridReload();
 }
 
@@ -444,6 +448,17 @@ function update_search()
   
   update_tree(encoded);
   reload_results(encoded);
+}
+
+function update_transform()
+{
+  var encoded = get_main_search_term_encoded();
+  
+  reload_results(encoded);
+  update_form_hidden(encoded);
+  if(current_selected_li) {
+    compute_total_term(current_selected_li);
+  }
 }
 
 function handle_compound(what)
@@ -632,9 +647,12 @@ function compute_total_term(li)
   var search = enclose_search_tree(get_search_term(li));
   var encoded = $.toJSON(search);
   
+  current_selected_li = li;
+  
   $.get(get_app_url() + '/sequence/get_search_total',
     {
-      search: encoded
+      search: encoded,
+      transform: select_transform.val()
     },
     function (data) {
       $('.term-count:first', li).text(data);
@@ -781,6 +799,9 @@ $(document).ready(function () {
     date_input = $('#date_input');
     submit_term = $('#submit_term').hide();
     search_human = $('#search_human');
+    select_transform = $('#select_transform');
+    
+    select_transform.change(update_transform);
     
     date_input.datePickerDate();
 

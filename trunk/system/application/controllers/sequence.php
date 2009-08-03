@@ -34,7 +34,8 @@ class Sequence extends BioController
     $tree_str = $this->get_post('tree');
     $tree = json_decode(stripslashes($tree_str), true);
 
-    $seqs = $this->label_sequence_model->get_search($tree);
+    $transform = $this->__get_transform_label('transform', 'post');
+    $seqs = $this->label_sequence_model->get_search($tree, null, null, array(), $transform);
     
     $type = $this->get_post('format');
 
@@ -42,7 +43,7 @@ class Sequence extends BioController
       $labels_str = $this->get_post('label_obj');
       $labels = json_decode(stripslashes($labels_str), true);
 
-      return $this->export_sequences_partial($seqs, $labels, $tree, $type);
+      return $this->export_sequences_partial($seqs, $labels, array($tree, $transform), $type);
     } else {
       return $this->export_sequences($seqs, $type, '');
     }
@@ -67,7 +68,10 @@ class Sequence extends BioController
     $tree_html = search_tree_to_html($tree);
     $this->smarty->assign('tree_html', $tree_html);
 
-    $seqs = $this->label_sequence_model->get_search($tree);
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $this->smarty->assign('transform', $transform);
+    $seqs = $this->label_sequence_model->get_search($tree, null, null, array(), $transform);
+    
     $all = $this->label_sequence_model->get_all_labels($seqs);
     $this->smarty->assign('labels', $all);
 
@@ -87,8 +91,13 @@ class Sequence extends BioController
     $this->smarty->load_stylesheets('search.css');
     $this->use_mygrid();
     $this->use_datepicker();
+    
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
+    
+    $this->load->model('label_model');
+    $this->smarty->assign('refs', $this->label_model->get_refs());
+    
     $this->assign_label_types(true);
     $this->use_autocomplete();
     $this->use_thickbox();
@@ -173,6 +182,7 @@ class Sequence extends BioController
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
     $search = $this->__get_search_term();
+    $transform = $this->__get_transform_label();
 
     $ordering_name = $this->get_order('name');
     $ordering_update = $this->get_order('update');
@@ -182,7 +192,8 @@ class Sequence extends BioController
       $start, $size,
       array('name' => $ordering_name,
             'update' => $ordering_update,
-            'user_name' => $ordering_user)));
+            'user_name' => $ordering_user),
+            $transform));
   }
 
   function get_search_total()
@@ -192,9 +203,10 @@ class Sequence extends BioController
     }
 
     $search = $this->__get_search_term();
+    $transform = $this->__get_transform_label();
 
     $this->json_return(
-      $this->label_sequence_model->get_search_total($search));
+      $this->label_sequence_model->get_search_total($search, $transform));
   }
 
   function multiple_add_label()
@@ -221,6 +233,7 @@ class Sequence extends BioController
       'common_sequence.js');
 
     $encoded = $this->get_post('encoded_tree');
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
     $mode = $this->get_parameter('mode');
     
     if($mode == 'add') {
@@ -229,6 +242,7 @@ class Sequence extends BioController
       $this->smarty->assign('title', 'Multiple edit label');
     }
     
+    $this->smarty->assign('transform', $transform);
     $this->smarty->assign('mode', $mode);
     $this->smarty->assign('encoded', $encoded);
 
@@ -256,6 +270,8 @@ class Sequence extends BioController
 
     $encoded = $this->get_post('encoded_tree');
     $this->smarty->assign('encoded', $encoded);
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $this->smarty->assign('transform', $transform);
     
     $this->smarty->assign('title', 'Multiple delete label');
     $this->smarty->view('sequence/multiple_delete_label');
@@ -736,7 +752,7 @@ class Sequence extends BioController
                 $type, $comment);
   }
 
-  function export_sequences_partial($sequences, $labels_id, $tree, $type)
+  function export_sequences_partial($sequences, $labels_id, $data, $type)
   {
     $seq_labels = array();
 
@@ -756,25 +772,46 @@ class Sequence extends BioController
       $seq_labels[] = $labels;
     }
 
+    list($tree, $transform) = $data;
     $tree_str = search_tree_to_string($tree);
-    if($type == 'fasta') {
-      $this->__do_export_fasta($sequences, $seq_labels, "- $tree_str");
+    
+    if($transform) {
+      $this->load->model('label_model');
+      $trans_name = $this->label_model->get_name($transform);
     } else {
-      $this->__do_export_xml($sequences, $seq_labels, $tree_str);
+      $trans_name = null;
+    }
+    
+    if($type == 'fasta') {
+      $comment = " - $tree_str";
+      if($trans_name) {
+        $comment = "$comment - transformed by label $trans_name";
+      }
+      $this->__do_export_fasta($sequences, $seq_labels, $comment);
+    } else {
+      $comment = $tree_str;
+      if($trans_name) {
+        $comment = "$comment ; transformed by label $trans_name";
+      }
+      $this->__do_export_xml($sequences, $seq_labels, $comment);
     }
   }
 
   function export_sequences($sequences, $type, $comment)
-  { 
+  {
+    foreach($sequences as &$seq) {
+      $id = $seq['id'];
+      if(!array_key_exists('content', $seq)) {
+        $seq['content'] = $this->sequence_model->get_content($id);
+      }
+    }
+    
     if($type == 'fasta' || $type == 'xml') {
       $seq_labels = array();
 
       foreach($sequences as &$seq) {
         $id = $seq['id'];
         $seq_labels[] = $this->label_sequence_model->get_sequence($id);
-        if(!array_key_exists('content', $seq)) {
-          $seq['content'] = $this->sequence_model->get_content($id);
-        }
       }
 
       if($type == 'fasta') {

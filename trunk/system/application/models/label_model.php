@@ -106,28 +106,30 @@ class Label_model extends BioModel
     $ret = parent::get_all('label_info_history');
     
     $sequence_model = $this->load_model('sequence_model');
-    
-    foreach($ret as &$label) {
-      $name = $label['name'];
-      
-      if(label_special_purpose($name)) {
-        switch($name) {
-          case 'name':
-          case 'content':
+
+    if($totals) {
+      foreach($ret as &$label) {
+        $name = $label['name'];
+
+        if(label_special_purpose($name)) {
+          switch($name) {
+            case 'name':
+            case 'content':
             $label['num_seqs'] = $sequence_model->get_total();
             break;
-          case 'creation_user':
+            case 'creation_user':
             $label['num_seqs'] = $sequence_model->get_total(array('creation_user' => true));
             break;
-          case 'update_user':
+            case 'update_user':
             $label['num_seqs'] = $sequence_model->get_total(array('update_user' => true));
             break;
-          case 'creation_date':
+            case 'creation_date':
             $label['num_seqs'] = $sequence_model->get_total(array('creation_date' => true));
             break;
-          case 'update_date':
+            case 'update_date':
             $label['num_seqs'] = $sequence_model->get_total(array('update_date' => true));
             break;
+          }
         }
       }
     }
@@ -364,5 +366,11 @@ class Label_model extends BioModel
   function edit_bool($id, $what, $val)
   {
     return $this->edit_field($id, $what, $val);
+  }
+  
+  function get_refs()
+  {
+    $this->db->where('type', 'ref');
+    return $this->get_all();
   }
 }

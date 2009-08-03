@@ -201,7 +201,9 @@ class Sequence_model extends BioModel
     }
     
     $label_id = $this->load_model('label_model')->get_id_by_name('translated');
-    $this->load_model('label_sequence_model')->ensure_translated_label($label_id, $seq1, $seq2);
+    $model = $this->load_model('label_sequence_model');
+    $model->ensure_translated_label($label_id, $seq1, $seq2);
+    $model->ensure_translated_label($label_id, $seq2, $seq1);
     
     return true;
   }

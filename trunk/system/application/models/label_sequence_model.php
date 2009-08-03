@@ -1196,25 +1196,45 @@ class Label_sequence_model extends BioModel
     return $sql_part;
   }
 
-  function get_search($search, $start = null, $size = null, $ordering = array())
+  function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null)
   {
     $sql_where = $this->__get_search_sql($search);
     $sql_limit = sql_limit($start, $size);
     $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
-    $sql = "SELECT DISTINCT id, user_name, update_user_id, `update`, name
-      FROM sequence_info_history
-      WHERE $sql_where $sql_order $sql_limit";
+    $select_sql = "DISTINCT id, user_name, update_user_id, `update`, name";
+    
+    if($transform) {
+      $sql = "SELECT $select_sql
+              FROM (SELECT id AS orig_id FROM sequence_info_history WHERE $sql_where) all_seqs
+                  NATURAL JOIN
+                   (SELECT seq_id AS orig_id, ref_data AS id FROM label_sequence WHERE label_id = $transform
+                                                                    AND ref_data IS NOT NULL) label_seqs
+                  NATURAL JOIN
+                   sequence_info_history
+              $sql_order $sql_limit";
+    } else {
+      $sql = "SELECT $select_sql
+          FROM sequence_info_history
+          WHERE $sql_where $sql_order $sql_limit";
+    }
 
     return $this->rows_sql($sql);
   }
 
   // get total number of sequences with this search tree
-  function get_search_total($search)
+  function get_search_total($search, $transform = null)
   {
     $sql_where = $this->__get_search_sql($search);
-    $sql = "SELECT count(id) AS total
-            FROM sequence_info_history
-            WHERE $sql_where";
+    
+    if($transform) {
+      $sql = "SELECT count(DISTINCT ref_data) AS total
+              FROM (SELECT id FROM sequence_info_history WHERE $sql_where) all_seqs
+                      NATURAL JOIN (SELECT seq_id AS id, ref_data FROM label_sequence WHERE label_id = $transform AND ref_data IS NOT NULL) label_seqs";
+    } else {
+      $sql = "SELECT count(id) AS total
+              FROM sequence_info_history
+              WHERE $sql_where";
+    }
 
     return $this->total_sql($sql);
   }

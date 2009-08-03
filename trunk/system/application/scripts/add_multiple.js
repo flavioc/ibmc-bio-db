@@ -4,6 +4,7 @@ var addnew = null;
 var mode = 'add';
 var current_label = null;
 var hidden_search = null;
+var hidden_transform = null;
 
 $(function () {
   var got = $.getURLParam('mode');
@@ -16,6 +17,11 @@ $(function () {
 function get_search_tree_encoded()
 {
   return hidden_search.val();
+}
+
+function get_transform()
+{
+  return hidden_transform.val();
 }
 
 $.fn.submitAjax = function () {
@@ -32,6 +38,7 @@ function update_new_label_form()
   var form = $('#form_add_label');
 
   $('input[name=search]', form).val(get_search_tree_encoded());
+  $('input[name=transform]', form).val(get_transform());
   
   if(mode == 'add') {
     $('input[name=update]', form).val(update.is(":checked"));
@@ -54,6 +61,7 @@ $(function () {
 
   var multiple_row = multiple.parent();
 
+  hidden_transform = $('input[name=transform]', label_form);
   hidden_search = $('input[name=search]', label_form);
 
   $('#form_add_label').livequery(function () {
