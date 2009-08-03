@@ -12,7 +12,7 @@ class Label_sequence_model extends BioModel
 
   function __get_select()
   {
-    return self::$label_basic_fields . ", " . self::$label_data_fields;
+    return self::$label_basic_fields . ", " . self::$label_data_fields . ", update_user_id, `update`, user_name";
   }
 
   function get_label_id($seq_id, $label_id)
@@ -37,7 +37,7 @@ class Label_sequence_model extends BioModel
 
   function get_sequence($id)
   {
-    $this->db->select($this->__get_select() . ", update_user_id, `update`, user_name", FALSE);
+    $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }
@@ -445,9 +445,26 @@ class Label_sequence_model extends BioModel
     $label = $label_model->get($label_id);
 
     if($this->__is_ref($label) && $label['editable']) {
-      return $this->add($seq_id, $label_id, 'ref', $ref);
+      $ret = $this->add($seq_id, $label_id, 'ref', $ref);
+      if($ret && $label['name'] == 'translated') {
+        $this->ensure_translated_label($label_id, $ref, $seq_id);
+      }
+      return $ret;
     } else {
       return false;
+    }
+  }
+  
+  function ensure_translated_label($translated_id, $id, $ref)
+  {
+    $label_data = $this->get_label_info($id, $translated_id);
+    
+    if($label_data) {
+      if($label_data['ref_data'] != $ref) {
+        $this->edit_ref_label($label_data['id'], $ref);
+      }
+    } else {
+      $this->add_ref_label($id, $translated_id, $ref);
     }
   }
 
@@ -456,7 +473,11 @@ class Label_sequence_model extends BioModel
     $label = $this->get($id);
 
     if($this->__is_ref($label) && $label['editable']) {
-      return $this->edit($id, 'ref', $ref);
+      $ret = $this->edit($id, 'ref', $ref);
+      if($ret && $label['name'] == 'translated') {
+        $this->ensure_translated_label($label['label_id'], $ref, $id);
+      }
+      return $ret;
     } else {
       return false;
     }
@@ -668,6 +689,8 @@ class Label_sequence_model extends BioModel
 
   function __get_validation_status($label, $sequence, $valid_code, $data1, $data2)
   {
+    $seq_model = $this->load_model('sequence_model');
+    $seq_id = $sequence['id'];
     $content = $sequence['content'];
     $name = $sequence['name'];
     $data = $data1;
@@ -834,11 +857,40 @@ class Label_sequence_model extends BioModel
 
     return $this->select_data($data);
   }
+  
+  // locate sequence id which contains a label with data data1 and data2
+  function get_reverse_data($name_label, $data1, $data2 = null)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get_by_name($name_label);
+    if(!$label) {
+      return null;
+    }
+    $type = $label['type'];
+    
+    $this->db->select('seq_id');
+    
+    $fields = $this->__get_data_fields($type);
+    
+    if(is_array($fields)) {
+      $this->db->where($fields[0], $data1);
+      $this->db->where($fields[1], $data2);
+    } else {
+      $this->db->where($fields, $data1);
+    }
+    
+    $row = $this->get_row('name', $name_label, 'label_sequence_info');
+    if(!$row) {
+      return null;
+    }
+    
+    return $row['seq_id'];
+  }
 
   // retrieve the data field using the label name
   function get_label($seq_id, $label_name)
   {
-    $this->db->select('id, type, ' . self::$label_data_fields);
+    $this->db->select('id, `type`, ' . self::$label_data_fields, FALSE);
     $this->db->where('name', $label_name);
     $this->db->where('seq_id', $seq_id);
     $all = $this->get_all('label_sequence_info');
@@ -853,7 +905,7 @@ class Label_sequence_model extends BioModel
   // get label by sequence and label id
   function get_label_ids($seq_id, $label_id)
   {
-    $this->db->select($this->__get_select() . ", update_user_id, `update`, user_name", FALSE);
+    $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $seq_id);
 
     return $this->get_row('label_id', $label_id, 'label_sequence_info');

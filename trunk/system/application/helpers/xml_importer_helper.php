@@ -84,5 +84,5 @@ function import_xml_file($controller, $file)
     }
   }
   
-  return $info->import();
+  return $info;
 }

@@ -3,6 +3,9 @@
 <div class="data_show">
   <p><span class="desc">Name: </span><a href="{site}/sequence/view/{$sequence.id}">{$sequence.name}</a></p>
   <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span>{$sequence.content}...</p>
+  {if $trans_sequence}
+  <p><span class="desc">Translated:</span><a href="{site}/sequence/labels/{$trans_sequence.id}">{$trans_sequence.name}</a></p>
+  {/if}
 </div>
 
 <script>

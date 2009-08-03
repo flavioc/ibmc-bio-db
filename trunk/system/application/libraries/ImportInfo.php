@@ -2,6 +2,7 @@
 
 class ImportInfo {
   private $sequences = array();
+  private $ordered_sequences = array();
   private $sequence_labels = array();
   private $labels = array();
   private $controller = null;
@@ -9,6 +10,57 @@ class ImportInfo {
   function ImportInfo($ctr = null)
   {
     $this->controller = $ctr; 
+  }
+  
+  function duo_match($info2)
+  {
+    // in this ImportInfo all sequences must be DNA sequences
+    // and on info2 they must be protein sequences
+    
+    $total1 = count($this->ordered_sequences);
+    $total2 = count($info2->ordered_sequences);
+    
+    if($total1 != $total2) {
+      return "Number of sequences don't match: $total1 vs $total2";
+    }
+    
+    $i = 0;
+    foreach($this->ordered_sequences as &$seq) {
+      $name1 = $seq['name'];
+      $content1 =& $seq['content'];
+      
+      $seq2 =& $info2->ordered_sequences[$i++];
+      $name2 = $seq2['name'];
+      $content2 =& $seq2['content'];
+      
+      if($content1 == $content2) {
+        return "In two sequence pairs the contents are equal";
+      }
+      
+      $type1 = sequence_type($content1);
+      if($type1 != 'dna') {
+        return "Sequence $name1 must be DNA";
+      }
+      
+      $type2 = sequence_type($content2);
+      if($type2 != 'protein') {
+        return "Sequence $name2 must be a protein";
+      }
+    }
+    
+    return true;
+  }
+  
+  function link_sequences($info2)
+  {
+    $i = 0;
+    foreach($this->ordered_sequences as &$seq) {
+      $dna_id = $seq['id'];
+      $seq2 =& $info2->ordered_sequences[$i++];
+      $protein_id = $seq2['id'];
+      
+      $this->controller->sequence_model->set_translated_sequence($dna_id, $protein_id);
+    }
   }
   
   function add_label($name, $type)
@@ -30,9 +82,11 @@ class ImportInfo {
   function add_sequence($name, $content)
   {
     $name = trim($name);
-    $this->sequences[$name] = array('content' => sequence_normalize($content));
+    $this->sequences[$name] = array('name' => $name, 'content' => sequence_normalize($content));
     $this->sequence_labels[$name] = array();
     $this->sequences[$name]['labels'] =& $this->sequence_labels[$name];
+    
+    $this->ordered_sequences[] =& $this->sequences[$name];
   }
   
   function add_sequence_label($sequence, $label, $value)
@@ -278,7 +332,7 @@ class ImportInfo {
       $isnew = false;
       
       if($this->controller->sequence_model->has_same_sequence($name, $content)) {
-        $data['id'] = $this->controller->sequence_model->get_id_by_name($name);
+        $data['id'] = $this->controller->sequence_model->get_id_by_name_and_content($name, $content);
         $data['content'] = $this->controller->sequence_model->get_content($data['id']);
         $data['comment'] = 'Sequence name and content are identical.';
       } else {

@@ -125,5 +125,5 @@ function import_fasta_file($controller, $file)
     }
   }
    
-  return $info->import(); 
+  return $info; 
 }

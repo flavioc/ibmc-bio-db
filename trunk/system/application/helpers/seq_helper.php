@@ -55,6 +55,11 @@ function sequence_type($seq)
   return $type;
 }
 
+function valid_sequence_type($type)
+{
+  return $type == 'dna' || $type == 'protein';
+}
+
 define('SEQUENCE_SPACING', 40);
 
 function sequence_split($content)

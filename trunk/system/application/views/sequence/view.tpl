@@ -38,7 +38,9 @@ $(document).ready(function() {
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="seqname" class="writeable">{$sequence.name}</span></p>
   <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span><span class="writeable" id="seqcontent">{$sequence.content}...</span></p>
-
+  {if $trans_sequence}
+  <p><span class="desc">Translated:</span><a href="{site}/sequence/view/{$trans_sequence.id}">{$trans_sequence.name}</a></p>
+  {/if}
 {include file='history/form_view.tpl' data=$sequence}
 
 </div>
@@ -64,3 +66,9 @@ $(document).ready(function () {
 </script>
 {/literal}
 {/if}
+
+{literal}<style>
+#export_form, #form_labels_btn, #form_delete {
+  display: inline;
+}
+</style>{/literal}

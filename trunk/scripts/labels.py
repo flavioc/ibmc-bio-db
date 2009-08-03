@@ -94,7 +94,7 @@ add_label(name = "perm_public",
 add_label(name = "type",
     type = "text",
     code = "return sequence_type($content);",
-    valid_code = "return $data == 'dna' || $data == 'protein';",
+    valid_code = "return valid_sequence_type($data);",
     editable = True)
 
 add_label(name = "name",
@@ -149,6 +149,17 @@ add_label(name = "update_date",
     editable = False,
     multiple = False,
     must_exist = True,
+    default = True)
+
+add_label(name = "translated",
+    type = "ref",
+    valid_code = "$type1 = $seq_model->get_type($seq_id); $type2 = $seq_model->get_type($data); return valid_sequence_type($type1) && valid_sequence_type($type2) && $type1 != $type2;",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = True,
+    multiple = False,
+    must_exist = False,
+    deletable = True,
     default = True)
 
 db.close()

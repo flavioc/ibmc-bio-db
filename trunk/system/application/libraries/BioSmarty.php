@@ -222,6 +222,11 @@ function smarty_function_form_hidden($params, &$smarty)
 
 function smarty_function_form_checkbox($params, &$smarty)
 {
+  return form_checkbox(__fill_checkbox_radio($data));
+}
+
+function __fill_checkbox_radio(&$params)
+{
   $data = array();
 
   $name = $params['name'];
@@ -241,14 +246,32 @@ function smarty_function_form_checkbox($params, &$smarty)
   $data['value'] = $value;
 
   $class = $params['class'];
-  if(!$class) {
+  if($class) {
     $data['class'] = $class;
   }
 
   $checked = $params['checked'];
   $data['checked'] = ($checked ? TRUE : FALSE);
+  
+  return $data;
+}
 
-  return form_checkbox($data);
+function smarty_function_form_radio($params, &$smarty)
+{
+  $options = explode(',', $params['options']);
+  $msgs = explode(',', $params['msgs']);
+  $checked = $params['checked'];
+  $params['options'] = null;
+  
+  $ret = '';
+  $i = 0;
+  foreach($options as $option) {
+    $params['checked'] = ($option == $checked);
+    $params['value'] = $option;
+    $ret .= form_radio(__fill_checkbox_radio($params)) . $msgs[$i++];
+  }
+  
+  return $ret;
 }
 
 function smarty_function_form_select($params, &$smarty)
@@ -355,7 +378,7 @@ function smarty_function_form_row($params, &$smarty)
     $ret .= ">\n";
   }
 
-  $ret .= smarty_function_form_label($label_data, &$smarty) . "\n";
+  $ret .= smarty_function_form_label($label_data, $smarty) . "\n";
 
   $size = $params['size'];
   $class = $params['class'];
@@ -368,7 +391,7 @@ function smarty_function_form_row($params, &$smarty)
       'class' => $class,
       'autocomplete' => $params['autocomplete']
     );
-    $ret .= smarty_function_form_password($password_data, &$smarty);
+    $ret .= smarty_function_form_password($password_data, $smarty);
   } else if($type == 'upload') {
     $upload_data = array(
       'name' => $what,
@@ -376,7 +399,7 @@ function smarty_function_form_row($params, &$smarty)
       'id' => $id,
       'class' => $class,
     );
-    $ret .= smarty_function_form_upload($upload_data, &$smarty);
+    $ret .= smarty_function_form_upload($upload_data, $smarty);
   } else if($type == 'checkbox') {
     $value = $params['value'];
     $checked = $params['checked'];
@@ -394,7 +417,20 @@ function smarty_function_form_row($params, &$smarty)
       'checked' => $checked,
     );
 
-    $ret .= smarty_function_form_checkbox($check_data, &$smarty);
+    $ret .= smarty_function_form_checkbox($check_data, $smarty);
+  } else if($type == 'radio'){
+    $options = $params['options'];
+    $msgs = $params['msgs'];
+    $checked = $params['checked'];
+    
+    $radio_data = array(
+      'name' => $what,
+      'class' => $class,
+      'checked' => $checked,
+      'options' => $options,
+      'msgs' => $msgs);
+      
+      $ret .= smarty_function_form_radio($radio_data, $smarty);
   } else if($type == 'select') {
     $start = $params['start'];
     $initial = $smarty->get_initial_var($what);
@@ -414,7 +450,7 @@ function smarty_function_form_row($params, &$smarty)
       'data' => $params['data'],
     );
 
-    $ret .= smarty_function_form_select($select_data, &$smarty);
+    $ret .= smarty_function_form_select($select_data, $smarty);
   } else {
     $value = $params['value'];
 
@@ -649,6 +685,7 @@ class BioSmarty extends Smarty
     $this->register_function('form_select', 'smarty_function_form_select');
     $this->register_function('form_hidden', 'smarty_function_form_hidden');
     $this->register_function('form_row', 'smarty_function_form_row');
+    $this->register_function('form_radio', 'smarty_function_form_radio');
     $this->register_function('button', 'smarty_function_button');
     $this->register_function('anchor', 'smarty_function_anchor');
     $this->register_function('top_dir', 'smarty_function_top_dir');
