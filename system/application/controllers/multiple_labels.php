@@ -35,6 +35,7 @@ class Multiple_Labels extends BioController {
   private $count_new_generated = 0;
   private $count_updated = 0;
   private $count_new_multiple_generated = 0;
+  private $count_invalid = 0;
 
   function Multiple_Labels()
   {
@@ -149,14 +150,20 @@ class Multiple_Labels extends BioController {
 
       if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
         if($this->__can_do_multiple()) {
-          $this->label_sequence_model->add_auto_label($seq_id, $this->label);
-          ++$this->count_new_multiple;
+          if($this->label_sequence_model->add_auto_label($seq_id, $this->label)) {
+            ++$this->count_new_multiple;
+          } else {
+            ++$this->count_invalid;
+          }
         } else if($this->edit_mode || $this->update) {
           $this->__regenerate_label($seq_id);
         }
       } else if($this->add_mode || ($this->edit_mode && $this->addnew)){
-        $this->label_sequence_model->add_auto_label($seq_id, $this->label);
-        ++$this->count_new_generated;
+        if($this->label_sequence_model->add_auto_label($seq_id, $this->label)) {
+          ++$this->count_new_generated;
+        } else {
+          ++$this->count_invalid;
+        }
       }
     }
 
@@ -171,21 +178,28 @@ class Multiple_Labels extends BioController {
     $this->smarty->assign('count_new_generated', $this->count_new_generated);
     $this->smarty->assign('count_updated', $this->count_updated);
     $this->smarty->assign('count_new_multiple_generated', $this->count_new_multiple_generated);
+    $this->smarty->assign('count_invalid', $this->count_invalid);
 
     $this->smarty->view_js('add_multiple_label/auto');
   }
 
   function __regenerate_label($seq_id)
   {
-    $this_label = $this->label_sequence_model->get_label_info($seq_id, $this->label_id);
-    $this->label_sequence_model->regenerate_label($seq_id, $this_label);
-    ++$this->count_regenerate;
+    $id = $this->label_sequence_model->get_label_id($seq_id, $this->label_id);
+    if($this->label_sequence_model->edit_auto_label($id)) {
+      ++$this->count_regenerate;
+    } else {
+      ++$this->count_invalid;
+    }
   }
 
   function __add_label_multiple($seq_id)
   {
-    $this->__add_label_common($seq_id);
-    ++$this->count_new_multiple;
+    if($this->__add_label_common($seq_id)) {
+      ++$this->count_new_multiple;
+    } else {
+      ++$this->count_invalid;
+    }
   }
   
   function __get_values()
@@ -232,74 +246,76 @@ class Multiple_Labels extends BioController {
   {
     switch($this->label_type) {
     case 'text':
-      $this->label_sequence_model->add_text_label($seq_id, $this->label_id, $this->text);
-      break;
+      return $this->label_sequence_model->add_text_label($seq_id, $this->label_id, $this->text);
     case 'integer':
-      $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->integer);
-      break;
+      return $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->integer);
     case 'url':
-      $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->url);
-      break;
+      return $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->url);
     case 'bool':
-      $this->label_sequence_model->add_bool_label($seq_id, $this->label_id, $this->boolean);
-      break;
+      return $this->label_sequence_model->add_bool_label($seq_id, $this->label_id, $this->boolean);
     case 'position':
-      $this->label_sequence_model->add_position_label($seq_id, $this->label_id, $this->start, $this->length);
-      break;
+      return $this->label_sequence_model->add_position_label($seq_id, $this->label_id, $this->start, $this->length);
     case 'tax':
-      $this->label_sequence_model->add_tax_label($seq_id, $this->label_id, $this->tax);
-      break;
+      return $this->label_sequence_model->add_tax_label($seq_id, $this->label_id, $this->tax);
     case 'ref':
-      $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->ref);
-      break;
+      return $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->ref);
     case 'obj':
-      $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes);
-      break;
+      return $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes);
     case 'date':
-      $this->label_sequence_model->add_date_label($seq_id, $this->label_id, $this->date);
-      break;
+      return $this->label_sequence_model->add_date_label($seq_id, $this->label_id, $this->date);
     }
+    
+    return false;
   }
 
   function __add_label($seq_id)
   {
-    $this->__add_label_common($seq_id);
-    ++$this->count_new;
+    if($this->__add_label_common($seq_id)) {
+      ++$this->count_new;
+    } else {
+      ++$this->count_invalid;
+    }
   }
 
   function __edit_label($id)
   {
+    $ret = false;
+    
     switch($this->label_type) {
     case 'text':
-      $this->label_sequence_model->edit_text_label($id, $this->text);
+      $ret = $this->label_sequence_model->edit_text_label($id, $this->text);
       break;
     case 'integer':
-      $this->label_sequence_model->edit_integer_label($id, $this->integer);
+      $ret = $this->label_sequence_model->edit_integer_label($id, $this->integer);
       break;
     case 'url':
-      $this->label_sequence_model->edit_url_label($id, $this->url);
+      $ret = $this->label_sequence_model->edit_url_label($id, $this->url);
       break;
     case 'bool':
-      $this->label_sequence_model->edit_bool_label($id, $this->boolean);
+      $ret = $this->label_sequence_model->edit_bool_label($id, $this->boolean);
       break;
     case 'position':
-      $this->label_sequence_model->edit_position_label($id, $this->start, $this->length);
+      $ret = $this->label_sequence_model->edit_position_label($id, $this->start, $this->length);
       break;
     case 'tax':
-      $this->label_sequence_model->edit_tax_label($id, $this->tax);
+      $ret = $this->label_sequence_model->edit_tax_label($id, $this->tax);
       break;
     case 'ref':
-      $this->label_sequence_model->edit_ref_label($id, $this->ref);
+      $ret = $this->label_sequence_model->edit_ref_label($id, $this->ref);
       break;
     case 'obj':
-      $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes);
+      $ret = $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes);
       break;
     case 'date':
-      $this->label_sequence_model->edit_date_label($id, $this->date);
+      $ret = $this->label_sequence_model->edit_date_label($id, $this->date);
       break;
     }
 
-    ++$this->count_updated;
+    if($ret) {
+      ++$this->count_updated;
+    } else {
+      ++$this->count_invalid;
+    }
   }
   
   function __iterate_seqs()

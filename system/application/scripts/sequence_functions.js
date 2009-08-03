@@ -3,7 +3,6 @@ var base_site = get_app_url() + '/sequence';
 var label_site = get_app_url() + '/label_sequence';
 var missing_loaded = false;
 var addable_loaded = false;
-var validation_loaded = false;
 var bad_multiple_loaded = false;
 var logged_in = get_logged_in();
 var data_transform_labels = {
@@ -353,65 +352,6 @@ function load_addable_list()
   $('#addable_box').fadeIn();
 }
 
-function reload_validation_list()
-{
-  validation_loaded = true;
-
-  $('#validation_list')
-  .grid({
-    url: label_site,
-    retrieve: 'get_validation_labels/' + seq_id,
-    fieldNames: ['Select', 'Name', 'Data', 'Type', 'Status'],
-    fieldGenerator: function (row) {
-      return ['select', 'name', select_field(row), 'type', 'status'];
-    },
-    tdClass: {
-      select: 'centered',
-      type: 'centered'
-    },
-    width: {
-      select: w_select,
-      type: w_type,
-      name: w_label_name,
-      status: w_status
-    },
-    dataTransform: data_transform_labels,
-    classFun: {
-      status: function (row) {
-        if(row.status == 'no validation') {
-          return 'label_no_validation';
-        } else if(row.status == 'invalid') {
-          return 'label_invalid';
-        } else if(row.status == 'valid') {
-          return 'label_valid';
-        }
-      }
-    },
-    links: link_labels,
-    clickFun: {
-      select: function (row) {
-        $('#hide_show_labels').minusPlusEnable();
-        $('#labels_list').gridHighLight(row.id);
-        return true;
-      }
-    }
-  });
-}
-
-function hide_validation_list()
-{
-  $('#validation_box').fadeOut();
-}
-
-function load_validation_list()
-{
-  if(!validation_loaded) {
-    reload_validation_list();
-  }
-
-  $('#validation_box').fadeIn();
-}
-
 function hide_bad_multiple_list()
 {
   $('#bad_multiple_box').fadeOut();
@@ -460,12 +400,14 @@ function after_edit_label(responseText, statusText) {
 
   if(resp == true) {
     reload_labels_list();
-    reload_validation_list();
+    tb_remove();
   } else {
-    alert(responseText);
+    if(resp == false) {
+      alert("Error inserting label: invalid label data?");
+    } else {
+      alert(responseText);
+    }
   }
-
-  tb_remove();
 }
 
 $.fn.ajaxFormEdit = function () {
@@ -490,11 +432,15 @@ function after_add_label(responseText, statusText) {
     }
 
     reload_labels_list();
+    
+    tb_remove();
   } else {
-    alert(responseText);
+    if(resp == false) {
+      alert("Error inserting label: invalid label data?");
+    } else {
+      alert(responseText);
+    }
   }
-
-  tb_remove();
 }
 
 $.fn.ajaxFormAdd = function () {

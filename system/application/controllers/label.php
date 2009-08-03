@@ -50,18 +50,19 @@ class Label extends BioController {
       case 'searchable':
         $labels = $this->label_model->get_all(null, null,
           array('name' => $name,
-                'only_searchable' => 'yes'),
+                'only_searchable' => true),
           array('name' => 'asc'));
         break;
       case 'addable':
         $labels = $this->label_model->get_all(null, null,
-          array('name' => $name),
+          array('name' => $name,
+                'only_addable' => true),
           array('name' => 'asc'));
         break;
       case 'deletable':
         $labels = $this->label_model->get_all(null, null,
           array('name' => $name,
-                'only_deletable' => 'yes'),
+                'only_deletable' => true),
           array('name' => 'asc'));
         break;
       default:

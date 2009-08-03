@@ -222,7 +222,7 @@ function smarty_function_form_hidden($params, &$smarty)
 
 function smarty_function_form_checkbox($params, &$smarty)
 {
-  return form_checkbox(__fill_checkbox_radio($data));
+  return form_checkbox(__fill_checkbox_radio($params));
 }
 
 function __fill_checkbox_radio(&$params)
