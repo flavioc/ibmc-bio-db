@@ -262,11 +262,6 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
   return $ret;
 }
 
-function generate_new_file_name_export()
-{
-  return tempnam(sys_get_temp_dir(), 'bio');
-}
-
 function __write_fasta_file_export($content)
 {
   $temp_file = generate_new_file_name_export();
@@ -307,26 +302,7 @@ function export_sequences_others($sequences, $type)
 
 function __find_seqret()
 {
-  $normal_paths = array('/bin', '/usr/bin', '/usr/local/bin', '/opt/local/bin');
-  $path = '';
-  
-  foreach($normal_paths as $dir) {
-    $full_path = "$dir/seqret";
-    if(is_executable($full_path)) {
-      return $full_path;
-    }
-  }
-  
-  // seqret has not been found, use find
-  $output = shell_exec("find / -name seqret");
-  foreach(explode("\n", $output) as $line) {
-    $line = trim($line);
-    if(is_executable($line)) {
-      return $line;
-    }
-  }
-  
-  return null;
+  return find_executable('seqret');
 }
 
 ?>

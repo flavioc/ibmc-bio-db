@@ -18,7 +18,7 @@ function is_protein_letter($letter)
 
 function is_skip_letter($letter)
 {
-  $skip_letters = array('-');
+  $skip_letters = array('-', '*');
 
   return in_array($letter, $skip_letters);
 }

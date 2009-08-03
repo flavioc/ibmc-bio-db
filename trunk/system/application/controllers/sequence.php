@@ -424,6 +424,8 @@ class Sequence extends BioController
     $this->load->library('upload', $this->__get_sequence_upload_config());
     $option = $this->get_post('upload_option');
     $is_duo = ($option == 'duo');
+    $is_generate = ($option == 'generate');
+    $to_link = ($is_duo || $is_generate);
     
     $file1 = $this->__get_sequence_upload('file');
     if(!$file1) {
@@ -461,9 +463,37 @@ class Sequence extends BioController
     $info1 = import_sequence_file($this, $file1);
     unlink($file1);
     
+    if($to_link) {
+      if(!$info1->all_dna()) {
+        if($is_duo) {
+          unlink($file2);
+        }
+        $this->set_form_error('file', 'All sequences should be DNA sequences');
+        redirect('sequence/add_batch');
+        return;
+      }
+    }
+    
+    if($is_generate) {
+      $is_duo = true;
+      $file2 = $info1->convert_protein_file();
+      
+      if(!$file2) {
+        $this->set_form_error('file', 'Error generating protein file');
+        redirect('sequence/add_batch');
+        return;
+      }
+    }
+    
     if($is_duo) {
       $info2 = import_sequence_file($this, $file2);
       unlink($file2);
+      
+      if(!$info2->all_protein()) {
+        $this->set_form_error('file', 'All sequences must be protein sequences');
+        redirect('sequence/add_batch');
+        return;
+      }
     } else {
       $info2 = null;
     }
@@ -480,9 +510,8 @@ class Sequence extends BioController
     }
     
     if($is_duo) {
-      $duo_ret = $info1->duo_match($info2);
-      if(is_string($duo_ret)) {
-        $this->set_form_error('file', "Sequences do not match: $duo_ret");
+      if(!$info1->duo_match($info2)) {
+        $this->set_form_error('file', "Sequence files must have the same number of sequences");
         redirect('sequence/add_batch');
         return;
       }
