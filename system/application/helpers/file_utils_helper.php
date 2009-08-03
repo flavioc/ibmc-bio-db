@@ -48,5 +48,38 @@ function read_file_and_delete($data)
 function file_extension($file)
 {
   $path_info = pathinfo($file);
-  return $path_info['extension'];
+  if(array_key_exists('extension', $path_info)) {
+    return $path_info['extension'];
+  } else {
+    return '';
+  }
+}
+
+function find_executable($name)
+{
+  $normal_paths = array('/bin', '/usr/bin', '/usr/local/bin', '/opt/local/bin');
+  $path = '';
+  
+  foreach($normal_paths as $dir) {
+    $full_path = "$dir/$name";
+    if(is_executable($full_path)) {
+      return $full_path;
+    }
+  }
+  
+  // seqret has not been found, use find
+  $output = shell_exec("find / -name $name");
+  foreach(explode("\n", $output) as $line) {
+    $line = trim($line);
+    if(is_executable($line)) {
+      return $line;
+    }
+  }
+  
+  return null;
+}
+
+function generate_new_file_name_export()
+{
+  return tempnam(sys_get_temp_dir(), 'bio');
 }

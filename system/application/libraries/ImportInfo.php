@@ -14,41 +14,34 @@ class ImportInfo {
   
   function duo_match($info2)
   {
-    // in this ImportInfo all sequences must be DNA sequences
-    // and on info2 they must be protein sequences
-    
     $total1 = count($this->ordered_sequences);
     $total2 = count($info2->ordered_sequences);
     
-    if($total1 != $total2) {
-      return "Number of sequences don't match: $total1 vs $total2";
-    }
-    
-    $i = 0;
-    foreach($this->ordered_sequences as &$seq) {
-      $name1 = $seq['name'];
-      $content1 =& $seq['content'];
+    return $total1 == $total2;
+  }
+  
+  function all_type($wanted_type)
+  {
+    foreach($this->sequences as &$seq) {
+      $content =& $seq['content'];
+      $type = sequence_type($content);
       
-      $seq2 =& $info2->ordered_sequences[$i++];
-      $name2 = $seq2['name'];
-      $content2 =& $seq2['content'];
-      
-      if($content1 == $content2) {
-        return "In two sequence pairs the contents are equal";
-      }
-      
-      $type1 = sequence_type($content1);
-      if($type1 != 'dna') {
-        return "Sequence $name1 must be DNA";
-      }
-      
-      $type2 = sequence_type($content2);
-      if($type2 != 'protein') {
-        return "Sequence $name2 must be a protein";
+      if($type != $wanted_type) {
+        return false;
       }
     }
     
     return true;
+  }
+  
+  function all_dna()
+  {
+    return $this->all_type('dna');
+  }
+  
+  function all_protein()
+  {
+    return $this->all_type('protein');
   }
   
   function link_sequences($info2)
@@ -61,6 +54,33 @@ class ImportInfo {
       
       $this->controller->sequence_model->set_translated_sequence($dna_id, $protein_id);
     }
+  }
+  
+  // writes imported sequences to a temporary fasta file returning the temporary filename
+  function write_simple_fasta()
+  {
+    $this->controller->load->helper('exporter');
+    $str = export_sequences_simple($this->sequences);
+    return __write_fasta_file_export($str);
+  }
+  
+  function convert_protein_file()
+  {
+    $fasta = $this->write_simple_fasta();
+    
+    $transeq = find_executable('transeq');
+    if(!$transeq) {
+      unlink($fasta);
+      return null;
+    }
+    
+    $protein = generate_new_file_name_export();
+    
+    shell_exec("$transeq $fasta $protein");
+    
+    unlink($fasta);
+    
+    return $protein;
   }
   
   function add_label($name, $type)
