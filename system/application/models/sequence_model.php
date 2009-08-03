@@ -140,6 +140,12 @@ class Sequence_model extends BioModel
   {
     return $this->get_id_by_field('name', $name);
   }
+  
+  function get_id_by_name_and_content($name, $content)
+  {
+    $this->db->where('name', $name);
+    return $this->get_id_by_field('content', $content);
+  }
 
   function edit_name($id, $name)
   {
@@ -161,13 +167,43 @@ class Sequence_model extends BioModel
   function permission_public($id)
   {
     $label_sequence = $this->load_model('label_sequence_model');
-    $data =  $label_sequence->get_label($id, 'perm_public');
+    $data = $label_sequence->get_label($id, 'perm_public');
 
     if($data == null) {
       return false;
     }
 
     return $data;
+  }
+  
+  function get_type($id)
+  {
+    return $this->load_model('label_sequence_model')->get_label($id, 'type');
+  }
+  
+  function get_translated_sequence($id)
+  {
+    return $this->load_model('label_sequence_model')->get_label($id, 'translated');
+  }
+  
+  function set_translated_sequence($seq1, $seq2)
+  {
+    if(!$seq1 || !$seq2) {
+      return false;
+    }
+    
+    $type1 = $this->get_type($seq1);
+    $type2 = $this->get_type($seq2);
+    
+    if($type1 == $type2 || !valid_sequence_type($type1) || !valid_sequence_type($type2)) {
+      // one must be protein, the other dna
+      return false;
+    }
+    
+    $label_id = $this->load_model('label_model')->get_id_by_name('translated');
+    $this->load_model('label_sequence_model')->ensure_translated_label($label_id, $seq1, $seq2);
+    
+    return true;
   }
 
   function edit_content($id, $content)

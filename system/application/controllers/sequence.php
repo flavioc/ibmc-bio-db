@@ -372,6 +372,12 @@ class Sequence extends BioController
     $sequence = $this->sequence_model->get($id);
     $sequence['content'] = sequence_short_content($sequence['content']);
     $this->smarty->assign('sequence', $sequence);
+    
+    $trans_id = $this->sequence_model->get_translated_sequence($id);
+    if($trans_id) {
+      $trans_sequence = $this->sequence_model->get($trans_id);
+      $this->smarty->assign('trans_sequence', $trans_sequence);
+    }
   }
 
   function add_batch()
@@ -381,7 +387,8 @@ class Sequence extends BioController
     }
 
     $this->smarty->fetch_form_row('file');
-
+    $this->smarty->fetch_form_row('file2');
+    
     $this->smarty->assign('title', 'Add batch sequences');
     $this->smarty->view('sequence/add_batch');
   }
@@ -395,48 +402,17 @@ class Sequence extends BioController
 
     return $config;
   }
-
-  function __import_fasta_file($file)
-  {
-    $this->load->helper('fasta_importer');
-    $ret = import_fasta_file($this, $file);
-
-    if($ret) {
-      list($seqs, $labels) = $ret;
-    
-      $this->smarty->assign('sequences', $seqs);
-      $this->smarty->assign('labels', $labels);
-      $this->smarty->assign('search_tree', get_search_tree_sequences($seqs));
-
-      $this->smarty->assign('title', 'Batch FASTA import');
-      $this->smarty->assign('type', 'FASTA');
-      $this->smarty->view('sequence/batch_report');
-    } else {
-      $this->set_form_error('file', 'Error reading FASTA file');
-      redirect('sequence/add_batch');
-    }
-  }
   
-  function __import_xml_file($file)
+  function __get_sequence_upload($name)
   {
-    $this->load->helper('xml_importer');
-    
-    $ret = import_xml_file($this, $file);
-    
-    if($ret) {
-      list($seqs, $labels) = $ret;
-    
-      $this->smarty->assign('sequences', $seqs);
-      $this->smarty->assign('labels', $labels);
-      $this->smarty->assign('search_tree', get_search_tree_sequences($seqs));
-    
-      $this->smarty->assign('title', 'Batch XML import');
-      $this->smarty->assign('type', 'XML');
-      $this->smarty->view('sequence/batch_report');
-    } else {
-      $this->set_form_error('file', 'Error reading XML file');
-      redirect('sequence/add_batch');
+    $upload_ret = $this->upload->do_upload($name);
+
+    if($upload_ret) {
+      $data = $this->upload->data();
+      return $data['full_path'];
     }
+    
+    return null;
   }
 
   function do_add_batch()
@@ -446,27 +422,91 @@ class Sequence extends BioController
     }
 
     $this->load->library('upload', $this->__get_sequence_upload_config());
-
-    $upload_ret = $this->upload->do_upload('file');
-
-    if($upload_ret) {
-      $data = $this->upload->data();
-      $this->load->model('label_model');
-      $this->load->model('taxonomy_model');
-      $file = $data['full_path'];
-      $this->load->library('ImportInfo');
-      
-      $this->load->helper('search');
-      
-      if(file_extension($file) == 'xml') {
-        $this->__import_xml_file($file);
-      } else {
-        $this->__import_fasta_file($file);
-      }
-    } else {
+    $option = $this->get_post('upload_option');
+    $is_duo = ($option == 'duo');
+    
+    $file1 = $this->__get_sequence_upload('file');
+    if(!$file1) {
       $this->set_upload_form_error('file');
       redirect('sequence/add_batch');
+      return;
     }
+    
+    if($is_duo) {
+      $file2 = $this->__get_sequence_upload('file2');
+      if(!$file2) {
+        unlink($file1);
+        $this->set_upload_form_error('file2');
+        redirect('sequence/add_batch');
+        return;
+      }
+      
+      if($file1 == $file2) {
+        unlink($file1);
+        $this->set_form_error('file', 'The files are the same');
+        redirect('sequence/add_batch');
+        return;
+      }
+    }
+    
+    $this->load->model('label_model');
+    $this->load->model('taxonomy_model');
+    $this->load->library('ImportInfo');
+    $this->load->helper('xml_importer');
+    $this->load->helper('fasta_importer');
+    $this->load->helper('seq_importer');
+      
+    $this->load->helper('search');
+    
+    $info1 = import_sequence_file($this, $file1);
+    unlink($file1);
+    
+    if($is_duo) {
+      $info2 = import_sequence_file($this, $file2);
+      unlink($file2);
+    } else {
+      $info2 = null;
+    }
+    
+    if(!$info1 || ($is_duo && !$info2)) {
+      if(!$info1) {
+        $this->set_form_error('file', 'Error reading file');
+      }
+      if($is_duo && !$info2) {
+        $this->set_form_error('file2', 'Error reading file');
+      }
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if($is_duo) {
+      $duo_ret = $info1->duo_match($info2);
+      if(is_string($duo_ret)) {
+        $this->set_form_error('file', "Sequences do not match: $duo_ret");
+        redirect('sequence/add_batch');
+        return;
+      }
+    }
+    
+    list($seqs, $labels) = $info1->import();
+  
+    $this->smarty->assign('sequences', $seqs);
+    $this->smarty->assign('labels', $labels);
+    $this->smarty->assign('search_tree', get_search_tree_sequences($seqs));
+    $this->smarty->assign('is_duo', $is_duo);
+    
+    if($is_duo) {
+      list($seqs2, $labels2) = $info2->import();
+      
+      $this->smarty->assign('sequences2', $seqs2);
+      $this->smarty->assign('labels2', $labels2);
+      $this->smarty->assign('search_tree2', get_search_tree_sequences($seqs2));
+      
+      $info1->link_sequences($info2);
+    }
+  
+    $this->smarty->assign('title', 'Batch import');
+    $this->smarty->view('sequence/batch_report');
   }
 
   function add()

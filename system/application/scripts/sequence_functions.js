@@ -460,6 +460,7 @@ function after_edit_label(responseText, statusText) {
 
   if(resp == true) {
     reload_labels_list();
+    reload_validation_list();
   } else {
     alert(responseText);
   }

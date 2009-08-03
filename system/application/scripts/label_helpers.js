@@ -123,7 +123,7 @@ $.fn.datePickerDate = function () {
       maxDate: new Date(2038, 12-1, 31),
       defaultDate: new Date(),
       yearRange:'2008-2038',
-      showOn: "both",
+      showOn: 'both',
       dateFormat: "dd-mm-yy",
       buttonImage: get_images_url() + "/calendar.gif"
     });
