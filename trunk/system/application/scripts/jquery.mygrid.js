@@ -96,14 +96,18 @@
 
       if(type) {
         if(type == 'boolean') {
-          if(field_data == '1') {
+          if(field_data == '1' || field_data == 1 || field_data == true) {
             field_data = 'Yes';
-          } else if (field_data == '0') {
+          } else if (field_data == '0' || field_data == 0 || field_data == false) {
             field_data = 'No';
           }
         }
       }
-
+      
+      if(field_data != null) {
+        field_data = field_data.toString();
+      }
+      
       if(has_link && field_data != null) {
         var href = link_fun(row);
 

@@ -19,3 +19,6 @@ var img_add = build_image_url('add.png', 'image_url');
 var img_del = build_image_url('delete.png', 'image_url');
 var img_edit = build_image_url('edit.png', 'image_url');
 var img_export = build_image_url('export.png', 'image_url');
+var img_lupa = build_image_url('lupa.png', 'image_url');
+
+var cookie_options = {path: '/', expires: 10};
