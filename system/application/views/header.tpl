@@ -86,7 +86,7 @@
     </ul>
     <li id="user_menu"><a href="#">Users</a></li>
     <ul id="user_id">
-      <li><a href="{site}/profile/edit">Edit profile</a></li>
+      <li><a href="{site}/profile/edit/{$user_id}">Edit profile</a></li>
       <li><a href="{site}/profile/settings">Settings</a></li>
     </ul>
     <li><a href="{site}/comment/edit">Comment</a></li>
