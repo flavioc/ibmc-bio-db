@@ -576,8 +576,30 @@ class Sequence extends BioController
       $name = $this->get_post('name');
       $content = $this->get_post('content');
 
-      $id = $this->sequence_model->add($name, $content);
+      if($this->sequence_model->has_same_sequence($name, $content)) {
+        $id = $this->sequence_model->get_id_by_name_and_content($name, $content);
+      } else {
+        $id = $this->sequence_model->add($name, $content);
+      }
 
+      $protein = $this->get_post('protein');
+      if($protein) {
+        $this->load->library('ImportInfo');
+        $info = new ImportInfo($this);
+        $info->add_sequence($name, $content, $id);
+        
+        if($info->all_dna()) {
+          $file = $info->convert_protein_file();
+          $this->load->helper('fasta_importer');
+          
+          $info2 = import_fasta_file($this, $file);
+          unlink($file);
+          
+          $info2->import();
+          $info->link_sequences($info2);
+        }
+      }
+      
       redirect("sequence/view/$id");
     }
   }
