@@ -230,6 +230,8 @@
           });
 
           get_results(obj, opts);
+          
+          return false;
         });
     });
   }
