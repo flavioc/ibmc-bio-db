@@ -50,6 +50,12 @@ if [ -z "$PASSWORD" ]; then
 	exit 1
 fi
 
+echo "The application installs the 'admin' user. Please specify the admin password to login. (not echoed)"
+echo -n "> "
+read -s ADMIN_PASSWORD
+
+echo
+
 rm -f scripts/*.pyc
 sh config_site.sh "$SITE_URL" || exit 1
 sh config_fs.sh "$SITE_DIR" || exit 1
@@ -64,6 +70,15 @@ echo
 echo
 echo "Inserting default database data..."
 (cd scripts && sh run_all.sh) || exit 1
+
+mysql -u $USER --password=$PASSWORD $DATABASE<<EOFMYSQL
+UPDATE user SET password = "$ADMIN_PASSWORD"
+WHERE name = 'admin'
+EOFMYSQL
+if [ $? -ne 0 ]; then
+  echo "Error changing admin password."
+  exit 1
+fi
 
 echo
 echo
