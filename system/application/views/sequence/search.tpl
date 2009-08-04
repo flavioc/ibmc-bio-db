@@ -58,6 +58,7 @@
 {form_end}
 </div>
 
+<div id="operator_box">
 {form_open to='#' name=and_form}
 {form_submit name=submit msg='Add AND'}
 {form_end}
@@ -69,10 +70,30 @@
 {form_open to='#' name=not_form}
 {form_submit name=submit msg='Add NOT'}
 {form_end}
+</div>
 
-<div id="search_tree">
-<ol class="search-list" level="1">
-</ol>
+{literal}
+<script>
+$(function () {
+  $('#show_tree').minusPlus({
+    enabled: true,
+    plusEnabled: function () {
+      $('#search_tree').show();
+    },
+    minusEnabled: function () {
+      $('#search_tree').hide();
+    }
+  });
+});
+</script>
+{/literal}
+
+<div id="search_box">
+  <div id="show_tree"></div>
+  <div id="search_tree">
+  <ol class="search-list" level="1">
+  </ol>
+  </div>
 </div>
 
 <div id="search_human">
