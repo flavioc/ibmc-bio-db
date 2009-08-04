@@ -43,8 +43,8 @@ class Wide_Search extends BioController
     
     $this->use_mygrid();
     
-    $search = rawurldecode($this->get_parameter('search'));
-    $error = rawurldecode($this->get_parameter('error'));
+    $search = htmlspecialchars(rawurldecode($this->get_parameter('search')), ENT_QUOTES);
+    $error = htmlspecialchars(rawurldecode($this->get_parameter('error')), ENT_QUOTES);
     
     $labels = $this->label_model->get_all(0, 1, array('name' => $search));
     $ranks = $this->taxonomy_rank_model->get_ranks(1, 0, array('name' => $search));
