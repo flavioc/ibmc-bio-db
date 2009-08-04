@@ -13,6 +13,7 @@ class Command_Line extends BioController {
     $this->load->model('label_sequence_model');
     $this->load->model('label_model');
     $this->load->model('taxonomy_model');
+    $this->load->model('taxonomy_rank_model');
     $this->load->model('user_model');
     
     $admin = $this->user_model->get_user_by_name('admin');
@@ -211,6 +212,34 @@ class Command_Line extends BioController {
         $mode = $label['mode'];
         $type = $label['type'];
         echo "-> $name $type $mode $success\n";
+      }
+    } else {
+      echo "Error reading XML file: $file\n";
+      return;
+    }
+  }
+  
+  function import_ranks($file)
+  {
+    $file = $this->__get_file($file);
+    if(!file_exists($file)) {
+      echo "File $file doesn't exist\n";
+      return;
+    }
+    
+    $this->load->helper('rank_importer');
+    
+    $ranks = import_rank_xml_file($this->taxonomy_rank_model, $file);
+    if ($ranks) {
+      echo "Ranks report:\n";
+      
+      foreach ($ranks as &$rank) {
+        $name = $rank['rank_name'];
+        $parent = $rank['rank_parent_name'];
+        $mode = $rank['mode'];
+        $success = $rank['id'] > 0 ? "Successful" : "Not Successful";
+        
+        echo "-> $name $parent $mode $success\n";
       }
     } else {
       echo "Error reading XML file: $file\n";
