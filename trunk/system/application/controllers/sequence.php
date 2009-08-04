@@ -91,6 +91,7 @@ class Sequence extends BioController
     $this->smarty->load_stylesheets('search.css');
     $this->use_mygrid();
     $this->use_datepicker();
+    $this->use_plusminus();
     
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
