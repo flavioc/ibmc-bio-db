@@ -5,7 +5,7 @@
 {elseif $type == 'batch'}
 <h2>Search batch sequences</h2>
 {elseif $type == 'search'}
-<h2>Search batch sequences</h2>
+<h2>Search sequences</h2>
 
 {literal}<script>
 $(function () {
