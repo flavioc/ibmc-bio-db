@@ -38,5 +38,6 @@ add_user(name = 'jbvieira',
     complete_name = 'Jorge B. Vieira',
     email = 'jbvieira@ibmc.up.pt')
 add_user(name = 'user1', user_type = 'user')
+add_user(name = 'admin')
 
 db.close()
