@@ -78,10 +78,10 @@ $(function () {
   $('#show_tree').minusPlus({
     enabled: true,
     plusEnabled: function () {
-      $('#search_tree').show();
+      $('#search_tree').slideDown();
     },
     minusEnabled: function () {
-      $('#search_tree').hide();
+      $('#search_tree').slideUp();
     }
   });
 });
