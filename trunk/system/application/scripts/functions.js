@@ -21,13 +21,14 @@ function toggle_menu(what) {
   $('#' + menu).click(function (event) {
     var obj_id = $('#' + id);
     if(all.is(':hidden')) {
-        obj_id.slideDown();
-        $.session(visible_session, true);
-      } else {
-        obj_id.slideUp();
-        $.session(visible_session, false);
-      }
-    });
+      obj_id.slideDown();
+      $.session(visible_session, true);
+    } else {
+      obj_id.slideUp();
+      $.session(visible_session, false);
+    }
+    return false;
+  });
 }
 
 function is_yes(data)
