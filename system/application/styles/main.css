@@ -1,5 +1,5 @@
 body {
-  font: 12px/1.2 Verdana, Arial, Helvetica, sans-serif;
+  font: 14px/1.2 Verdana, Arial, Helvetica, sans-serif;
   background: #ddd;
   padding: 0px;
   margin: 0px;
@@ -12,13 +12,13 @@ a {
 }
 
 body>div#leftmenu {
-  margin-left: 10px;
+  margin-left: 50px;
   margin-top: 10px;
-  width: 200px;
+  width: 205px;
   background: #fff;
   border: 1px solid #000;
-  padding-right: 4px;
-  padding-left: 4px;
+  padding-right: 10px;
+  padding-left: 10px;
   float:left;
   
   -moz-border-radius: 10px;
@@ -29,11 +29,13 @@ body>div#leftmenu {
 body>div#content {
   margin-top: 10px;
   background:#fff;
-  margin-left: 230px;
-  margin-right: 10px;
+  margin-left: 285px;
+  margin-right: 50px;
   border: 1px solid #000;
   padding-top: 5px;
-  padding-left: 15px;
+  padding-left: 25px;
+  padding-bottom: 35px;
+  margin-bottom: 25px;
   
   -moz-border-radius: 10px;
   border-radius: 10px;
@@ -43,12 +45,12 @@ body>div#content {
 body>div#top {
   background: #fff;
   border: 1px solid #000;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-top: 30px;
+  margin-left: 50px;
+  margin-right: 50px;
   voice-family: "\"}\"";
   voice-family: inherit;
-  height: 90px;
+  height: 120px;
   padding-left: 10px;
   position: relative;
   
@@ -63,8 +65,9 @@ body>div#top #left_top {
   top: 0;
   left: 0;
   position: absolute;
-  margin-left: 5px;
-  margin-top: 3px;
+  margin-left: 15px;
+  margin-top: 13px;
+  vertical-align: center;
 }
 
 body>div#top #right_top {
@@ -72,12 +75,14 @@ body>div#top #right_top {
   top:0;
   right:0;
   position: absolute;
+  vertical-align: center;
 }
 
 body>div#top h1 {
+  font-family: Verdana, Arial;
   margin-top: 10px;
   margin-bottom: 5px;
-  font-size: 35pt;
+  font-size: 40pt;
   display: inline;
 }
 
@@ -116,21 +121,6 @@ body>div#top img {
   color: white;
 }
 
-body>div#footer {
-  height: 50px;
-  background-color: white;
-  border-top: black 2px solid;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  padding-left: 10px;
-  padding-top: 10px;
-}
-
-div#clearfooter {
-  height: 250px;
-}
-
 .desc {
   float:left;
   width: 170px;
@@ -165,7 +155,9 @@ body>div#leftmenu form input {
 
 body>div#leftmenu form
 {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 
 table.data {
@@ -278,9 +270,9 @@ img.loader {
 
 div.grid_box {
   border-left: 1px dashed black;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  width: 97%;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  width: 100%;
 }
 
 div.grid_form {
