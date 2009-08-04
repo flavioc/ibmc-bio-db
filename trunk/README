@@ -5,7 +5,9 @@ Dependencies
 - php 5.0
 - mysql 5.1
 - php-xml
-- python 2.x
+- python >= 2.x
+- Emboss (seqret and transeq)
+- MySQLdb for python
 
 ====================
 Install
