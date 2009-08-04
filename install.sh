@@ -50,6 +50,7 @@ if [ -z "$PASSWORD" ]; then
 	exit 1
 fi
 
+echo
 echo "The application installs the 'admin' user. Please specify the admin password to login. (not echoed)"
 echo -n "> "
 read -s ADMIN_PASSWORD
@@ -71,10 +72,7 @@ echo
 echo "Inserting default database data..."
 (cd scripts && sh run_all.sh) || exit 1
 
-mysql -u $USER --password=$PASSWORD $DATABASE<<EOFMYSQL
-UPDATE user SET password = "$ADMIN_PASSWORD"
-WHERE name = 'admin'
-EOFMYSQL
+mysql -u $USER --password=$PASSWORD $DATABASE -e "UPDATE user SET password = "$ADMIN_PASSWORD" WHERE name = 'admin'"
 if [ $? -ne 0 ]; then
   echo "Error changing admin password."
   exit 1
