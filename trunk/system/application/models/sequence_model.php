@@ -229,4 +229,32 @@ class Sequence_model extends BioModel
     
     return $ret;
   }
+  
+  function locate_all($name)
+  {
+    $this->db->select('id');
+    $this->db->where('name', $name);
+    $all = parent::get_all();
+    
+    $ret = array();
+    foreach($all as &$seq) {
+      $ret[] = $seq['id'];
+    }
+    
+    return $ret;
+  }
+  
+  function locate_sequence_type($name, $type)
+  {
+    $ids = $this->locate_all($name);
+    
+    foreach($ids as $id) {
+      $atype = $this->get_type($id);
+      if($atype == $type) {
+        return $id;
+      }
+    }
+    
+    return null;
+  }
 }
