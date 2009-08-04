@@ -117,7 +117,11 @@ class BioURI extends CI_URI {
         
         // Remove the first, its the file name
         unset($args[0]);
-        
+
+        foreach($args as $index => &$piece) {
+          $piece = str_replace('/', 'FILE_SEPARATOR', $piece);
+        }
+
         return '/'.implode('/', $args); 
     }
 

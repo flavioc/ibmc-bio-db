@@ -1,0 +1,194 @@
+<?php
+
+class Command_Line extends BioController {
+
+  function Command_Line()
+  {
+    if(!array_key_exists('IS_SCRIPT', $_SERVER)) {
+      redirect('');
+    }
+    parent::BioController();
+    
+    $this->load->model('sequence_model');
+    $this->load->model('label_sequence_model');
+    $this->load->model('label_model');
+    $this->load->model('taxonomy_model');
+    $this->load->model('user_model');
+    
+    $admin = $this->user_model->get_user_by_name('admin');
+    if(!$admin) {
+      throw new Exception("No admin user found");
+    }
+    
+    $this->logged_in = true;
+    $this->username = 'admin';
+    $this->user_type = 'admin';
+    $this->user_id = $admin['id'];
+    $this->is_admin = true;
+  }
+  
+  function index()
+  {
+    echo "ola\n";
+  }
+  
+  function __get_file($file)
+  {
+    return str_replace('FILE_SEPARATOR', '/', $file);
+  }
+  
+  function __load_import()
+  {
+    $this->load->library('ImportInfo');
+    $this->load->helper('xml_importer');
+    $this->load->helper('fasta_importer');
+    $this->load->helper('seq_importer'); 
+  }
+  
+  function import_and_link($file1, $file2)
+  {
+    $file1 = $this->__get_file($file1);
+    $file2 = $this->__get_file($file2);
+    
+    if(!file_exists($file1)) {
+      echo "File $file1 doesn't exist\n";
+      return;
+    }
+    if(!file_exists($file2)) {
+      echo "File $file2 doesn't exist\n";
+      return;
+    }
+    
+    $this->__load_import();
+    
+    $info1 = import_sequence_file($this, $file1);
+    if(!$info1) {
+      echo "Invalid sequence file: $file1\n";
+      return;
+    }
+    
+    if(!$info1->all_dna()) {
+      echo "File $file1 must only contain DNA sequences\n";
+      return;
+    }
+    
+    $info2 = import_sequence_file($this, $file2);
+    if(!$info2) {
+      echo "Invalid sequence file: $file2\n";
+      return;
+    }
+    
+    if(!$info2->all_protein()) {
+      echo "File $file2 must only contain protein sequences\n";
+      return;
+    }
+    
+    if(!$info1->duo_match($info2)) {
+      echo "$file1 and $file2 must contain the same number of sequences\n";
+      return;
+    }
+    
+    $this->__show_two_seq_files($info1, $info2);
+  }
+  
+  function import_sequence_file_and_generate($file)
+  {
+    $file = $this->__get_file($file);
+    if(!file_exists($file)) {
+      echo "File $file doesn't exist\n";
+      return;
+    }
+    
+    $this->__load_import();
+    
+    $info = import_sequence_file($this, $file);
+    if(!$info) {
+      echo "Invalid sequence file: $file\n";
+      return;
+    }
+    
+    if(!$info->all_dna()) {
+      echo "File $file must only contain DNA sequences\n";
+      return;
+    }
+    
+    $file2 = $info->convert_protein_file();
+    if(!$file2) {
+      echo "Couldn't generate protein file\n";
+      return;
+    }
+    
+    $info2 = import_sequence_file($this, $file2);
+    if(!$info2) {
+      echo "Couldn't import protein sequences from $file2";
+      unlink($file2);
+      return;
+    }
+    
+    unlink($file2);
+    
+    $this->__show_two_seq_files($info, $info2);
+  }
+  
+  function __show_two_seq_files(&$info1, &$info2)
+  {
+    list($seqs1, $labels1) = $info1->import();
+    list($seqs2, $labels2) = $info2->import();
+    $info1->link_sequences($info2);
+    
+    echo "DNA FILE:\n\n";
+    $this->__write_report($seqs1, $labels1);
+    echo "\nPROTEIN FILE:\n\n";
+    $this->__write_report($seqs2, $labels2);
+  }
+  
+  function import_sequence_file($file)
+  {
+    $file = $this->__get_file($file);
+    if(!file_exists($file)) {
+      echo "File $file doesn't exist\n";
+      return;
+    }
+    
+    $this->__load_import();
+    
+    $info = import_sequence_file($this, $file);
+    if(!$info) {
+      echo "Invalid sequence file: $file\n";
+      return;
+    }
+    
+    list($seqs, $labels) = $info->import();
+    $this->__write_report($seqs, $labels);
+  }
+  
+  function __write_report(&$seqs, &$labels)
+  {
+    if($labels && count($labels) > 0) {
+      echo "Label report:\n";
+      foreach ($labels as $name => &$label) {
+        echo "-> $name " . $label['type'] . " " . $label['status'] . "\n";
+      }
+    } else {
+      echo "No labels present\n";
+    }
+    
+    if($seqs && count($seqs) > 0) {
+      echo "Sequence report:\n";
+      foreach ($seqs as $name => &$seq) {
+        $content = $seq['content'];
+        $new = ($seq['add'] ? "New" : "Updated");
+        $comment = $seq['comment'];
+        
+        echo "-> $new $name $content $comment\n";
+        
+        foreach ($seq['labels'] as $name => &$label) {
+          $status = $label['status'];
+          echo "\t-> $name $status\n";
+        }
+      }
+    } else {
+      echo "No sequences present\n";
+    }
+  }
+}

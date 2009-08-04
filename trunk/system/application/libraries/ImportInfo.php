@@ -357,6 +357,7 @@ class ImportInfo {
         $data['comment'] = 'Sequence name and content are identical.';
       } else {
         $isnew = true;
+        $data['comment'] = '';
         $data['id'] = $this->controller->sequence_model->add($name, $content);
       }
       
