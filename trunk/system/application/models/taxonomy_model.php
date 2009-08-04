@@ -58,13 +58,14 @@ class Taxonomy_model extends BioModel
       return $this->get_row('import_id', $import_parent_id);
     } else {
       $parent_id = $this->get_field($id, 'parent_id');
-      $this->db->select('id AS parent_id, name AS parent_name');
-      $ret = $this->get_id($parent_id);
-      if($ret) {
-        return $ret;
-      } else {
-        return array('parent_id' => NULL, 'parent_name' => NULL);
+      if($parent_id) {
+        $this->db->select('id AS parent_id, name AS parent_name');
+        $ret = $this->get_id($parent_id);
+        if($ret) {
+          return $ret;
+        }
       }
+      return array('parent_id' => NULL, 'parent_name' => NULL);
     }
   }
 
