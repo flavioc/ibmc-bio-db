@@ -219,3 +219,8 @@ function timestamp_to_date(timestamp)
   
   return day + '-' + month + '-' + year;
 }
+
+function urldecode(str)
+{
+  return decodeURIComponent(str);
+}

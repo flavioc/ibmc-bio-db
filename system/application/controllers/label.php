@@ -203,7 +203,7 @@ class Label extends BioController {
     }
 
     if(!$errors) {
-      $name = $this->get_post('name');
+      $name = change_spaces($this->get_post('name'));
 
       if($this->label_model->count_names($name) > $max_names) {
         $this->set_form_error('name', "Name is already being used.");

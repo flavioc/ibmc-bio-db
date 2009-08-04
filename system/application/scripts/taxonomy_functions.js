@@ -113,6 +113,9 @@ function start_tax_search_form(dom, put_addchild, click_fun)
         name: function(row) {
           return form_tax_base_site + 'view/' + row.id;
         },
+        tree_name: function(row) {
+          return get_app_url() + '/tree/view/' + row.tree_id;
+        },
         parent_name: function(row) {
           if(row.parent_id == null) {
             return null;

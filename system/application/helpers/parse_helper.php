@@ -48,3 +48,8 @@ function parse_boolean_value($val)
   
   return $val == '1';
 }
+
+function change_spaces($str)
+{
+  return str_replace(' ', '_', $str);
+}

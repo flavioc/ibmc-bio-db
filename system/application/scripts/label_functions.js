@@ -87,10 +87,14 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
         return build_user_url(row.update_user_id);
       },
       seqs: function (row) {
-        return get_app_url() + '/sequence/search?type=label&id=' + row.id.toString();
+        var search_term = {label: row.name, type: row.type, oper: 'exists'};
+        var query = encodeURIComponent($.toJSON(search_term));
+        return get_app_url() + '/sequence/search?type=label&id=' + row.id.toString() + '&term=' + query;
       },
       others: function (row) {
-        return get_app_url() + '/sequence/search?type=notlabel&id=' + row.id.toString();
+        var search_term = {label: row.name, type: row.type, oper: 'notexists'};
+        var query = encodeURIComponent($.toJSON(search_term));
+        return get_app_url() + '/sequence/search?type=notlabel&id=' + row.id.toString() + '&term=' + query;
       }
     },
     dataTransform: {
@@ -156,16 +160,6 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
       },
       add: function (row) {
         add_fn(row, grid);
-      },
-      seqs: function (row) {
-        var query = {label: row.name, oper: "exists", type: row.type};
-        $.cookie('saved_search_tree_clabel', $.toJSON(query), cookie_options);
-        return true;
-      },
-      others: function (row) {
-        var query = {label: row.name, oper: "notexists", type: row.type};
-        $.cookie('saved_search_tree_not_label', $.toJSON(query), cookie_options);
-        return true;
       }
     }
   });

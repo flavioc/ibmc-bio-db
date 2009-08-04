@@ -43,13 +43,18 @@ class BioController extends Controller
       $this->smarty->assign('info_msg', $info_msg);
     }
 
-    $this->smarty->load_scripts(JSON_SCRIPT, SESSION_SCRIPT, COOKIE_SCRIPT);
+    $this->smarty->load_scripts(JSON_SCRIPT, SESSION_SCRIPT, COOKIE_SCRIPT, TEXTGROW_SCRIPT);
 
     $this->load->model('configuration_model');
     setcookie('paging-size', $this->configuration_model->get_paging_size());
 
     setcookie('logged-in', $this->logged_in);
     setcookie('username', $this->username);
+    
+    $search_term = $this->session->userdata('search_term');
+    if($search_term) {
+      $this->smarty->assign('search_term_input', $search_term);
+    }
   }
 
   function use_paging_size()
