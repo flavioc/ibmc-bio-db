@@ -19,7 +19,7 @@
 <body>
 <div id="top">
 <div id="left_top">
-<img src="{top_dir}/images/dna.jpg" alt="BIO DB"/>
+<a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BIO DB"/></a>
 <h1><a href="{site}/welcome">Bio DB</a></h1>
 <span id="comment_db">{$comment_header}</span>
 </div>
@@ -41,68 +41,63 @@
 {literal}
 <script>
   $().ready(function() {
-    toggle_menu('taxonomy');
-    toggle_menu('sequence');
-    toggle_menu('label');
-    toggle_menu('user');
-    toggle_menu('rank');
-    toggle_menu('tree');
-    toggle_menu('admin');
-    
     $('#form_search_global input[type=text]').textGrow({pad: 25, max_limit: 700, min_limit: 300});
   });
 </script>
 {/literal}
-  <ul>
-    <li id="taxonomy_menu"><a href="#">Taxonomies</a></li>
+  <ul id="main_menu">
+    <li id="search_menu"><a href="#">Search</a>
+    <ul id="search_id">
+      <li><a href="{site}/sequence/search?type=dna">DNA</a></li>
+      <li><a href="{site}/sequence/search?type=protein">Protein</a></li>
+      <li><a href="{site}/sequence/search">All</a></li>
+    </ul></li>
+    <li id="sequence_menu"><a href="#">Sequences</a>
+    <ul id="sequence_id">
+      <li><a href="{site}/sequence/add">Add</a></li>
+      <li><a href="{site}/sequence/add_batch">Batch</a></li>
+      <li><a href="{site}/sequence/browse">List</a></li>
+    </ul></li>
+    <li id="label_menu"><a href="#">Labels</a>
+    <ul id="label_id">
+      <li><a href="{site}/label/add">Add</a></li>
+      <li><a href="{site}/label/browse">List</a></li>
+      <li><a href="{site}/label/export">Export</a></li>
+      <li><a href="{site}/label/import">Import</a></li>
+    </ul></li>
+    <li id="taxonomy_menu"><a href="#">Taxonomies</a>
     <ul id="taxonomy_id">
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
-      <li><a href="{site}/taxonomy/sync">Sync</a></li>
-    </ul>
-    <li id="tree_menu"><a href="#">Trees</a></li>
+      <!-- <li><a href="{site}/taxonomy/sync">Sync</a></li> -->
+    </ul></li>
+    <li id="tree_menu"><a href="#">Trees</a>
     <ul id="tree_id">
       <li><a href="{site}/tree/add">Add</a></li>
       <li><a href="{site}/tree">List</a></li>
       <li><a href="{site}/tree/import">Import</a></li>
-    </ul>
-    <li id="rank_menu"><a href="#">Ranks</a></li>
+    </ul></li>
+    <li id="rank_menu"><a href="#">Ranks</a>
     <ul id="rank_id">
       <li><a href="{site}/rank/add">Add</a></li>
       <li><a href="{site}/rank/list_all">List</a></li>
       <li><a href="{site}/rank/export">Export</a></li>
       <li><a href="{site}/rank/import">Import</a></li>
-    </ul>
-    <li id="sequence_menu"><a href="#">Sequences</a></li>
-    <ul id="sequence_id">
-      <li><a href="{site}/sequence/add">Add</a></li>
-      <li><a href="{site}/sequence/add_batch">Batch</a></li>
-      <li><a href="{site}/sequence/browse">List</a></li>
-      <li><a href="{site}/sequence/search">Search</a></li>
-      <li><a href="{site}/sequence/search?type=dna">DNA Search</a></li>
-      <li><a href="{site}/sequence/search?type=protein">Protein Search</a></li>
-    </ul>
-    <li id="label_menu"><a href="#">Labels</a></li>
-    <ul id="label_id">
-      <li><a href="{site}/label/add">Add</a></li>
-      <li><a href="{site}/label/browse">List</a></li>
-      <li><a href="{site}/label/export">Export</<a></li>
-      <li><a href="{site}/label/import">Import</a></li>
-    </ul>
-    <li id="user_menu"><a href="#">Users</a></li>
+    </ul></li>
+    <li id="user_menu"><a href="#">Users</a>
     <ul id="user_id">
       <li><a href="{site}/profile/edit/{$user_id}">Edit profile</a></li>
       <li><a href="{site}/profile/settings">Settings</a></li>
-    </ul>
+    </ul></li>
     <li><a href="{site}/comment/edit">Comment</a></li>
     {if $logged_in && ($user_type == 'admin')}
-    <li id="admin_menu"><a href="#">Administration</a></li>
+    <li id="admin_menu"><a href="#">Administration</a>
     <ul id="admin_id">
       <li><a href="{site}/admin/drop_database">Reset database</a></li>
       <li><a href="{site}/profile/list_all">List users</a></li>
       <li><a href="{site}/profile/register">Register user</a></li>
-    </ul>
+    </ul></li>
     {/if}
   </ul>
 

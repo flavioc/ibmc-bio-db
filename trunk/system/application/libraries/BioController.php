@@ -43,7 +43,7 @@ class BioController extends Controller
       $this->smarty->assign('info_msg', $info_msg);
     }
 
-    $this->smarty->load_scripts(JSON_SCRIPT, SESSION_SCRIPT, COOKIE_SCRIPT, TEXTGROW_SCRIPT);
+    $this->smarty->load_scripts(JSON_SCRIPT, COOKIE_SCRIPT, TEXTGROW_SCRIPT);
 
     $this->load->model('configuration_model');
     setcookie('paging-size', $this->configuration_model->get_paging_size());
