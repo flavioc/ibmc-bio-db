@@ -9,11 +9,6 @@ class Command_Line extends BioController {
     }
     parent::BioController();
     
-    $this->load->model('sequence_model');
-    $this->load->model('label_sequence_model');
-    $this->load->model('label_model');
-    $this->load->model('taxonomy_model');
-    $this->load->model('taxonomy_rank_model');
     $this->load->model('user_model');
     
     $admin = $this->user_model->get_user_by_name('admin');
@@ -26,6 +21,13 @@ class Command_Line extends BioController {
     $this->user_type = 'admin';
     $this->user_id = $admin['id'];
     $this->is_admin = true;
+    
+    $this->load->model('sequence_model');
+    $this->load->model('label_sequence_model');
+    $this->load->model('label_model');
+    $this->load->model('taxonomy_model');
+    $this->load->model('taxonomy_rank_model');
+    $this->load->model('taxonomy_tree_model');
   }
   
   function index()
@@ -241,6 +243,40 @@ class Command_Line extends BioController {
         
         echo "-> $name $parent $mode $success\n";
       }
+    } else {
+      echo "Error reading XML file: $file\n";
+      return;
+    }
+  }
+  
+  function import_tree($file)
+  {
+    $file = $this->__get_file($file);
+    if(!file_exists($file)) {
+      echo "File $file doesn't exist\n";
+      return;
+    }
+    
+    $this->load->helper('tree_importer');
+    
+    $stats = import_tree_xml_file($this->taxonomy_tree_model, $this->taxonomy_rank_model, $this->taxonomy_model, $file);
+    
+    if($stats) {
+      $name = $stats['name'];
+      $mode = $stats['mode'];
+      $new_ranks = $stats['new_ranks'];
+      $new_tax = $stats['new_tax'];
+      $old_tax = $stats['old_tax'];
+      
+      if($mode == 'edit') {
+        echo "Tree $name was edited\n";
+      } else {
+        echo "Tree $name was created\n";
+      }
+      
+      echo "$new_ranks ranks were added\n";
+      echo "$new_tax taxonomies were created\n";
+      echo "$old_tax taxonomies were already present\n";
     } else {
       echo "Error reading XML file: $file\n";
       return;

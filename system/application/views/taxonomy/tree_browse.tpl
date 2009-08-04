@@ -37,6 +37,8 @@ $(document).ready(function () {
 
         $(this).click(function (event) {
           reload_grid(obj, elem.tree, elem.tax, elem.what, path.slice(0, index));
+          
+          return false;
         });
       });
 
@@ -102,6 +104,8 @@ $(document).ready(function () {
           parents[id] = {id: tax, name: name};
 
           reload_grid(obj, tree, id, new_name, new_path);
+        
+          return false;
         }
       },
       finishedFun: function (opts) {
@@ -127,6 +131,7 @@ $(document).ready(function () {
           .unbind('click')
           .click(function () {
             reload_grid(obj, tree, parent_tax, parent_name, new_path.slice(0, new_path.length-2));
+            return false;
           });
           go_up.show();
         }
