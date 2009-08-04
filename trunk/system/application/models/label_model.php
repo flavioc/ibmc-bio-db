@@ -167,6 +167,8 @@ class Label_model extends BioModel
       return false;
     }
     
+    $name = str_replace(' ', '_', $name);
+    
     if($this->has($name)) {
       return false;
     }

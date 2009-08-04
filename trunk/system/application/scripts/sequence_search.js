@@ -38,6 +38,7 @@ var date_input = null;
 var select_transform = null;
 var current_selected_li = null;
 var search_type = 'all';
+var get_tree_param = null;
 
 $(function () {
   var got = $.getURLParam('type');
@@ -45,6 +46,11 @@ $(function () {
   if(got) {
     search_type = got;
   }
+  
+  var get_string = $.getURLParam('term');
+  var decoded_get = urldecode(get_string);
+  
+  get_tree_param = $.evalJSON(decoded_get);
 });
 
 var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>) [<span class="term-count"></span>]</span>';
@@ -52,16 +58,6 @@ var term_options_html = '<span class="term-options" style="display: none;">(<spa
 function get_cookie_tree_name()
 {
   switch(search_type) {
-    case 'dna':
-      return 'saved_search_tree_dna';
-    case 'protein':
-      return 'saved_search_tree_protein';
-    case 'label':
-      return 'saved_search_tree_clabel';
-    case 'notlabel':
-      return 'saved_search_tree_not_label';
-    case 'batch':
-      return 'saved_search_tree_batch';
     default:
       return 'saved_search_tree';
   }
@@ -684,8 +680,16 @@ function get_start_search_param()
 
 function restore_old_tree()
 {
-  var encoded = $.cookie(get_cookie_tree_name());
-  var obj = $.evalJSON(encoded);
+  var encoded = null;
+  var obj = null;
+  
+  if(get_search_term == null) {
+    encoded = $.cookie(get_cookie_tree_name());
+    obj = $.evalJSON(encoded);
+  } else {
+    obj = get_tree_param;
+    encoded = $.toJSON(obj);
+  }
 
   if(obj) {
     var first_ol = $('#search_tree ol:first');

@@ -24,8 +24,12 @@
 <span id="comment_db">{$comment_header}</span>
 </div>
 <div id="right_top">
-<form id="form_search_global">
-<input type="text" name="firstname" />
+<form id="form_search_global" method="get" action="{site}/wide_search/search">
+{if $search_term_input}
+<input type="text" name="search" value="{$search_term_input}" />
+{else}
+<input type="text" name="search" autocomplete=off/>
+{/if}
 <input type="submit" value="Search"/>
 </form>
 <a id="number_sequences" href="{site}/sequence/browse">{$total_seqs} saved sequences</a>
@@ -44,6 +48,8 @@
     toggle_menu('rank');
     toggle_menu('tree');
     toggle_menu('admin');
+    
+    $('#form_search_global input[type=text]').textGrow({pad: 25, max_limit: 700, min_limit: 300});
   });
 </script>
 {/literal}
@@ -114,7 +120,7 @@
 
 <script>
 {literal}
-  $(document).ready(function() {
+  $(function() {
     $("#login_form").validate({
       rules: {
         login_username: {

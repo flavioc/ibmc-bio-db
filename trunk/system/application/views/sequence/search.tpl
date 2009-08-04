@@ -4,6 +4,16 @@
 <h2>Search protein sequences</h2>
 {elseif $type == 'batch'}
 <h2>Search batch sequences</h2>
+{elseif $type == 'search'}
+<h2>Search batch sequences</h2>
+
+{literal}<script>
+$(function () {
+  // focus search input
+  $('#form_search_global input[type=text]').focus();
+});
+</script>{/literal}
+
 {elseif $type == 'label' || $type == 'notlabel'}
   {if $label}
     <h2>Search sequences by label {$label.name}</h2>

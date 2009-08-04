@@ -348,3 +348,8 @@ table.data th a:visited, table.data th a {
   font-size: 120%;
   padding: 3px;
 }
+
+#warning_search {
+  font-size: 80%;
+  font-style: italic;
+}

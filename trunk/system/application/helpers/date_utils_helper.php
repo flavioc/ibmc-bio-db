@@ -40,3 +40,8 @@ function timestamp_string()
 {
   return date('l jS F Y h:i:s A');
 }
+
+function simple_timestamp_string()
+{
+  return date('j-n-Y');
+}
