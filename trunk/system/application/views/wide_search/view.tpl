@@ -1,6 +1,6 @@
 <h2>Wide search by "{$search}"</h2>
 <script>var default_search_size = 3;</script>
-<p id="warning_search">The search string provived was not valid ({$error})</p>
+<p id="warning_search">The search string provided was not valid ({$error})</p>
 
 {if $sequences}
 <h3>Sequences</h3>
