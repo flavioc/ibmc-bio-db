@@ -191,4 +191,30 @@ class Command_Line extends BioController {
       echo "No sequences present\n";
     }
   }
+  
+  function import_labels($file)
+  {
+    $file = $this->__get_file($file);
+    if(!file_exists($file)) {
+      echo "File $file doesn't exist\n";
+      return;
+    }
+    
+    $this->load->helper('label_importer');
+    
+    $labels = import_label_xml_file($this->label_model, $file);
+    if($labels) {
+      echo "Label report:\n\n";
+      foreach ($labels as &$label) {
+        $success = ($label['ret'] ? "Success" : "Not Successful");
+        $name = $label['name'];
+        $mode = $label['mode'];
+        $type = $label['type'];
+        echo "-> $name $type $mode $success\n";
+      }
+    } else {
+      echo "Error reading XML file: $file\n";
+      return;
+    }
+  }
 }
