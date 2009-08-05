@@ -114,12 +114,15 @@ $(function () {
 
 </div>
 
+<div id="transform_box">
 <fieldset>
 <label for="select_transform" class="search-desc">Transform results: </label>{form_select blank=yes name=select_transform start=0 data=$refs key=id}
 </fieldset>
+</div>
 
 <h3>Operations</h3>
 
+<div id="operations_box">
 {form_open to='sequence/export_search' name=tree_form}
 {form_hidden name=encoded_tree value=null}
 {form_hidden name=transform_hidden value=null}
@@ -143,6 +146,8 @@ $(function () {
 {form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Delete label' id='submit_delete_label'}
 {form_end}
+
+</div>
 
 <h3>Preview</h3>
 <p>

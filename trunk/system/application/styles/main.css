@@ -355,7 +355,7 @@ table.data th {
 
 input[type=text], input[type=password], input[type=file], textarea, select {
   padding: 0;
-  border: solid 3px #cc0000;
+  border: solid 1px #cc0000;
   background: white;
   font-size: 110%;
 }
@@ -374,10 +374,9 @@ input[disabled], select[disabled] {
 
 input[type=submit] {
   background: #C1CDCD;
-  border: solid 3px #cc0000;
+  border: solid 1px #cc0000;
   color: black;
   cursor: pointer;
-  overflow: visible;
   font-size: 110%;
 }
 
