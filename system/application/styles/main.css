@@ -14,6 +14,7 @@ a {
 body>div#leftmenu {
   margin-left: 50px;
   margin-top: 15px;
+  margin-bottom: 20px;
   width: 205px;
   background: #fff;
   border: 1px solid #000;
@@ -438,3 +439,7 @@ div#leftmenu > ul > li > ul, div#leftmenu > ul > li > a:hover {
 }
 
 div#leftmenu li:hover ul { display: block; }
+
+h1 {
+  text-shadow: 2px 2px 2px darkgrey;
+}
