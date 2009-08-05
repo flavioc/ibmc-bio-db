@@ -353,18 +353,18 @@ table.data th {
   font-style: italic;
 }
 
-input[type=text], input[type=password], textarea, select {
+input[type=text], input[type=password], input[type=file], textarea, select {
   padding: 0;
   border: solid 3px #cc0000;
   background: white;
   font-size: 110%;
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=file] {
   height: 23px;
 }
 
-input[type=text]:hover, input[type=password], textarea:hover, select:hover {
+input[type=text]:hover, input[type=password]:hover, input[type=file]:hover, textarea:hover, select:hover {
   background: #E0EEEE;
 }
 

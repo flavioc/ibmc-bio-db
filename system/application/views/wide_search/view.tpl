@@ -1,6 +1,16 @@
 <h2>Wide search by "{$search}"</h2>
-<script>var default_search_size = 3;</script>
-<p id="warning_search">The search string provided was not valid ({$error})</p>
+
+<script>
+var default_search_size = 3;
+{literal}
+$(function () {
+  $('h3').effect('highlight', {}, 3000);
+  $('#error_search').effect('highlight', {color: 'red'}, 2000);
+});
+{/literal}
+</script>
+
+<p id="warning_search">The search string provided was not valid (<span id="error_search">{$error}</span>)</p>
 
 {if $sequences}
 <h3>Sequences</h3>
@@ -162,7 +172,8 @@ $(function () {
       }
     },
     total: 'get_total',
-    idField: 'rank_id'
+    idField: 'rank_id',
+    size: default_search_size
   });
 });
 </script>{/literal}

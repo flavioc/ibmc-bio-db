@@ -44,6 +44,7 @@ class BioController extends Controller
     }
 
     $this->smarty->load_scripts(JSON_SCRIPT, COOKIE_SCRIPT, TEXTGROW_SCRIPT);
+    $this->use_highlight();
 
     $this->load->model('configuration_model');
     setcookie('paging-size', $this->configuration_model->get_paging_size());
@@ -114,6 +115,11 @@ class BioController extends Controller
   function use_plusminus()
   {
     $this->smarty->load_scripts(ZOOM_SCRIPT, PLUSMINUS_SCRIPT);
+  }
+  
+  function use_highlight()
+  {
+    $this->smarty->load_scripts('ui/effects.core.js', 'ui/effects.highlight.js');
   }
 
   function set_form_error($what, $msg)

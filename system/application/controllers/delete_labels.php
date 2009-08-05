@@ -31,8 +31,9 @@ class Delete_Labels extends BioController {
     
     $search_tree = json_decode($search, true);
     $transform = $this->__get_transform_label('transform', 'post');
+    
     $seqs = $this->label_sequence_model->get_search($search_tree, null, null, array(), $transform);
-
+    
     $deleted_labels = 0;
     $deleted_from_seqs = 0;
     
@@ -40,6 +41,7 @@ class Delete_Labels extends BioController {
       $id = $seq['id'];
       
       $total = $this->label_sequence_model->num_label($id, $label_id);
+      
       if($total > 0) {
         $deleted_labels = $deleted_labels + $total;
         ++$deleted_from_seqs;

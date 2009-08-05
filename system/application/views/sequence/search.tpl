@@ -10,6 +10,9 @@
 {literal}<script>
 $(function () {
   // focus search input
+  {/literal}{if $type == 'search'}
+  $('#form_search_global input[type=text]').effect('highlight', {literal}{color: 'red'}{/literal}, 3000);
+  {/if}{literal}
   $('#form_search_global input[type=text]').focus();
 });
 </script>{/literal}
