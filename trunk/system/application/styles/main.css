@@ -13,7 +13,7 @@ a {
 
 body>div#leftmenu {
   margin-left: 50px;
-  margin-top: 10px;
+  margin-top: 15px;
   width: 205px;
   background: #fff;
   border: 1px solid #000;
@@ -27,7 +27,7 @@ body>div#leftmenu {
 }
 
 body>div#content {
-  margin-top: 10px;
+  margin-top: 15px;
   background:#fff;
   margin-left: 285px;
   margin-right: 50px;
@@ -54,9 +54,13 @@ body>div#top {
   padding-left: 10px;
   position: relative;
   
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  
+  -moz-box-shadow: 0.6em 0.6em 0.5em darkgrey;
+  -webkit-box-shadow: 0.6em 0.6em 0.5em darkgrey;
+  box-shadow: 0.6em 0.6em 0.5em darkgrey;
 }
 
 body>div#top #left_top {
@@ -366,6 +370,9 @@ input[type=text], input[type=password], input[type=file] {
 
 input[type=text]:hover, input[type=password]:hover, input[type=file]:hover, textarea:hover, select:hover {
   background: #E0EEEE;
+  -moz-box-shadow: 0 0 0.4em red;
+  -webkit-box-shadow: 0 0 0.4em red;
+  box-shadow: 0 0 0.4em red;
 }
 
 input[disabled], select[disabled] {
@@ -422,6 +429,12 @@ div#leftmenu ul li a {
 	padding: 5px;
 	border: 1px solid black;
 	padding-left: 15px;
+}
+
+div#leftmenu > ul > li > ul, div#leftmenu > ul > li > a:hover {
+  -moz-box-shadow: 0 0 0.7em red;
+  -webkit-box-shadow: 0 0 0.7em red;
+  box-shadow: 0 0 0.7em red;
 }
 
 div#leftmenu li:hover ul { display: block; }
