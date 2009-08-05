@@ -26,9 +26,9 @@
 <div id="right_top">
 <form id="form_search_global" method="get" action="{site}/wide_search/search">
 {if $search_term_input}
-<input type="text" name="search" value="{$search_term_input}" />
+<input type="text" name="search_global" value="{$search_term_input}" />
 {else}
-<input type="text" name="search" autocomplete=off/>
+<input type="text" name="search_global" autocomplete=off/>
 {/if}
 <input type="submit" value="Search"/>
 </form>

@@ -21,7 +21,7 @@ class Wide_Search extends BioController
     $this->load->library('Tokenizer');
     $this->load->library('Parser');
     
-    $search = stripslashes($this->get_parameter('search'));
+    $search = stripslashes($this->get_parameter('search_global'));
     $this->session->set_userdata('search_term', $search);
     
     try {
