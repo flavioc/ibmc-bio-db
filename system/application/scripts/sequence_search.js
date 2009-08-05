@@ -53,7 +53,7 @@ $(function () {
   get_tree_param = $.evalJSON(decoded_get);
 });
 
-var term_options_html = '<span class="term-options" style="display: none;">(<span class="term-delete">x</span>) [<span class="term-count"></span>]</span>';
+var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete">Delete</span> [<span class="term-count"></span>]</span>';
 
 function get_cookie_tree_name()
 {
@@ -651,7 +651,7 @@ function compute_total_term(li)
       transform: select_transform.val()
     },
     function (data) {
-      $('.term-count:first', li).text(data);
+      $('.term-count:first', li).text(data).effect('highlight', {}, 500);
     });
 }
 
