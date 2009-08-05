@@ -15,7 +15,7 @@
 {form_submit name=edit_button msg="Edit profile"}
 {form_end}
 {/if}
-{if $is_admin}
+{if $is_admin && $user.name != $username}
 
 {form_open name=form_delete to="profile/delete_redirect"}
 {form_hidden name=id value=$user.id}
