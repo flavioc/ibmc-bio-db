@@ -179,6 +179,6 @@ $(function () {
 </script>{/literal}
 {/if}
 
-{if !$sequence && !$labels && !$taxonomies && !$ranks}
+{if !$sequences && !$labels && !$taxonomies && !$ranks}
 <p>Nothing was found.</p>
 {/if}
