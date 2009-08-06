@@ -65,7 +65,7 @@ body>div#top {
 }
 
 body>div#top #left_top {
-  width: 50%;
+  width: 30%;
   float: left;
   top: 0;
   left: 0;
@@ -80,7 +80,7 @@ body>div#top #left_top img {
 }
 
 body>div#top #right_top {
-  width: 50%;
+  width: 70%;
   top:0;
   right:0;
   position: absolute;
