@@ -212,6 +212,7 @@ class Profile extends BioController {
       $this->user_model->edit_user($id, $complete_name,
         $email, $birthday, $imagecontent, $new_password);
 
+      $this->set_info_message("Profile has been saved");
       redirect("profile/view/$id");
     }
   }
@@ -225,7 +226,6 @@ class Profile extends BioController {
     $this->smarty->assign('title', 'Edit settings');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
     $this->smarty->load_scripts(FORM_SCRIPT);
-    $this->use_thickbox();
     $this->load->model('configuration_model');
 
     $this->smarty->fetch_form_row('paging_size', $this->configuration_model->get_paging_size());
@@ -265,6 +265,7 @@ class Profile extends BioController {
     } else {
       $this->configuration_model->set_paging_size($paging_size);
 
+      $this->set_info_message("Settings have been saved");
       redirect('profile/view_self');
     }
   }

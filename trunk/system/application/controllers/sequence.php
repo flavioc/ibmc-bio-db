@@ -102,7 +102,6 @@ class Sequence extends BioController
     $this->assign_label_types(true);
     $this->use_autocomplete();
     $this->use_thickbox();
-    $this->use_livequery();
 
     $type = $this->get_parameter('type');
     switch($type) {
@@ -220,7 +219,6 @@ class Sequence extends BioController
     $this->smarty->load_stylesheets('add_label.css');
     $this->use_autocomplete();
     $this->use_thickbox();
-    $this->use_livequery();
     $this->use_datepicker();
 
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
@@ -344,7 +342,6 @@ class Sequence extends BioController
     $this->use_thickbox();
     $this->use_mygrid();
     $this->use_plusminus();
-    $this->use_livequery();
     $this->use_datepicker();
 
     $this->__load_sequence($id);

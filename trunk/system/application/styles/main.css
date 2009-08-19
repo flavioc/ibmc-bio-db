@@ -246,7 +246,7 @@ span.code {
   font-family: "courier";
 }
 
-div.error_msg {
+div.error_msg, div.info_msg {
   font-size: 95%;
   font-weight: bold;
   border: 3px solid red;
@@ -258,7 +258,7 @@ div.error_msg {
   padding-left: 10px;
 }
 
-div.error_msg img {
+div.error_msg img, div.info_msg img {
   float: left;
   margin-right: 10px;
 }
@@ -267,9 +267,10 @@ body>div#content img.user {
   margin-right: 10px;
 }
 
-div.error_msg a.hide_box {
+a.hide_box {
   font-size: 70%;
   text-decoration: underline;
+  margin-left: 5px;
 }
 
 img.loader {
@@ -398,7 +399,6 @@ div#leftmenu ul {
   padding: 0;
   list-style: none;
   width: 150px;
-  
 }
 
 div#leftmenu ul#main_menu {
@@ -419,6 +419,11 @@ div#leftmenu li ul {
   display: none;
 }
 
+/* submenus */
+div#leftmenu li ul li ul {
+  left: 150px;
+}
+
 ul#main_menu a:hover {
   background: #E0EEEE;
 }
@@ -432,13 +437,14 @@ div#leftmenu ul li a {
 	padding-left: 15px;
 }
 
-div#leftmenu > ul > li > ul, div#leftmenu > ul > li > a:hover {
+div#leftmenu ul li ul, div#leftmenu ul li a:hover {
   -moz-box-shadow: 0 0 0.7em red;
   -webkit-box-shadow: 0 0 0.7em red;
   box-shadow: 0 0 0.7em red;
 }
 
-div#leftmenu li:hover ul { display: block; }
+div#leftmenu li:hover ul, div#leftmenu li ul li:hover ul { display: block; }
+div#leftmenu li:hover li ul { display: none; }
 
 h1 {
   text-shadow: 2px 2px 2px darkgrey;

@@ -1,5 +1,20 @@
+function rtrim(str, charlist)
+{
+  // http://kevin.vanzonneveld.net
+  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +      input by: Erkekjetter
+  // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +   bugfixed by: Onno Marsman
+  // *     example 1: rtrim('    Kevin van Zonneveld    ');
+  // *     returns 1: '    Kevin van Zonneveld'
+ 
+  charlist = !charlist ? ' \\s\u00A0' : (charlist+'').replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '$1');
+  var re = new RegExp('[' + charlist + ']+$', 'g');
+  return (str+'').replace(re, '');
+}
 
-function parse_id(str) {
+function parse_id(str)
+{
   var vec = str.split('_');
 
   return vec[vec.length-1];
@@ -10,23 +25,20 @@ function is_yes(data)
   return data == 'yes';
 }
 
-function enable_error_messages()
-{
-  var obj = $(".hide_box");
-
-  var fun = function (event) {
-    $(event.target).parent().fadeOut("slow");
-  }
-
-  obj.unbind("click").click(fun);
-}
+var hide_box_html = '<a class="hide_box" href="#">Hide</a>';
 
 function add_new_error_message(msg)
 {
   image_url = get_images_url();
-  $("#content").prepend("<div class=\"error_msg\"><img src=\"" + image_url +
-      "/error.png\"></img>" + msg + "<a class=\"hide_box\" href=\"#\">Hide</a></div>");
-  enable_error_messages();
+  $("#content").prepend('<div class="error_msg"><img src="' + image_url +
+      '/error.png"></img>' + msg + hide_box_html + '</div>');
+}
+
+function add_new_info_message(msg)
+{
+  image_url = get_images_url();
+  $("#content").prepend('<div class="info_msg"><img src="' + image_url +
+      '/info.png"></img>' + msg + hide_box_html + '</div>');
 }
 
 var base_url_cache = null;
@@ -42,16 +54,18 @@ function get_base_url()
   var ret = "";
 
   for(var i = 0; i < vec.length; ++i) {
-      if(vec[i] == "index.php") {
-        base_url_cache = ret;
-        return ret;
-      } else {
-        if(ret != "") {
-          ret += "/";
-        }
-
-        ret += vec[i];
+    vec[i] = rtrim(vec[i], '#');
+    
+    if(vec[i] == "index.php") {
+      base_url_cache = ret;
+      return ret;
+    } else {
+      if(ret != "") {
+        ret += "/";
       }
+
+      ret += vec[i];
+    }
   }
 
   return url;
