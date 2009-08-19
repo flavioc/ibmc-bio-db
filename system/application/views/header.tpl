@@ -70,33 +70,31 @@
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
       <li><a href="{site}/taxonomy/add">Add</a></li>
+      <li id="tree_menu"><a href="#">Trees</a>
+      <ul id="tree_id">
+        <li><a href="{site}/tree/add">Add</a></li>
+        <li><a href="{site}/tree">List</a></li>
+        <li><a href="{site}/tree/import">Import</a></li>
+      </ul></li>
+      <li id="rank_menu"><a href="#">Ranks</a>
+      <ul id="rank_id">
+        <li><a href="{site}/rank/add">Add</a></li>
+        <li><a href="{site}/rank/list_all">List</a></li>
+        <li><a href="{site}/rank/export">Export</a></li>
+        <li><a href="{site}/rank/import">Import</a></li>
+      </ul></li>
       <!-- <li><a href="{site}/taxonomy/sync">Sync</a></li> -->
     </ul></li>
-    <li id="tree_menu"><a href="#">Trees</a>
-    <ul id="tree_id">
-      <li><a href="{site}/tree/add">Add</a></li>
-      <li><a href="{site}/tree">List</a></li>
-      <li><a href="{site}/tree/import">Import</a></li>
-    </ul></li>
-    <li id="rank_menu"><a href="#">Ranks</a>
-    <ul id="rank_id">
-      <li><a href="{site}/rank/add">Add</a></li>
-      <li><a href="{site}/rank/list_all">List</a></li>
-      <li><a href="{site}/rank/export">Export</a></li>
-      <li><a href="{site}/rank/import">Import</a></li>
-    </ul></li>
-    <li id="user_menu"><a href="#">Users</a>
-    <ul id="user_id">
-      <li><a href="{site}/profile/edit/{$user_id}">Edit profile</a></li>
-      <li><a href="{site}/profile/settings">Settings</a></li>
-    </ul></li>
-    <li><a href="{site}/comment/edit">Comment</a></li>
     {if $logged_in && ($user_type == 'admin')}
     <li id="admin_menu"><a href="#">Administration</a>
     <ul id="admin_id">
       <li><a href="{site}/admin/drop_database">Reset database</a></li>
-      <li><a href="{site}/profile/list_all">List users</a></li>
-      <li><a href="{site}/profile/register">Register user</a></li>
+      <li><a href="{site}/comment/edit">Comment</a></li>
+      <li id="user_menu"><a href="#">Users</a>
+      <ul id="user_id">
+        <li><a href="{site}/profile/list_all">List</a></li>
+        <li><a href="{site}/profile/register">Register</a></li>
+      </ul></li>
     </ul></li>
     {/if}
   </ul>
@@ -149,13 +147,20 @@
 
 <div id="content">
 
-{if $error_msg}
-<script>
-{literal}
-  $().ready(function () {
-    add_new_error_message("{/literal}{$error_msg}{literal}");
-  });
-{/literal}
-</script>
-{/if}
+{if $error_msg}<script>{literal}$(function () {
+add_new_error_message("{/literal}{$error_msg}{literal}");
+}); {/literal}</script>{/if}
+{if $info_msg}<script>{literal}$(function () {
+add_new_info_message("{/literal}{$info_msg}{literal}");
+}); {/literal}</script>{/if}
 
+<script>{literal}
+$(function () {
+  $('.hide_box').livequery('click', function (event) {
+    $(event.target).parent().fadeOut('slow', function () {
+      $(this).remove();
+    });
+    return false;
+  })
+});
+{/literal}</script>

@@ -14,6 +14,13 @@
 {form_open name=form_edit to="profile/edit/$id"}
 {form_submit name=edit_button msg="Edit profile"}
 {form_end}
+
+{if $user.id == $user_id}
+{form_open name=form_settings to="profile/settings"}
+{form_submit name=settings_button msg="Edit settings"}
+{form_end}
+{/if}
+
 {/if}
 {if $is_admin && $user.name != $username}
 
@@ -34,7 +41,7 @@ $(document).ready(function () {
 
 {literal}
 <style>
-#form_edit, #form_delete {
+#form_edit, #form_delete, #form_settings {
   display: inline;
 }
 </style>

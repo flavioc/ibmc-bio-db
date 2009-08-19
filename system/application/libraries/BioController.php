@@ -56,6 +56,8 @@ class BioController extends Controller
     if($search_term) {
       $this->smarty->assign('search_term_input', $search_term);
     }
+    
+    $this->use_livequery();
   }
 
   function use_paging_size()
@@ -167,6 +169,11 @@ class BioController extends Controller
   function set_error_message($msg)
   {
     $this->session->set_flashdata('error_msg', $msg);
+  }
+  
+  function set_info_message($msg)
+  {
+    $this->session->set_flashdata('info_msg', $msg);
   }
 
   function get_parameter($what)

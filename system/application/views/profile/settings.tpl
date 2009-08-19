@@ -1,7 +1,5 @@
 <h2>Edit settings</h2>
 
-<p class="help"><a class="thickbox" href="{site}/help/settings">Help</a></p>
-
 <script>
 {literal}
   $(document).ready(function() {
