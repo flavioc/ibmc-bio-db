@@ -383,7 +383,7 @@ class BioController extends Controller
         return true;
       }
 
-      return "Error generating label/sequence $id";
+      return "Error generating label $id";
     }
     
     $label = $this->label_sequence_model->get($id);

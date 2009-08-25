@@ -404,6 +404,8 @@ function after_edit_label(form, responseText, statusText) {
   } else {
     if(resp == false) {
       responseText = "Error editing label: invalid label data?";
+    } else {
+      responseText = resp;
     }
     
     show_error_label(form, responseText);
@@ -439,6 +441,8 @@ function after_add_label(form, responseText, statusText) {
   } else {
     if(resp == false) {
       responseText = "Error inserting label: invalid label data?";
+    } else {
+      responseText = resp;
     }
     
     show_error_label(form, responseText);

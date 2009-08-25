@@ -27,20 +27,36 @@ body>div#leftmenu {
   -webkit-border-radius: 10px;
 }
 
-body>div#content {
+body>div#content, body>div#footer {
   margin-top: 15px;
   background:#fff;
   margin-left: 285px;
   margin-right: 50px;
   border: 1px solid #000;
-  padding-top: 5px;
+  margin-bottom: 15px;
   padding-left: 25px;
-  padding-bottom: 35px;
-  margin-bottom: 25px;
   
   -moz-border-radius: 10px;
   border-radius: 10px;
   -webkit-border-radius: 10px;
+}
+
+body>div#content {
+  padding-top: 5px;
+  padding-bottom: 35px;
+}
+
+body>div#footer {
+  padding-top: 0px;
+  padding-bottom: 0;
+}
+
+#small-footer {
+  font-size: 55%;
+}
+
+#footer img {
+  vertical-align: middle;
 }
 
 body>div#top {
