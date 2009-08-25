@@ -2,9 +2,14 @@
 
 {if label_special_purpose($label.name) }
 <p>The label <em>{$label.name}</em> is special purpose and cannot be viewed/edited.</p>
+
 {else}
 
-{if $is_admin}
+{if $label.default}
+<p>The label <em>{$label.name}</em> is system default and cannot be changed.</p>
+{/if}
+
+{if $is_admin && !$label.default}
   <script>
   {to_js var=rank value=$rank}
   {to_js var=label value=$label}
@@ -145,7 +150,7 @@
 </table>
 </div>
 
-{if $is_admin}
+{if $is_admin && !$label.default}
   {literal}<script>
   $(function () {
     $('td span, #labelname, #labeltype, #labelcode, #labelvalidcode, #labelcomment').addClass('writeable');
@@ -155,7 +160,7 @@
 
 </div>
 
-{if $is_admin}
+{if $is_admin && !$label.default}
   {form_open name=form_delete to="label/delete_redirect"}
   {form_hidden name=id value=$label.id}
   {form_submit name=delete_button msg=Delete}
@@ -169,7 +174,7 @@
 
 {button name="browse_labels" msg="List labels" to="label/browse"}
 
-{if $is_admin}
+{if $is_admin && !$label.default}
   <script>
   {literal}
   $(function () {
