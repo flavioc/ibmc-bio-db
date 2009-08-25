@@ -4,12 +4,13 @@ class BioModel extends Model
 {
   protected $table = '';
 
-  function BioModel($name) {
+  function BioModel($name)
+  {
     parent::Model();
     $this->table = $name;
   }
 
-  function load_model($name)
+  public function load_model($name)
   {
     $CI =& get_instance();
     $CI->load->model($name, $name, true);
@@ -17,14 +18,14 @@ class BioModel extends Model
     return $CI->$name;
   }
 
-  function has_history($id, $table = null)
+  protected function has_history($id, $table = null)
   {
     $found = $this->get_field($id, 'history_id', $table);
 
     return $found != null;
   }
 
-  function update_history($id, $table = null)
+  public function update_history($id, $table = null)
   {
     $history = $this->load_model('history_model');
 
@@ -35,12 +36,12 @@ class BioModel extends Model
     }
   }
 
-  function get_history($id, $table = null)
+  protected function get_history($id, $table = null)
   {
     return $this->get_field($id, 'history_id', $table);
   }
   
-  function delete_history($id, $table = null)
+  protected function delete_history($id, $table = null)
   {
     $id_hist = $this->get_history($id, $table);
     $history = $this->load_model('history_model');
@@ -50,7 +51,7 @@ class BioModel extends Model
     }
   }
 
-  function get_field($id, $field, $table = null, $id_field = 'id')
+  protected function get_field($id, $field, $table = null, $id_field = 'id')
   {
     if($table == null) {
       $table = $this->table;
@@ -69,12 +70,12 @@ class BioModel extends Model
     return $data[$field];
   }
 
-  function get_id($id, $table = null, $id_field = 'id')
+  public function get_id($id, $table = null, $id_field = 'id')
   {
     return $this->get_row($id_field, $id, $table);
   }
 
-  function get_row($field, $data, $table = null)
+  protected function get_row($field, $data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -89,7 +90,7 @@ class BioModel extends Model
     return $query->row_array();
   }
 
-  function get_id_by_field($field, $data, $table = null)
+  protected function get_id_by_field($field, $data, $table = null)
   {
     $row = $this->get_row($field, $data, $table);
 
@@ -100,7 +101,7 @@ class BioModel extends Model
     return $row['id'];
   }
 
-  function get_rows($field, $data, $select = null, $table = null)
+  protected function get_rows($field, $data, $select = null, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -115,12 +116,12 @@ class BioModel extends Model
     return $query->result_array();
   }
 
-  function get_ids_by_field($field, $data, $table = null)
+  protected function get_ids_by_field($field, $data, $table = null)
   {
     return $this->get_rows($field, $data, 'id', $table);
   }
 
-  function has_field($field, $data, $table = null)
+  protected function has_field($field, $data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -131,7 +132,7 @@ class BioModel extends Model
     return $query->num_rows() == 1;
   }
 
-  function has_id($id, $table = null)
+  public function has_id($id, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -140,7 +141,7 @@ class BioModel extends Model
     return $this->has_field('id', $id, $table);
   }
   
-  function has_something($table = null)
+  protected function has_something($table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -151,7 +152,7 @@ class BioModel extends Model
     return $query->num_rows() > 0;
   }
 
-  function get_all($table = null)
+  public function get_all($table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -160,7 +161,7 @@ class BioModel extends Model
     return $this->db->get($table)->result_array();
   }
 
-  function count_total($table = null)
+  protected function count_total($table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -170,12 +171,12 @@ class BioModel extends Model
     return intval($this->db->count_all_results());
   }
 
-  function delete_id($id, $table = null)
+  public function delete_id($id, $table = null)
   {
     return $this->delete_by_field('id', $id, $table);
   }
 
-  function delete_by_field($field, $data, $table = null)
+  protected function delete_by_field($field, $data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -184,7 +185,7 @@ class BioModel extends Model
     return $this->db->delete($table, array($field => $data));
   }
   
-  function delete_rows($table = null)
+  protected function delete_rows($table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -193,7 +194,7 @@ class BioModel extends Model
     return $this->db->delete($table);
   }
   
-  function delete_all($table = null)
+  public function delete_all($table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -202,7 +203,7 @@ class BioModel extends Model
     return $this->db->empty_table($table);
   }
 
-  function edit_field($id, $field, $data, $table = null)
+  protected function edit_field($id, $field, $data, $table = null)
   {
     $data = array(
       $field => $data,
@@ -211,7 +212,7 @@ class BioModel extends Model
     return $this->edit_data($id, $data, $table);
   }
 
-  function edit_data($id, $data, $table = null)
+  protected function edit_data($id, $data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -221,7 +222,7 @@ class BioModel extends Model
     return $this->db->update($table, $data);
   }
 
-  function edit_data_with_history($id, $data, $table = null)
+  protected function edit_data_with_history($id, $data, $table = null)
   {
     $this->db->trans_start();
 
@@ -235,7 +236,7 @@ class BioModel extends Model
     return $ret;
   }
 
-  function insert_data_with_history($data, $table = null)
+  protected function insert_data_with_history($data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -253,7 +254,7 @@ class BioModel extends Model
     return $ret;
   }
 
-  function insert_data($data, $table = null)
+  protected function insert_data($data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -264,7 +265,7 @@ class BioModel extends Model
     return $this->db->insert_id();
   }
 
-  function get_all_by_field($field, $data, $table = null)
+  protected function get_all_by_field($field, $data, $table = null)
   {
     if($table == null) {
       $table = $this->table;
@@ -277,28 +278,28 @@ class BioModel extends Model
     return $data;
   }
 
-  function rows_sql($sql)
+  protected function rows_sql($sql)
   {
     $query = $this->db->query($sql);
 
     return $query->result_array();
   }
 
-  function row_sql($sql)
+  protected function row_sql($sql)
   {
     $query = $this->db->query($sql);
 
     return $query->row_array();
   }
 
-  function total_sql($sql)
+  protected function total_sql($sql)
   {
     $data = $this->row_sql($sql);
 
     return intval($data['total']);
   }
 
-  function get_order_by($order, $default, $typed)
+  protected function get_order_by($order, $default, $typed)
   {
     foreach($order as $field => $order_type) {
       if($field && $order_type) {
@@ -309,7 +310,7 @@ class BioModel extends Model
     return array($default, $typed);
   }
 
-  function get_order_sql($order, $default, $typed)
+  protected function get_order_sql($order, $default, $typed)
   {
     $arr = $this->get_order_by($order, $default, $typed);
     
@@ -323,14 +324,14 @@ class BioModel extends Model
     return "ORDER BY $field $order";
   }
 
-  function order_by($order, $default, $typed)
+  protected function order_by($order, $default, $typed)
   {
     $ret = $this->get_order_by($order, $default, $typed);
 
     $this->db->order_by($ret[0], $ret[1]);
   }
 
-  function limit($start, $size)
+  protected function limit($start, $size)
   {
     if($size != null) {
       if(!$start) {
@@ -340,7 +341,7 @@ class BioModel extends Model
     }
   }
   
-  function __filter_special_labels()
+  protected function __filter_special_labels()
   {
     foreach(array('name', 'content', 'creation_user', 'update_user', 'creation_date', 'update_date') as $name) {
       $this->db->where("name <> '$name'");

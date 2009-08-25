@@ -9,7 +9,7 @@ class Configuration_model extends BioModel
     parent::BioModel('configuration');
   }
 
-  function get_key($key)
+  private function get_key($key)
   {
     if($this->user_id == null) {
       return null;
@@ -30,7 +30,7 @@ class Configuration_model extends BioModel
     return unserialize($data['value']);
   }
 
-  function has_key($key)
+  private function has_key($key)
   {
     if($this->user_id == null) {
       return false;
@@ -45,7 +45,7 @@ class Configuration_model extends BioModel
     return $query->num_rows() == 1;
   }
 
-  function set_key($key, $value)
+  private function set_key($key, $value)
   {
     if($this->user_id == null) {
       return false;
@@ -75,14 +75,14 @@ class Configuration_model extends BioModel
     return true;
   }
 
-  function set_paging_size($size)
+  public function set_paging_size($size)
   {
     $this->set_key('paging-size', $size);
 
     return $size;
   }
 
-  function get_paging_size()
+  public function get_paging_size()
   {
     $current = $this->get_key('paging-size');
 

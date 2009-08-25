@@ -1,7 +1,7 @@
 <?php
 
-class Command_Line extends BioController {
-
+class Command_Line extends BioController
+{
   function Command_Line()
   {
     if(!array_key_exists('IS_SCRIPT', $_SERVER)) {
@@ -30,17 +30,12 @@ class Command_Line extends BioController {
     $this->load->model('taxonomy_tree_model');
   }
   
-  function index()
-  {
-    echo "ola\n";
-  }
-  
-  function __get_file($file)
+  private function __get_file($file)
   {
     return str_replace('FILE_SEPARATOR', '/', $file);
   }
   
-  function __load_import()
+  private function __load_import()
   {
     $this->load->library('ImportInfo');
     $this->load->helper('xml_importer');
@@ -48,7 +43,7 @@ class Command_Line extends BioController {
     $this->load->helper('seq_importer'); 
   }
   
-  function import_and_link($file1, $file2)
+  public function import_and_link($file1, $file2)
   {
     $file1 = $this->__get_file($file1);
     $file2 = $this->__get_file($file2);
@@ -94,7 +89,7 @@ class Command_Line extends BioController {
     $this->__show_two_seq_files($info1, $info2);
   }
   
-  function import_sequence_file_and_generate($file)
+  public function import_sequence_file_and_generate($file)
   {
     $file = $this->__get_file($file);
     if(!file_exists($file)) {
@@ -133,7 +128,7 @@ class Command_Line extends BioController {
     $this->__show_two_seq_files($info, $info2);
   }
   
-  function __show_two_seq_files(&$info1, &$info2)
+  private function __show_two_seq_files(&$info1, &$info2)
   {
     list($seqs1, $labels1) = $info1->import();
     list($seqs2, $labels2) = $info2->import();
@@ -145,7 +140,7 @@ class Command_Line extends BioController {
     $this->__write_report($seqs2, $labels2);
   }
   
-  function import_sequence_file($file)
+  public function import_sequence_file($file)
   {
     $file = $this->__get_file($file);
     if(!file_exists($file)) {
@@ -165,7 +160,7 @@ class Command_Line extends BioController {
     $this->__write_report($seqs, $labels);
   }
   
-  function __write_report(&$seqs, &$labels)
+  private function __write_report(&$seqs, &$labels)
   {
     if($labels && count($labels) > 0) {
       echo "Label report:\n";
@@ -195,7 +190,7 @@ class Command_Line extends BioController {
     }
   }
   
-  function import_labels($file)
+  public function import_labels($file)
   {
     $file = $this->__get_file($file);
     if(!file_exists($file)) {
@@ -221,7 +216,7 @@ class Command_Line extends BioController {
     }
   }
   
-  function import_ranks($file)
+  public function import_ranks($file)
   {
     $file = $this->__get_file($file);
     if(!file_exists($file)) {
@@ -249,7 +244,7 @@ class Command_Line extends BioController {
     }
   }
   
-  function import_tree($file)
+  public function import_tree($file)
   {
     $file = $this->__get_file($file);
     if(!file_exists($file)) {

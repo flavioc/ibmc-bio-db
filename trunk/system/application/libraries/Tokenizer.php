@@ -1,6 +1,7 @@
 <?php
 
-class Tokenizer {
+class Tokenizer
+{
   private $str = null;
   private $total = 0;
   private $queue = array();
@@ -14,41 +15,41 @@ class Tokenizer {
     $this->total = strlen($mystr);
   }
   
-  function __is_whitespace($val)
+  private function __is_whitespace($val)
   {
     return in_array($val, array(' ', '\t', '\n', '\r'));
   }
   
-  function __is_string_delimiter($val)
+  private function __is_string_delimiter($val)
   {
     return in_array($val, array("'", '"'));
   }
   
-  function __is_parenthesis($val)
+  private function __is_parenthesis($val)
   {
     return in_array($val, array('(', ')'));
   }
   
-  function really_the_end()
+  private function __really_the_end()
   {
     return empty($this->queue) && $this->the_end;
   }
   
-  function fetch_ahead()
+  private function __fetch_ahead()
   {
     if(!$this->the_end) {
-      $tok = $this->fetch_next();
+      $tok = $this->__fetch_next();
       array_push($this->queue, $tok);
     }
   }
   
-  function get_next()
+  public function get_next()
   {
-    if($this->really_the_end()) {
+    if($this->__really_the_end()) {
       return null;
     }
     
-    $this->fetch_ahead();
+    $this->__fetch_ahead();
     
     if(!empty($this->queue)) {
       $ret = array_shift($this->queue);
@@ -59,13 +60,13 @@ class Tokenizer {
     return null;
   }
   
-  function peek()
+  public function peek()
   {
-    if($this->really_the_end()) {
+    if($this->__really_the_end()) {
       return null;
     }
     
-    $this->fetch_ahead();
+    $this->__fetch_ahead();
     
     if(!empty($this->queue)) {
       return $this->queue[0];
@@ -74,7 +75,7 @@ class Tokenizer {
     return null;
   }
   
-  function fetch_next()
+  private function __fetch_next()
   {
     if($this->the_end) {
       return null;

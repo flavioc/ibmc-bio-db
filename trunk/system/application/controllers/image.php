@@ -1,14 +1,14 @@
 <?php
 
-class Image extends BioController {
-
+class Image extends BioController
+{
   function Image()
   {
     parent::BioController();	
     $this->load->model('user_model');
   }
 
-  function _post_image($image, $percent)
+  private function __post_image($image, $percent)
   {
     header('Content-type: image/png');
 
@@ -26,7 +26,7 @@ class Image extends BioController {
     imagedestroy($thumb);
   }
 	
-  function get_name($name, $resize = 100)
+  public function get_name($name, $resize = 100)
   {
     $image = $this->user_model->get_user_image_by_name($name);
 
@@ -34,10 +34,10 @@ class Image extends BioController {
       return;
     }
 
-    $this->_post_image($image, intval($resize));
+    $this->__post_image($image, intval($resize));
   }
 
-  function get_id($id, $resize = 100)
+  public function get_id($id, $resize = 100)
   {
     $image = $this->user_model->get_user_image_by_id($id);
 
@@ -45,7 +45,7 @@ class Image extends BioController {
       return;
     }
 
-    $this->_post_image($image, intval($resize));
+    $this->__post_image($image, intval($resize));
   }
 }
 

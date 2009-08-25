@@ -1,14 +1,15 @@
 <?php
 
-class Rank extends BioController {
-  
-  function Rank() {
+class Rank extends BioController
+{  
+  function Rank()
+  {
     parent::BioController();
     $this->load->model('taxonomy_rank_model');
     $this->load->model('taxonomy_model');
   }
 
-  function list_all()
+  public function list_all()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -23,7 +24,7 @@ class Rank extends BioController {
     $this->smarty->view('rank/list');
   }
 
-  function view($id)
+  public function view($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -49,7 +50,7 @@ class Rank extends BioController {
     $this->smarty->view('rank/view');
   }
 
-  function add()
+  public function add()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -68,7 +69,7 @@ class Rank extends BioController {
     $this->smarty->view('rank/add');
   }
 
-  function do_add()
+  public function do_add()
   {
     $errors = false;
 
@@ -109,7 +110,8 @@ class Rank extends BioController {
     }
   }
 
-  function get_all() {
+  public function get_all()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
     }
@@ -138,7 +140,8 @@ class Rank extends BioController {
     $this->json_return($ranks);
   }
 
-  function get_total() {
+  public function get_total()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_zero();
     }
@@ -155,7 +158,8 @@ class Rank extends BioController {
     $this->json_return($total);
   }
 
-  function edit_name() {
+  public function edit_name()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -168,7 +172,8 @@ class Rank extends BioController {
     echo $this->taxonomy_rank_model->get_name($id);
   }
 
-  function edit_parent() {
+  public function edit_parent()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -197,7 +202,7 @@ class Rank extends BioController {
     }
   }
 
-  function delete_dialog($id)
+  public function delete_dialog($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_nothing();
@@ -217,7 +222,7 @@ class Rank extends BioController {
     $this->smarty->view_s('rank/delete');
   }
 
-  function delete_redirect()
+  public function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -229,7 +234,7 @@ class Rank extends BioController {
     redirect('rank/list_all');
   }
   
-  function export()
+  public function export()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -250,7 +255,7 @@ class Rank extends BioController {
     echo export_ranks_xml($ranks);
   }
   
-  function import()
+  public function import()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -261,7 +266,7 @@ class Rank extends BioController {
     $this->smarty->view('rank/import');
   }
   
-  function do_import()
+  public function do_import()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();

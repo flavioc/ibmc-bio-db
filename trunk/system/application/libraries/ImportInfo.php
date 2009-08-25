@@ -1,6 +1,7 @@
 <?php
 
-class ImportInfo {
+class ImportInfo
+{
   private $sequences = array();
   private $ordered_sequences = array();
   private $sequence_labels = array();
@@ -12,7 +13,7 @@ class ImportInfo {
     $this->controller = $ctr; 
   }
   
-  function duo_match($info2)
+  public function duo_match($info2)
   {
     $total1 = count($this->ordered_sequences);
     $total2 = count($info2->ordered_sequences);
@@ -20,7 +21,7 @@ class ImportInfo {
     return $total1 == $total2;
   }
   
-  function all_type($wanted_type)
+  public function all_type($wanted_type)
   {
     foreach($this->sequences as &$seq) {
       $content =& $seq['content'];
@@ -34,17 +35,17 @@ class ImportInfo {
     return true;
   }
   
-  function all_dna()
+  public function all_dna()
   {
     return $this->all_type('dna');
   }
   
-  function all_protein()
+  public function all_protein()
   {
     return $this->all_type('protein');
   }
   
-  function link_sequences($info2)
+  public function link_sequences($info2)
   {
     $i = 0;
     foreach($this->ordered_sequences as &$seq) {
@@ -57,14 +58,14 @@ class ImportInfo {
   }
   
   // writes imported sequences to a temporary fasta file returning the temporary filename
-  function write_simple_fasta()
+  public function write_simple_fasta()
   {
     $this->controller->load->helper('exporter');
     $str = export_sequences_simple($this->sequences);
     return __write_fasta_file_export($str);
   }
   
-  function convert_protein_file()
+  public function convert_protein_file()
   {
     $fasta = $this->write_simple_fasta();
     
@@ -83,12 +84,12 @@ class ImportInfo {
     return $protein;
   }
   
-  function add_label($name, $type)
+  public function add_label($name, $type)
   {
     $this->labels[$name] = array('type' => $type);
   }
   
-  function get_labels()
+  public function get_labels()
   {
     $ret = array();
     
@@ -99,7 +100,7 @@ class ImportInfo {
     return $ret;
   }
   
-  function add_sequence($name, $content, $id = null)
+  public function add_sequence($name, $content, $id = null)
   {
     $name = trim($name);
     $this->sequences[$name] = array('name' => $name, 'content' => sequence_normalize($content), 'id' => $id);
@@ -109,7 +110,7 @@ class ImportInfo {
     $this->ordered_sequences[] =& $this->sequences[$name];
   }
   
-  function add_sequence_label($sequence, $label, $value)
+  public function add_sequence_label($sequence, $label, $value)
   {
     $sequence = trim($sequence);
     $label = trim($label);
@@ -135,7 +136,7 @@ class ImportInfo {
     return true;
   }
   
-  function print_stats()
+  private function print_stats()
   {
     foreach($this->sequence_labels as $name => &$labels)
     {
@@ -150,7 +151,7 @@ class ImportInfo {
     }
   }
   
-  function __get_labels()
+  private function __get_labels()
   {
     foreach($this->labels as $name => &$data) {
       if(!$this->controller->label_model->has($name)) {
@@ -173,7 +174,7 @@ class ImportInfo {
     }
   }
   
-  function __import_label_text_natural($value, $type)
+  private function __import_label_text_natural($value, $type)
   {
     switch($type) {
     case 'bool':
@@ -183,7 +184,7 @@ class ImportInfo {
     return $value;
   }
   
-  function __get_ref_value($seq_id, $name, $value)
+  private function __get_ref_value($seq_id, $name, $value)
   {
     
     if($name == 'translated') {
@@ -209,13 +210,13 @@ class ImportInfo {
     return $value;
   }
   
-  function __get_tax_value($value)
+  private function __get_tax_value($value)
   {
     $row = $this->controller->taxonomy_model->get_by_name($value);
     return $row['id'];
   }
   
-  function __update_label_content($id, $seq_id, $type, $name, $value)
+  private function __update_label_content($id, $seq_id, $type, $name, $value)
   {
     if($value == '') {
       return;
@@ -254,7 +255,7 @@ class ImportInfo {
     return null;
   }
   
-  function __add_label_content($seq_id, $label_id, $label_name, $label_type, $value)
+  private function __add_label_content($seq_id, $label_id, $label_name, $label_type, $value)
   {
     $model = $this->controller->label_sequence_model;
 
@@ -289,7 +290,7 @@ class ImportInfo {
     return null;
   }
   
-  function __import_sequence_label($seq_name, &$seq_data, $label_name, &$label_data)
+  private function __import_sequence_label($seq_name, &$seq_data, $label_name, &$label_data)
   {
     $seq_labels =& $this->sequence_labels[$seq_name];
     $this_label =& $seq_labels[$label_name];
@@ -358,7 +359,7 @@ class ImportInfo {
     }
   }
   
-  function __add_single_label($seq_id, $label_id, $label_name, $label_type, &$this_label, $value)
+  private function __add_single_label($seq_id, $label_id, $label_name, $label_type, &$this_label, $value)
   {
     if($value == '') {
       $this_label['status'] = 'Empty / Not inserted';
@@ -373,14 +374,14 @@ class ImportInfo {
     }
   }
   
-  function __import_labels($seq_name, &$data)
+  private function __import_labels($seq_name, &$data)
   {
     foreach($this->labels as $name => &$label_data) {
       $this->__import_sequence_label($seq_name, $data, $name, $label_data);
     }
   }
   
-  function import()
+  public function import()
   {
     $this->controller->load->model('label_model');
     $this->controller->load->model('label_sequence_model');

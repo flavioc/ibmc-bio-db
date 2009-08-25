@@ -1,14 +1,14 @@
 <?php
 
-class Welcome extends BioController {
-
+class Welcome extends BioController
+{
   function Welcome()
   {
     parent::BioController();	
     $this->load->model('user_model');
   }
 	
-  function index()
+  public function index()
   {
     $this->smarty->assign('title', 'Main');
 
@@ -39,7 +39,7 @@ class Welcome extends BioController {
     $this->smarty->view('welcome_message');
   }
 
-  function login()
+  public function login()
   {
     if($this->logged_in) {
       redirect('');
@@ -63,7 +63,7 @@ class Welcome extends BioController {
 
       if($this->user_model->validate($username, $password)) {
         // everything's fine.
-        $this->do_login($username);
+        $this->__do_login($username);
         redirect($this->get_post('redirect'));
       } else {
         $this->set_form_value('login_username');
@@ -78,7 +78,7 @@ class Welcome extends BioController {
     }
   }
 
-  function do_login($username)
+  private function __do_login($username)
   {
     $user = $this->user_model->get_user_by_name($username);
     $this->session->set_userdata('user_id', $user['id']);
@@ -87,10 +87,11 @@ class Welcome extends BioController {
     $this->session->set_userdata('user_type', $user['user_type']);
   }
 
-  function logout()
+  public function logout()
   {
     if(!$this->logged_in) {
       // not logged in
+      redirect('');
       return;
     }
 

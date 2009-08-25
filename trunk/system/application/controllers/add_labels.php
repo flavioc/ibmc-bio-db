@@ -1,7 +1,8 @@
 <?php
 
-class Add_Labels extends BioController {
-  function Add_Labels()
+class Add_Labels extends BioController
+{
+  public function Add_Labels()
   {
     parent::BioController();
     $this->load->model('sequence_model');
@@ -9,7 +10,7 @@ class Add_Labels extends BioController {
     $this->load->model('label_sequence_model');
   }
   
-  function add_dialog($seq_id, $label_id)
+  public function add_dialog($seq_id, $label_id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_thickbox();
@@ -58,7 +59,7 @@ class Add_Labels extends BioController {
     }
   }
   
-  function add_auto()
+  public function add_auto()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();
@@ -75,7 +76,7 @@ class Add_Labels extends BioController {
     }
   }
   
-  function add()
+  public function add()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();

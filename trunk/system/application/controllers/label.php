@@ -1,14 +1,14 @@
 <?php
 
-class Label extends BioController {
-
+class Label extends BioController
+{
   function Label()
   {
     parent::BioController();
     $this->load->model('label_model');
   }
 
-  function browse()
+  public function browse()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -26,7 +26,7 @@ class Label extends BioController {
     $this->smarty->view('label/list');
   }
 
-  function get_label_by_name($name)
+  public function get_label_by_name($name)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -37,7 +37,7 @@ class Label extends BioController {
     $this->json_return($label);
   }
 
-  function autocomplete_labels()
+  public function autocomplete_labels()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -72,7 +72,7 @@ class Label extends BioController {
     output_autocomplete_data($labels, 'name');
   }
 
-  function get_all()
+  public function get_all()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -101,7 +101,7 @@ class Label extends BioController {
     $this->json_return($labels);
   }
 
-  function count_total()
+  public function count_total()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -121,7 +121,7 @@ class Label extends BioController {
     $this->json_return($total);
   }
 
-  function total_sequences($id)
+  public function total_sequences($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -132,7 +132,7 @@ class Label extends BioController {
     $this->json_return($this->label_sequence_model->total_label($id));
   }
 
-  function view($id)
+  public function view($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -160,7 +160,7 @@ class Label extends BioController {
     $this->smarty->view('label/view');
   }
 
-  function add()
+  public function add()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -188,7 +188,7 @@ class Label extends BioController {
     $this->smarty->view('label/add');
   }
 
-  function __form_validation($max_names)
+  private function __form_validation($max_names)
   {
     $errors = false;
 
@@ -274,7 +274,7 @@ class Label extends BioController {
     }
   }
 
-  function do_add()
+  public function do_add()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -299,7 +299,7 @@ class Label extends BioController {
     }
   }
 
-  function delete_redirect()
+  public function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -311,7 +311,7 @@ class Label extends BioController {
     redirect('label/browse');
   }
 
-  function delete_dialog($id)
+  public function delete_dialog($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_nothing();
@@ -326,7 +326,8 @@ class Label extends BioController {
     $this->smarty->view_s('label/delete');
   }
 
-  function edit_name() {
+  public function edit_name()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -339,7 +340,8 @@ class Label extends BioController {
     echo $this->label_model->get_name($id);
   }
 
-  function edit_type() {
+  public function edit_type()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -352,7 +354,8 @@ class Label extends BioController {
     echo $this->label_model->get_type($id);
   }
 
-  function edit_code() {
+  public function edit_code()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -369,7 +372,8 @@ class Label extends BioController {
     }
   }
 
-  function edit_validcode() {
+  public function edit_validcode()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -386,7 +390,8 @@ class Label extends BioController {
     }
   }
 
-  function edit_comment() {
+  public function edit_comment()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -407,7 +412,7 @@ class Label extends BioController {
     }
   }
   
-  function get_comment($id)
+  public function get_comment($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -416,7 +421,7 @@ class Label extends BioController {
     echo $this->label_model->get_comment($id);
   }
   
-  function get_code($id)
+  public function get_code($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -425,7 +430,7 @@ class Label extends BioController {
     echo $this->label_model->get_code($id);
   }
   
-  function get_validcode($id)
+  public function get_validcode($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -434,7 +439,8 @@ class Label extends BioController {
     echo $this->label_model->get_validcode($id);
   }
 
-  function edit_bool($what) {
+  public function edit_bool($what)
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -448,7 +454,7 @@ class Label extends BioController {
     echo $value ? "Yes" : "No";
   }
   
-  function export()
+  public function export()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -464,7 +470,7 @@ class Label extends BioController {
             'user' => $user_filter)));
   }
   
-  function export_id()
+  public function export_id()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -476,7 +482,7 @@ class Label extends BioController {
     $this->__do_export($labels);
   }
   
-  function __do_export($labels)
+  private function __do_export($labels)
   {
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="labels.xml"');
@@ -486,7 +492,7 @@ class Label extends BioController {
     echo export_labels_xml($labels);
   }
   
-  function import()
+  public function import()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -497,7 +503,7 @@ class Label extends BioController {
     $this->smarty->view('label/import');
   }
   
-  function do_import()
+  public function do_import()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();

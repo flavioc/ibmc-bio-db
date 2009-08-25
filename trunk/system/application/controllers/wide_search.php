@@ -12,7 +12,7 @@ class Wide_Search extends BioController
     $this->load->model('taxonomy_rank_model');
   }
   
-  function search()
+  public function search()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -35,7 +35,7 @@ class Wide_Search extends BioController
     }
   }
   
-  function general_search()
+  public function general_search()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();

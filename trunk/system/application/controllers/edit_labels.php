@@ -1,6 +1,7 @@
 <?php
 
-class Edit_Labels extends BioController {
+class Edit_Labels extends BioController
+{
   function Edit_Labels()
   {
     parent::BioController();
@@ -9,7 +10,7 @@ class Edit_Labels extends BioController {
     $this->load->model('label_sequence_model');
   }
   
-  function edit_dialog($id)
+  public function edit_dialog($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_thickbox();
@@ -62,7 +63,7 @@ class Edit_Labels extends BioController {
     }
   }
   
-  function edit_auto()
+  public function edit_auto()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();
@@ -83,7 +84,7 @@ class Edit_Labels extends BioController {
     }
   }
   
-  function edit()
+  public function edit()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();

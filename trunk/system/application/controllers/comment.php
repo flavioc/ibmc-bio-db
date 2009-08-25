@@ -1,13 +1,14 @@
 <?php
 
-class Comment extends BioController {
-  
-  function Comment() {
+class Comment extends BioController
+{ 
+  function Comment()
+  {
     parent::BioController();
     $this->load->model('comment_model');
   }
 
-  function edit()
+  public function edit()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -20,7 +21,7 @@ class Comment extends BioController {
     $this->smarty->view('comment/edit');
   }
 
-  function do_edit()
+  public function do_edit()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();

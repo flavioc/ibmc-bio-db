@@ -2,7 +2,7 @@
 
 class BioController extends Controller
 {
-  var $smarty;
+  protected $smarty;
 
   function BioController()
   {
@@ -60,7 +60,7 @@ class BioController extends Controller
     $this->use_livequery();
   }
 
-  function use_paging_size()
+  protected function use_paging_size()
   {
     if($this->logged_in) {
       $this->load->model('configuration_model');
@@ -68,84 +68,84 @@ class BioController extends Controller
     }
   }
 
-  function use_autocomplete()
+  protected function use_autocomplete()
   {
     $this->smarty->load_scripts(AUTOCOMPLETE_SCRIPT);
     $this->smarty->load_stylesheets(AUTOCOMPLETE_THEME);
   }
   
-  function use_datepicker()
+  protected function use_datepicker()
   {
     $this->smarty->load_scripts(DATEPICKER_SCRIPT);
     $this->smarty->load_stylesheets(DATEPICKER_THEME);
   }
 
-  function use_thickbox()
+  protected function use_thickbox()
   {
     $this->smarty->load_scripts(THICKBOX_SCRIPT);
     $this->smarty->load_stylesheets(THICKBOX_THEME);
   }
 
-  function use_impromptu()
+  protected function use_impromptu()
   {
     $this->smarty->load_scripts(IMPROMPTU_SCRIPT, AJAXIMPROMPTU_SCRIPT);
     $this->smarty->load_stylesheets(IMPROMPTU_THEME);
   }
 
-  function use_jquery_ui()
+  protected function use_jquery_ui()
   {
     $this->smarty->load_scripts('ui/ui.core.js');
   }
 
-  function use_selectable()
+  protected function use_selectable()
   {
     $this->use_jquery_ui();
     $this->smarty->load_scripts('ui/ui.selectable.js');
   }
 
-  function use_livequery()
+  protected function use_livequery()
   {
     $this->smarty->load_scripts(LIVEQUERY_SCRIPT);
   }
 
-  function use_mygrid()
+  protected function use_mygrid()
   {
     $this->smarty->load_scripts(JSON_SCRIPT, APPENDDOM_SCRIPT,
       CONFIRM_SCRIPT, JEDITABLE_SCRIPT, MYGRID_SCRIPT);
   }
 
-  function use_plusminus()
+  protected function use_plusminus()
   {
     $this->smarty->load_scripts(ZOOM_SCRIPT, PLUSMINUS_SCRIPT);
   }
   
-  function use_highlight()
+  protected function use_highlight()
   {
     $this->smarty->load_scripts('ui/effects.core.js', 'ui/effects.highlight.js');
   }
 
-  function set_form_error($what, $msg)
+  protected function set_form_error($what, $msg)
   {
     $error_str = build_error_name($what);
     $this->session->set_flashdata($error_str, $msg);
   }
 
-  function set_upload_form_error($what)
+  protected function set_upload_form_error($what)
   {
     $this->session->set_flashdata(build_error_name($what), $this->upload->display_errors('', ''));
   }
 
-  function get_post($what)
+  protected function get_post($what)
   {
     return $this->input->xss_clean(trim($this->input->post($what)));
   }
 
-  function get_post_filename($what)
+  protected function get_post_filename($what)
   {
     return $_FILES[$what]['name'];
   }
 
-  function set_form_value($what)
+  protected function set_form_value($what)
   {
     $initial = $this->get_post($what);
     if($initial) {
@@ -153,7 +153,7 @@ class BioController extends Controller
     }
   }
 
-  function assign_row_data($what, $with_initial = true)
+  protected function assign_row_data($what, $with_initial = true)
   {
     $msg = form_error($what);
 
@@ -166,17 +166,18 @@ class BioController extends Controller
     }
   }
 
-  function set_error_message($msg)
+  protected function set_error_message($msg)
   {
     $this->session->set_flashdata('error_msg', $msg);
   }
   
-  function set_info_message($msg)
+  protected function set_info_message($msg)
   {
     $this->session->set_flashdata('info_msg', $msg);
   }
 
-  function get_parameter($what)
+  // FIXME: should be protected, but because of BioSmarty it's public
+  public function get_parameter($what)
   {
     if(array_key_exists($what, $_GET)) {
       return trim($this->input->xss_clean($_GET[$what]));
@@ -185,17 +186,17 @@ class BioController extends Controller
     }
   }
 
-  function json_return($val)
+  protected function json_return($val)
   {
     echo json_encode($val);
   }
 
-  function return_empty()
+  protected function return_empty()
   {
     echo "---";
   }
 
-  function invalid_permission($msg = null)
+  protected function invalid_permission($msg = null)
   {
     $url = uri_string();
 
@@ -207,56 +208,56 @@ class BioController extends Controller
     redirect("welcome/index?redirect=$url");
   }
 
-  function invalid_permission_admin()
+  protected function invalid_permission_admin()
   {
     return $this->invalid_permission("Please login as admin");
   }
 
-  function invalid_json_permission($val)
+  protected function invalid_json_permission($val)
   {
     $this->json_return($val);
     return false;
   }
 
-  function invalid_permission_empty()
+  protected function invalid_permission_empty()
   {
     return $this->invalid_json_permission(array());
   }
 
-  function invalid_permission_field()
+  protected function invalid_permission_field()
   {
     return $this->invalid_json_permission("Please login!");
   }
 
-  function invalid_permission_false()
+  protected function invalid_permission_false()
   {
     return $this->invalid_json_permission(false);
   }
 
-  function invalid_permission_zero()
+  protected function invalid_permission_zero()
   {
     return $this->invalid_json_permission(0);
   }
 
-  function invalid_permission_thickbox()
+  protected function invalid_permission_thickbox()
   {
     echo "Please login";
     return false;
   }
 
-  function invalid_permission_nothing()
+  protected function invalid_permission_nothing()
   {
     return false;
   }
 
-  function get_order($what)
+  protected function get_order($what)
   {
     $param = "order_$what";
     $get = $this->get_parameter($param);
     return $get;
   }
 
-  function __get_label_types($only_searchable)
+  protected function __get_label_types($only_searchable)
   {
     $ret = array('integer', 'text', 'position', 'ref', 'tax', 'url', 'bool', 'date');
 
@@ -267,12 +268,12 @@ class BioController extends Controller
     return build_data_array($ret);
   }
 
-  function assign_label_types($only_searchable = false)
+  protected function assign_label_types($only_searchable = false)
   {
     $this->smarty->assign('types', $this->__get_label_types($only_searchable));
   }
   
-  function __get_xml_upload_config()
+  protected function __get_xml_upload_config()
   {
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
@@ -282,7 +283,7 @@ class BioController extends Controller
     return $config;
   }
   
-  function __get_obj_label_config()
+  protected function __get_obj_label_config()
   {
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
@@ -292,7 +293,7 @@ class BioController extends Controller
     return $config;
   }
   
-  function __read_uploaded_file($name, $config)
+  protected function __read_uploaded_file($name, $config)
   {
     $this->load->library('upload', $config);
     
@@ -309,7 +310,7 @@ class BioController extends Controller
                   'bytes' => $bytes);
   }
   
-  function __add_label($seq_id, $label_id, $generate)
+  protected function __add_label($seq_id, $label_id, $generate)
   {
     $this->load->model('sequence_model');
     $this->load->model('label_model');
@@ -378,7 +379,7 @@ class BioController extends Controller
     }
   }
   
-  function __edit_label($id, $generate)
+  protected function __edit_label($id, $generate)
   {
     $this->load->model('sequence_model');
     $this->load->model('label_model');
@@ -443,7 +444,7 @@ class BioController extends Controller
     }
   }
   
-  function __get_transform_label($key = 'transform', $mode = 'get')
+  protected function __get_transform_label($key = 'transform', $mode = 'get')
   {
     if($mode == 'get') {
       $transform = $this->get_parameter($key);

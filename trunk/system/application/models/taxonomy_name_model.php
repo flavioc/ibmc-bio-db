@@ -7,27 +7,27 @@ class Taxonomy_name_model extends BioModel
     parent::BioModel('taxonomy_name');
   }
 
-  function get($id)
+  public function get($id)
   {
     return $this->get_id($id);
   }
 
-  function get_name_and_type($id)
+  public function get_name_and_type($id)
   {
     return $this->get_id($id, 'taxonomy_name_info');
   }
 
-  function get_tax($tax_id)
+  public function get_tax($tax_id)
   {
     return $this->get_all_by_field('tax_id', $tax_id, 'taxonomy_name_info');
   }
 
-  function get_tax_id($id)
+  public function get_tax_id($id)
   {
     return $this->get_field($id, 'tax_id');
   }
 
-  function edit_type($id, $type_id)
+  public function edit_type($id, $type_id)
   {
     $type_model = $this->load_model('taxonomy_name_type_model');
     if(!$type_model->has_id($type_id)) {
@@ -49,7 +49,7 @@ class Taxonomy_name_model extends BioModel
     return $ret;
   }
 
-  function edit_name($id, $name)
+  public function edit_name($id, $name)
   {
     $tax = $this->get_tax_id($id);
 
@@ -65,12 +65,12 @@ class Taxonomy_name_model extends BioModel
     return $ret;
   }
 
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
 
-  function add($tax, $name, $type)
+  public function add($tax, $name, $type)
   {
     $tax_model = $this->load_model('taxonomy_model');
     
@@ -101,17 +101,17 @@ class Taxonomy_name_model extends BioModel
     return $ret;
   }
 
-  function delete($id)
+  public function delete($id)
   {
     return $this->delete_id($id);
   }
 
-  function get_id_by_name($name)
+  public function get_id_by_name($name)
   {
     return $this->get_id_by_field('name', $name);
   }
 
-  function get_id_by_name_and_tax($tax, $name)
+  public function get_id_by_name_and_tax($tax, $name)
   {
     $this->db->select('id');
     $this->db->where('tax_id', intval($tax));

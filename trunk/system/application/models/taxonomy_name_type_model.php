@@ -7,17 +7,17 @@ class Taxonomy_name_type_model extends BioModel
     parent::BioModel('taxonomy_name_type');
   }
 
-  function get($id)
+  public function get($id)
   {
     return $this->get_id($id);
   }
 
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
 
-  function add($name)
+  public function add($name)
   {
     $name = trim($name);
     if(strlen($name) <= 0 || strlen($name) > 512 || $this->has_name($name)) {
@@ -27,7 +27,7 @@ class Taxonomy_name_type_model extends BioModel
     return $this->insert_data(array('name' => $name));
   }
 
-  function get_type_id($type)
+  public function get_type_id($type)
   {
     $id = $this->get_id_by_field('name', $type);
 
@@ -38,7 +38,7 @@ class Taxonomy_name_type_model extends BioModel
     }
   }
   
-  function has_name($name)
+  public function has_name($name)
   {
     return $this->has_field('name', $name);
   }

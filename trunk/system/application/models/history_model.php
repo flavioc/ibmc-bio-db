@@ -9,19 +9,19 @@ class History_model extends Model
     parent::Model();
   }
 
-  function has_id($id)
+  public function has_id($id)
   {
     $query = $this->db->get_where(self::$table, array('id' => $id));
 
     return $query->num_rows() == 1;
   }
   
-  function delete_id($id)
+  public function delete_id($id)
   {
     return $this->db->delete('history', array('id' => $id));
   }
 
-  function update($id)
+  public function update($id)
   {
     $this->db->where('id', $id);
     $data = array(
@@ -33,7 +33,7 @@ class History_model extends Model
     return true;
   }
 
-  function add()
+  public function add()
   {
     $data = array('update_user_id' => $this->user_id);
     $this->db->insert(self::$table, $data);
@@ -41,7 +41,7 @@ class History_model extends Model
     return $this->db->insert_id();
   }
 
-  function get($id)
+  public function get($id)
   {
     $query = $this->db->get_where('history_info', array('id' => $id));
 

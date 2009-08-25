@@ -526,22 +526,6 @@ function smarty_function_assign_id($params, &$smarty)
   $smarty->assign($var, $var . '_' . strval($val));
 }
 
-function smarty_function_set_delimiters($params, &$smarty)
-{
-  $left = $params['left'];
-  $right = $params['right'];
-
-  $smarty->change_delimiters($left, $right);
-
-  return "";
-}
-
-function smarty_function_restore_delimiters($params, &$smarty)
-{
-  $smarty->change_delimiters('{', '}');
-  return "";
-}
-
 function smarty_function_encode_json_data($params, &$smarty)
 {
   $key = $params['key'];
@@ -666,7 +650,7 @@ function smarty_function_encode_json($params, &$smarty)
 
 class BioSmarty extends Smarty
 {
-  var $controller;
+  private $controller;
 
 	function BioSmarty()
   {
@@ -691,8 +675,6 @@ class BioSmarty extends Smarty
     $this->register_function('top_dir', 'smarty_function_top_dir');
     $this->register_function('site', 'smarty_function_site');
     $this->register_function('assign_id', 'smarty_function_assign_id');
-    $this->register_function('set_delimiters', 'smarty_function_set_delimiters');
-    $this->register_function('restore_delimiters', 'smarty_function_restore_delimiters');
     $this->register_function('encode_json_data', 'smarty_function_encode_json_data');
     $this->register_function('loader_pic', 'smarty_function_loader_pic');
     $this->register_function('boolean', 'smarty_function_boolean');
@@ -719,12 +701,12 @@ class BioSmarty extends Smarty
     $this->footer = 'footer.tpl';
   }
 
-  function __build_template_path($file)
+  private function __build_template_path($file)
   {
     return $this->template_dir . $file;
   }
 
-  function __get_resource_name($name)
+  private function __get_resource_name($name)
   {
     $resource_name = $name;
 
@@ -740,8 +722,8 @@ class BioSmarty extends Smarty
     return $resource_name;
   }
 
-	function view($resource_name)   {
-	  
+	public function view($resource_name)
+	{  
 	  $this->controller->load->model('comment_model');
     $comment = htmlspecialchars($this->controller->comment_model->get());
     $this->assign('comment_header', $comment);
@@ -757,30 +739,24 @@ class BioSmarty extends Smarty
     return $ret;
   }
 
-  function view_s($resource_name)
+  public function view_s($resource_name)
   {
     return parent::display($this->__get_resource_name($resource_name));
   }
 
-  function view_js($js_temp)
+  public function view_js($js_temp)
   {
     return parent::display($this->__get_resource_name("$js_temp.js.tpl"));
   }
 
-  function set_controller($what)
+  public function set_controller($what)
   {
     $this->controller = $what;
   }
 
-  function assign_flashdata($what)
-  {
-    $data = $this->controller->session->flashdata($what);
-    $this->assign($what, $data);
-  }
-
   // assign the $scripts variable to all the arguments passed in
   // all the js scripts will be loaded from the scripts/ directory
-  function load_scripts()
+  public function load_scripts()
   {
     $scripts = func_get_args();
     foreach($scripts as $script) {
@@ -789,7 +765,7 @@ class BioSmarty extends Smarty
   }
 
   // same thing, but for css stylesheets
-  function load_stylesheets()
+  public function load_stylesheets()
   {
     $stylesheets = func_get_args();
     foreach($stylesheets as $sheet) {
@@ -797,7 +773,7 @@ class BioSmarty extends Smarty
     }
   }
 
-  function fetch_form_row($what, $default = null)
+  public function fetch_form_row($what, $default = null)
   {
     $initial_str = build_initial_name($what);
     $initial = $this->controller->session->flashdata($initial_str);
@@ -819,22 +795,15 @@ class BioSmarty extends Smarty
     }
   }
 
-  function change_delimiters($left, $right)
-  {
-    $this->left_delimiter = $left;
-    $this->right_delimiter = $right;
-  }
-
-  function get_initial_var($var)
+  public function get_initial_var($var)
   {
     $var_name = build_initial_name($var);
     return $this->get_template_vars($var_name);
   }
 
-  function set_initial_var($var, $value)
+  public function set_initial_var($var, $value)
   {
     $var_name = build_initial_name($var);
     return $this->assign($var_name, $value);
   }
 }
-

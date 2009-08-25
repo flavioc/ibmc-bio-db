@@ -2,8 +2,8 @@
 
 class BioForm_validation extends CI_Form_validation
 {
-  var $base_password_rules = 'trim|min_length[6]|max_length[32]';
-  var $base_username_rules = 'trim|required|min_length[2]|max_length[32]';
+  private $base_password_rules = 'trim|min_length[6]|max_length[32]';
+  private $base_username_rules = 'trim|required|min_length[2]|max_length[32]';
 
   function BioForm_validation()
   {
@@ -12,7 +12,7 @@ class BioForm_validation extends CI_Form_validation
     $this->set_error_delimiters('', '');
   }
 
-  function date_check($date)
+  public function date_check($date)
   {
     $vec = explode('-', $date);
 
@@ -27,17 +27,17 @@ class BioForm_validation extends CI_Form_validation
     return checkdate($month, $day, $year);
   }
 
-  function set_username_rule($what = 'username')
+  public function set_username_rule($what = 'username')
   {
     $this->set_rules($what, 'Username', $this->base_username_rules);
   }
 
-  function set_complete_name_rule($what = 'complete_name')
+  public function set_complete_name_rule($what = 'complete_name')
   {
     $this->set_rules($what, 'Complete name', 'trim|max_length[512]');
   }
 
-  function set_password_rule($what = 'password', $required = true)
+  public function set_password_rule($what = 'password', $required = true)
   {
     $rules = $this->base_password_rules;
 
@@ -48,7 +48,7 @@ class BioForm_validation extends CI_Form_validation
     $this->set_rules($what, 'Password', $rules);
   }
 
-  function set_password_retype_rule($what, $other, $required = true)
+  public function set_password_retype_rule($what, $other, $required = true)
   {
     $rules = $this->base_password_rules . '|matches[' . $other . ']';
 
@@ -59,12 +59,12 @@ class BioForm_validation extends CI_Form_validation
     $this->set_rules($what, 'Retyped password', $rules);
   }
   
-  function set_email_rule($what = 'email')
+  public function set_email_rule($what = 'email')
   {
     $this->set_rules($what, 'Email', 'trim|required|valid_email|max_length[128]');
   }
 
-  function set_date_rule($what, $msg)
+  public function set_date_rule($what, $msg)
   {
     $this->set_rules($what, $msg, 'trim|date_check');
   }

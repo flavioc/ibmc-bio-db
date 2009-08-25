@@ -7,17 +7,17 @@ class Taxonomy_tree_model extends BioModel
     parent::BioModel('taxonomy_tree');
   }
 
-  function has_tree($id)
+  public function has_tree($id)
   {
     return $this->has_id($id);
   }
 
-  function __select()
+  private function __select()
   {
     $this->db->select('tree_id AS id, tree_name AS name, update, update_user_id, user_name');
   }
 
-  function __filter($filtering = array())
+  private function __filter($filtering = array())
   {
     if(array_key_exists('name', $filtering)) {
       $name = $filtering['name'];
@@ -35,7 +35,7 @@ class Taxonomy_tree_model extends BioModel
     }
   }
 
-  function get_trees($filtering = array(), $ordering = array())
+  public function get_trees($filtering = array(), $ordering = array())
   {
     $this->__select();
     $this->order_by($ordering, 'name', 'asc');
@@ -44,18 +44,18 @@ class Taxonomy_tree_model extends BioModel
     return $this->get_all('taxonomy_tree_info_history');
   }
 
-  function get($id)
+  public function get($id)
   {
     $this->__select();
     return $this->get_id($id, 'taxonomy_tree_info_history', 'tree_id');
   }
 
-  function has_name($name)
+  public function has_name($name)
   {
     return $this->has_field('name', $name);
   }
 
-  function add($name)
+  public function add($name)
   {
     $name = trim($name);
     
@@ -66,7 +66,7 @@ class Taxonomy_tree_model extends BioModel
     return $this->insert_data_with_history(array('name' => $name));
   }
 
-  function edit($id, $new_name)
+  public function edit($id, $new_name)
   {
     $new_name = trim($new_name);
     
@@ -87,22 +87,22 @@ class Taxonomy_tree_model extends BioModel
     return $ret;
   }
 
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
   
-  function get_id_by_name($name)
+  public function get_id_by_name($name)
   {
     return $this->get_id_by_field('name', $name);
   }
   
-  function get_ncbi_id()
+  public function get_ncbi_id()
   {
     return $this->get_id_by_field('NCBI');
   }
   
-  function delete_all_custom()
+  public function delete_all_custom()
   {
     $ncbi = $this->get_ncbi_id();
     
@@ -110,4 +110,3 @@ class Taxonomy_tree_model extends BioModel
     return $this->delete_rows();
   }
 }
-
