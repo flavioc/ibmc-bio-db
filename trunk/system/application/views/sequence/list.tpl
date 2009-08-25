@@ -28,7 +28,9 @@ $(function () {
 {form_submit name=submit_export msg='Export all'}
 {form_end}
 
+{if $logged_in}
 {button name="add_seq" msg="Add new" to="sequence/add"}
+{/if}
 
 {literal}
 <style>

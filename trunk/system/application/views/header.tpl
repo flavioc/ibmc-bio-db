@@ -37,7 +37,6 @@
 </div>
 
 <div id="leftmenu">
-  {if $logged_in}
 {literal}
 <script>
   $().ready(function() {
@@ -54,10 +53,13 @@
     </ul></li>
     <li id="sequence_menu"><a href="#">Sequences</a>
     <ul id="sequence_id">
+      {if $logged_in}
       <li><a href="{site}/sequence/add">Add</a></li>
       <li><a href="{site}/sequence/add_batch">Batch</a></li>
+      {/if}
       <li><a href="{site}/sequence/browse">List</a></li>
     </ul></li>
+    {if $logged_in}
     <li id="label_menu"><a href="#">Labels</a>
     <ul id="label_id">
       {if $is_admin}
@@ -69,26 +71,33 @@
       <li><a href="{site}/label/import">Import</a></li>
       {/if}
     </ul></li>
+    {/if}
     <li id="taxonomy_menu"><a href="#">Taxonomies</a>
     <ul id="taxonomy_id">
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
+      {if $logged_in}
       <li><a href="{site}/taxonomy/add">Add</a></li>
+      {/if}
       <li id="tree_menu"><a href="#">Trees</a>
       <ul id="tree_id">
-        <li><a href="{site}/tree/add">Add</a></li>
         <li><a href="{site}/tree">List</a></li>
+        {if $logged_in}
+        <li><a href="{site}/tree/add">Add</a></li>
         {if $is_admin}
         <li><a href="{site}/tree/import">Import</a></li>
+        {/if}
         {/if}
       </ul></li>
       <li id="rank_menu"><a href="#">Ranks</a>
       <ul id="rank_id">
-        <li><a href="{site}/rank/add">Add</a></li>
         <li><a href="{site}/rank/list_all">List</a></li>
         <li><a href="{site}/rank/export">Export</a></li>
+        {if $logged_in}
+        <li><a href="{site}/rank/add">Add</a></li>
         {if $is_admin}
         <li><a href="{site}/rank/import">Import</a></li>
+        {/if}
         {/if}
       </ul></li>
     </ul></li>
@@ -106,11 +115,12 @@
     {/if}
   </ul>
 
+{if $logged_in}
   Logged as: <a href="{site}/profile/view/{$user_id}">{$username}</a> ({$user_type})
   {form_open to='welcome/logout' name='form_logout'}
   {form_submit name=submit msg=Logout}
 
-  {else}
+{else}
 
 {form_open to='welcome/login' name=login_form}
 

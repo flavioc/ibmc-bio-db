@@ -16,7 +16,7 @@ function start_tax_search_form(dom, put_addchild, click_fun)
   form_tax_add_child = put_addchild;
   form_tax_click_fun = click_fun;
 
-  if(form_tax_add_child) {
+  if(form_tax_add_child && get_logged_in()) {
     form_tax_field_names.push('Child');
     form_tax_fields.push('add_child');
   }

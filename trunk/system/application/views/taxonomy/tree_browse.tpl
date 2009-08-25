@@ -7,6 +7,13 @@ $(document).ready(function () {
 
   var base_site = get_app_url() + "/taxonomy/";
   var parents = {};
+  var fieldNames = ['Select', 'Name', 'Rank', 'Tree'];
+  var fields = ['select', 'name', 'rank_name', 'tree_name'];
+  
+  if(get_logged_in()) {
+    fieldNames.push('Child');
+    fields.push('add_child');
+  }
 
   function add_path(path, what, tax, tree)
   {
@@ -60,8 +67,8 @@ $(document).ready(function () {
       url: get_app_url() + '/taxonomy',
       total: 'total_taxonomy_children/' + tax + '/' + tree,
       retrieve: 'taxonomy_children/' + tax + '/' + tree,
-      fieldNames: ['Select', 'Name', 'Rank', 'Tree', 'Child'],
-      fields: ['select', 'name', 'rank_name', 'tree_name', 'add_child'],
+      fieldNames: fieldNames,
+      fields: fields,
       tdClass: {
         select: 'centered',
         tree_name: 'centered',
@@ -181,5 +188,7 @@ $(function () {
 <a class="clickable" id="go_up" href="#">Go up <span id="go_up_what"></span></a>
 <div id="show_data"></div>
 <br />
-<a class="clickable" id="add_child" href="#">Add child</a>
 
+{if $logged_in}
+<a class="clickable" id="add_child" href="#">Add child</a>
+{/if}

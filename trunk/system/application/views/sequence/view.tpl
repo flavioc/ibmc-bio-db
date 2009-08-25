@@ -1,4 +1,8 @@
+{if $logged_in}
 <h2>View/Edit sequence</h2>
+{else}
+<h2>View sequence</h2>
+{/if}
 
 {if $logged_in}
 <script>
@@ -30,14 +34,16 @@ $(document).ready(function() {
     finishHook: reload_labels_list,
     loadurl: base_site + '/fetch/' + sequence.id
   });
+  
+  $('#seqname, #seqcontent').addClass('writeable');
 });
 {/literal}
 </script>
 {/if}
 
 <div class="data_show">
-  <p><span class="desc">Name: </span><span id="seqname" class="writeable">{$sequence.name}</span></p>
-  <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span><span class="writeable" id="seqcontent">{$sequence.content}...</span></p>
+  <p><span class="desc">Name: </span><span id="seqname">{$sequence.name}</span></p>
+  <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span><span id="seqcontent">{$sequence.content}...</span></p>
   {if $trans_sequence}
   <p><span class="desc">Translated:</span><a href="{site}/sequence/view/{$trans_sequence.id}">{$trans_sequence.name}</a></p>
   {/if}

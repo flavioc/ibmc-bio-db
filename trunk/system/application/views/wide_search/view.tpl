@@ -56,6 +56,20 @@ $(function () {
 <div id="labels_box"></div>
 {literal}<script>
 $(function () {
+  var links = {
+    user_name: function (row) {
+      return get_app_url() + '/profile/view/' + row.update_user_id;
+    }
+  };
+  
+  if(get_logged_in()) {
+    links = $.extend(links, {
+      name: function (row) {
+        return get_app_url() + '/label/view/' + row.id;
+      }
+    });
+  }
+  
   $('#labels_box')
   .gridEnable()
   .grid({
@@ -68,14 +82,7 @@ $(function () {
     params: {
       name: "{/literal}{$search}{literal}"
     },
-    links: {
-      name: function (row) {
-        return get_app_url() + '/label/view/' + row.id;
-      },
-      user_name: function (row) {
-        return get_app_url() + '/profile/view/' + row.update_user_id;
-      }
-    },
+    links: links,
     width: {
       type: '20%',
       update: '30%',

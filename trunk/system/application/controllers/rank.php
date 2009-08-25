@@ -11,10 +11,6 @@ class Rank extends BioController
 
   public function list_all()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->smarty->assign('title', 'Rank list');
     $this->use_mygrid();
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
@@ -26,10 +22,6 @@ class Rank extends BioController
 
   public function view($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     if(!$this->taxonomy_rank_model->has_rank($id)) {
       $this->smarty->assign('title', 'Rank not found');
       $this->smarty->assign('id', $id);
@@ -112,10 +104,6 @@ class Rank extends BioController
 
   public function get_all()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
 
@@ -142,10 +130,6 @@ class Rank extends BioController
 
   public function get_total()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
-    }
-
     $filter_name = $this->get_parameter('name');
     $filter_parent = $this->get_parameter('parent_name');
     $filter_user = $this->get_parameter('user');
@@ -236,10 +220,6 @@ class Rank extends BioController
   
   public function export()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-    
     $filter_name = $this->get_post('export_name');
     $filter_parent = $this->get_post('export_parent');
     $filter_user = $this->get_post('export_user');

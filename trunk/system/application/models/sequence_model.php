@@ -49,6 +49,12 @@ class Sequence_model extends BioModel
     if(array_key_exists('update_date', $filtering)) {
       $this->db->where('`update` IS NOT NULL');
     }
+    
+    if(array_key_exists('only_public', $filtering)) {
+      if($filtering['only_public']) {
+        $this->db->where("EXISTS (SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id AND label_sequence_info.name = 'perm_public' AND bool_data IS TRUE)", NULL, FALSE);
+      }
+    }
   }
 
   public function get_all($start = null, $size = null,

@@ -36,10 +36,6 @@ class Profile extends BioController
 
   public function view($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->__view($id);
   }
 

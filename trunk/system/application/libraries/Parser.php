@@ -131,6 +131,10 @@ class Parser
     if(!$label) {
       throw new Exception("unknown label $label_name");
     }
+    $CI =& get_instance();
+    if(!$label['public'] && !$CI->logged_in) {
+      throw new Exception("label is private: $label_name");
+    }
     $type = $label['type'];
     
     $oper = $this->tokenizer->get_next();

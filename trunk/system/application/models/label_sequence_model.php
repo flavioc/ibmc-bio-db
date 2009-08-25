@@ -5,6 +5,8 @@ class Label_sequence_model extends BioModel
   private static $label_data_fields = 'int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, DATE_FORMAT(date_data, "%d-%m-%Y") AS date_data, taxonomy_name, sequence_name';
 
   private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
+  
+  private static $public_sequence_where = "EXISTS (SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id AND label_sequence_info.name = 'perm_public' AND label_sequence_info.bool_data IS TRUE)";
 
   function Label_sequence_model()
   {
@@ -917,7 +919,7 @@ class Label_sequence_model extends BioModel
     return $oper == 'and' || $oper == 'or' || $oper == 'not';
   }
 
-  private function __get_search_labels($term, $label_model, &$ret)
+  private function __get_search_labels($term, $label_model, &$ret, $only_public)
   {
     if($term != null) {
       $oper = $term['oper'];
@@ -925,22 +927,25 @@ class Label_sequence_model extends BioModel
       if($this->__compound_oper($oper)) {
         $operands = $term['operands'];
         foreach($operands as $operand) {
-          $this->__get_search_labels($operand, $label_model, $ret);
+          $this->__get_search_labels($operand, $label_model, $ret, $only_public);
         }
       } else {
         $label = $term['label'];
         if(!array_key_exists($label, $ret)) {
-          $ret[$label] = $label_model->get_by_name($label);
+          $label_data = $label_model->get_by_name($label);
+          if($label_data['public'] || !$only_public) {
+            $ret[$label] = $label_data;
+          }
         }
       }
     }
   }
 
-  private function _get_search_labels($term, $label_model)
+  private function _get_search_labels($term, $label_model, $only_public)
   {
     $ret = array();
 
-    $this->__get_search_labels($term, $label_model, $ret);
+    $this->__get_search_labels($term, $label_model, $ret, $only_public);
 
     return $ret;
   }
@@ -1092,6 +1097,10 @@ class Label_sequence_model extends BioModel
       $label_id = $label['id'];
       $oper = $term['oper'];
       
+      if(!$label) {
+        return 'FALSE'; // label not found
+      }
+      
       if(!is_numeric($label_id)) {
         return 'FALSE'; // invalid label id
       }
@@ -1189,29 +1198,39 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  private function __get_search_sql($search)
+  private function __get_search_sql($search, $only_public = false)
   {
     $label_model = $this->load_model('label_model');
-    $labels = $this->_get_search_labels($search, $label_model);
+    $labels = $this->_get_search_labels($search, $label_model, $only_public);
     $sql_part = $this->__get_search_where($search, $labels);
-    return $sql_part;
+    if($only_public) {
+      return $sql_part . ' AND ' . self::$public_sequence_where;
+    } else {
+      return $sql_part;
+    }
   }
 
-  public function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null)
+  public function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null, $only_public = false)
   {
-    $sql_where = $this->__get_search_sql($search);
+    $sql_where = $this->__get_search_sql($search, $only_public);
     $sql_limit = sql_limit($start, $size);
     $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
     $select_sql = "DISTINCT id, user_name, update_user_id, `update`, name";
     
     if($transform) {
+      if($only_public) {
+        $public_where = 'WHERE ' . self::$public_sequence_where;
+      } else {
+        $public_where = '';
+      }
+      
       $sql = "SELECT $select_sql
               FROM (SELECT id AS orig_id FROM sequence_info_history WHERE $sql_where) all_seqs
                   NATURAL JOIN
                    (SELECT seq_id AS orig_id, ref_data AS id FROM label_sequence WHERE label_id = $transform
                                                                     AND ref_data IS NOT NULL) label_seqs
                   NATURAL JOIN
-                   sequence_info_history
+                 (SELECT * FROM sequence_info_history $public_where) every_seqs
               $sql_order $sql_limit";
     } else {
       $sql = "SELECT $select_sql
@@ -1223,14 +1242,20 @@ class Label_sequence_model extends BioModel
   }
 
   // get total number of sequences with this search tree
-  public function get_search_total($search, $transform = null)
+  public function get_search_total($search, $transform = null, $only_public = false)
   {
-    $sql_where = $this->__get_search_sql($search);
+    $sql_where = $this->__get_search_sql($search, $only_public);
     
     if($transform) {
+      if($only_public) {
+        $public_where = 'WHERE EXISTS(SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = label_seqs.ref_data AND label_sequence_info.name = \'perm_public\' AND label_sequence_info.bool_data IS TRUE)';
+      } else {
+        $public_where = '';
+      }
       $sql = "SELECT count(DISTINCT ref_data) AS total
               FROM (SELECT id FROM sequence_info_history WHERE $sql_where) all_seqs
-                      NATURAL JOIN (SELECT seq_id AS id, ref_data FROM label_sequence WHERE label_id = $transform AND ref_data IS NOT NULL) label_seqs";
+                      NATURAL JOIN (SELECT seq_id AS id, ref_data FROM label_sequence WHERE label_id = $transform AND ref_data IS NOT NULL) label_seqs
+              $public_where";
     } else {
       $sql = "SELECT count(id) AS total
               FROM sequence_info_history

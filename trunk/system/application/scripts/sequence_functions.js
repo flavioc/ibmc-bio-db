@@ -35,9 +35,6 @@ var data_transform_labels = {
       }
   };
 var link_labels = {
-      name: function (row) {
-        return get_app_url() + '/label/view/' + row.label_id;
-      },
       url_data: function (row) {
         return row.url_data;
       },
@@ -60,6 +57,14 @@ var link_labels = {
         return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     };
+  
+if(get_logged_in()) {
+  link_labels = $.extend(link_labels, {
+      name: function (row) {
+        return get_app_url() + '/label/view/' + row.label_id;
+      }
+  });
+}
 
 function select_field(row)
 {
