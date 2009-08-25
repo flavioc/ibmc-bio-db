@@ -200,8 +200,8 @@ class Tree extends BioController
   
   public function import()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
     
     $this->smarty->fetch_form_row('file');
@@ -211,8 +211,8 @@ class Tree extends BioController
   
   public function do_import()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
     
     $this->load->library('upload', $this->__get_xml_upload_config());
