@@ -6,43 +6,44 @@ class Label_sequence_model extends BioModel
 
   private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
 
-  function Label_sequence_model() {
+  function Label_sequence_model()
+  {
     parent::BioModel('label_sequence');
   }
 
-  function __get_select()
+  private function __get_select()
   {
     return self::$label_basic_fields . ", " . self::$label_data_fields . ", update_user_id, `update`, user_name";
   }
 
-  function get_label_id($seq_id, $label_id)
+  public function get_label_id($seq_id, $label_id)
   {
     $this->db->where('seq_id', $seq_id);
     return $this->get_id_by_field('label_id', $label_id);
   }
 
   // retrieve label sequence row using seq id and label id
-  function get_label_info($seq_id, $label_id)
+  public function get_label_info($seq_id, $label_id)
   {
     $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $seq_id);
     return $this->get_row('label_id', $label_id, 'label_sequence_info');
   }
 
-  function get($id)
+  public function get($id)
   {
     $this->db->select($this->__get_select() . ", `code`", FALSE);
     return $this->get_id($id, 'label_sequence_info');
   }
 
-  function get_sequence($id)
+  public function get_sequence($id)
   {
     $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
   }
   
-  function __validate_label_data($type, $data1, $data2)
+  private function __validate_label_data($type, $data1, $data2)
   {
     switch($type) {
       case 'integer':
@@ -87,7 +88,7 @@ class Label_sequence_model extends BioModel
     return false;
   }
   
-  function __fix_data($type, &$data1, &$data2)
+  private function __fix_data($type, &$data1, &$data2)
   {
     switch($type) {
       case 'integer':
@@ -107,7 +108,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function add($seq, $label, $type, $data1 = null, $data2 = null)
+  public function add($seq, $label, $type, $data1 = null, $data2 = null)
   {
     $data = array(
       'seq_id' => $seq,
@@ -139,7 +140,7 @@ class Label_sequence_model extends BioModel
     return false;
   }
 
-  function add_generated($seq_id, $label)
+  public function add_generated($seq_id, $label)
   {
     $data1 = null;
     $data2 = null;
@@ -156,7 +157,7 @@ class Label_sequence_model extends BioModel
     return $this->add($seq_id, $label['id'], $label['type'], $data1, $data2);
   }
 
-  function add_generated_label($seq_id, $label_id, $type = null)
+  public function add_generated_label($seq_id, $label_id, $type = null)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -168,7 +169,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit($id, $type, $data1 = null, $data2 = null)
+  public function edit($id, $type, $data1 = null, $data2 = null)
   {
     $fields = $this->__get_data_fields($type);
 
@@ -195,7 +196,7 @@ class Label_sequence_model extends BioModel
     return $this->edit_data_with_history($id, $data);
   }
 
-  function add_initial_labels($id)
+  public function add_initial_labels($id)
   {
     $label_model = $this->load_model('label_model');
     $labels = $label_model->get_to_add();
@@ -211,7 +212,7 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  function generate_label_value($id, $code)
+  public function generate_label_value($id, $code)
   {
     $seq_model = $this->load_model('sequence_model');
 
@@ -224,7 +225,7 @@ class Label_sequence_model extends BioModel
     return eval($code);
   }
 
-  function add_initial_label($id, $label)
+  public function add_initial_label($id, $label)
   {
     $data1 = null;
     $data2 = null;
@@ -243,7 +244,7 @@ class Label_sequence_model extends BioModel
     return $this->add($id, $label['id'], $label['type'], $data1, $data2);
   }
 
-  function add_auto_label($seq, $label)
+  public function add_auto_label($seq, $label)
   {
     $res = $this->generate_label_value($seq, $label['code']);
 
@@ -260,7 +261,7 @@ class Label_sequence_model extends BioModel
     return $this->add($seq, $label['id'], $label['type'], $data1, $data2);
   }
 
-  function add_auto_label_id($seq, $label_id)
+  public function add_auto_label_id($seq, $label_id)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -268,18 +269,18 @@ class Label_sequence_model extends BioModel
     return $this->add_auto_label($seq, $label);
   }
 
-  function edit_auto_label($id)
+  public function edit_auto_label($id)
   {
     $label = $this->get($id);
     return $this->regenerate_label($label);
   }
   
-  function __is_date($label)
+  private function __is_date($label)
   {
     return $label['type'] == 'date';
   }
   
-  function add_date_label($seq_id, $label_id, $date)
+  public function add_date_label($seq_id, $label_id, $date)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -291,7 +292,7 @@ class Label_sequence_model extends BioModel
     }
   }
   
-  function edit_date_label($id, $date)
+  public function edit_date_label($id, $date)
   {
     $label = $this->get($id);
 
@@ -302,12 +303,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_text($label)
+  private function __is_text($label)
   {
     return $label['type'] == 'text';
   }
 
-  function add_text_label($seq_id, $label_id, $text)
+  public function add_text_label($seq_id, $label_id, $text)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -319,7 +320,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_text_label($id, $text)
+  public function edit_text_label($id, $text)
   {
     $label = $this->get($id);
 
@@ -330,12 +331,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_integer($label)
+  private function __is_integer($label)
   {
     return $label['type'] == 'integer';
   }
 
-  function add_integer_label($seq_id, $label_id, $int)
+  public function add_integer_label($seq_id, $label_id, $int)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -347,7 +348,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_integer_label($id, $int)
+  public function edit_integer_label($id, $int)
   {
     $label = $this->get($id);
 
@@ -358,12 +359,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_bool($label)
+  private function __is_bool($label)
   {
     return $label['type'] == 'bool';
   }
 
-  function add_bool_label($seq_id, $label_id, $bool)
+  public function add_bool_label($seq_id, $label_id, $bool)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -375,7 +376,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_bool_label($id, $bool)
+  public function edit_bool_label($id, $bool)
   {
     $label = $this->get($id);
 
@@ -386,12 +387,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_url($label)
+  private function __is_url($label)
   {
     return $label['type'] == 'url';
   }
 
-  function add_url_label($seq_id, $label_id, $url)
+  public function add_url_label($seq_id, $label_id, $url)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -403,7 +404,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_url_label($id, $url)
+  public function edit_url_label($id, $url)
   {
     $label = $this->get($id);
 
@@ -414,12 +415,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_obj($label)
+  private function __is_obj($label)
   {
     return $label['type'] == 'obj';
   }
 
-  function add_obj_label($seq_id, $label_id, $filename, $data)
+  public function add_obj_label($seq_id, $label_id, $filename, $data)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -431,7 +432,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_obj_label($id, $filename, $data)
+  public function edit_obj_label($id, $filename, $data)
   {
     $label = $this->get($id);
 
@@ -442,12 +443,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_ref($label)
+  private function __is_ref($label)
   {
     return $label['type'] == 'ref';
   }
 
-  function add_ref_label($seq_id, $label_id, $ref)
+  public function add_ref_label($seq_id, $label_id, $ref)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -463,7 +464,7 @@ class Label_sequence_model extends BioModel
     }
   }
   
-  function ensure_translated_label($translated_id, $id, $ref)
+  public function ensure_translated_label($translated_id, $id, $ref)
   {
     $label_data = $this->get_label_info($id, $translated_id);
     
@@ -476,7 +477,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_ref_label($id, $ref)
+  public function edit_ref_label($id, $ref)
   {
     $label = $this->get($id);
 
@@ -491,12 +492,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_tax($label)
+  private function __is_tax($label)
   {
     return $label['type'] == 'tax';
   }
 
-  function add_tax_label($seq_id, $label_id, $tax)
+  public function add_tax_label($seq_id, $label_id, $tax)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -509,7 +510,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_tax_label($id, $tax)
+  public function edit_tax_label($id, $tax)
   {
     $label = $this->get($id);
 
@@ -520,12 +521,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __is_position($label)
+  private function __is_position($label)
   {
     return $label['type'] == 'position';
   }
 
-  function add_position_label($seq_id, $label_id, $start, $length)
+  public function add_position_label($seq_id, $label_id, $start, $length)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -537,7 +538,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function edit_position_label($id, $start, $length)
+  public function edit_position_label($id, $start, $length)
   {
     $label = $this->get($id);
 
@@ -548,7 +549,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function get_labels_to_auto_modify($seq)
+  public function get_labels_to_auto_modify($seq)
   {
     $this->db->where('auto_on_modification', true);
     $this->db->where('seq_id', $seq);
@@ -557,7 +558,7 @@ class Label_sequence_model extends BioModel
     return $this->get_all('label_sequence_info');
   }
 
-  function regenerate_label($label)
+  public function regenerate_label($label)
   {
     $id = $label['id'];
     $seq = $label['seq_id'];
@@ -578,7 +579,7 @@ class Label_sequence_model extends BioModel
     return $this->edit($id, $type, $data1, $data2);
   }
 
-  function regenerate_labels($seq)
+  public function regenerate_labels($seq)
   {
     $labels = $this->get_labels_to_auto_modify($seq);
 
@@ -596,14 +597,14 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  function total_label($id)
+  public function total_label($id)
   {
     $this->db->where('label_id', $id);
 
     return $this->count_total();
   }
 
-  function delete($id)
+  public function delete($id)
   {
     $info = $this->get_id($id, 'label_sequence_info');
 
@@ -614,14 +615,14 @@ class Label_sequence_model extends BioModel
     return $this->delete_id($id);
   }
   
-  function delete_label_seq($seq_id, $label_id)
+  public function delete_label_seq($seq_id, $label_id)
   {
     $this->db->where('seq_id', $seq_id);
     $this->db->where('label_id', $label_id);
     return $this->delete_rows();
   }
 
-  function get_obligatory($id)
+  public function get_obligatory($id)
   {
     $this->db->distinct();
     $this->db->select('label_id');
@@ -640,7 +641,7 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  function get_missing_obligatory_ids($id)
+  public function get_missing_obligatory_ids($id)
   {
     $label_model = $this->load_model('label_model');
     $all = $label_model->get_obligatory();
@@ -657,7 +658,7 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  function get_missing_obligatory($id)
+  public function get_missing_obligatory($id)
   {
     $ids = $this->get_missing_obligatory_ids($id);
     $label_model = $this->load_model('label_model');
@@ -670,12 +671,12 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  function has_missing($id)
+  public function has_missing($id)
   {
     return count($this->get_missing_obligatory($id)) > 0;
   }
 
-  function get_addable_labels($id)
+  public function get_addable_labels($id)
   {
     if(!is_numeric($id)) {
       return false;
@@ -696,7 +697,7 @@ class Label_sequence_model extends BioModel
             AND name <> 'update_date'");
   }
 
-  function __get_validation_status($label, $sequence, $valid_code, $data1, $data2)
+  private function __get_validation_status($label, $sequence, $valid_code, $data1, $data2)
   {
     $seq_model = $this->load_model('sequence_model');
     $seq_id = $sequence['id'];
@@ -713,7 +714,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function get_validation_status($label_id, $sequence, $data1, $data2 = null)
+  public function get_validation_status($label_id, $sequence, $data1, $data2 = null)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
@@ -728,7 +729,7 @@ class Label_sequence_model extends BioModel
   }
   
   // returns true if label data (data1, data2) of label label_id is valid in context of the sequence sequence_id
-  function label_is_valid($label_id, $sequence_id, $data1, $data2 = null)
+  public function label_is_valid($label_id, $sequence_id, $data1, $data2 = null)
   {
     $seq_model = $this->load_model('sequence_model');
     
@@ -737,7 +738,7 @@ class Label_sequence_model extends BioModel
     return $result != 'invalid';
   }
 
-  function __bad_multiple_sql($id)
+  private function __bad_multiple_sql($id)
   {
     if(!is_numeric($id)) {
       return null;
@@ -753,7 +754,7 @@ class Label_sequence_model extends BioModel
            AND seq_id = $id";
   }
 
-  function get_bad_multiple($id)
+  public function get_bad_multiple($id)
   {
     $sql = "SELECT id, label_id, seq_id, name, type, " . self::$label_data_fields . " " .
         $this->__bad_multiple_sql($id);
@@ -761,7 +762,7 @@ class Label_sequence_model extends BioModel
     return $this->rows_sql($sql);
   }
 
-  function has_bad_multiple($id)
+  public function has_bad_multiple($id)
   {
     $sql = "SELECT count(id) AS total  " .
       $this->__bad_multiple_sql($id);
@@ -769,7 +770,7 @@ class Label_sequence_model extends BioModel
     return $this->total_sql($sql) > 0;
   }
 
-  function label_used_up($seq, $label)
+  public function label_used_up($seq, $label)
   {
     $this->db
       ->where('seq_id', $seq)
@@ -779,12 +780,12 @@ class Label_sequence_model extends BioModel
     return $this->count_total('label_sequence_info') > 0;
   }
 
-  function sequence_has_label($seq, $label)
+  public function sequence_has_label($seq, $label)
   {
     return $this->num_label($seq, $label) > 0;
   }
   
-  function num_label($seq_id, $label_id)
+  public function num_label($seq_id, $label_id)
   {
     $this->db
       ->where('seq_id', $seq_id)
@@ -793,26 +794,26 @@ class Label_sequence_model extends BioModel
       return $this->count_total();
   }
 
-  function count_taxonomies($tax)
+  public function count_taxonomies($tax)
   {
     $this->db->select('id');
     $this->db->where('taxonomy_data', $tax);
     return $this->count_total();
   }
 
-  function count_sequences_for_label($label)
+  public function count_sequences_for_label($label)
   {
     $this->db->select('DISTINCT id');
     $this->db->where('label_id', $label);
     return $this->count_total();
   }
 
-  function label_exists($id)
+  public function label_exists($id)
   {
     return $this->has_id($id);
   }
 
-  function select_data($label)
+  public function select_data($label)
   {
     $fields = $this->__get_data_fields($label['type']);
 
@@ -823,7 +824,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function get_data($id)
+  public function get_data($id)
   {
     $this->db->select('id, type, ' . self::$label_data_fields);
 
@@ -833,7 +834,7 @@ class Label_sequence_model extends BioModel
   }
   
   // locate sequence id which contains a label with data data1 and data2
-  function get_reverse_data($name_label, $data1, $data2 = null)
+  public function get_reverse_data($name_label, $data1, $data2 = null)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get_by_name($name_label);
@@ -862,7 +863,7 @@ class Label_sequence_model extends BioModel
   }
 
   // retrieve the data field using the label name
-  function get_label($seq_id, $label_name)
+  public function get_label($seq_id, $label_name)
   {
     $this->db->select('id, `type`, ' . self::$label_data_fields, FALSE);
     $this->db->where('name', $label_name);
@@ -877,7 +878,7 @@ class Label_sequence_model extends BioModel
   }
 
   // get label by sequence and label id
-  function get_label_ids($seq_id, $label_id)
+  public function get_label_ids($seq_id, $label_id)
   {
     $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $seq_id);
@@ -885,7 +886,7 @@ class Label_sequence_model extends BioModel
     return $this->get_row('label_id', $label_id, 'label_sequence_info');
   }
 
-  function __get_data_fields($type)
+  private function __get_data_fields($type)
   {
     switch($type) {
     case 'integer':
@@ -911,12 +912,12 @@ class Label_sequence_model extends BioModel
     return null;
   }
 
-  function __compound_oper($oper)
+  private function __compound_oper($oper)
   {
     return $oper == 'and' || $oper == 'or' || $oper == 'not';
   }
 
-  function __get_search_labels($term, $label_model, &$ret)
+  private function __get_search_labels($term, $label_model, &$ret)
   {
     if($term != null) {
       $oper = $term['oper'];
@@ -935,7 +936,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function _get_search_labels($term, $label_model)
+  private function _get_search_labels($term, $label_model)
   {
     $ret = array();
 
@@ -944,7 +945,7 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  function __translate_sql_oper($oper, $type)
+  private function __translate_sql_oper($oper, $type)
   {
     switch($type) {
     case 'position':
@@ -976,7 +977,7 @@ class Label_sequence_model extends BioModel
     return null;
   }
 
-  function __translate_sql_value($oper, $value, $type)
+  private function __translate_sql_value($oper, $value, $type)
   {
     switch($type) {
     case 'position':
@@ -1029,7 +1030,7 @@ class Label_sequence_model extends BioModel
     return '';
   }
   
-  function __translate_sql_field($field, $type)
+  private function __translate_sql_field($field, $type)
   {
     switch($type) {
       case 'date':
@@ -1039,7 +1040,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __get_search_where($term, &$labels, $default = "TRUE")
+  private function __get_search_where($term, &$labels, $default = "TRUE")
   {
     if($term == null) {
       return $default;
@@ -1188,7 +1189,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  function __get_search_sql($search)
+  private function __get_search_sql($search)
   {
     $label_model = $this->load_model('label_model');
     $labels = $this->_get_search_labels($search, $label_model);
@@ -1196,7 +1197,7 @@ class Label_sequence_model extends BioModel
     return $sql_part;
   }
 
-  function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null)
+  public function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null)
   {
     $sql_where = $this->__get_search_sql($search);
     $sql_limit = sql_limit($start, $size);
@@ -1222,7 +1223,7 @@ class Label_sequence_model extends BioModel
   }
 
   // get total number of sequences with this search tree
-  function get_search_total($search, $transform = null)
+  public function get_search_total($search, $transform = null)
   {
     $sql_where = $this->__get_search_sql($search);
     
@@ -1240,7 +1241,7 @@ class Label_sequence_model extends BioModel
   }
 
   // get all labels from this sequence
-  function get_sequence_labels($id)
+  public function get_sequence_labels($id)
   {
     $this->db->select('label_id AS id');
     $this->db->distinct();
@@ -1250,7 +1251,7 @@ class Label_sequence_model extends BioModel
   }
 
   // get all labels that are in the sequences set
-  function get_all_labels($seqs)
+  public function get_all_labels($seqs)
   {
     $labelids = array();
     $label_model = $this->load_model('label_model');
@@ -1281,7 +1282,7 @@ class Label_sequence_model extends BioModel
   }
 
   // find label id in label ids set
-  function __find_all_seqs($labelids, $id) {
+  private function __find_all_seqs($labelids, $id) {
     foreach($labelids as &$seqlabels) {
       $found = false;
 

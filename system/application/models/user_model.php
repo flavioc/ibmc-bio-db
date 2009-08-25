@@ -7,17 +7,17 @@ class User_model extends BioModel
     parent::BioModel('user');
   }
 
-  function has_user($id)
+  public function has_user($id)
   {
     return $this->has_id($id);
   }
   
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
 
-  function validate($name, $pwd)
+  public function validate($name, $pwd)
   {
     $this->db->where('enabled', TRUE);
     $user = $this->get_row('name', $name);
@@ -29,7 +29,7 @@ class User_model extends BioModel
     return $user['password'] == md5($pwd);
   }
 
-  function _get_user($key, $value)
+  private function _get_user($key, $value)
   {
     $this->db->where('enabled', TRUE);
     $data = $this->get_row($key, $value);
@@ -46,17 +46,17 @@ class User_model extends BioModel
     return $data;
   }
 
-  function get_user_by_name($name)
+  public function get_user_by_name($name)
   {
     return $this->_get_user('name', $name);
   }
 
-  function get_user_by_id($id)
+  public function get_user_by_id($id)
   {
     return $this->_get_user('id', $id);
   }
 
-  function _get_user_image($key, $value)
+  private function _get_user_image($key, $value)
   {
     $this->load->helper('image_utils');
 
@@ -68,22 +68,22 @@ class User_model extends BioModel
     return process_db_image($array['image']);
   }
 
-  function get_user_image_by_id($id)
+  public function get_user_image_by_id($id)
   {
     return $this->_get_user_image('id', $id);
   }
 
-  function get_user_image_by_name($name)
+  public function get_user_image_by_name($name)
   {
     return $this->_get_user_image('name', $name);
   }
 
-  function user_exists($name)
+  public function user_exists($name)
   {
     return $this->get_user_by_name($name) != null;
   }
 
-  function username_used($name)
+  public function username_used($name)
   {
     $this->db->select('id');
     $row = $this->get_row('name', $name);
@@ -91,7 +91,7 @@ class User_model extends BioModel
     return $row != null;
   }
 
-  function new_user($name, $complete_name, $email,
+  public function new_user($name, $complete_name, $email,
     $birthday, $password, $image)
   {
     $name = trim($name);
@@ -135,7 +135,7 @@ class User_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
-  function edit_user($id, $complete_name, $email, $birthday,
+  public function edit_user($id, $complete_name, $email, $birthday,
     $imagecontent, $new_password)
   {
     $complete_name = trim($complete_name);
@@ -173,25 +173,25 @@ class User_model extends BioModel
     return $this->edit_data_with_history($id, $data);
   }
 
-  function get_users()
+  public function get_users()
   {
     $this->db->where('enabled', TRUE);
 
     return $this->get_rows('user_type', 'user');
   }
 
-  function get_users_all()
+  public function get_users_all()
   {
     $this->db->select('id, name');
     return $this->get_all();
   }
 
-  function delete_user($id)
+  public function delete_user($id)
   {
     return $this->edit_data_with_history($id, array('enabled' => FALSE));
   }
   
-  function delete_all_users()
+  public function delete_all_users()
   {
     $this->db->where("user_type = 'user'");
     return $this->delete_rows();

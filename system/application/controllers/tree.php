@@ -1,13 +1,15 @@
 <?php
 
-class Tree extends BioController {
-  
-  function Tree() {
+class Tree extends BioController
+{  
+  function Tree()
+  {
     parent::BioController();
     $this->load->model('taxonomy_tree_model');
   }
 
-  function index() {
+  public function index()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
@@ -21,7 +23,8 @@ class Tree extends BioController {
     $this->smarty->view('tree/list');
   }
 
-  function get_all() {
+  public function get_all()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
     }
@@ -43,7 +46,8 @@ class Tree extends BioController {
     $this->json_return($trees);
   }
 
-  function add() {
+  public function add()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
@@ -57,8 +61,12 @@ class Tree extends BioController {
     $this->smarty->view('tree/add');
   }
 
-  function do_add()
+  public function do_add()
   {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
     $errors = false;
 
     $this->load->library('form_validation');
@@ -90,7 +98,7 @@ class Tree extends BioController {
     }
   }
 
-  function view($id)
+  public function view($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -113,7 +121,8 @@ class Tree extends BioController {
     $this->smarty->view('tree/view');
   }
 
-  function delete($id) {
+  public function delete($id)
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();
     }
@@ -123,7 +132,8 @@ class Tree extends BioController {
     $this->json_return(true);
   }
 
-  function edit_name() {
+  public function edit_name()
+  {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
     }
@@ -136,7 +146,7 @@ class Tree extends BioController {
     echo $this->taxonomy_tree_model->get_name($id);
   }
 
-  function delete_dialog($id)
+  public function delete_dialog($id)
   {
     if(!$this->logged_in ||
       !$this->taxonomy_tree_model->has_tree($id))
@@ -155,7 +165,7 @@ class Tree extends BioController {
     $this->smarty->view_s('tree/delete');
   }
 
-  function delete_redirect()
+  public function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -167,7 +177,7 @@ class Tree extends BioController {
     redirect('tree');
   }
   
-  function export($id = null)
+  public function export($id = null)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -188,7 +198,7 @@ class Tree extends BioController {
                          $id);
   }
   
-  function import()
+  public function import()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -199,7 +209,7 @@ class Tree extends BioController {
     $this->smarty->view('tree/import');
   }
   
-  function do_import()
+  public function do_import()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();

@@ -2,13 +2,14 @@
 
 class Sequence extends BioController
 {
-  function Sequence() {
+  function Sequence()
+  {
     parent::BioController();
     $this->load->model('sequence_model');
     $this->load->model('label_sequence_model');
   }
 
-  function browse()
+  public function browse()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -25,7 +26,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/list');
   }
 
-  function get_export()
+  public function get_export()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -43,13 +44,13 @@ class Sequence extends BioController
       $labels_str = $this->get_post('label_obj');
       $labels = json_decode(stripslashes($labels_str), true);
 
-      return $this->export_sequences_partial($seqs, $labels, array($tree, $transform), $type);
+      return $this->__export_sequences_partial($seqs, $labels, array($tree, $transform), $type);
     } else {
-      return $this->export_sequences($seqs, $type, '');
+      return $this->__export_sequences($seqs, $type, '');
     }
   }
 
-  function export_search()
+  public function export_search()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -78,7 +79,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/export_search');
   }
 
-  function search()
+  public function search()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -121,7 +122,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/search');
   }
 
-  function search_tax()
+  public function search_tax()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_thickbox();
@@ -139,7 +140,7 @@ class Sequence extends BioController
     $this->smarty->view_s('sequence/search_tax');
   }
 
-  function search_ref()
+  public function search_ref()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_thickbox();
@@ -150,7 +151,7 @@ class Sequence extends BioController
     $this->smarty->view_s('sequence/search_ref');
   }
 
-  function __get_search_term()
+  private function __get_search_term()
   {
     $search = stripslashes($this->get_parameter('search'));
     $search_term = null;
@@ -161,7 +162,7 @@ class Sequence extends BioController
     return $search_term;
   }
   
-  function humanize_search()
+  public function humanize_search()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -173,7 +174,7 @@ class Sequence extends BioController
     echo $tree_str;
   }
 
-  function get_search()
+  public function get_search()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -196,7 +197,7 @@ class Sequence extends BioController
             $transform));
   }
 
-  function get_search_total()
+  public function get_search_total()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_zero();
@@ -209,7 +210,7 @@ class Sequence extends BioController
       $this->label_sequence_model->get_search_total($search, $transform));
   }
 
-  function multiple_add_label()
+  public function multiple_add_label()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -248,7 +249,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/multiple_add_label');
   }
   
-  function multiple_delete_label()
+  public function multiple_delete_label()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -276,7 +277,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/multiple_delete_label');
   }
 
-  function get_all()
+  public function get_all()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -300,7 +301,7 @@ class Sequence extends BioController
             'user_name' => $ordering_user)));
   }
 
-  function get_total()
+  public function get_total()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_zero();
@@ -315,14 +316,14 @@ class Sequence extends BioController
               'user' => $filter_user)));
   }
 
-  function __invalid_sequence($id)
+  private function __invalid_sequence($id)
   {
     $this->smarty->assign('title', 'Invalid sequence');
     $this->smarty->assign('id', $id);
     $this->smarty->view('sequence/invalid_sequence');
   }
 
-  function labels($id = null)
+  public function labels($id = null)
   {
     if(!$id) {
       $id = $this->get_parameter('id');
@@ -353,7 +354,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/view_labels');
   }
 
-  function __load_js()
+  private function __load_js()
   {
     $this->smarty->load_scripts(JSON_SCRIPT, VALIDATE_SCRIPT,
       AUTOCOMPLETE_SCRIPT, FORM_SCRIPT, JEDITABLE_SCRIPT,
@@ -361,7 +362,7 @@ class Sequence extends BioController
       'common_sequence.js', 'label_helpers.js');
   }
 
-  function view($id)
+  public function view($id)
   {
     if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission();
@@ -381,7 +382,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/view');
   }
 
-  function __load_sequence($id)
+  private function __load_sequence($id)
   {
     $sequence = $this->sequence_model->get($id);
     $sequence['content'] = sequence_short_content($sequence['content']);
@@ -394,7 +395,7 @@ class Sequence extends BioController
     }
   }
 
-  function add_batch()
+  public function add_batch()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -407,7 +408,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/add_batch');
   }
 
-  function __get_sequence_upload_config()
+  private function __get_sequence_upload_config()
   {
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
@@ -417,7 +418,7 @@ class Sequence extends BioController
     return $config;
   }
   
-  function __get_sequence_upload($name)
+  private function __get_sequence_upload($name)
   {
     $upload_ret = $this->upload->do_upload($name);
 
@@ -429,7 +430,7 @@ class Sequence extends BioController
     return null;
   }
 
-  function do_add_batch()
+  public function do_add_batch()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -556,7 +557,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/batch_report');
   }
 
-  function add()
+  public function add()
   {
     $this->smarty->assign('title', 'Add sequence');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
@@ -567,7 +568,7 @@ class Sequence extends BioController
     $this->smarty->view('sequence/add');
   }
 
-  function do_add()
+  public function do_add()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -622,7 +623,7 @@ class Sequence extends BioController
     }
   }
 
-  function download($id)
+  public function download($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_nothing();
@@ -631,7 +632,7 @@ class Sequence extends BioController
     echo $this->sequence_model->get_content($id);
   }
 
-  function fetch($id)
+  public function fetch($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_nothing();
@@ -642,7 +643,7 @@ class Sequence extends BioController
     echo sequence_split($content);
   }
 
-  function delete_redirect()
+  public function delete_redirect()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -654,7 +655,7 @@ class Sequence extends BioController
     redirect('sequence/browse');
   }
 
-  function delete_dialog($id)
+  public function delete_dialog($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_nothing();
@@ -666,7 +667,7 @@ class Sequence extends BioController
     $this->smarty->view_s('sequence/delete');
   }
 
-  function edit_name()
+  public function edit_name()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -680,7 +681,7 @@ class Sequence extends BioController
     echo $this->sequence_model->get_name($id);
   }
 
-  function edit_content()
+  public function edit_content()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -700,7 +701,7 @@ class Sequence extends BioController
     echo sequence_short_content($value) . "...";
   }
 
-  function export()
+  public function export()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -715,10 +716,10 @@ class Sequence extends BioController
     $type = $this->get_post('format');
     $seqs = array($this->sequence_model->get($id));
 
-    return $this->export_sequences($seqs, $type, "sequence id $id");
+    return $this->__export_sequences($seqs, $type, "sequence id $id");
   }
 
-  function export_all()
+  public function export_all()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -747,14 +748,14 @@ class Sequence extends BioController
       }
     }
     
-    return $this->export_sequences(
+    return $this->__export_sequences(
       $this->sequence_model->get_all(null, null,
                     array('name' => $filter_name,
                           'user' => $filter_user)),
                 $type, $comment);
   }
 
-  function export_sequences_partial($sequences, $labels_id, $data, $type)
+  private function __export_sequences_partial($sequences, $labels_id, $data, $type)
   {
     $seq_labels = array();
 
@@ -799,7 +800,7 @@ class Sequence extends BioController
     }
   }
 
-  function export_sequences($sequences, $type, $comment)
+  private function __export_sequences($sequences, $type, $comment)
   {
     foreach($sequences as &$seq) {
       $id = $seq['id'];
@@ -826,7 +827,7 @@ class Sequence extends BioController
     }
   }
 
-  function __do_export_others($sequences, $type)
+  private function __do_export_others($sequences, $type)
   {
     header('Content-type: text/plain');
     header("Content-Disposition: attachment; filename=\"sequences.$type\"");
@@ -834,7 +835,7 @@ class Sequence extends BioController
     echo export_sequences_others($sequences, $type);
   }
   
-  function __do_export_fasta($sequences, $seq_labels, $extra_comments = '')
+  private function __do_export_fasta($sequences, $seq_labels, $extra_comments = '')
   {
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.fasta"');
@@ -843,7 +844,7 @@ class Sequence extends BioController
       $this->__get_basic_comments() . " $extra_comments");
   }
   
-  function __do_export_xml($sequences, $seq_labels, $comment)
+  private function __do_export_xml($sequences, $seq_labels, $comment)
   {
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.xml"');
@@ -851,9 +852,8 @@ class Sequence extends BioController
     echo export_sequences_xml($sequences, $seq_labels, $this->username, $comment);
   }
 
-  function __get_basic_comments()
+  private function __get_basic_comments()
   {
     return $this->username . ' - ' . timestamp_string();
   }
 }
-

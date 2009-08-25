@@ -9,12 +9,12 @@ class Label_model extends BioModel
     parent::BioModel('label');
   }
 
-  function has_label($id)
+  public function has_label($id)
   {
     return $this->has_id($id);
   }
 
-  function __select($totals = false)
+  private function __select($totals = false)
   {
     $select = self::$label_view_fields;
     if($totals) {
@@ -23,23 +23,23 @@ class Label_model extends BioModel
     $this->db->select($select);
   }
 
-  function get($id)
+  public function get($id)
   {
     $this->__select();
     return $this->get_id($id, 'label_info_history', 'label_id');
   }
 
-  function get_by_name($name)
+  public function get_by_name($name)
   {
     return $this->get_row('name', $name);
   }
   
-  function get_id_by_name($name)
+  public function get_id_by_name($name)
   {
     return $this->get_id_by_field('name', $name);
   }
 
-  function get_simple($id, $get_code = false)
+  public function get_simple($id, $get_code = false)
   {
     $select = 'id, name, type, must_exist, auto_on_creation,
       auto_on_modification, deletable, editable, multiple';
@@ -52,7 +52,7 @@ class Label_model extends BioModel
     return $this->get_id($id);
   }
 
-  function __filter_labels($filtering = array())
+  private function __filter_labels($filtering = array())
   {
     if(array_key_exists('name', $filtering)) {
       $name = $filtering['name'];
@@ -95,7 +95,7 @@ class Label_model extends BioModel
     }
   }
 
-  function get_all($start = null, $size = null,
+  public function get_all($start = null, $size = null,
     $filtering = array(), $ordering = array(), $totals = false)
   {
     $this->order_by($ordering, 'name', 'asc');
@@ -137,7 +137,7 @@ class Label_model extends BioModel
     return $ret;
   }
 
-  function get_total($filtering = array())
+  public function get_total($filtering = array())
   {
     $this->db->select('id');
     $this->__filter_labels($filtering);
@@ -145,14 +145,14 @@ class Label_model extends BioModel
     return parent::count_total('label_info_history');
   }
 
-  function count_names($name)
+  public function count_names($name)
   {
     $this->db->where('name', $name);
 
     return $this->count_total();
   }
 
-  function add($name, $type, $mustexist, $auto_on_creation,
+  public function add($name, $type, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
     $default, $public,
@@ -200,7 +200,7 @@ class Label_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
-  function edit($id, $name, $type, $mustexist, $auto_on_creation,
+  public function edit($id, $name, $type, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
     $editable, $multiple,
     $default, $public,
@@ -245,60 +245,60 @@ class Label_model extends BioModel
     return $this->edit_data_with_history($id, $data);
   }
 
-  function has($name)
+  public function has($name)
   {
     return $this->has_field('name', $name);
   }
 
-  function delete_label($id)
+  public function delete_label($id)
   {
     $this->delete_id($id);
     
     return true;
   }
   
-  function delete_all_custom()
+  public function delete_all_custom()
   {
     $this->db->where('`default` IS FALSE');
     return $this->delete_rows();
   }
 
-  function is_default($id)
+  public function is_default($id)
   {
     return $this->get_field($id, 'default');
   }
 
-  function is_deletable($id)
+  public function is_deletable($id)
   {
     return $this->get_field($id, 'deletable');
   }
 
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
   
-  function get_type($id)
+  public function get_type($id)
   {
     return $this->get_field($id, 'type');
   }
   
-  function get_comment($id)
+  public function get_comment($id)
   {
     return $this->get_field($id, 'comment');
   }
   
-  function get_code($id)
+  public function get_code($id)
   {
     return $this->get_field($id, 'code');
   }
   
-  function get_validcode($id)
+  public function get_validcode($id)
   {
     return $this->get_field($id, 'valid_code');
   }
 
-  function get_to_add()
+  public function get_to_add()
   {
     $this->db->where('auto_on_creation', TRUE);
     $this->__filter_special_labels();
@@ -306,7 +306,7 @@ class Label_model extends BioModel
     return parent::get_all();
   }
 
-  function get_obligatory()
+  public function get_obligatory()
   {
     $this->db->select('id');
     $this->db->where('must_exist', TRUE);
@@ -322,7 +322,7 @@ class Label_model extends BioModel
     return $ret;
   }
 
-  function edit_name($id, $name)
+  public function edit_name($id, $name)
   {
     $name = trim($name);
     
@@ -333,7 +333,7 @@ class Label_model extends BioModel
     return $this->edit_field($id, 'name', $name);
   }
 
-  function edit_type($id, $type)
+  public function edit_type($id, $type)
   {
     $type = trim($type);
     
@@ -344,17 +344,17 @@ class Label_model extends BioModel
     return $this->edit_field($id, 'type', $type);
   }
 
-  function edit_code($id, $code)
+  public function edit_code($id, $code)
   {
     return $this->edit_field($id, 'code', trim($code));
   }
 
-  function edit_validcode($id, $code)
+  public function edit_validcode($id, $code)
   {
     return $this->edit_field($id, 'valid_code', trim($code));
   }
 
-  function edit_comment($id, $comment)
+  public function edit_comment($id, $comment)
   {
     $comment = trim($comment);
     
@@ -365,12 +365,12 @@ class Label_model extends BioModel
     return $this->edit_field($id, 'comment', $comment);
   }
 
-  function edit_bool($id, $what, $val)
+  public function edit_bool($id, $what, $val)
   {
     return $this->edit_field($id, $what, $val);
   }
   
-  function get_refs()
+  public function get_refs()
   {
     $this->db->where('type', 'ref');
     return $this->get_all();

@@ -1,6 +1,7 @@
 <?php
 
-class Multiple_Labels extends BioController {
+class Multiple_Labels extends BioController
+{
   private $search_tree = null;
   private $multiple = FALSE;
   private $update = FALSE;
@@ -45,7 +46,7 @@ class Multiple_Labels extends BioController {
     $this->load->model('label_sequence_model');
   }
 
-  function add_dialog($label_id)
+  public function add_dialog($label_id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_thickbox();
@@ -98,7 +99,7 @@ class Multiple_Labels extends BioController {
   }
 
   // fetch search tree, sequence list and flags
-  function __get_info()
+  private function __get_info()
   {
     $this->label_id = $this->get_post('label_id');
     $this->label = $this->label_model->get($this->label_id);
@@ -134,12 +135,12 @@ class Multiple_Labels extends BioController {
     }
   }
 
-  function __can_do_multiple()
+  private function __can_do_multiple()
   {
     return $this->multiple && $this->label['multiple'];
   }
 
-  function add_auto_label()
+  public function add_auto_label()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -172,7 +173,7 @@ class Multiple_Labels extends BioController {
     $this->__show_stats();
   }
 
-  function __show_stats()
+  private function __show_stats()
   {
     $this->smarty->assign('count_new_multiple', $this->count_new_multiple);
     $this->smarty->assign('count_new', $this->count_new);
@@ -185,7 +186,7 @@ class Multiple_Labels extends BioController {
     $this->smarty->view_js('add_multiple_label/auto');
   }
 
-  function __regenerate_label($seq_id)
+  private function __regenerate_label($seq_id)
   {
     $id = $this->label_sequence_model->get_label_id($seq_id, $this->label_id);
     if($this->label_sequence_model->edit_auto_label($id)) {
@@ -195,7 +196,7 @@ class Multiple_Labels extends BioController {
     }
   }
 
-  function __add_label_multiple($seq_id)
+  private function __add_label_multiple($seq_id)
   {
     if($this->__add_label_common($seq_id)) {
       ++$this->count_new_multiple;
@@ -204,7 +205,7 @@ class Multiple_Labels extends BioController {
     }
   }
   
-  function __get_values()
+  private function __get_values()
   {
     switch($this->label_type) {
       case 'text':
@@ -244,7 +245,7 @@ class Multiple_Labels extends BioController {
     }
   }
 
-  function __add_label_common($seq_id)
+  private function __add_label_common($seq_id)
   {
     switch($this->label_type) {
     case 'text':
@@ -270,7 +271,7 @@ class Multiple_Labels extends BioController {
     return false;
   }
 
-  function __add_label($seq_id)
+  private function __add_label($seq_id)
   {
     if($this->__add_label_common($seq_id)) {
       ++$this->count_new;
@@ -279,7 +280,7 @@ class Multiple_Labels extends BioController {
     }
   }
 
-  function __edit_label($id)
+  private function __edit_label($id)
   {
     $ret = false;
     
@@ -320,7 +321,7 @@ class Multiple_Labels extends BioController {
     }
   }
   
-  function __iterate_seqs()
+  private function __iterate_seqs()
   {
     foreach($this->seqs as &$seq) {
       $seq_id = $seq['id'];
@@ -355,7 +356,7 @@ class Multiple_Labels extends BioController {
     }
   }
 
-  function add_label()
+  public function add_label()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();

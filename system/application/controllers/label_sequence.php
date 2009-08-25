@@ -1,6 +1,7 @@
 <?php
 
-class Label_Sequence extends BioController {
+class Label_Sequence extends BioController
+{
   function Label_Sequence()
   {
     parent::BioController();
@@ -9,7 +10,7 @@ class Label_Sequence extends BioController {
     $this->load->model('label_sequence_model');
   }
 
-  function get_labels($id)
+  public function get_labels($id)
   {
     if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
@@ -20,7 +21,7 @@ class Label_Sequence extends BioController {
     $this->json_return($labels);
   }
 
-  function get_missing_labels($id)
+  public function get_missing_labels($id)
   {
     if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
@@ -31,7 +32,7 @@ class Label_Sequence extends BioController {
     $this->json_return($data);
   }
 
-  function get_addable_labels($id)
+  public function get_addable_labels($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -42,7 +43,7 @@ class Label_Sequence extends BioController {
     $this->json_return($data);
   }
 
-  function get_bad_multiple_labels($id)
+  public function get_bad_multiple_labels($id)
   {
     if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
       return $this->invalid_permission_empty();
@@ -53,7 +54,7 @@ class Label_Sequence extends BioController {
     $this->json_return($data);
   }
 
-  function download_label($id)
+  public function download_label($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -69,7 +70,7 @@ class Label_Sequence extends BioController {
     echo stripslashes($label['obj_data']);
   }
 
-  function delete_label($id)
+  public function delete_label($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();

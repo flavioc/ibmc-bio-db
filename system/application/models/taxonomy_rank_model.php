@@ -7,24 +7,24 @@ class Taxonomy_rank_model extends BioModel
     parent::BioModel('taxonomy_rank');
   }
 
-  function has_rank($id)
+  public function has_rank($id)
   {
     return $this->has_id($id);
   }
 
-  function get($id)
+  public function get($id)
   {
     return $this->get_row('rank_id', $id, 'taxonomy_rank_info_history');
   }
 
-  function get_unparented_ranks($id = null)
+  public function get_unparented_ranks($id = null)
   {
     $this->db->order_by('name');
 
     return parent::get_all();
   }
 
-  function get_ranks($size = null, $start = null,
+  public function get_ranks($size = null, $start = null,
     $filtering = array(),
     $ordering = array())
   {
@@ -39,12 +39,12 @@ class Taxonomy_rank_model extends BioModel
     return $this->get_all('taxonomy_rank_info_history');
   }
   
-  function get_id_name($rank)
+  public function get_id_name($rank)
   {
     return $this->get_id_by_field('name', $rank);
   }
 
-  function get_rank_id($rank)
+  public function get_rank_id($rank)
   {
     $id = $this->get_id_name($rank);
 
@@ -55,7 +55,7 @@ class Taxonomy_rank_model extends BioModel
     }
   }
 
-  function get_first_child($id)
+  public function get_first_child($id)
   {
     $data = $this->get_all_by_field('parent_id', $id);
 
@@ -66,7 +66,7 @@ class Taxonomy_rank_model extends BioModel
     }
   }
 
-  function get_children_names($id)
+  public function get_children_names($id)
   {
     $this->db->select('name');
     $data = $this->get_all_by_field('parent_id', $id);
@@ -82,7 +82,7 @@ class Taxonomy_rank_model extends BioModel
     return $ret;
   }
 
-  function edit_name($id, $name)
+  public function edit_name($id, $name)
   {
     $name = trim($name);
     if(strlen($name) <= 0 || strlen($name) > 128 || $this->has_name($name)) {
@@ -101,7 +101,7 @@ class Taxonomy_rank_model extends BioModel
     return $ret;
   }
 
-  function edit_parent($id, $new_parent)
+  public function edit_parent($id, $new_parent)
   {
     $this->db->trans_start();
 
@@ -115,22 +115,22 @@ class Taxonomy_rank_model extends BioModel
     return true;
   }
 
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
 
-  function get_parent($id)
+  public function get_parent($id)
   {
     return $this->get_field($id, 'parent_id');
   }
 
-  function has_name($name)
+  public function has_name($name)
   {
     return $this->has_field('name', $name);
   }
 
-  function add($name, $parent = null)
+  public function add($name, $parent = null)
   {
     if($parent) {
       if($this->parent_used($parent)) {
@@ -151,7 +151,8 @@ class Taxonomy_rank_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
-  function add_array($arr)
+  /* add multiple ranks */
+  public function add_array($arr)
   {
     $ret = true;
     foreach($arr as $name) {
@@ -165,7 +166,7 @@ class Taxonomy_rank_model extends BioModel
     return $ret;
   }
 
-  function __filter($filtering)
+  private function __filter($filtering)
   {
     if(array_key_exists('name', $filtering)) {
       $name = $filtering['name'];
@@ -191,18 +192,18 @@ class Taxonomy_rank_model extends BioModel
     }
   }
 
-  function get_total($filtering = array())
+  public function get_total($filtering = array())
   {
     $this->__filter($filtering);
     return $this->count_total('taxonomy_rank_info_history');
   }
 
-  function get_parent_name($id)
+  public function get_parent_name($id)
   {
     return $this->get_field($id, 'rank_parent_name', 'taxonomy_rank_info', 'rank_id');
   }
 
-  function parent_used($parent, $except_id = null)
+  public function parent_used($parent, $except_id = null)
   {
     if($except_id) {
       $this->db->where("id != $except_id");
@@ -211,10 +212,9 @@ class Taxonomy_rank_model extends BioModel
     return $this->has_field('parent_id', $parent);
   }
   
-  function delete_all_custom()
+  public function delete_all_custom()
   {
     $this->db->where('is_default IS FALSE');
     return $this->delete_rows();
   }
 }
-

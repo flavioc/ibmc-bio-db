@@ -1,6 +1,7 @@
 <?php
 
-class Delete_Labels extends BioController {
+class Delete_Labels extends BioController
+{
   function Delete_Labels()
   {
     parent::BioController();
@@ -9,7 +10,7 @@ class Delete_Labels extends BioController {
     $this->load->model('label_sequence_model');
   }
   
-  function delete_dialog($label_id)
+  public function delete_dialog($label_id)
   {
     if(!$this->logged_in)
     {
@@ -20,7 +21,7 @@ class Delete_Labels extends BioController {
     $this->smarty->view_s('delete_multiple_label/dialog');
   }
   
-  function delete()
+  public function delete()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_nothing();

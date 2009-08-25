@@ -1,14 +1,14 @@
 <?php
 
-class Profile extends BioController {
-
+class Profile extends BioController
+{
   function Profile()
   {
     parent::BioController();	
     $this->load->model('user_model');
   }
 
-  function __view($id)
+  private function __view($id)
   {
     $this->smarty->assign('id', $id);
     
@@ -34,7 +34,7 @@ class Profile extends BioController {
     $this->smarty->view('profile/view');
   }
 
-  function view($id)
+  public function view($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -43,7 +43,7 @@ class Profile extends BioController {
     $this->__view($id);
   }
 
-  function view_self()
+  public function view_self()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -52,7 +52,7 @@ class Profile extends BioController {
     $this->__view($this->user_id);
   }
 
-  function list_all()
+  public function list_all()
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_admin();
@@ -64,7 +64,7 @@ class Profile extends BioController {
     $this->smarty->view('profile/list');
   }
 
-  function get_all()
+  public function get_all()
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_empty();
@@ -75,7 +75,7 @@ class Profile extends BioController {
     $this->json_return($users);
   }
 
-  function delete_redirect()
+  public function delete_redirect()
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_false();
@@ -87,7 +87,7 @@ class Profile extends BioController {
     redirect('profile/list_all');
   }
 
-  function delete_dialog($id)
+  public function delete_dialog($id)
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_nothing();
@@ -99,7 +99,7 @@ class Profile extends BioController {
     $this->smarty->view_s('profile/delete');
   }
 
-  function edit($id)
+  public function edit($id)
   {
     if(!$this->__can_edit_profile($id)) {
       return $this->invalid_permission();
@@ -131,12 +131,12 @@ class Profile extends BioController {
     $this->smarty->view('profile/edit');
   }
   
-  function __can_edit_profile($id)
+  private function __can_edit_profile($id)
   {
     return $this->logged_in && $this->user_id == $id || $this->is_admin;
   }
 
-  function do_edit()
+  public function do_edit()
   {
     $id = $this->get_post('id');
     
@@ -183,7 +183,7 @@ class Profile extends BioController {
     $image_data = null;
     if($image_str) {
       // verify image upload
-      $this->load->library('upload', $this->_get_upload_config());
+      $this->load->library('upload', $this->__get_upload_config());
       $upload_ret = $this->upload->do_upload("image");
 
       if(!$upload_ret) {
@@ -217,7 +217,7 @@ class Profile extends BioController {
     }
   }
 
-  function settings()
+  public function settings()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -233,7 +233,7 @@ class Profile extends BioController {
     $this->smarty->view('profile/settings');
   }
 
-  function edit_settings()
+  public function edit_settings()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
@@ -270,7 +270,7 @@ class Profile extends BioController {
     }
   }
 	
-	function register()
+	public function register()
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_admin();
@@ -292,7 +292,7 @@ class Profile extends BioController {
     $this->smarty->view('profile/register');
 	}
 
-  function _get_upload_config()
+  private function __get_upload_config()
   {
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
@@ -305,7 +305,7 @@ class Profile extends BioController {
     return $config;
   }
 
-  function do_register()
+  public function do_register()
   {
     if(!$this->is_admin) {
       return $this->invalid_permission_admin();
@@ -338,7 +338,7 @@ class Profile extends BioController {
 
     if($image_str) {
       // verify image upload
-      $this->load->library('upload', $this->_get_upload_config());
+      $this->load->library('upload', $this->__get_upload_config());
       $upload_ret = $this->upload->do_upload("image");
 
       if(!$upload_ret) {

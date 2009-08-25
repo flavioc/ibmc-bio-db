@@ -2,11 +2,12 @@
 
 class Admin extends BioController
 {
-  function Admin() {
+  function Admin()
+  {
     parent::BioController();
   }
   
-  function drop_database()
+  public function drop_database()
   {
     if(!($this->logged_in && $this->is_admin)) {
       return $this->invalid_permission_admin();
@@ -17,7 +18,7 @@ class Admin extends BioController
     $this->smarty->view('admin/drop_database');
   }
   
-  function drop2()
+  public function drop2()
   {
     if(!($this->logged_in && $this->is_admin)) {
       return $this->invalid_permission_admin();
@@ -28,7 +29,7 @@ class Admin extends BioController
     $this->smarty->view('admin/drop2');
   }
   
-  function do_drop()
+  public function do_drop()
   {
     if(!($this->logged_in && $this->is_admin)) {
       return $this->invalid_permission_admin();

@@ -9,7 +9,7 @@ class Comment_model extends Model
     parent::Model();
   }
 
-  function get()
+  public function get()
   {
     $file = BASEPATH . self::$comment_file;
 
@@ -25,7 +25,7 @@ class Comment_model extends Model
     return $data;
   }
 
-  function set($comment)
+  public function set($comment)
   {
     $file = BASEPATH . self::$comment_file;
 

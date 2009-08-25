@@ -1,6 +1,7 @@
 <?php
 
-class Change_Labels extends BioController {
+class Change_Labels extends BioController
+{
   function Change_Labels()
   {
     parent::BioController();
@@ -9,7 +10,7 @@ class Change_Labels extends BioController {
     $this->load->model('label_sequence_model');
   }
   
-  function change_dialog($seq_id, $label_id)
+  public function change_dialog($seq_id, $label_id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_thickbox();
@@ -63,7 +64,7 @@ class Change_Labels extends BioController {
     }
   }
   
-  function auto_change()
+  public function auto_change()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();
@@ -88,7 +89,7 @@ class Change_Labels extends BioController {
     $this->smarty->view_js('change_label/success');
   }
   
-  function change()
+  public function change()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();

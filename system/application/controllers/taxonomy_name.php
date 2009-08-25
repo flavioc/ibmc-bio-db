@@ -1,12 +1,13 @@
 <?php
 
-class Taxonomy_name extends BioController {
+class Taxonomy_name extends BioController
+{
   function Taxonomy_name()
   {
     parent::BioController();
   }
 
-  function list_all($id)
+  public function list_all($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
@@ -18,7 +19,7 @@ class Taxonomy_name extends BioController {
     $this->json_return($names);
   }
 
-  function edit_type_name()
+  public function edit_type_name()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -39,7 +40,7 @@ class Taxonomy_name extends BioController {
     echo $new_name;
   }
 
-  function edit_name()
+  public function edit_name()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_field();
@@ -55,7 +56,7 @@ class Taxonomy_name extends BioController {
     echo $this->taxonomy_name_model->get_name($id);
   }
 
-  function add($tax, $name, $type)
+  public function add($tax, $name, $type)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();
@@ -68,7 +69,7 @@ class Taxonomy_name extends BioController {
     $this->json_return($this->taxonomy_name_model->get_name_and_type($id));
   }
 
-  function delete($id)
+  public function delete($id)
   {
     if(!$this->logged_in) {
       return $this->invalid_permission_false();

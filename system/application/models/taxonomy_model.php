@@ -7,7 +7,7 @@ class Taxonomy_model extends BioModel
     parent::BioModel('taxonomy');
   }
 
-  function add($name, $rank, $tree, $parent = null)
+  public function add($name, $rank, $tree, $parent = null)
   {
     if(!$parent) {
       $parent = null;
@@ -42,14 +42,14 @@ class Taxonomy_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
-  function get($id)
+  public function get($id)
   {
     $this->db->select('id, name, rank_id, tree_id, rank_name, tree_name, update_user_id, update, user_name');
 
     return $this->get_id($id, 'taxonomy_info_history');
   }
 
-  function get_parent($id)
+  public function get_parent($id)
   {
     $import_parent_id = $this->get_import_parent_id($id);
 
@@ -69,44 +69,44 @@ class Taxonomy_model extends BioModel
     }
   }
 
-  function has_taxonomy($id)
+  public function has_taxonomy($id)
   {
     return $this->has_id($id);
   }
   
-  function has_name_tree($name, $tree)
+  public function has_name_tree($name, $tree)
   {
     $this->db->where('tree_id', $tree);
     return $this->has_field('name', $name);
   }
   
-  function get_name_tree_id($name, $tree)
+  public function get_name_tree_id($name, $tree)
   {
     $this->db->where('tree_id', $tree);
     return $this->get_id_by_field('name', $name);
   }
 
-  function get_name($id)
+  public function get_name($id)
   {
     return $this->get_field($id, 'name');
   }
 
-  function get_by_name($name)
+  public function get_by_name($name)
   {
     return $this->get_row('name', $name);
   }
 
-  function get_rank($id)
+  public function get_rank($id)
   {
     return $this->get_field($id, 'rank_id');
   }
 
-  function get_tree($id)
+  public function get_tree($id)
   {
     return $this->get_field($id, 'tree_id');
   }
 
-  function edit_name($id, $name)
+  public function edit_name($id, $name)
   {
     $name = trim($name);
     
@@ -124,7 +124,7 @@ class Taxonomy_model extends BioModel
     return $ret;
   }
 
-  function edit_rank($id, $rank_id)
+  public function edit_rank($id, $rank_id)
   {
     $rank_model = $this->load_model('taxonomy_rank_model');
     
@@ -142,7 +142,7 @@ class Taxonomy_model extends BioModel
     return $ret;
   }
 
-  function edit_tree($id, $tree_id)
+  public function edit_tree($id, $tree_id)
   {
     $tree_model = $this->load_model('taxonomy_tree_model');
     
@@ -166,7 +166,7 @@ class Taxonomy_model extends BioModel
     return $ret;
   }
 
-  function edit_parent($id, $parent_id)
+  public function edit_parent($id, $parent_id)
   {
     if($parent_id && $this->has_id($parent_id)) {
       return false;
@@ -182,7 +182,7 @@ class Taxonomy_model extends BioModel
     return $ret;
   }
 
-  function _get_search_sql($name, $rank, $tree, $start = null, $size = null)
+  private function _get_search_sql($name, $rank, $tree, $start = null, $size = null)
   {
     $condition = false;
     $sql = "SELECT id FROM taxonomy_info";
@@ -219,19 +219,19 @@ class Taxonomy_model extends BioModel
     return $sql;
   }
 
-  function _search_query($name, $rank, $tree, $start = null, $size = null)
+  private function _search_query($name, $rank, $tree, $start = null, $size = null)
   {
     $search = $this->_get_search_sql($name, $rank, $tree, $start, $size);
     $sql =  "$search ORDER BY name";
     return $this->db->query($sql);
   }
 
-  function search($name, $rank, $tree, $start = null, $size = null, $ordering = array())
+  public function search($name, $rank, $tree, $start = null, $size = null, $ordering = array())
   {
     return $this->search_field('*', $name, $rank, $tree, $start, $size, $ordering);
   }
 
-  function search_field($field, $name, $rank, $tree, $start = null, $size = null, $ordering = array())
+  public function search_field($field, $name, $rank, $tree, $start = null, $size = null, $ordering = array())
   {
     $order = $this->get_order_sql($ordering, 'name', 'asc');
     $search = $this->_get_search_sql($name, $rank, $tree, $start, $size);
@@ -241,7 +241,7 @@ class Taxonomy_model extends BioModel
     return $this->rows_sql($sql);
   }
 
-  function search_total($name, $rank, $tree)
+  public function search_total($name, $rank, $tree)
   {
     $search = $this->_get_search_sql($name, $rank, $tree);
     $sql = "SELECT count(id) AS total FROM ($search) AS C";
@@ -249,21 +249,21 @@ class Taxonomy_model extends BioModel
     return $this->total_sql($sql);
   }
 
-  function count_rank($rank)
+  public function count_rank($rank)
   {
     $this->db->where('rank_id', $rank);
 
     return $this->count_total();
   }
 
-  function count_tree($tree)
+  public function count_tree($tree)
   {
     $this->db->where('tree_id', $tree);
 
     return $this->count_total();
   }
 
-  function delete($id)
+  public function delete($id)
   {
     // delete all names
     $this->db->trans_start();
@@ -272,7 +272,7 @@ class Taxonomy_model extends BioModel
     $this->db->trans_complete();
   }
 
-  function __get_children($tax, $tree)
+  private function __get_children($tax, $tree)
   {
     if($tax != null && !is_numeric($tax)) {
       return null;
@@ -302,7 +302,7 @@ class Taxonomy_model extends BioModel
     }
   }
 
-  function get_taxonomy_children($tax, $tree, $start = null, $size = null)
+  public function get_taxonomy_children($tax, $tree, $start = null, $size = null)
   {
     $children_sql = $this->__get_children($tax, $tree);
     if(!$children_sql) {
@@ -316,18 +316,18 @@ class Taxonomy_model extends BioModel
     return $this->rows_sql($sql);
   }
 
-  function count_taxonomy_children($tax, $tree)
+  public function count_taxonomy_children($tax, $tree)
   {
     $sql = "SELECT count(id) AS total FROM taxonomy " . $this->__get_children($tax, $tree);
     return $this->total_sql($sql);
   }
 
-  function get_import_id($id)
+  public function get_import_id($id)
   {
     return $this->get_field($id, 'import_id');
   }
 
-  function get_import_parent_id($id)
+  public function get_import_parent_id($id)
   {
     return $this->get_field($id, 'import_parent_id');
   }

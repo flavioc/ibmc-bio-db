@@ -1,10 +1,12 @@
 <?php
 
-class Parser {
+class Parser
+{
   private $controller = null;
   private $tokenizer = null;
   
-  function Parser($ctr = null, $str = '') {
+  function Parser($ctr = null, $str = '')
+  {
     $this->controller = $ctr;
     if($ctr) {
       $ctr->load->model('label_model');
@@ -14,7 +16,7 @@ class Parser {
     }
   }
   
-  function parse()
+  public function parse()
   {
     if($this->tokenizer == null) {
       return null;
@@ -23,7 +25,7 @@ class Parser {
     return $this->expr();
   }
   
-  function expr()
+  private function expr()
   {
     $operands = array();
     $operator = null;
@@ -75,7 +77,7 @@ class Parser {
     }
   }
   
-  function simple_expr()
+  private function simple_expr()
   {
     $top = $this->tokenizer->peek();
     
@@ -88,7 +90,7 @@ class Parser {
     }
   }
   
-  function not_expr()
+  private function not_expr()
   {
     $top = $this->tokenizer->get_next();
     
@@ -101,7 +103,7 @@ class Parser {
     return array('oper' => 'not', 'operands' => array($operand));
   }
   
-  function paren_expr()
+  private function paren_expr()
   {
     $top1 = $this->tokenizer->get_next();
     if($top1 != '(') {
@@ -118,7 +120,7 @@ class Parser {
     return $ret;
   }
   
-  function terminal_expr()
+  private function terminal_expr()
   {
     $label_name = $this->tokenizer->get_next();
     if(!$label_name) {
@@ -183,7 +185,7 @@ class Parser {
     return array('label' => $label_name, 'type' => $type, 'oper' => $oper, 'value' => $value_data);
   }
   
-  function __handle_tax_search($name, $value)
+  private function __handle_tax_search($name, $value)
   {
     $all = $this->controller->taxonomy_model->search($value, null, null, 0, 10);
     $operands = array();
@@ -195,7 +197,7 @@ class Parser {
     return $this->__handle_various_results($operands);
   }
   
-  function __handle_ref_search($name, $value)
+  private function __handle_ref_search($name, $value)
   {
     $all = $this->controller->sequence_model->get_all(0, 10, array('name' => $value));
     $operands = array();
@@ -207,7 +209,7 @@ class Parser {
     return $this->__handle_various_results($operands);
   }
   
-  function __handle_various_results($operands)
+  private function __handle_various_results($operands)
   {
     if(empty($operands)) {
       return array('oper' => 'or', 'operands' => array()); // no results
@@ -218,7 +220,7 @@ class Parser {
     }
   }
   
-  function __convert_oper($type, $oper)
+  private function __convert_oper($type, $oper)
   {
     switch($type) {
       case 'integer':
