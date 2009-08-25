@@ -18,7 +18,9 @@ $(document).ready(function () {
 {form_submit name="submit_export" msg="Export all"}
 {form_end}
 
-{button name="add_label" msg="Add new" to="label/add"}
+{if $is_admin}
+  {button name="add_label" msg="Add new" to="label/add"}
+{/if}
 
 {literal}
 <style>

@@ -162,8 +162,8 @@ class Label extends BioController
 
   public function add()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $this->smarty->assign('title', 'Add label');
@@ -276,8 +276,8 @@ class Label extends BioController
 
   public function do_add()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $result = $this->__form_validation(0);
@@ -301,8 +301,8 @@ class Label extends BioController
 
   public function delete_redirect()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $id = $this->get_post('id');
@@ -313,7 +313,7 @@ class Label extends BioController
 
   public function delete_dialog($id)
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_nothing();
     }
 
@@ -328,7 +328,7 @@ class Label extends BioController
 
   public function edit_name()
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_field();
     }
 
@@ -342,7 +342,7 @@ class Label extends BioController
 
   public function edit_type()
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_field();
     }
 
@@ -356,7 +356,7 @@ class Label extends BioController
 
   public function edit_code()
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_field();
     }
 
@@ -374,7 +374,7 @@ class Label extends BioController
 
   public function edit_validcode()
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_field();
     }
 
@@ -392,7 +392,7 @@ class Label extends BioController
 
   public function edit_comment()
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_field();
     }
 
@@ -441,7 +441,7 @@ class Label extends BioController
 
   public function edit_bool($what)
   {
-    if(!$this->logged_in) {
+    if(!$this->is_admin) {
       return $this->invalid_permission_field();
     }
 

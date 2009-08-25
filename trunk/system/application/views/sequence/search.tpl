@@ -89,7 +89,7 @@ $(function () {
 <script>
 $(function () {
   $('#show_tree').minusPlus({
-    enabled: true,
+    enabled: false,
     plusEnabled: function () {
       $('#search_tree').slideDown();
     },
@@ -103,7 +103,7 @@ $(function () {
 
 <div id="search_box">
   <div id="show_tree"></div>
-  <div id="search_tree">
+  <div id="search_tree" {display_none}>
   <ol class="search-list" level="1">
   </ol>
   </div>

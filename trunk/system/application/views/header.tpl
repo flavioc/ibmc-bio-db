@@ -60,7 +60,9 @@
     </ul></li>
     <li id="label_menu"><a href="#">Labels</a>
     <ul id="label_id">
+      {if $is_admin}
       <li><a href="{site}/label/add">Add</a></li>
+      {/if}
       <li><a href="{site}/label/browse">List</a></li>
       <li><a href="{site}/label/export">Export</a></li>
       <li><a href="{site}/label/import">Import</a></li>
@@ -85,7 +87,7 @@
       </ul></li>
       <!-- <li><a href="{site}/taxonomy/sync">Sync</a></li> -->
     </ul></li>
-    {if $logged_in && ($user_type == 'admin')}
+    {if $is_admin}
     <li id="admin_menu"><a href="#">Administration</a>
     <ul id="admin_id">
       <li><a href="{site}/admin/drop_database">Reset database</a></li>
