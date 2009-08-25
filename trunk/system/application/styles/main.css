@@ -465,3 +465,19 @@ div#leftmenu li:hover li ul { display: none; }
 h1 {
   text-shadow: 2px 2px 2px darkgrey;
 }
+
+p.image-para {
+  border: 1px solid black;
+  width: 95%;
+  margin-top: 40px;
+}
+
+p.image-para img {
+  vertical-align: top;
+  margin: 10px;
+  border: 1px dotted black;
+}
+
+p.image-para img:hover {
+  border: 2px solid #c00;
+}
