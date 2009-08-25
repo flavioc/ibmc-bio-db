@@ -70,7 +70,7 @@ class Profile extends BioController
       return $this->invalid_permission_empty();
     }
 
-    $users = $this->user_model->get_users();
+    $users = $this->user_model->get_users_active();
 
     $this->json_return($users);
   }
@@ -133,7 +133,7 @@ class Profile extends BioController
   
   private function __can_edit_profile($id)
   {
-    return $this->logged_in && $this->user_id == $id || $this->is_admin;
+    return ($this->logged_in && $this->user_id == $id) || $this->is_admin;
   }
 
   public function do_edit()

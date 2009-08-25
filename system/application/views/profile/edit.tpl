@@ -43,7 +43,12 @@
 {form_open to='profile/do_edit' name=edit_form multipart=yes}
 <fieldset>
 {form_hidden name=id value=$user.id}
-{form_row name=old_password msg='Current password:' type=password autocomplete='off''}
+{if $is_admin && $user_id != $user.id}
+{form_row name=old_password msg='Your password:' type=password autocomplete='off'}
+{else}
+{form_row name=old_password msg='Current password:' type=password autocomplete='off'}
+{/if}
+
 {include file=profile/form.tpl}
 </fieldset>
 {form_submit name=submit msg='Do edit'}
