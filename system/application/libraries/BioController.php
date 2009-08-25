@@ -7,6 +7,7 @@ class BioController extends Controller
   function BioController()
   {
     parent::__construct();
+    
     if(array_key_exists('QUERY_STRING', $_SERVER)) {
       parse_str($_SERVER['QUERY_STRING'], $_GET);
     }
@@ -58,6 +59,10 @@ class BioController extends Controller
     }
     
     $this->use_livequery();
+    
+    if(!$this->logged_in) {
+      $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    }
   }
 
   protected function use_paging_size()
@@ -455,5 +460,10 @@ class BioController extends Controller
     }
     
     return $transform;
+  }
+  
+  protected function cookie_exists($name)
+  {
+    return isset($_COOKIE[$name]);
   }
 }

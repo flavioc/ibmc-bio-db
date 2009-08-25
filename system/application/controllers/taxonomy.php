@@ -155,10 +155,6 @@ class Taxonomy extends BioController
 
   public function view($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     if(!$this->taxonomy_model->has_taxonomy($id)) {
       $this->smarty->assign('title', 'Taxonomy not found');
       $this->smarty->assign('id', $id);
@@ -266,10 +262,6 @@ class Taxonomy extends BioController
 
   public function get_taxonomy($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_false();
-    }
-
     $this->json_return($this->taxonomy_model->get($id));
   }
 
@@ -286,10 +278,6 @@ class Taxonomy extends BioController
 
   public function taxonomy_children($tax, $tree = null)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $tree = $this->__get_tree($tax, $tree);
 
     if($tax == '0') {
@@ -304,10 +292,6 @@ class Taxonomy extends BioController
 
   public function total_taxonomy_children($tax, $tree = null)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
-    }
-
     $tree = $this->__get_tree($tax, $tree);
 
     if($tax == '0') {
@@ -319,11 +303,7 @@ class Taxonomy extends BioController
   }
 
   public function tree_browse()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-    
+  { 
     $this->load->model('taxonomy_tree_model');
     
     $start_tree = $this->get_parameter('start');
@@ -345,10 +325,6 @@ class Taxonomy extends BioController
 
   public function browse()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->use_autocomplete();
 
     $this->smarty->assign('title', 'Browse taxonomies');
@@ -375,10 +351,6 @@ class Taxonomy extends BioController
 
   public function search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $name = $this->get_parameter('name');
     $rank = intval($this->get_parameter('rank'));
     $tree = intval($this->get_parameter('tree'));
@@ -406,10 +378,6 @@ class Taxonomy extends BioController
 
   public function search_total()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
-    }
-
     $name = $this->get_parameter('name');
     $rank = intval($this->get_parameter('rank'));
     $tree = intval($this->get_parameter('tree'));
@@ -427,10 +395,6 @@ class Taxonomy extends BioController
 
   public function search_autocomplete()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_nothing();
-    }
-
     $what = $this->get_parameter('q');
     $limit = $this->get_parameter('limit');
     $timestamp = $this->get_parameter('timestamp');

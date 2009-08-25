@@ -28,10 +28,6 @@ class Label extends BioController
 
   public function get_label_by_name($name)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $label = $this->label_model->get_by_name($name);
 
     $this->json_return($label);
@@ -39,10 +35,6 @@ class Label extends BioController
 
   public function autocomplete_labels()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $name = $this->get_parameter('q');
     $type = $this->get_parameter('type');
 
@@ -50,7 +42,8 @@ class Label extends BioController
       case 'searchable':
         $labels = $this->label_model->get_all(null, null,
           array('name' => $name,
-                'only_searchable' => true),
+                'only_searchable' => true,
+                'only_public' => !$this->logged_in),
           array('name' => 'asc'));
         break;
       case 'addable':
@@ -74,10 +67,6 @@ class Label extends BioController
 
   public function get_all()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $start = intval($this->get_parameter('start'));
     $size = intval($this->get_parameter('size'));
 
@@ -93,7 +82,8 @@ class Label extends BioController
       array('name' => $name_filter,
             'type' => $type_filter,
             'user' => $user_filter,
-            'only_searchable' => $searchable_filter),
+            'only_searchable' => $searchable_filter,
+            'only_public' => !$this->logged_in),
       array('name' => $ordering_name,
             'type' => $ordering_type),
       true); # get sequence totals
@@ -103,10 +93,6 @@ class Label extends BioController
 
   public function count_total()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $name_filter = $this->get_parameter('name');
     $type_filter = $this->get_parameter('type');
     $user_filter = $this->get_parameter('user');
@@ -116,7 +102,8 @@ class Label extends BioController
       array('name' => $name_filter,
             'type' => $type_filter,
             'user' => $user_filter,
-            'only_searchable' => $searchable_filter));
+            'only_searchable' => $searchable_filter,
+            'only_public' => !$this->logged_in));
 
     $this->json_return($total);
   }

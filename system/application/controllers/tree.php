@@ -10,10 +10,6 @@ class Tree extends BioController
 
   public function index()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->smarty->assign('title', 'Tree list');
     $this->use_mygrid();
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
@@ -25,10 +21,6 @@ class Tree extends BioController
 
   public function get_all()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $order_name = $this->get_order('name');
     $order_update = $this->get_order('update');
     $order_user = $this->get_order('user_name');
@@ -100,10 +92,6 @@ class Tree extends BioController
 
   public function view($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     if(!$this->taxonomy_tree_model->has_tree($id)) {
       $this->smarty->assign('id', $id);
       $this->smarty->assign('title', 'Tree not found');
@@ -179,10 +167,6 @@ class Tree extends BioController
   
   public function export($id = null)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-    
     if(!$id) {
       $id = $this->get_post('id');
     }

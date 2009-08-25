@@ -129,6 +129,7 @@ $(function () {
 {form_submit name=submit msg='Export' id="submit_tree"}
 {form_end}
 
+{if $logged_in}
 {form_open to='sequence/multiple_add_label?mode=add' name=add_label_form}
 {form_hidden name=encoded_tree value=null}
 {form_hidden name=transform_hidden value=null}
@@ -146,6 +147,7 @@ $(function () {
 {form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Delete label' id='submit_delete_label'}
 {form_end}
+{/if}
 
 </div>
 

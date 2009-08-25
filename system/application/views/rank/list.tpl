@@ -2,17 +2,26 @@
 
 {literal}
 <script>
-$(document).ready(function () {
+$(function () {
   var base_site = get_app_url() + '/rank/';
   var show_ranks = $('#show_ranks');
+  var fieldNames = ['Name', 'Parent', 'Last update', 'User'];
+  var fields = ['rank_name', 'rank_parent_name', 'update', 'user'];
+  
+  if(get_logged_in()) {
+    fieldNames.push('Taxonomy');
+    fieldNames.push('Child');
+    fields.push('add');
+    fields.push('add_child');
+  }
 
   show_ranks
   .gridEnable()
   .grid({
     url: get_app_url() + '/rank',
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Parent', 'Last update', 'User', 'Taxonomy', 'Child'],
-    fields: ['rank_name', 'rank_parent_name', 'update', 'user', 'add', 'add_child'],
+    fieldNames: fieldNames,
+    fields: fields,
     tdClass: {
       update: 'centered',
       add: 'centered',
@@ -127,7 +136,9 @@ $(document).ready(function () {
 {form_submit name="submit_export" msg="Export all"}
 {form_end}
 
-{button name="add_rank" to="rank/add" msg="Add rank"}
+{if $logged_in}
+  {button name="add_rank" to="rank/add" msg="Add rank"}
+{/if}
 
 {literal}<style>
 #form_export, #form_add_rank {

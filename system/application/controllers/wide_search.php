@@ -14,10 +14,6 @@ class Wide_Search extends BioController
   
   public function search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-    
     $this->load->library('Tokenizer');
     $this->load->library('Parser');
     
@@ -37,10 +33,6 @@ class Wide_Search extends BioController
   
   public function general_search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-    
     $this->use_mygrid();
     
     $search = htmlspecialchars(rawurldecode($this->get_parameter('search')), ENT_QUOTES);

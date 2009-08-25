@@ -2,7 +2,7 @@
 
 <script>
 {literal}
-$(document).ready(function () {
+$(function () {
   start_tax_search_form('#show_data', true);
 });
 {/literal}
@@ -13,4 +13,3 @@ $(document).ready(function () {
 </p>
 
 <div id="show_data"></div>
-

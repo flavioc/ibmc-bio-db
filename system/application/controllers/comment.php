@@ -10,8 +10,8 @@ class Comment extends BioController
 
   public function edit()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $comment = $this->comment_model->get();
@@ -23,8 +23,8 @@ class Comment extends BioController
 
   public function do_edit()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
+    if(!$this->is_admin) {
+      return $this->invalid_permission_admin();
     }
 
     $comment = $this->get_post('comment');

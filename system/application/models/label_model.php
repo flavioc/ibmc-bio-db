@@ -93,6 +93,12 @@ class Label_model extends BioModel
     if(array_key_exists('only_addable', $filtering)) {
       $this->__filter_special_labels();
     }
+    
+    if(array_key_exists('only_public', $filtering)) {
+      if($filtering['only_public']) {
+        $this->db->where('public is TRUE');
+      }
+    }
   }
 
   public function get_all($start = null, $size = null,

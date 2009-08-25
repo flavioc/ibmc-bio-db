@@ -9,10 +9,6 @@ class Taxonomy_name extends BioController
 
   public function list_all($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $this->load->model('taxonomy_name_model');
     $names = $this->taxonomy_name_model->get_tax($id);
 

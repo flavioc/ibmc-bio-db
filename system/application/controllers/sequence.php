@@ -11,10 +11,6 @@ class Sequence extends BioController
 
   public function browse()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->smarty->assign('title', 'Browse sequences');
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
       'common_sequence.js');
@@ -28,15 +24,11 @@ class Sequence extends BioController
 
   public function get_export()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $tree_str = $this->get_post('tree');
     $tree = json_decode(stripslashes($tree_str), true);
 
     $transform = $this->__get_transform_label('transform', 'post');
-    $seqs = $this->label_sequence_model->get_search($tree, null, null, array(), $transform);
+    $seqs = $this->label_sequence_model->get_search($tree, null, null, array(), $transform, !$this->logged_in);
     
     $type = $this->get_post('format');
 
@@ -52,10 +44,6 @@ class Sequence extends BioController
 
   public function export_search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->smarty->assign('title', 'Export search');
     $this->smarty->load_stylesheets('export.css');
 
@@ -71,7 +59,7 @@ class Sequence extends BioController
 
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $this->smarty->assign('transform', $transform);
-    $seqs = $this->label_sequence_model->get_search($tree, null, null, array(), $transform);
+    $seqs = $this->label_sequence_model->get_search($tree, null, null, array(), $transform, !$this->logged_in);
     
     $all = $this->label_sequence_model->get_all_labels($seqs);
     $this->smarty->assign('labels', $all);
@@ -81,10 +69,6 @@ class Sequence extends BioController
 
   public function search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
     $this->smarty->assign('title', 'Search sequences');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_helpers.js',
       'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js',
@@ -124,10 +108,6 @@ class Sequence extends BioController
 
   public function search_tax()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_thickbox();
-    }
-
     $this->load->model('taxonomy_rank_model');
     $ranks = $this->taxonomy_rank_model->get_ranks();
 
@@ -142,10 +122,6 @@ class Sequence extends BioController
 
   public function search_ref()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_thickbox();
-    }
-
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
     $this->smarty->view_s('sequence/search_ref');
@@ -164,10 +140,6 @@ class Sequence extends BioController
   
   public function humanize_search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-    
     $tree = $this->__get_search_term();
     $tree_str = search_tree_to_string($tree, '<span class="compound-operator">', '</span>');
     
@@ -176,10 +148,6 @@ class Sequence extends BioController
 
   public function get_search()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
     $search = $this->__get_search_term();
@@ -194,20 +162,17 @@ class Sequence extends BioController
       array('name' => $ordering_name,
             'update' => $ordering_update,
             'user_name' => $ordering_user),
-            $transform));
+            $transform,
+            !$this->logged_in));
   }
 
   public function get_search_total()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
-    }
-
     $search = $this->__get_search_term();
     $transform = $this->__get_transform_label();
 
     $this->json_return(
-      $this->label_sequence_model->get_search_total($search, $transform));
+      $this->label_sequence_model->get_search_total($search, $transform, !$this->logged_in));
   }
 
   public function multiple_add_label()
@@ -279,10 +244,6 @@ class Sequence extends BioController
 
   public function get_all()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_empty();
-    }
-
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
 
@@ -295,7 +256,8 @@ class Sequence extends BioController
 
     $this->json_return($this->sequence_model->get_all($start, $size,
       array('name' => $filter_name,
-            'user' => $filter_user),
+            'user' => $filter_user,
+            'only_public' => !$this->logged_in),
       array('name' => $ordering_name,
             'update' => $ordering_update,
             'user_name' => $ordering_user)));
@@ -303,17 +265,14 @@ class Sequence extends BioController
 
   public function get_total()
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_zero();
-    }
-
     $filter_name = $this->get_parameter('name');
     $filter_user = $this->get_parameter('user');
 
     $this->json_return(
       $this->sequence_model->get_total(
         array('name' => $filter_name,
-              'user' => $filter_user)));
+              'user' => $filter_user,
+              'only_public' => !$this->logged_in)));
   }
 
   private function __invalid_sequence($id)
@@ -329,7 +288,7 @@ class Sequence extends BioController
       $id = $this->get_parameter('id');
     }
 
-    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
+    if(!$this->__can_access($id)) {
       return $this->invalid_permission();
     }
 
@@ -364,8 +323,10 @@ class Sequence extends BioController
 
   public function view($id)
   {
-    if(!$this->logged_in && !$this->sequence_model->permission_public($id)) {
-      return $this->invalid_permission();
+    if(!$this->__can_access($id)) {
+      $this->set_error_message('Sequence is private, please login');
+      redirect('sequence/browse');
+      return;
     }
 
     if(!$this->sequence_model->has_id($id)) {
@@ -559,6 +520,10 @@ class Sequence extends BioController
 
   public function add()
   {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
     $this->smarty->assign('title', 'Add sequence');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
 
@@ -622,22 +587,27 @@ class Sequence extends BioController
       redirect("sequence/view/$id");
     }
   }
+  
+  private function __can_access($id)
+  {
+    return $this->logged_in || $this->sequence_model->permission_public($id);
+  }
 
   public function download($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_nothing();
+    if(!$this->__can_access($id)) {
+      return $this->invalid_permission();
     }
-
+    
     echo $this->sequence_model->get_content($id);
   }
 
   public function fetch($id)
   {
-    if(!$this->logged_in) {
-      return $this->invalid_permission_nothing();
+    if(!$this->__can_access($id)) {
+      return $this->invalid_permission();
     }
-
+    
     $content = $this->sequence_model->get_content($id);
 
     echo sequence_split($content);
@@ -703,11 +673,11 @@ class Sequence extends BioController
 
   public function export()
   {
-    if(!$this->logged_in) {
+    $id = $this->get_post('id');
+    
+    if(!$this->__can_access($id)) {
       return $this->invalid_permission();
     }
-    
-    $id = $this->get_post('id');
 
     if(!$this->sequence_model->has_sequence($id)) {
       return;
@@ -720,11 +690,7 @@ class Sequence extends BioController
   }
 
   public function export_all()
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-    
+  { 
     $filter_name = $this->get_post('export_name');
     $filter_user = $this->get_post('export_user');
 
@@ -751,7 +717,8 @@ class Sequence extends BioController
     return $this->__export_sequences(
       $this->sequence_model->get_all(null, null,
                     array('name' => $filter_name,
-                          'user' => $filter_user)),
+                          'user' => $filter_user,
+                          'only_public' => !$this->logged_in)),
                 $type, $comment);
   }
 

@@ -3,12 +3,18 @@
 {literal}
 <script>
 $(function () {
-
   var base_site = get_app_url() + '/tree';
   var changed = false;
   var show_trees = $('#show_trees');
   var name_field = $('#name');
   var user_field = $('#user');
+  var fieldNames = ['Name', 'Export', 'Last update', 'User'];
+  var fields = ['name', 'export', 'update', 'user_name'];
+  
+  if(get_logged_in()) {
+    fieldNames.push('Root');
+    fields.push('add');
+  }
 
   function changed_function()
   {
@@ -20,8 +26,8 @@ $(function () {
   .grid({
     url: base_site,
     retrieve: 'get_all',
-    fieldNames: ['Name', 'Export', 'Last update', 'User', 'Root'],
-    fields: ['name', 'export', 'update', 'user_name', 'add'],
+    fieldNames:  fieldNames,
+    fields: fields,
     dataTransform: {
       add: function (row) {
         return img_add;
@@ -95,4 +101,6 @@ $(function () {
 
 <div id="show_trees"></div>
 
-{button name="add_tree" to="tree/add" msg="Add tree"}
+{if $logged_in}
+  {button name="add_tree" to="tree/add" msg="Add tree"}
+{/if}
