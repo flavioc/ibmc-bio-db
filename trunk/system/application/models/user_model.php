@@ -173,11 +173,20 @@ class User_model extends BioModel
     return $this->edit_data_with_history($id, $data);
   }
 
+  /* only non admin users */
   public function get_users()
   {
     $this->db->where('enabled', TRUE);
 
     return $this->get_rows('user_type', 'user');
+  }
+  
+  /* get active users */
+  public function get_users_active()
+  {
+    $this->db->where('enabled', TRUE);
+    
+    return $this->get_all();
   }
 
   public function get_users_all()
