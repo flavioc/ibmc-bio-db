@@ -18,22 +18,22 @@
 </head>
 <body>
 <div id="top">
-<div id="left_top">
-<a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BIO DB"/></a>
-<h1><a href="{site}/welcome">Bio DB</a></h1>
-<span id="comment_db">{$comment_header}</span>
-</div>
-<div id="right_top">
-<form id="form_search_global" method="get" action="{site}/wide_search/search">
-{if $search_term_input}
-<input type="text" name="search_global" value="{$search_term_input}" />
-{else}
-<input type="text" name="search_global" autocomplete=off/>
-{/if}
-<input type="submit" value="Search"/>
-</form>
-<a id="number_sequences" href="{site}/sequence/browse">{$total_seqs} saved sequences</a>
-</div>
+  <div id="left_top">
+    <a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BIO DB"/></a>
+    <h1><a href="{site}/welcome">Bio DB</a></h1>
+    <span id="comment_db">{$comment_header}</span>
+  </div>
+  <div id="right_top">
+    <form id="form_search_global" method="get" action="{site}/wide_search/search">
+      {if $search_term_input}
+      <input type="text" name="search_global" value="{$search_term_input}" />
+      {else}
+      <input type="text" name="search_global" autocomplete=off/>
+      {/if}
+    <input type="submit" value="Search"/>
+    </form>
+    <a id="number_sequences" href="{site}/sequence/browse">{$total_seqs} saved sequences</a>
+  </div>
 </div>
 
 <div id="leftmenu">

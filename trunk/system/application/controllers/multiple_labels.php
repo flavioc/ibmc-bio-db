@@ -271,7 +271,7 @@ class Multiple_Labels extends BioController
     return false;
   }
 
-  private function __add_label($seq_id)
+  private function __add_multiple_label($seq_id)
   {
     if($this->__add_label_common($seq_id)) {
       ++$this->count_new;
@@ -280,7 +280,7 @@ class Multiple_Labels extends BioController
     }
   }
 
-  private function __edit_label($id)
+  private function __edit_label_multiple($id)
   {
     $ret = false;
     
@@ -341,7 +341,7 @@ class Multiple_Labels extends BioController
               $this->label_sequence_model->edit_auto_label($id);
               ++$this->count_regenerate;
             } else {
-              $this->__edit_label($id);
+              $this->__edit_label_multiple($id);
             }
           }
         }
@@ -350,7 +350,7 @@ class Multiple_Labels extends BioController
           $this->label_sequence_model->add_generated_label($seq_id, $this->label_id);
           ++$this->count_new_generated;
         } else {
-          $this->__add_label($seq_id);
+          $this->__add_label_multiple($seq_id);
         }
       }
     }

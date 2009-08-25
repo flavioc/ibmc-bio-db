@@ -101,14 +101,14 @@ function change_label_ref(place, form)
 $.fn.autocomplete_labels = function (type) {
   var url = get_app_url() + "/label/autocomplete_labels";
   return $(this).autocomplete(url,
-                              {
-                              minChars: 0,
-                              delay: 400,
-                              scroll: true,
-                              selectFirst: false,
-                              mustMatch: true,
-                              extraParams: {type: type}
-                              });
+    {
+      minChars: 0,
+      delay: 400,
+      scroll: true,
+      selectFirst: false,
+      mustMatch: true,
+      extraParams: {type: type}
+    });
 };
 
 function get_label_by_name(name, fn)
@@ -128,4 +128,19 @@ $.fn.datePickerDate = function () {
       buttonImage: get_images_url() + "/calendar.gif"
     });
   });
+};
+
+$.fn.activateGenerate = function () {
+  var checkbox = $('#generate_check');
+  var $this = $(this);
+  
+  checkbox.click(function (event) {
+    if(checkbox.is(':checked')) {
+      $this.hide();
+    } else {
+      $this.show();
+    }
+  });
+  
+  return $this;
 };
