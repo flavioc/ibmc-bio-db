@@ -92,6 +92,9 @@ function convert_operator(oper, type)
         case 'after': return 'after';
       }
       break;
+    case 'tax':
+    case 'ref':
+      return oper;
   }
 
   switch(oper) {
@@ -100,7 +103,7 @@ function convert_operator(oper, type)
     case 'notexists': return 'not exists';
   }
 
-  return '';
+  return oper;
 }
 
 function fill_operators_options(type)
@@ -126,6 +129,10 @@ function fill_operators_options(type)
       return $.extend(base, {eq: 'equal',
                              after: 'after',
                              before: 'before'});
+    case 'tax':
+    case 'ref':
+      return $.extend(base, {eq: 'equal',
+                              like: 'like'});
     default:
       return $.extend(base, {eq: 'equal'});
   }
@@ -153,17 +160,11 @@ function fill_operators(type)
   show_type_input(type);
 }
 
-function show_type_input(type)
+function show_type_input(type, oper)
 {
   switch(type) {
     case 'bool':
       data_boolean_input.show();
-      break;
-    case 'tax':
-      data_tax_input.show();
-      break;
-    case 'ref':
-      data_seq_input.show();
       break;
     case 'position':
       data_position_input.show();
@@ -174,6 +175,24 @@ function show_type_input(type)
       break;
     case 'date':
       data_date_input.show();
+      break;
+    case 'tax':
+      if(oper == 'like' || oper == null) {
+        data_tax_input.hide();
+        data_input.show();
+      } else if(oper == 'eq') {
+        data_input.hide();
+        data_tax_input.show();
+      }
+      break;
+    case 'ref':
+      if(oper == 'like' || oper == null) {
+        data_seq_input.hide();
+        data_input.show();
+      } else if(oper == 'eq') {
+        data_seq_input.show();
+        data_input.hide();
+      }
       break;
     default:
       data_input.show();
@@ -188,9 +207,11 @@ function hide_type_input(type)
       break;
     case 'tax':
       data_tax_input.hide();
+      data_input.hide();
       break;
     case 'ref':
       data_seq_input.hide();
+      data_input.hide();
       break;
     case 'position':
       data_position_input.hide();
@@ -222,7 +243,6 @@ function term_form_submitted()
   var oper = operator_select.val();
   var obj = {label: label,
              type: type,
-             id: current_label.id,
              oper: oper};
 
   if(oper != 'exists' && oper != 'notexists') {
@@ -231,14 +251,38 @@ function term_form_submitted()
         obj.value = data_boolean_checkbox.is(':checked');
         break;
       case 'tax':
-        obj.value = data_tax[0].tax;
-        if(obj.value == null) {
+        if(oper == 'eq') {
+          var tax = data_tax[0].tax;
+        
+          if(tax == null) {
+            return;
+          }
+        
+          obj.value = {id: tax.id, name: tax.name};
+        } else if(oper == 'like') {
+          obj.value = data_row.val();
+          
+          if(!non_empty_string(obj.value)) {
+            return;
+          }
+        } else {
           return;
         }
         break;
       case 'ref':
-        obj.value = data_seq[0].seq;
-        if(obj.value == null) {
+        if(oper == 'eq') {
+          obj.value = data_seq[0].seq;
+          
+          if(obj.value == null) {
+            return;
+          }
+        } else if(oper == 'like') {
+          obj.value = data_row.val();
+          
+          if(!non_empty_string(obj.value)) {
+            return;
+          }
+        } else {
           return;
         }
         break;
@@ -267,8 +311,8 @@ function term_form_submitted()
             return;
           }
         } else {
-          // text based value
-          if(obj.value == '') {
+          // other values
+          if(!non_empty_string(obj.value)) {
             return;
           }
         }
@@ -323,9 +367,17 @@ function build_operator_text(obj)
       }
       break;
     case 'tax':
-      return 'is ' + obj.value.name;
+      if(obj.oper == 'eq') {
+        return 'is ' + obj.value.name;
+      } else if(obj.oper == 'like') {
+        return 'like ' + obj.value;
+      }
     case 'ref':
-      return 'is ' + obj.value.name;
+      if(obj.oper == 'eq') {
+        return 'is ' + obj.value.name;
+      } else if(obj.oper == 'like') {
+        return 'like ' + obj.value;
+      }
     case 'position':
       return obj.value.type + ' ' + convert_operator(obj.oper, obj.type) + ' ' + obj.value.num;
     default:
@@ -615,7 +667,7 @@ function operator_was_selected()
   if(op == 'exists' || op == 'notexists') {
     hide_type_input(current_label.type);
   } else {
-    show_type_input(current_label.type);
+    show_type_input(current_label.type, op);
     select_position_type();
   }
 }

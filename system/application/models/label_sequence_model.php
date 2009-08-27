@@ -1017,6 +1017,11 @@ class Label_sequence_model extends BioModel
         return 'FALSE';
       }
     case 'tax':
+      if(!is_numeric($value)) {
+        return 0;
+      }
+      
+      return $value;
     case 'ref':
       $id = $value['id'];
       if(!is_numeric($id)) {
@@ -1056,7 +1061,7 @@ class Label_sequence_model extends BioModel
     if($this->__compound_oper($oper)) {
       $operands = $term['operands'];
 
-      if(count($operands) == 0) {
+      if(empty($operands)) {
         return $default;
       }
 
@@ -1142,7 +1147,8 @@ class Label_sequence_model extends BioModel
           }
         }
         
-        $sql = "EXISTS (SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id)";
+        $sql = "EXISTS (SELECT label_sequence.id FROM label_sequence
+          WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id)";
 
         if($oper == 'notexists') {
           $sql = "NOT $sql";
@@ -1194,7 +1200,96 @@ class Label_sequence_model extends BioModel
       }
 
       $sql_field = $this->__translate_sql_field($fields, $label_type);
-      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id AND $sql_field IS NOT NULL AND $sql_field $sql_oper $sql_value)";
+      
+      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id
+            AND label_sequence.label_id = $label_id AND $sql_field $sql_oper $sql_value)";
+    }
+  }
+  
+  // expand search tree cases like taxonomy children and taxonomy and ref seq like operator
+  private function __expand_search_tree($term, &$labels)
+  {
+    $oper = $term['oper'];
+    
+    if($this->__compound_oper($oper)) {
+      $operands =& $term['operands'];
+      $new_operands = array();
+      
+      foreach($operands as &$operand) {
+        $new_operands[] = $this->__expand_search_tree($operand, $labels);
+      }
+      
+      return array('oper' => $oper, 'operands' => $new_operands);
+    } else {
+      $label_name = $term['label'];
+      $label = $labels[$label_name];
+      $label_type = $label['type'];
+      $oper = $term['oper'];
+      
+      if(label_special_operator($oper)) {
+        return $term;
+      }
+      
+      switch($label_type) {
+        case 'ref':
+          $val = $term['value'];
+          
+          if($oper == 'eq') {
+            if(!is_numeric($val)) {
+              $val = $val['id'];
+            }
+            if(!is_numeric($val)) {
+              return null;
+            }
+            return array('oper' => $oper, 'label' => $label_name, 'value' => $val);
+          } elseif($oper == 'like') {
+            $seq_model = $this->load_model('sequence_model');
+            $all = $seq_model->get_all(0, 20, array('name' => $value), array(), 'id');
+            
+            $operands = array();
+            $ret = array('oper' => 'oper', 'operands' => &$operands);
+            
+            foreach($all as &$ref) {
+              $operands[] = array('label' => $label_name, 'oper' => 'eq', 'value' => $ref['id']);
+            }
+            return $ret;
+          }
+          break;
+        case 'tax':
+          $val = $term['value'];
+          $tax_model = $this->load_model('taxonomy_model');
+          
+          if($oper == 'eq') {
+            if(!is_numeric($val)) {
+              $val = $val['id'];
+            }
+            if(!is_numeric($val)) {
+              return null;
+            }
+            $descendants = $tax_model->get_taxonomy_descendants($val, null, 'id');
+          } else if($oper == 'like') {
+            $all = $tax_model->search($val, null, null, 0, 20, array(), 'id');
+            $descendants = array();
+            
+            // get all descendants
+            foreach($all as &$tax) {
+              $id = $tax['id'];
+              $this_descendants = $tax_model->get_taxonomy_descendants($id, null, 'id');
+              $descendants = array_merge($descendants, $this_descendants);
+            }
+          }
+          
+          $operands = array();
+          $ret = array('oper' => 'or', 'operands' => &$operands);
+          
+          foreach($descendants as $descendant) {
+            $operands[] = array('oper' => 'eq', 'value' => $descendant['id'], 'label' => $label_name);
+          }
+          
+          return $ret;
+        default:
+          return $term;
+      }
     }
   }
 
@@ -1202,7 +1297,8 @@ class Label_sequence_model extends BioModel
   {
     $label_model = $this->load_model('label_model');
     $labels = $this->_get_search_labels($search, $label_model, $only_public);
-    $sql_part = $this->__get_search_where($search, $labels);
+    $new_search = $this->__expand_search_tree($search, $labels);
+    $sql_part = $this->__get_search_where($new_search, $labels);
     if($only_public) {
       return $sql_part . ' AND ' . self::$public_sequence_where;
     } else {

@@ -155,12 +155,13 @@ function humanize_search_terminal($term)
       }
       break;
     case 'tax':
-      $name = $value['name'];
-      $ret = "$label_name = $name";
-      break;
     case 'ref':
-      $name = $value['name'];
-      $ret = "$label_name = $name";
+      if($oper == 'eq') {
+        $name = $value['name'];
+        $ret = "$label_name = $name";
+      } elseif($oper == 'like') {
+        $ret = "$label_name like $value";
+      }
       break;
     case 'date':
       $ret = "$label_name $oper $value";

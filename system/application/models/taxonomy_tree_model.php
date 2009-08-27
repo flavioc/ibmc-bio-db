@@ -14,7 +14,7 @@ class Taxonomy_tree_model extends BioModel
 
   private function __select()
   {
-    $this->db->select('tree_id AS id, tree_name AS name, update, update_user_id, user_name');
+    $this->db->select('tree_id AS id, tree_name AS name, `update`, update_user_id, user_name');
   }
 
   private function __filter($filtering = array())

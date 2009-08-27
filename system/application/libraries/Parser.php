@@ -178,50 +178,11 @@ class Parser
       case 'bool':
         $value_data = ($value == 'true');
         break;
-      case 'tax':
-        return $this->__handle_tax_search($label_name, $value);
-      case 'ref':
-        return $this->__handle_ref_search($label_name, $value);
       default:
         $value_data = $value;
     }
     
     return array('label' => $label_name, 'type' => $type, 'oper' => $oper, 'value' => $value_data);
-  }
-  
-  private function __handle_tax_search($name, $value)
-  {
-    $all = $this->controller->taxonomy_model->search($value, null, null, 0, 10);
-    $operands = array();
-    
-    foreach($all as &$tax) {
-      $operands[] = array('label' => $name, 'type' => 'tax', 'oper' => 'eq', 'value' => $tax);
-    }
-    
-    return $this->__handle_various_results($operands);
-  }
-  
-  private function __handle_ref_search($name, $value)
-  {
-    $all = $this->controller->sequence_model->get_all(0, 10, array('name' => $value));
-    $operands = array();
-    
-    foreach($all as &$ref) {
-      $operands[] = array('label' => $name, 'type' => 'ref', 'oper' => 'eq', 'value' => $ref);
-    }
-    
-    return $this->__handle_various_results($operands);
-  }
-  
-  private function __handle_various_results($operands)
-  {
-    if(empty($operands)) {
-      return array('oper' => 'or', 'operands' => array()); // no results
-    } elseif(count($operands) == 1) {
-      return $operands[0];
-    } else {
-      return array('oper' => 'or', 'operands' => $operands);
-    }
   }
   
   private function __convert_oper($type, $oper)
@@ -237,6 +198,8 @@ class Parser
           case '<=': return 'le';
         }
         break;
+      case 'tax':
+        return 'like';
       case 'text':
       case 'url':
         switch($oper) {
