@@ -131,18 +131,19 @@ class Sequence extends BioController
   {
     $search = stripslashes($this->get_parameter('search'));
     $search_term = null;
+    
     if($search) {
       $search_term = json_decode($search, true);
     }
 
     return $search_term;
   }
-  
+
   public function humanize_search()
   {
     $tree = $this->__get_search_term();
     $tree_str = search_tree_to_string($tree, '<span class="compound-operator">', '</span>');
-    
+
     echo $tree_str;
   }
 
@@ -237,7 +238,7 @@ class Sequence extends BioController
     $this->smarty->assign('encoded', $encoded);
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $this->smarty->assign('transform', $transform);
-    
+
     $this->smarty->assign('title', 'Multiple delete label');
     $this->smarty->view('sequence/multiple_delete_label');
   }
@@ -801,7 +802,7 @@ class Sequence extends BioController
     
     echo export_sequences_others($sequences, $type);
   }
-  
+
   private function __do_export_fasta($sequences, $seq_labels, $extra_comments = '')
   {
     header('Content-type: text/plain');
@@ -810,7 +811,7 @@ class Sequence extends BioController
     echo export_sequences_fasta($sequences, $seq_labels,
       $this->__get_basic_comments() . " $extra_comments");
   }
-  
+
   private function __do_export_xml($sequences, $seq_labels, $comment)
   {
     header('Content-type: text/plain');

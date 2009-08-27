@@ -1,3 +1,8 @@
+function non_empty_string(str)
+{
+  return typeof(str) == "string" && str.length > 0;
+}
+
 function rtrim(str, charlist)
 {
   // http://kevin.vanzonneveld.net

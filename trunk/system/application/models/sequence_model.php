@@ -59,7 +59,8 @@ class Sequence_model extends BioModel
 
   public function get_all($start = null, $size = null,
     $filtering = array(),
-    $ordering = array())
+    $ordering = array(),
+    $select = 'id, name, update_user_id, `update` user_name')
   {
     $this->order_by($ordering, 'name', 'asc');
     $this->__filter($filtering);
@@ -68,7 +69,7 @@ class Sequence_model extends BioModel
       $this->db->limit($size, $start);
     }
 
-    $this->db->select('id, name, update_user_id, `update`, user_name');
+    $this->db->select($select);
 
     return parent::get_all('sequence_info_history');
   }

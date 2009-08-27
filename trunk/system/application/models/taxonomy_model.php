@@ -226,9 +226,9 @@ class Taxonomy_model extends BioModel
     return $this->db->query($sql);
   }
 
-  public function search($name, $rank, $tree, $start = null, $size = null, $ordering = array())
+  public function search($name, $rank, $tree, $start = null, $size = null, $ordering = array(), $select = "*")
   {
-    return $this->search_field('*', $name, $rank, $tree, $start, $size, $ordering);
+    return $this->search_field($select, $name, $rank, $tree, $start, $size, $ordering);
   }
 
   public function search_field($field, $name, $rank, $tree, $start = null, $size = null, $ordering = array())
@@ -302,18 +302,38 @@ class Taxonomy_model extends BioModel
     }
   }
 
-  public function get_taxonomy_children($tax, $tree, $start = null, $size = null)
+  public function get_taxonomy_children($tax, $tree, $start = null, $size = null, $select = "*")
   {
     $children_sql = $this->__get_children($tax, $tree);
     if(!$children_sql) {
       return array();
     }
     
-    $sql = "SELECT * FROM taxonomy_info $children_sql ORDER BY name ";
+    $sql = "SELECT $select FROM taxonomy_info $children_sql ORDER BY name ";
 
     $sql .= sql_limit($start, $size);
 
     return $this->rows_sql($sql);
+  }
+  
+  // get taxonomy descendants including itself
+  public function get_taxonomy_descendants($tax, $tree = null, $select = "*")
+  {
+    $self = $this->get($tax);
+    
+    $ret = array();
+    $left = array($self); // taxonomy queue
+    
+    while(!empty($left)) {
+     $next = array_pop($left);
+     array_push($ret, $next); // new descendant
+     
+     $children = $this->get_taxonomy_children($next['id'], $tree, null, null, $select);
+     
+     $left = array_merge($left, $children);
+    }
+    
+    return $ret;
   }
 
   public function count_taxonomy_children($tax, $tree)

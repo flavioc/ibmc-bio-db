@@ -32,7 +32,7 @@ class Taxonomy_rank_model extends BioModel
       $this->db->limit($size, $start);
     }
 
-    $this->db->select('history_id, rank_id, rank_name, rank_parent_id, rank_parent_name, update_user_id, update, user_name');
+    $this->db->select('history_id, rank_id, rank_name, rank_parent_id, rank_parent_name, update_user_id, `update`, user_name');
     $this->order_by($ordering, 'rank_name', 'asc');
     $this->__filter($filtering);
 
