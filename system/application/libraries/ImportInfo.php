@@ -381,6 +381,37 @@ class ImportInfo
     }
   }
   
+  private function __is_generated_protein_name($name)
+  {
+    return preg_match('/_[0-9]$/', $name);
+  }
+  
+  private function __fix_protein_name($name)
+  {
+    return preg_replace('/_[0-9]$/', '_p', $name);
+  }
+  
+  private function __fix_sequence_names()
+  {
+    // fix sequence names: _n -> _p
+    $new_sequences = array();
+    
+    foreach($this->sequences as $name => &$data)
+    {
+      $content =& $data['content'];
+      
+      if(sequence_type($content) == 'protein' && $this->__is_generated_protein_name($name))
+      {
+        $data['name'] = $this->__fix_protein_name($name);
+      }
+      
+      $name = $data['name'];
+      $new_sequences[$name] =& $data;
+    }
+    
+    $this->sequences = $new_sequences;
+  }
+  
   public function import()
   {
     $this->controller->load->model('label_model');
@@ -388,6 +419,7 @@ class ImportInfo
     $this->controller->load->model('sequence_model');
     
     $this->__get_labels();
+    $this->__fix_sequence_names();
     
     foreach($this->sequences as $name => &$data) {
       $content = $data['content'];
