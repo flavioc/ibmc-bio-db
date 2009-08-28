@@ -1058,7 +1058,9 @@ class Label_sequence_model extends BioModel
 
     $oper = $term['oper'];
 
-    if($this->__compound_oper($oper)) {
+    if($oper == 'fail') {
+      return 'FALSE';
+    } elseif($this->__compound_oper($oper)) {
       $operands = $term['operands'];
 
       if(empty($operands)) {
@@ -1209,6 +1211,10 @@ class Label_sequence_model extends BioModel
   // expand search tree cases like taxonomy children and taxonomy and ref seq like operator
   private function __expand_search_tree($term, &$labels)
   {
+    if(!$term) {
+      return null;
+    }
+    
     $oper = $term['oper'];
     
     if($this->__compound_oper($oper)) {
@@ -1247,12 +1253,16 @@ class Label_sequence_model extends BioModel
             $all = $seq_model->get_all(0, 20, array('name' => $value), array(), 'id');
             
             $operands = array();
-            $ret = array('oper' => 'oper', 'operands' => &$operands);
             
             foreach($all as &$ref) {
               $operands[] = array('label' => $label_name, 'oper' => 'eq', 'value' => $ref['id']);
             }
-            return $ret;
+            
+            if(empty($operands)) {
+              return array('oper' => 'fail');
+            }
+            
+            return array('oper' => 'oper', 'operands' => &$operands);
           }
           break;
         case 'tax':
@@ -1280,13 +1290,16 @@ class Label_sequence_model extends BioModel
           }
           
           $operands = array();
-          $ret = array('oper' => 'or', 'operands' => &$operands);
           
           foreach($descendants as $descendant) {
             $operands[] = array('oper' => 'eq', 'value' => $descendant['id'], 'label' => $label_name);
           }
           
-          return $ret;
+          if(empty($operands)) {
+            return array('oper' => 'fail');
+          }
+          
+          return array('oper' => 'or', 'operands' => &$operands);
         default:
           return $term;
       }
