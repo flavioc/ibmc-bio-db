@@ -14,6 +14,7 @@ define('AUTOCOMPLETE_THEME', 'jquery.autocomplete.css');
 define('THICKBOX_SCRIPT', 'jquery.thickbox.js');
 define('THICKBOX_THEME', 'jquery.thickbox.css');
 define('MYGRID_SCRIPT', 'jquery.mygrid.js');
+define('MYGRID_THEME', 'jquery.mygrid.css');
 define('IMPROMPTU_SCRIPT', 'jquery.impromptu.js');
 define('AJAXIMPROMPTU_SCRIPT', 'jquery.ajaximpromptu.js');
 define('IMPROMPTU_THEME', 'jquery.impromptu.css');

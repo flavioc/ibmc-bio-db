@@ -60,7 +60,7 @@ class Sequence_model extends BioModel
   public function get_all($start = null, $size = null,
     $filtering = array(),
     $ordering = array(),
-    $select = 'id, name, update_user_id, `update` user_name')
+    $select = 'id, name, update_user_id, `update`, user_name')
   {
     $this->order_by($ordering, 'name', 'asc');
     $this->__filter($filtering);

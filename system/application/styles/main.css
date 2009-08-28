@@ -185,68 +185,9 @@ body>div#leftmenu form
   margin-top: 10px;
 }
 
-table.data {
-  font-weight: normal;
-  font-size: 12px;
-  color: #fff;
-  background-color: #666;
-  width: 95%;
-  border: 0px;
-  border-collapse: collapse;
-  border-spacing: 0px;
-}
-
-table.data td {
-  background-color: #CCC;
-  color: #000;
-  padding: 4px;
-  border: 1px #fff solid;
-}
-
-table.data td.hed {
-  background-color: #666;
-  color: #fff;
-  padding: 4px;
-  text-align: left;
-  border-bottom: 2px #fff solid;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-table.data td.highlight {
-  background-color: #da0;
-}
-
-tr .deletable_column {
-}
-
 div.data_show, fieldset {
   border: dotted 1px black;
   margin-right: 20px;
-}
-
-div.navigation {
-  margin-top: 7px;
-  border: 1px solid black;
-  width: 200px;
-  padding-left: 2px;
-  padding-right: 2px;
-  padding: 5px;
-  height: 20px;
-}
-
-div.navigation a:hover {
-  background: #c00;
-  color: white;
-  border: 1px dashed black;
-}
-
-div.navigation a.nav_previous {
-  float: left;
-}
-
-div.navigation a.nav_next {
-  float: right;
 }
 
 p.help {
@@ -291,13 +232,6 @@ a.hide_box {
 
 img.loader {
   margin-bottom: 10px;
-}
-
-div.grid_box {
-  border-left: 1px dashed black;
-  padding-left: 5px;
-  padding-bottom: 5px;
-  width: 100%;
 }
 
 div.grid_form {
@@ -351,15 +285,6 @@ img.image_url {
 
 table.fixed_table {
   table-layout: fixed;
-}
-
-table.data th a:visited, table.data th a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-table.data th {
-  font-size: 14px;
 }
 
 #label_error {
