@@ -495,7 +495,7 @@ function get_results(obj, opts) {
       }
     });
   } else {
-    // local
+    // local data
     var rows = $.grep(opts.local_data, function (item, index) {
       return index >= opts.inner.start && index < (opts.inner.start + opts.size);
     });
