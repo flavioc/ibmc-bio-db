@@ -38,7 +38,6 @@ var date_input = null;
 var select_transform = null;
 var current_selected_li = null;
 var search_type = 'all';
-var get_tree_param = null;
 
 $(function () {
   var got = $.getURLParam('type');
@@ -46,11 +45,6 @@ $(function () {
   if(got) {
     search_type = got;
   }
-  
-  var get_string = $.getURLParam('term');
-  var decoded_get = urldecode(get_string);
-  
-  get_tree_param = $.evalJSON(decoded_get);
 });
 
 var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete">Delete</span> [<span class="term-count"></span>]</span>';
@@ -417,14 +411,14 @@ function enclose_search_tree(tree)
 {
   switch(search_type) {
     case 'dna':
-      return {oper: 'and',
-        operands: [{label: 'type', type: 'text', oper: 'eq', value: 'dna'},
-                    tree]};
     case 'protein':
-      return {oper: 'and',
-        operands: [
-          {label: 'type', type: 'text', oper: 'eq', value: 'protein'},
-          tree]};
+      var base = {label: 'type', type: 'text', oper: 'eq', value: search_type};
+      
+      if(tree) {
+        return {oper: 'and', operands: [base, tree]};
+      } else {
+        return {oper: 'and', operands: [base]};
+      }
     default:
       return tree;
   }
@@ -449,7 +443,7 @@ function update_form_hidden(encoded)
 
 function get_main_search_term_encoded()
 {
-  return $.toJSON(get_main_search_term());
+  return $.toJSON(get_main_search_term(), true);
 }
 
 function update_humanize(encoded)
@@ -458,7 +452,7 @@ function update_humanize(encoded)
     encoded = get_main_search_term_encoded();
   }
   
-  $.get(get_app_url() + '/sequence/humanize_search',
+  $.post(get_app_url() + '/sequence/humanize_search',
     {
       search: encoded
     },
@@ -693,11 +687,11 @@ function cant_add_leafs()
 function compute_total_term(li)
 {
   var search = enclose_search_tree(get_search_term(li));
-  var encoded = $.toJSON(search);
+  var encoded = $.toJSON(search, true);
   
   current_selected_li = li;
   
-  $.get(get_app_url() + '/sequence/get_search_total',
+  $.post(get_app_url() + '/sequence/get_search_total',
     {
       search: encoded,
       transform: select_transform.val()
@@ -720,14 +714,14 @@ function activate_term(name)
 function save_search_tree()
 {
   var obj = get_simple_search_tree();
-  var encoded = $.toJSON(obj);
+  var encoded = $.toJSON(obj, true);
 
   $.cookie(get_cookie_tree_name(), encoded, cookie_options);
 }
 
 function get_start_search_param()
 {
-  return $.toJSON(get_main_search_term());
+  return $.toJSON(get_main_search_term(), true);
 }
 
 function restore_old_tree()
@@ -735,13 +729,8 @@ function restore_old_tree()
   var encoded = null;
   var obj = null;
   
-  if(get_search_term == null) {
-    encoded = $.cookie(get_cookie_tree_name());
-    obj = $.evalJSON(encoded);
-  } else {
-    obj = get_tree_param;
-    encoded = $.toJSON(obj);
-  }
+  encoded = $.cookie(get_cookie_tree_name());
+  obj = $.evalJSON(encoded);
 
   if(obj) {
     var first_ol = $('#search_tree ol:first');
@@ -976,6 +965,7 @@ $(document).ready(function () {
   .gridEnable()
   .grid({
     url: get_app_url() + '/sequence',
+    ajax_method: 'post',
     retrieve: 'get_search',
     total: 'get_search_total',
     params: {

@@ -127,9 +127,14 @@ class Sequence extends BioController
     $this->smarty->view_s('sequence/search_ref');
   }
 
-  private function __get_search_term()
+  private function __get_search_term($method = 'get')
   {
-    $search = stripslashes($this->get_parameter('search'));
+    if($method == 'get') {
+      $search = $this->get_parameter('search');
+    } else {
+      $search = $this->get_post('search');
+    }
+    $search = stripslashes($search);
     $search_term = null;
     
     if($search) {
@@ -141,7 +146,7 @@ class Sequence extends BioController
 
   public function humanize_search()
   {
-    $tree = $this->__get_search_term();
+    $tree = $this->__get_search_term('post');
     $tree_str = search_tree_to_string($tree, '<span class="compound-operator">', '</span>');
 
     echo $tree_str;
@@ -149,14 +154,14 @@ class Sequence extends BioController
 
   public function get_search()
   {
-    $start = $this->get_parameter('start');
-    $size = $this->get_parameter('size');
-    $search = $this->__get_search_term();
-    $transform = $this->__get_transform_label();
+    $start = $this->get_post('start');
+    $size = $this->get_post('size');
+    $search = $this->__get_search_term('post');
+    $transform = $this->__get_transform_label('transform', 'post');
 
-    $ordering_name = $this->get_order('name');
-    $ordering_update = $this->get_order('update');
-    $ordering_user = $this->get_order('user_name');
+    $ordering_name = $this->get_order('name', 'post');
+    $ordering_update = $this->get_order('update', 'post');
+    $ordering_user = $this->get_order('user_name', 'post');
 
     $this->json_return($this->label_sequence_model->get_search($search,
       $start, $size,
@@ -169,8 +174,8 @@ class Sequence extends BioController
 
   public function get_search_total()
   {
-    $search = $this->__get_search_term();
-    $transform = $this->__get_transform_label();
+    $search = $this->__get_search_term('post');
+    $transform = $this->__get_transform_label('transform', 'post');
 
     $this->json_return(
       $this->label_sequence_model->get_search_total($search, $transform, !$this->logged_in));

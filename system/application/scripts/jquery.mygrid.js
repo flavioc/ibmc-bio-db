@@ -493,7 +493,7 @@ function get_results(obj, opts) {
     $.ajax({
       url: data_url,
       data: params,
-      type: 'get',
+      type: opts.ajax_method,
       global: false,
       success: function(data) {
         var rows = $.evalJSON(data);
@@ -627,6 +627,7 @@ function reload_grid(this_obj, $this, opts)
         port: "grid" + this_obj.id,
         url: url_total,
         data: params,
+        type: opts.ajax_method,
         success: function (data) {
           var total = parseInt(data);
 
@@ -784,7 +785,8 @@ $.fn.grid.defaults = {
   tdClass: {},
   width: {},
   ordering: {},
-  params: {}
+  params: {},
+  ajax_method: 'get'
 }
 
 $.fn.gridEnable.defaults = {

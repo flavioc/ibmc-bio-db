@@ -38,6 +38,7 @@ $(function () {
   $('#sequence_list')
   .gridEnable()
   .grid({
+    ajax_method: 'post',
     url: get_app_url() + '/sequence',
     retrieve: 'get_search',
     total: 'get_search_total',

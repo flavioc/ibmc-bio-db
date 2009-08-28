@@ -250,11 +250,15 @@ class BioController extends Controller
     return false;
   }
 
-  protected function get_order($what)
+  protected function get_order($what, $method = 'get')
   {
     $param = "order_$what";
-    $get = $this->get_parameter($param);
-    return $get;
+    
+    if($method == 'get') {
+      return $this->get_parameter($param);
+    } else {
+      return $this->get_post($param);
+    }
   }
 
   protected function __get_label_types($only_searchable)
