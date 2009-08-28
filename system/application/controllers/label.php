@@ -17,6 +17,7 @@ class Label extends BioController
     $this->use_mygrid();
     $this->assign_label_types();
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_functions.js');
+    $this->use_plusminus();
 
     $this->load->model('user_model');
 

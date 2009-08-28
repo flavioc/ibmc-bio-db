@@ -53,8 +53,8 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
     errorPlacement: basicErrorPlacement
   });
 
-  var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'User', 'Total'];
-  var fields = ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'user_name', 'num_seqs'];
+  var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'Public', 'User', 'Total'];
+  var fields = ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'public', 'user_name', 'num_seqs'];
 
   if(select_fn) {
     fieldNames = $.merge(['Select'], fieldNames);
@@ -78,6 +78,7 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
     total: 'count_total',
     fieldNames: fieldNames,
     fields: fields,
+    hiddenFields: ['must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'public'],
     params: params,
     links: {
       name: function (row) {
@@ -115,6 +116,7 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
       }
     },
     tdClass: {
+      'public': 'centered',
       multiple: 'centered',
       editable: 'centered',
       deletable: 'centered',
@@ -129,6 +131,7 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
       others: 'centered'
     },
     width: {
+      'public': w_boolean,
       multiple: w_boolean,
       editable: w_boolean,
       deletable: w_boolean,
@@ -148,7 +151,8 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
       auto_on_modification: 'boolean',
       deletable: 'boolean',
       editable: 'boolean',
-      multiple: 'boolean'
+      multiple: 'boolean',
+      'public': 'boolean'
     },
     ordering: {
       name: 'asc',

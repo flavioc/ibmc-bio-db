@@ -2,14 +2,28 @@
 
 {literal}
 <script>
-$(document).ready(function () {
+$(function () {
   start_label_list(null, null, null, true);
+  $('#hide_show_labels_details').minusPlus({
+    zoom: 85,
+    enableImage: false,
+    plusEnabled: function () {
+      $('#label_show').gridShowDefault('fast');
+    },
+    minusEnabled: function () {
+      $('#label_show').gridHideDefault('fast');
+    },
+    plusText: 'Show details',
+    minusText: 'Hide details'
+  });
 });
 </script>
 {/literal}
 
 {include file=label/search_form.tpl}
 {include file=label/labels_grid.tpl}
+
+<div id="hide_show_labels_details"></div>
 
 {form_open name=form_export_labels to='label/export'}
 {form_hidden name=export_name}

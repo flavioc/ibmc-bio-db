@@ -12,7 +12,7 @@
 {to_js var=sequence value=$sequence}
 seq_id = sequence.id;
 {literal}
-$(document).ready(function() {
+$(function() {
   $('#labels_list').gridEnable({paginate: false});
 
   $('#form_add_label').livequery(function () {
