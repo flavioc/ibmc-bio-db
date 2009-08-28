@@ -421,9 +421,15 @@ $.fn.ajaxFormEdit = function () {
   var form = this;
   
   return form.ajaxForm({
-    success: function (txt, status) { after_edit_label(form, txt, status);},
+    success: function (txt, status) { $.unblockUI(); after_edit_label(form, txt, status);},
     beforeSubmit: function (data, form) {
-      return $(form).valid();
+      if(!$(form).valid()) {
+        return false;
+      }
+      
+      $.blockLoadingUI();
+      
+      return true;
     }
   });
 };
@@ -465,9 +471,15 @@ $.fn.ajaxFormAdd = function () {
   var form = this;
   
   return form.ajaxForm({
-    success: function (txt, status) { after_add_label(form, txt, status);},
+    success: function (txt, status) { $.unblockUI(); after_add_label(form, txt, status);},
     beforeSubmit: function (data, form) {
-      return $(form).valid();
+      if(!$(form).valid()) {
+        return false;
+      }
+      
+      $.blockLoadingUI();
+      
+      return true;
     }
   });
 };

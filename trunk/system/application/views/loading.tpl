@@ -1,0 +1,1 @@
+<img src="{top_dir}/images/loading.gif" {display_none} id="loading_image"/>

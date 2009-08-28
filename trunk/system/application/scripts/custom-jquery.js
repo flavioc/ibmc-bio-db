@@ -1,4 +1,3 @@
-
 function birthdayErrorPlacement(error, element)
 {
   if(element.is("#birthday")) {
@@ -12,3 +11,7 @@ function basicErrorPlacement(error, element)
 {
   error.appendTo(element.next());
 }
+
+$.blockLoadingUI = function () {
+  return $.blockUI({ message: $('img#loading_image') });
+};

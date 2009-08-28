@@ -26,9 +26,15 @@ function get_transform()
 
 $.fn.submitAjax = function () {
   return this.ajaxForm({
-    success: function (resp) { eval(resp); tb_remove(); },
+    success: function (resp) { $.unblockUI(); eval(resp); tb_remove(); },
     beforeSubmit: function (data, form) {
-      return $(form).valid();
+      if(!$(form).valid()) {
+        return false;
+      }
+      
+      $.blockLoadingUI();
+      
+      return true;
     }
   });
 };

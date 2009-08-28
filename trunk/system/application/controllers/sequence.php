@@ -187,6 +187,7 @@ class Sequence extends BioController
     $this->use_autocomplete();
     $this->use_thickbox();
     $this->use_datepicker();
+    $this->use_blockui();
 
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
       FORM_SCRIPT,
@@ -225,6 +226,7 @@ class Sequence extends BioController
     $this->smarty->load_stylesheets('add_label.css');
     $this->use_autocomplete();
     $this->use_impromptu();
+    $this->use_blockui();
 
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
       FORM_SCRIPT,
@@ -304,6 +306,7 @@ class Sequence extends BioController
     $this->use_mygrid();
     $this->use_plusminus();
     $this->use_datepicker();
+    $this->use_blockui();
 
     $this->__load_sequence($id);
     $this->smarty->assign('missing',

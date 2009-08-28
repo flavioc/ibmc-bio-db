@@ -66,7 +66,7 @@ $(document).ready(function() {
 {form_end}
 
 <script>{literal}
-$(document).ready(function () {
+$(function () {
   activate_delete_dialog(get_app_url() + '/sequence/delete_dialog/' + sequence.id);
 });
 </script>

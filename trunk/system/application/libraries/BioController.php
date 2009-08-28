@@ -117,6 +117,11 @@ class BioController extends Controller
   {
     $this->smarty->load_scripts('ui/effects.core.js', 'ui/effects.highlight.js');
   }
+  
+  protected function use_blockui()
+  {
+    $this->smarty->load_scripts(BLOCKUI_SCRIPT);
+  }
 
   protected function set_form_error($what, $msg)
   {

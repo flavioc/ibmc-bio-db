@@ -1,3 +1,5 @@
+{include file=loading.tpl}
+
 {if $mode == 'add'}
 <h2>Add label to multiple sequences</h2>
 {elseif $mode == 'edit'}
