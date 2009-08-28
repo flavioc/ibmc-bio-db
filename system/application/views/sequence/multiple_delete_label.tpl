@@ -1,3 +1,5 @@
+{include file=loading.tpl}
+
 <h2>Delete label from multiple sequences</h2>
 
 {literal}

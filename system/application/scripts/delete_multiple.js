@@ -20,6 +20,7 @@ $(function () {
         buttons: {Yes: true, No: false},
         submit: function (v) {
           if(v) {
+            $.blockLoadingUI();
             $.post(get_app_url() + '/delete_labels/delete',
               {
                 search: $('input[name=search]').val(),
@@ -27,6 +28,7 @@ $(function () {
                 label_id: current_label.id
               },
               function () {
+                $.unblockUI();
               },
               'script'
             );

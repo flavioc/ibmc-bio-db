@@ -1,3 +1,5 @@
+{include file=loading.tpl}
+
 <h2>Sequence Labels</h2>
 
 <div class="data_show">
