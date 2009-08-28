@@ -315,7 +315,7 @@ class BioModel extends Model
     $arr = $this->get_order_by($order, $default, $typed);
     
     $order = $arr[1];
-    if($order != 'asc' || $order != 'desc') {
+    if($order != 'asc' && $order != 'desc') {
       return '';
     }
     

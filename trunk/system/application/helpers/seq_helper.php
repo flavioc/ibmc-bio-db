@@ -117,6 +117,10 @@ function search_tree_to_html($term)
 
 function humanize_search_terminal($term)
 {
+  if(!$term) {
+    return '-';
+  }
+  
   $label_name = $term['label'];
   $label_type = $term['type'];
   $oper = $term['oper'];
@@ -197,6 +201,10 @@ function compound_term($term)
 
 function search_tree_to_string($term, $start_compound = null, $end_compound = null)
 {
+  if(!$term) {
+    return '-';
+  }
+  
   $oper = $term['oper'];
 
   if(label_compound_oper($oper)) {
