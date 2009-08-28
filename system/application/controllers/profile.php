@@ -260,6 +260,7 @@ class Profile extends BioController
       redirect('profile/settings');
     } else {
       $this->configuration_model->set_paging_size($paging_size);
+      $this->set_paging_size_cookie($paging_size);
 
       $this->set_info_message("Settings have been saved");
       redirect('profile/view_self');

@@ -755,7 +755,7 @@ class BioSmarty extends Smarty
   {
     $scripts = func_get_args();
     foreach($scripts as $script) {
-      $this->append('scripts', $script);
+      $this->append_no_repeat('scripts', $script);
     }
   }
 
@@ -764,8 +764,22 @@ class BioSmarty extends Smarty
   {
     $stylesheets = func_get_args();
     foreach($stylesheets as $sheet) {
-      $this->append('stylesheets', $sheet);
+      $this->append_no_repeat('stylesheets', $sheet);
     }
+  }
+  
+  private function append_no_repeat($name, $value)
+  {
+    $obj =& $this->get_template_vars($name);
+    if(is_array($obj)) {
+      foreach($obj as $thing) {
+        if($thing == $value) {
+          return;
+        }
+      }
+    }
+    
+    $this->append($name, $value);
   }
 
   public function fetch_form_row($what, $default = null)
