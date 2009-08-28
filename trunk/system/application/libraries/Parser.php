@@ -131,13 +131,23 @@ class Parser
     if(!$label) {
       throw new Exception("unknown label $label_name");
     }
+    
+    // check private label status
     $CI =& get_instance();
     if(!$label['public'] && !$CI->logged_in) {
       throw new Exception("label is private: $label_name");
     }
     $type = $label['type'];
     
-    $oper = $this->tokenizer->get_next();
+    // boolean labels can go without an operator
+    $oper = $this->tokenizer->peek();
+    if($type == 'bool' && ($oper == null || !$this->__valid_boolean_oper($oper)))
+    {
+      return array('label' => $label_name, 'type' => $type, 'oper' => 'eq', 'value' => true);
+    }
+    
+    $oper = $this->tokenizer->get_next(); // consume operator
+    
     if(label_special_operator($oper)) {
       return array('label' => $label_name, 'type' => $type, 'oper' => $oper);
     }
@@ -156,7 +166,7 @@ class Parser
     
     $oper = $this->__convert_oper($type, $oper);
     if(!$oper) {
-      throw new Exception("parse error: couldn't deduce operator $oper of type $type");
+      throw new Exception("parse error: could not deduce operator $oper of type $type ($label_name)");
     }
     
     $value = $this->tokenizer->get_next();
@@ -224,5 +234,10 @@ class Parser
     }
     
     return null;
+  }
+  
+  private function __valid_boolean_oper($oper)
+  {
+    return $this->__convert_oper('bool', $oper) != null;
   }
 }
