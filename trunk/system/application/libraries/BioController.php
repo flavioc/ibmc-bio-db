@@ -104,6 +104,7 @@ class BioController extends Controller
 
   protected function use_mygrid()
   {
+    $this->smarty->load_stylesheets(MYGRID_THEME);
     $this->smarty->load_scripts(JSON_SCRIPT, APPENDDOM_SCRIPT,
       CONFIRM_SCRIPT, JEDITABLE_SCRIPT, MYGRID_SCRIPT);
   }

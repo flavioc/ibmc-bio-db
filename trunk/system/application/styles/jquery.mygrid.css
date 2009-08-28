@@ -1,0 +1,90 @@
+
+table.data {
+  font-weight: normal;
+  font-size: 12px;
+  color: #fff;
+  background-color: #666;
+  width: 95%;
+  border: 0px;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+table.data td {
+  background-color: #ccc;
+  color: #000;
+  padding: 4px;
+  border: 1px #fff solid;
+}
+
+table.data td.hed {
+  background-color: #666;
+  color: #fff;
+  padding: 4px;
+  text-align: left;
+  border-bottom: 2px #fff solid;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+table.data td.highlight {
+  background-color: #da0;
+}
+
+table.data th a:visited, table.data th a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+table.data th {
+  font-size: 14px;
+}
+
+tr .deletable_column {
+}
+
+div.navigation {
+  margin-top: 7px;
+  border: 1px solid black;
+  width: 200px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding: 5px;
+  height: 20px;
+}
+
+div.navigation a:hover {
+  background: #c00;
+  color: white;
+  border: 1px dashed black;
+}
+
+div.grid_box {
+  border-left: 1px dashed black;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+div.grid_box div.pagination {
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+div.grid_box div.pagination span.current_page {
+  text-decoration: underline;
+  font-size: 120%;
+}
+
+div.grid_box div.pagination span.navigate_page {
+  border: 1px solid black;
+  padding: 2px;
+  font-size: 90%;
+  cursor: pointer;
+}
+
+div.grid_box div.pagination span.navigate_page:hover {
+  background-color: #ccc;
+  font-size: 100%;
+}

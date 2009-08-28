@@ -3,7 +3,7 @@
 
   function show_loading(obj) {
     $('h4', obj).show();
-    $('div[@class=navigation]', obj).hide();
+    $('div[@class=pagination]', obj).hide();
     $('img[@class=loader]', obj).show().text('-');
   }
 
@@ -269,6 +269,8 @@
                     alert('Error deleting item: ' + row_id + ' -> ' + data);
                   }
               });
+              
+            return false;
       })
       .confirm(confirm_data);
   }
@@ -319,8 +321,14 @@
 
     return ret;
   }
+  
+  function get_page_html(page)
+  {
+    return '<span class="navigate_page"><a href="#">' + page.toString() + '</a></span>';
+  }
 
-  function get_data_results(obj, opts, total, start, rows) {
+  function get_data_results(obj, opts, total, start, rows)
+  {
     hide_loading(obj);
 
     var data_place = $('div[@class=data_place]', obj);
@@ -363,64 +371,65 @@
       table.appendDom([row_tag]);
     }
 
-    if(opts.paginate) {
-      var next = $('a[@class=nav_next]', obj);
-      var next_start = start + opts.size;
-      var previous = $('a[@class=nav_previous]', obj);
-      var previous_start = start - opts.size;
-      var has_next = (next_start < total);
-      var has_previous = (previous_start >= 0);
-
-      next.unbind();
-      previous.unbind();
-
-      if(has_next) {
-        if(next.is(':hidden')) {
-          next.fadeIn();
-        }
-
-        next.attr('href', '#start_' + next_start);
-
-        next.click(function () {
-            opts.inner.start = next_start;
-            get_results(obj, opts);
-            return true;
-        });
+    if(opts.paginate) {    
+      // enable pagination
+      var pagination_div = $('div[@class=pagination]', obj);
+      var current_page = Math.round(start / opts.size) + 1;
+      var max_pages = Math.ceil(total / opts.size);
+      var max_pages_to_show = 10;
+      var half_pages_to_show = Math.round(max_pages_to_show / 2);
+      var leftmost_page = Math.max(1, current_page - half_pages_to_show);
+      var rightmost_page = Math.min(max_pages, current_page + half_pages_to_show);
+      
+      // try to reuse unused pages from left or right side
+      var missing_left = half_pages_to_show - (current_page - leftmost_page);
+      if(missing_left > 0) {
+        rightmost_page = Math.min(max_pages, current_page + half_pages_to_show + missing_left);
       } else {
-        if(!next.is(':hidden')) {
-          next.fadeOut();
+        var missing_right = half_pages_to_show - (rightmost_page - current_page);
+        
+        if(missing_right > 0) {
+          leftmost_page = Math.max(1, current_page - half_pages_to_show - missing_right);
         }
       }
-
-      if(has_previous) {
-        if(previous.is(':hidden')) {
-          previous.fadeIn();
-        }
-
-        previous.attr('href', '#start_' + previous_start);
-        previous.click(function() {
-            opts.inner.start = previous_start;
-            get_results(obj, opts);
-            return true;
-        });
-      } else {
-        if(!previous.is(':hidden')) {
-          previous.fadeOut();
-        }
+      
+      // build pagination div
+      pagination_div.empty();
+      
+      
+      if(current_page != 1 && leftmost_page != 1) {
+        pagination_div.append(get_page_html(1) + '&nbsp<span class="navigation_markers">&lt;</span>&nbsp');
       }
-
-      var navigation = $('div[@class=navigation]', obj);
-      var has_nav = (has_next || has_previous);
-
-      if(has_nav) {
-        if(navigation.is(':hidden')) {
-          navigation.slideDown('slow');
+      
+      for(var i = leftmost_page; i <= rightmost_page; ++i) {
+        var page_html = null;
+        if(i == current_page) {
+          page_html = '<span class="current_page">' + current_page.toString() + '</span>';
+        } else {
+          page_html = get_page_html(i);
         }
-      } else {
-        if(!navigation.is(':hidden')) {
-          navigation.slideUp('slow');
+        
+        if(i != leftmost_page) {
+          page_html = '&nbsp;' + page_html;
         }
+        
+        pagination_div.append(page_html);
       }
+      
+      if(current_page != max_pages && rightmost_page != max_pages) {
+        pagination_div.append('&nbsp<span class="navigation_markers">&gt;</span>&nbsp;' + get_page_html(max_pages));
+      }
+      
+      // put click handlers in place
+      $('span.navigate_page', pagination_div).click(function () {
+        var page = parseInt($(this).find('a').text());
+        
+        opts.inner.start = (page - 1) * opts.size;
+        get_results(obj, opts);
+        return false;
+      })
+      
+      pagination_div.show();
     }
 
     obj.gridHideDefault();
@@ -717,14 +726,11 @@ $.fn.gridEnable = function(options) {
     $this.append(data_tag);
 
     if(opts.paginate) {
-      var previous_tag = '<a href="#" class="nav_previous">&lt;&lt; Previous</a>';
-      var next_tag = '<a href="#" class="nav_next">Next &gt;&gt;</a>';
-      var navigation_tag = '<div class="navigation">' +
-          previous_tag + next_tag + '</div>';
-
-      $this.append(navigation_tag);
-
-      $('div[@class=navigation]', $this).hide();
+      var pagination_tag = '<div class="pagination"></div>';
+      
+      $this.append(pagination_tag);
+      
+      $('div[@class=pagination]', $this).hide();
     }
 
     $('div[@class=data_place]', $this).hide();
