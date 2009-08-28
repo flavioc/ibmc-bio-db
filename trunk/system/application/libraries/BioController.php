@@ -46,12 +46,6 @@ class BioController extends Controller
 
     $this->smarty->load_scripts(JSON_SCRIPT, COOKIE_SCRIPT, TEXTGROW_SCRIPT);
     $this->use_highlight();
-
-    $this->load->model('configuration_model');
-    setcookie('paging-size', $this->configuration_model->get_paging_size());
-
-    setcookie('logged-in', $this->logged_in);
-    setcookie('username', $this->username);
     
     $search_term = $this->session->userdata('search_term');
     if($search_term) {
@@ -475,5 +469,16 @@ class BioController extends Controller
   protected function cookie_exists($name)
   {
     return isset($_COOKIE[$name]);
+  }
+  
+  protected function set_daily_cookie($name, $value)
+  {
+    $day = time() + 60*60*24;
+    setcookie($name, $value, $day, '/');
+  }
+  
+  protected function set_paging_size_cookie($value)
+  {
+    $this->set_daily_cookie('paging-size', $value);
   }
 }

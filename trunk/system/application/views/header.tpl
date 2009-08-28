@@ -3,9 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 {include_js name=jquery}
-{include_js name=functions}
-{include_js name=custom-jquery}
 {include_js name=constants}
+{include_js name=functions}
 {foreach from=$scripts item=script}
   {include_js name=$script}
 {/foreach}

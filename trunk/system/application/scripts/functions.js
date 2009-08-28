@@ -111,7 +111,13 @@ function checkbox_enabled(dom)
 
 function get_paging_size()
 {
-  return parseInt($.cookie('paging-size'));
+  var val = $.cookie('paging-size');
+  
+  if(val) {
+    return parseInt(val);
+  } else {
+    return 20; // default value
+  }
 }
 
 function get_logged_in()
@@ -217,3 +223,21 @@ function urldecode(str)
 {
   return decodeURIComponent(str);
 }
+
+function birthdayErrorPlacement(error, element)
+{
+  if(element.is("#birthday")) {
+    error.appendTo(element.next().next());
+  } else {
+    error.appendTo(element.next());
+  }
+}
+
+function basicErrorPlacement(error, element)
+{
+  error.appendTo(element.next());
+}
+
+$.blockLoadingUI = function () {
+  return $.blockUI({ message: $('img#loading_image') });
+};
