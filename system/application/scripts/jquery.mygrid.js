@@ -463,6 +463,12 @@
 
 function get_results(obj, opts) {
   show_loading(obj);
+  
+  if(opts.inner.total == 0) {
+    // show no results
+    get_data_results(obj, opts, opts.inner.total, opts.inner.start, {});
+    return;
+  }
 
   if(opts.method == 'remote') {
     var data_url = opts.url + '/' + opts.retrieve;
