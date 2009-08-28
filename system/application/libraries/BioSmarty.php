@@ -504,15 +504,10 @@ function smarty_function_button($params, &$smarty)
     'method' => $method,
   );
 
-  $form_submit_params = array(
-    'name' => $name,
-    'msg' => $params['msg'],
-  );
-
   $form_end_params = array();
 
   return smarty_function_form_open($form_open_params, &$smarty) .
-    smarty_function_form_submit($form_submit_params, &$smarty) .
+    '<input class="submit" type="submit" value="' . $params['msg'] . '" />' .
     smarty_function_form_end($form_end_params, &$smarty);
 }
 
