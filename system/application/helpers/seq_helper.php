@@ -220,7 +220,7 @@ function search_tree_to_string($term, $start_compound = null, $end_compound = nu
     }
 
     if($total == 0) {
-      return "$oper_str ()";
+      return "-";
     }
 
     if($oper == 'not') {
