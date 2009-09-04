@@ -11,9 +11,6 @@ class Welcome extends BioController
   public function index()
   {
     $this->smarty->assign('title', 'Main');
-    
-    $this->load->library('Chips');
-    $this->chips->run_seq('AGTTTG');
 
     // load comment
     $this->load->model('comment_model');
