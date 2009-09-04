@@ -1,37 +1,29 @@
 <?php
 
-/* Runs the iep EMBOSS utility over a sequence. */
+/* Run antigenic EMBOSS utility over a sequence. */
 
-class IEP
+class Antigenic
 {
-  private $iep_path = null;
+  private $antigenic_path = null;
   private $output = null;
   
-  function IEP()
+  function Antigenic()
   {
-		$this->iep_path = find_executable('iep');
+		$this->antigenic_path = find_executable('antigenic');
 		
-		if(!$this->iep_path) {
-		  throw new Exception('Could not find iep');
+		if(!$this->antigenic_path) {
+		  throw new Exception('Could not find antigenic');
 		}
   }
   
   public function run_seq($sequence, $coptions = array())
   {
-    $options = array('amino' => '1', 'termini' => true,
-          'lysinemodified' => '0', 'disulphides' => '0',
-          'sbegin1' => null, 'send1' => null, 'sreverse1' => null,
-          'snucleotide1' => null, 'sprotein1' => null,
-          'step' => '0.5');
-    
+    $options = array('minlen' => 6, 'sbegin1' => null, 'send1' => null, 'sreverse1' => null,
+                      'snucleotide1' => null, 'sprotein1' => null);
     $options = array_merge($options, $coptions);
     
-    $command = $this->iep_path;
-    
-    $command .= ' -amino ' . $options['amino'];
-    $command .= ' -termini ' . parse_yes_r($options['termini']);
-    $command .= ' -lysinemodified ' . $options['lysinemodified'];
-    $command .= ' -disulphides ' . $options['disulphides'];
+    $command = $this->antigenic_path;
+    $command .= ' -minlen ' . $options['minlen'];
     if($options['sbegin1'] != null) {
       $command .= ' -sbegin1 ' . $options['sbegin1'];
     }
@@ -47,7 +39,6 @@ class IEP
     if($options['sprotein1'] != null) {
       $command .= ' -sprotein1 ' . parse_yes_r($options['sprotein1']);
     }
-    $command .= ' -step ' . $options['step'];
     
     $this->output = run_util_over_sequence($sequence, $command);
     
