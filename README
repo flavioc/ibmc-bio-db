@@ -28,3 +28,6 @@ To install the NCBI taxonomy database, you should do:
 
 To use some EMBOSS tools you need to create the PRINTS database:
   # sudo sh generate_prints.sh
+
+To use some EMBOSS tools you need to create the PROSITE database:
+  # sudo sh generate_prosite.sh
