@@ -14,6 +14,11 @@ function parse_yes($yes)
   return $yes == 'yes' ? TRUE : FALSE;
 }
 
+function parse_yes_r($val)
+{
+  return $val ? 'Y' : 'N';
+}
+
 function newline_tab_html($text)
 {
   return ascii_to_entities(str_replace("\t", "   ", str_replace("\n", "<br />", $text)));

@@ -20,26 +20,17 @@ class PScan
 		}
   }
   
-  public function run_seq($sequence, $options = array('emin' => 2, 'emax' => 20))
+  public function run_seq($sequence, $coptions = array())
   {
-    $fasta = write_sequences_to_fasta(array($sequence));
+    $options = array('emin' => 2, 'emax' => 20);
+    $options = array_merge($options, $coptions);
     
     $emin = $options['emin'];
     $emax = $options['emax'];
     
-    $output_file = generate_new_file_name();
-    $command = $this->pscan_path . " -emin $emin -emax $emax $fasta $output_file";
+    $command = $this->pscan_path . " -emin $emin -emax $emax";
     
-    exec($command, $this->output, $ret);
-    unlink($fasta);
-    
-    if($ret) {
-      unlink($output_file);
-      throw new Exception("pscan failed: $ret");  
-    }
-    
-    $this->output = file_get_contents($output_file);
-    unlink($output_file);
+    $this->output = run_util_over_sequence($sequence, $command);
     
     return true;
   }
