@@ -79,7 +79,7 @@ function find_executable($name)
   return null;
 }
 
-function generate_new_file_name_export()
+function generate_new_file_name()
 {
   return tempnam(sys_get_temp_dir(), 'bio');
 }
