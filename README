@@ -25,3 +25,6 @@ First, create an empty database in mysql, then you have two options:
 
 To install the NCBI taxonomy database, you should do:
   cd scripts && sh ncbi.sh
+
+To use some EMBOSS tools you need to create the PRINTS database:
+  # sudo sh generate_prints.sh
