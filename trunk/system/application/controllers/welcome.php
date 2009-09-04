@@ -12,8 +12,8 @@ class Welcome extends BioController
   {
     $this->smarty->assign('title', 'Main');
     
-    $this->load->library('SigCleave');
-    $this->sigcleave->run_seq('T');
+    $this->load->library('Patmatmotifs');
+    $this->patmatmotifs->run_seq('TUX');
 
     // load comment
     $this->load->model('comment_model');
