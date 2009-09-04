@@ -13,6 +13,17 @@ function export_sequences_simple($sequences)
   return $ret;
 }
 
+function write_sequences_to_fasta($sequences)
+{
+  $temp_file = generate_new_file_name();
+  $fp = fopen($temp_file, 'w');
+  
+  fwrite($fp, export_sequences_simple($sequences));
+  fclose($fp);
+  
+  return $temp_file;
+}
+
 function export_sequences_xml($sequences, $seq_labels, $author, $what)
 {
   $merged_labels = __merge_export_labels($seq_labels);
@@ -264,7 +275,7 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
 
 function __write_fasta_file_export($content)
 {
-  $temp_file = generate_new_file_name_export();
+  $temp_file = generate_new_file_name();
   $fp = fopen($temp_file, 'w');
   
   fwrite($fp, $content);
@@ -275,7 +286,7 @@ function __write_fasta_file_export($content)
 
 function __convert_export($file_fasta, $type)
 {
-  $new_file = generate_new_file_name_export();
+  $new_file = generate_new_file_name();
   $seqret = __find_seqret();
   
   if($seqret) {
@@ -288,8 +299,7 @@ function __convert_export($file_fasta, $type)
 
 function export_sequences_others($sequences, $type)
 {
-  $fasta_content = export_sequences_simple($sequences);
-  $fasta_file = __write_fasta_file_export($fasta_content);
+  $fasta_file = write_sequences_to_fasta($sequences);
 
   $other_file = __convert_export($fasta_file, $type);
   unlink($fasta_file);

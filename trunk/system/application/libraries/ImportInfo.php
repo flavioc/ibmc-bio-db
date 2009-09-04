@@ -75,7 +75,7 @@ class ImportInfo
       return null;
     }
     
-    $protein = generate_new_file_name_export();
+    $protein = generate_new_file_name();
     
     shell_exec("$transeq $fasta $protein");
     
