@@ -274,6 +274,7 @@ function search_tree_to_string($term, $start_compound = null, $end_compound = nu
 
 function run_util_over_sequence($sequence, $command)
 {
+  $sequence = array('name' => 'SEQ', 'content' => $sequence);
   $fasta = write_sequences_to_fasta(array($sequence));
   $output_file = generate_new_file_name();
   

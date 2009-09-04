@@ -9,10 +9,6 @@ class PScan
   
   function PScan()
   {
-    $this->obj 	=& get_instance();
-		$this->obj->load->helper('file_utils'); // find_executable and generate_new_file_name
-		$this->obj->load->helper('exporter'); // write_sequences_to_fasta
-		
 		$this->pscan_path = find_executable('pscan');
 		
 		if(!$this->pscan_path) {
