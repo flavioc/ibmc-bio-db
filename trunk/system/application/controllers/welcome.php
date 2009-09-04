@@ -12,8 +12,8 @@ class Welcome extends BioController
   {
     $this->smarty->assign('title', 'Main');
     
-    $this->load->library('Epestfind');
-    $this->epestfind->run_seq('TUX');
+    $this->load->library('Chips');
+    $this->chips->run_seq('AGTTTG');
 
     // load comment
     $this->load->model('comment_model');
