@@ -271,3 +271,23 @@ function search_tree_to_string($term, $start_compound = null, $end_compound = nu
     return humanize_search_terminal($term);
   }
 }
+
+function run_util_over_sequence($sequence, $command)
+{
+  $fasta = write_sequences_to_fasta(array($sequence));
+  $output_file = generate_new_file_name();
+  
+  $command .= " $fasta -outfile $output_file";
+  exec($command, $cmdoutput, $ret);
+  unlink($fasta);
+  
+  if($ret) {
+    unlink($output_file);
+    throw new Exception("command failed: $command => $ret");
+  }
+  
+  $output = file_get_contents($output_file);
+  unlink($output_file);
+  
+  return $output;
+}
