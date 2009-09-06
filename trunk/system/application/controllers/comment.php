@@ -31,7 +31,7 @@ class Comment extends BioController
 
     $this->comment_model->set($comment);
 
-    $this->set_info_message("Comment saved");
+    $this->set_info_message("Description saved");
     redirect('');
   }
 }

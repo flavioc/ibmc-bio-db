@@ -52,19 +52,19 @@
     </ul></li>
     <li id="sequence_menu"><a href="#">Sequences</a>
     <ul id="sequence_id">
-      {if $logged_in}
-      <li><a href="{site}/sequence/add">Add</a></li>
-      <li><a href="{site}/sequence/add_batch">Batch</a></li>
-      {/if}
       <li><a href="{site}/sequence/browse">List</a></li>
+      {if $logged_in}
+      <li><a href="{site}/sequence/add">Add/New</a></li>
+      <li><a href="{site}/sequence/add_batch">Upload</a></li>
+      {/if}
     </ul></li>
     {if $logged_in}
     <li id="label_menu"><a href="#">Labels</a>
     <ul id="label_id">
-      {if $is_admin}
-      <li><a href="{site}/label/add">Add</a></li>
-      {/if}
       <li><a href="{site}/label/browse">List</a></li>
+      {if $is_admin}
+      <li><a href="{site}/label/add">Add/New</a></li>
+      {/if}
       <li><a href="{site}/label/export">Export</a></li>
       {if $is_admin}
       <li><a href="{site}/label/import">Import</a></li>
@@ -103,13 +103,14 @@
     {if $is_admin}
     <li id="admin_menu"><a href="#">Administration</a>
     <ul id="admin_id">
-      <li><a href="{site}/admin/drop_database">Reset database</a></li>
-      <li><a href="{site}/comment/edit">Comment</a></li>
       <li id="user_menu"><a href="#">Users</a>
       <ul id="user_id">
         <li><a href="{site}/profile/list_all">List</a></li>
         <li><a href="{site}/profile/register">Register</a></li>
       </ul></li>
+      <li><a href="{site}/comment/edit">Database Description</a></li>
+      <li><a href="{site}/admin/drop_database">Reset Database</a></li>
+      
     </ul></li>
     {/if}
   </ul>
