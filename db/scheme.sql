@@ -417,6 +417,7 @@ CREATE TABLE `sequence` (
   PRIMARY KEY (`id`),
   KEY `history_id` (`history_id`),
   KEY `content` (`content`(15)),
+  KEY `name` (`name`(10)),
   CONSTRAINT `sequence_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
 SET character_set_client = @saved_cs_client;
@@ -1687,4 +1688,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-09-06 23:36:10
+-- Dump completed on 2009-09-06 23:38:28
