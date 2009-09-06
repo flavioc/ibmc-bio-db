@@ -9,12 +9,13 @@ $(document).ready(function () {
   .grid({
     url: get_app_url() + '/profile',
     retrieve: 'get_all',
-    fieldNames: ['Image', 'Name', 'Complete name', 'Email'],
-    fields: ['image', 'name', 'complete_name', 'email'],
+    fieldNames: ['Image', 'Name', 'Complete name', 'Email', 'Last access'],
+    fields: ['image', 'name', 'complete_name', 'email', 'last_access'],
     width: {
       name: w_user,
       email: w_email,
-      image: w_image
+      image: w_image,
+      last_access: w_update
     },
     dataTransform: {
       image: function (row) {

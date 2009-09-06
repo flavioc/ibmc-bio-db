@@ -212,7 +212,7 @@ class BioModel extends Model
     return $this->edit_data($id, $data, $table);
   }
 
-  protected function edit_data($id, $data, $table = null)
+  protected function edit_data($id, $data = array(), $table = null)
   {
     if($table == null) {
       $table = $this->table;
