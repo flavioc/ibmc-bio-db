@@ -178,6 +178,8 @@ $(function () {
       $(this).remove();
     });
     return false;
-  })
+  });
+  
+  $('#main_menu a[href="#"]').click(function() { return false; });
 });
 {/literal}</script>

@@ -1001,6 +1001,7 @@ CREATE TABLE `user` (
   `image` blob COMMENT 'User''s image file.',
   `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Enable/Disable user.',
   `history_id` bigint(20) unsigned DEFAULT NULL,
+  `last_access` datetime DEFAULT NULL COMMENT 'Date/Time of last access for this user.',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
@@ -1685,4 +1686,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-08-02 20:42:57
+-- Dump completed on 2009-09-06 23:10:26

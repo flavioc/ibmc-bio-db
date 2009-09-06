@@ -95,6 +95,8 @@ class Welcome extends BioController
     $this->set_paging_size_cookie($this->configuration_model->get_paging_size());
     $this->set_daily_cookie('logged-in', true);
     $this->set_daily_cookie('username', $username);
+    
+    $this->user_model->update_access($user['id']);
   }
 
   public function logout()

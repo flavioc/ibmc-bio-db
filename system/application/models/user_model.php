@@ -16,6 +16,13 @@ class User_model extends BioModel
   {
     return $this->get_field($id, 'name');
   }
+  
+  public function update_access($id)
+  {
+    $this->db->set('last_access', 'NOW()', false);
+    
+    return $this->edit_data($id);
+  }
 
   public function validate($name, $pwd)
   {
@@ -172,10 +179,16 @@ class User_model extends BioModel
 
     return $this->edit_data_with_history($id, $data);
   }
+  
+  private function __get_all_select()
+  {
+    $this->db->select('id, name, complete_name, email, user_type, last_access');
+  }
 
   /* only non admin users */
   public function get_users()
   {
+    $this->__get_all_select();
     $this->db->where('enabled', TRUE);
 
     return $this->get_rows('user_type', 'user');
@@ -184,6 +197,7 @@ class User_model extends BioModel
   /* get active users */
   public function get_users_active()
   {
+    $this->__get_all_select();
     $this->db->where('enabled', TRUE);
     
     return $this->get_all();
@@ -191,6 +205,7 @@ class User_model extends BioModel
 
   public function get_users_all()
   {
+    $this->__get_all_select();
     $this->db->select('id, name');
     return $this->get_all();
   }
