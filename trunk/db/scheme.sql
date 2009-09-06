@@ -416,6 +416,7 @@ CREATE TABLE `sequence` (
   `history_id` bigint(20) unsigned DEFAULT NULL COMMENT 'History.',
   PRIMARY KEY (`id`),
   KEY `history_id` (`history_id`),
+  KEY `content` (`content`(15)),
   CONSTRAINT `sequence_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
 SET character_set_client = @saved_cs_client;
@@ -711,7 +712,8 @@ SET character_set_client = utf8;
 CREATE TABLE `taxonomy_name_type` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Key.',
   `name` varchar(512) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Name.',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`(5))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Types of names for taxonomies.';
 SET character_set_client = @saved_cs_client;
 
@@ -895,7 +897,6 @@ CREATE TABLE `taxonomy_tree` (
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Tree name.',
   `history_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Data history.',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `history_id` (`history_id`),
   CONSTRAINT `taxonomy_tree_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
@@ -1686,4 +1687,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-09-06 23:10:26
+-- Dump completed on 2009-09-06 23:36:10
