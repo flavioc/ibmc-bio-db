@@ -786,12 +786,7 @@ class Sequence extends BioController
     }
     
     if($type == 'fasta' || $type == 'xml') {
-      $seq_labels = array();
-
-      foreach($sequences as &$seq) {
-        $id = $seq['id'];
-        $seq_labels[] = $this->label_sequence_model->get_sequence($id);
-      }
+      $seq_labels = $this->label_sequence_model->get_sequences($sequences);
 
       if($type == 'fasta') {
         $this->__do_export_fasta($sequences, $seq_labels, "- $comment");

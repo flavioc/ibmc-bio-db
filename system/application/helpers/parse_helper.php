@@ -58,3 +58,8 @@ function change_spaces($str)
 {
   return str_replace(' ', '_', $str);
 }
+
+function tabs($n)
+{
+  return str_repeat("\t", $n);
+}

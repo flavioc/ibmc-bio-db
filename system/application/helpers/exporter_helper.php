@@ -24,56 +24,61 @@ function write_sequences_to_fasta($sequences)
   return $temp_file;
 }
 
-function export_sequences_xml($sequences, $seq_labels, $author, $what)
+function export_sequences_xml($sequences, $seq_labels, $author, $what, $tab = 0)
 {
+  $t = tabs($tab);
+  
   $merged_labels = __merge_export_labels($seq_labels);
-  $ret = "<sequences>\n";
+  $ret = "$t<sequences>\n";
   
   $author = xmlspecialchars($author);
-  $ret .= "\t<author>$author</author>\n";
+  $ret .= "$t\t<author>$author</author>\n";
   
   $timestamp = xmlspecialchars(timestamp_string());
-  $ret .= "\t<date>" . $timestamp . "</date>\n";
+  $ret .= "$t\t<date>" . $timestamp . "</date>\n";
   
-  $ret .= "\t<what>$what</what>\n";
-  $ret .= __get_export_header_xml($merged_labels);
+  $ret .= "$t\t<what>$what</what>\n";
+  $ret .= __get_export_header_xml($merged_labels, $tab + 1);
   
   for($i = 0; $i < count($sequences); $i++) {
     $sequence = $sequences[$i];
     $labels = $seq_labels[$i];
     
-    $ret .= __export_sequence_xml($sequence, $labels, $merged_labels);
+    $ret .= __export_sequence_xml($sequence, $labels, $merged_labels, $tab + 1);
   }
   
-  return "$ret</sequences>";
+  return "$ret$t</sequences>";
 }
 
-function __get_export_header_xml($merged_labels)
+function __get_export_header_xml($merged_labels, $tab = 1)
 {
-  $ret = "\t<labels>\n";
+  $t = tabs($tab);
+  $ret = "$t<labels>\n";
   
   foreach($merged_labels as &$label) {
     if(__label_type_is_printable($label['type'])) {
       $name = $label['name'];
       $type = $label['type'];
-      $ret .= "\t\t<label type=\"$type\">$name</label>\n";
+      $ret .= "$t\t<label type=\"$type\">$name</label>\n";
     }
   }
   
-  return "$ret\t</labels>\n";
+  return "$ret$t</labels>\n";
 }
 
-function __export_sequence_xml($sequence, $labels, $merged_labels)
+function __export_sequence_xml($sequence, $labels, $merged_labels, $tab = 1)
 {
-  $ret = "\t<sequence>\n";
+  $t = tabs($tab);
+  
+  $ret = "$t<sequence>\n";
   
   # name
   $name = xmlspecialchars(trim($sequence['name']));
-  $ret .= "\t\t<name>$name</name>\n";
+  $ret .= "$t\t<name>$name</name>\n";
   
   # content
   $content = xmlspecialchars(trim($sequence['content']));
-  $ret .= "\t\t<content>$content</content>\n";
+  $ret .= "$t\t<content>$content</content>\n";
   
   # labels
   foreach($merged_labels as &$merged_label) {
@@ -86,12 +91,12 @@ function __export_sequence_xml($sequence, $labels, $merged_labels)
         $str = xmlspecialchars(__get_label_export_data($label));
 
         $name = xmlspecialchars($label['name']);
-        $ret .= "\t\t<label name=\"$name\">$str</label>\n";
+        $ret .= "$t\t<label name=\"$name\">$str</label>\n";
       }
     }
   }
   
-  return "$ret\t</sequence>\n";
+  return "$ret$t</sequence>\n";
 }
 
 function export_sequences_fasta($sequences, $seq_labels, $comments = null)
