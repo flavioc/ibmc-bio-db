@@ -63,3 +63,8 @@ function tabs($n)
 {
   return str_repeat("\t", $n);
 }
+
+function isint($mixed)
+{
+    return is_int($mixed) || preg_match('/^\d*$/', $mixed) == 1;
+}

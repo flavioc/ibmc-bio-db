@@ -32,6 +32,7 @@ class Add_Labels extends BioController
       switch($type) {
         case 'text':
         case 'integer':
+        case 'float':
         case 'url':
         case 'obj':
         case 'bool':

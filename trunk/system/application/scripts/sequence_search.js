@@ -61,6 +61,7 @@ function convert_operator(oper, type)
 {
   switch(type) {
     case 'integer':
+    case 'float':
     case 'position':
      switch(oper) {
         case 'eq': return '=';
@@ -107,6 +108,7 @@ function fill_operators_options(type)
   switch(type) {
     case 'position':
     case 'integer':
+    case 'float':
       return $.extend(base, {eq: '=',
                              gt: '>',
                              lt: '<',
@@ -165,6 +167,7 @@ function show_type_input(type, oper)
       data_input.show();
       break;
     case 'integer':
+    case 'float':
       data_input.show();
       break;
     case 'date':
@@ -212,6 +215,7 @@ function hide_type_input(type)
       data_input.hide();
       break;
     case 'integer':
+    case 'float':
       data_input.hide();
       break;
     case 'date':
@@ -296,19 +300,26 @@ function term_form_submitted()
         }
         obj.value = val;
         break;
+      case 'integer':
+        obj.value = parseInt(data_row.val());
+        
+        if(!is_numeric(obj.value)) {
+          return;
+        }
+        break;
+      case 'float':
+        obj.value = parseFloat(data_row.val());
+        
+        if(!is_numeric(obj.value)) {
+          return;
+        }
+        break;
       default:
         obj.value = data_row.val();
 
-        if(obj.type == 'integer') {
-          obj.value = parseInt(obj.value);
-          if(!is_numeric(obj.value)) {
-            return;
-          }
-        } else {
-          // other values
-          if(!non_empty_string(obj.value)) {
-            return;
-          }
+        // other values
+        if(!non_empty_string(obj.value)) {
+          return;
         }
     }
   }
