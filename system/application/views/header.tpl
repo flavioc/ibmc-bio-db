@@ -109,8 +109,9 @@
         <li><a href="{site}/profile/register">Register</a></li>
       </ul></li>
       <li><a href="{site}/comment/edit">Database Description</a></li>
+      <li><a href="{site}/admin/export_database">Export Database</a></li>
+      <li><a href="{site}/admin/import_database">Import Database</a></li>
       <li><a href="{site}/admin/drop_database">Reset Database</a></li>
-      
     </ul></li>
     {/if}
   </ul>

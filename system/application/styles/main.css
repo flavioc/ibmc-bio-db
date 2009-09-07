@@ -339,7 +339,7 @@ div#leftmenu ul {
   margin: 0;
   padding: 0;
   list-style: none;
-  width: 150px;
+  width: 170px;
 }
 
 div#leftmenu ul#main_menu {
@@ -355,14 +355,14 @@ div#leftmenu ul li {
 
 div#leftmenu li ul {
   position: absolute;
-  left: 169px;
+  left: 170px;
   top: 0;
   display: none;
 }
 
 /* submenus */
 div#leftmenu li ul li ul {
-  left: 150px;
+  left: 170px;
 }
 
 ul#main_menu a:hover {
