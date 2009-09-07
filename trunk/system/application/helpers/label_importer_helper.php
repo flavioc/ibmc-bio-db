@@ -7,8 +7,11 @@ function import_label_xml_file($model, $file)
     return null;
   }
   
-  $top = $xmlDoc->documentElement;
-  
+  return import_label_xml_node($xmlDoc->documentElement, $model);
+}
+
+function import_label_xml_node($top, $model)
+{
   if(!$top || $top->nodeName != 'labels') {
     return null;
   }

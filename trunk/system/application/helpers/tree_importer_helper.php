@@ -1,5 +1,23 @@
 <?php
 
+function import_trees_xml_node($top, $tree_model, $rank_model, $tax_model)
+{
+  $stats = array();
+  
+  foreach($top->childNodes as $child) {
+    if($child->nodeName != 'tree') {
+      continue;
+    }
+    
+    $this_stat = import_tree_xml_node($child, $tree_model, $rank_model, $tax_model);
+    if($this_stat) {
+      $stats[] = $this_stat;
+    }
+  }
+  
+  return $stats;
+}
+
 function import_tree_xml_file($tree_model, $rank_model, $tax_model, $file)
 {
   $xmlDoc = new DOMDocument();
@@ -7,8 +25,11 @@ function import_tree_xml_file($tree_model, $rank_model, $tax_model, $file)
     return null;
   }
   
-  $top = $xmlDoc->documentElement;
-
+  return import_tree_xml_node($xmlDoc->documentElement, $tree_model, $rank_model, $tax_model);
+}
+ 
+function import_tree_xml_node($top, $tree_model, $rank_model, $tax_model)
+{
   if(!$top || $top->nodeName != 'tree') {
     return null;
   }
@@ -17,6 +38,7 @@ function import_tree_xml_file($tree_model, $rank_model, $tax_model, $file)
   if(!$name_node) {
     return null;
   }
+  
   
   $name = trim($name_node->textContent);
   if(!$name) {

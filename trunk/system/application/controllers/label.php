@@ -509,6 +509,8 @@ class Label extends BioController
       $this->load->helper('label_importer');
       
       $ret = import_label_xml_file($this->label_model, $file);
+      unlink($file);
+      
       if(!$ret) {
         $this->set_form_error('file', 'Error reading the XML file');
         redirect('label/import');
