@@ -38,11 +38,24 @@ class Label_sequence_model extends BioModel
     return $this->get_id($id, 'label_sequence_info');
   }
 
+  // get all labels from a sequence
   public function get_sequence($id)
   {
     $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $id);
     return $this->get_all('label_sequence_info');
+  }
+  
+  // get labels from a set of sequences
+  public function get_sequences($seqs)
+  {
+    $ret = array();
+    
+    foreach($seqs as &$seq) {
+      $ret[] = $this->get_sequence($seq['id']);
+    }
+    
+    return $ret;
   }
   
   private function __validate_label_data($type, $data1, $data2)

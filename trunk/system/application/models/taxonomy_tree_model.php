@@ -35,10 +35,22 @@ class Taxonomy_tree_model extends BioModel
     }
   }
 
-  public function get_trees($filtering = array(), $ordering = array())
+  public function get_trees($filtering = array(), $ordering = array(), $select = null)
   {
-    $this->__select();
-    $this->order_by($ordering, 'name', 'asc');
+    // this filtering must be done before everything else because the queries may get mangled
+    if(array_key_exists('no_ncbi', $filtering)) {
+      if($filtering['no_ncbi']) {
+        $ncbi = $this->get_ncbi_id();
+        $this->db->where("tree_id <> $ncbi");
+      }
+    }
+    
+    if($select) {
+      $this->db->select($select);
+    } else {
+      $this->__select();
+    }
+    $this->order_by($ordering, 'tree_name', 'asc');
     $this->__filter($filtering);
 
     return $this->get_all('taxonomy_tree_info_history');
@@ -99,7 +111,7 @@ class Taxonomy_tree_model extends BioModel
   
   public function get_ncbi_id()
   {
-    return $this->get_id_by_field('NCBI');
+    return $this->get_id_by_name('NCBI');
   }
   
   public function delete_all_custom()
