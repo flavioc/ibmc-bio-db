@@ -76,13 +76,13 @@
       <li><a href="{site}/taxonomy/browse">Browse</a></li>
       <li><a href="{site}/taxonomy/tree_browse">Tree Browse</a></li>
       {if $logged_in}
-      <li><a href="{site}/taxonomy/add">Add</a></li>
+      <li><a href="{site}/taxonomy/add">Add/New</a></li>
       {/if}
       <li id="tree_menu"><a href="#">Trees</a>
       <ul id="tree_id">
         <li><a href="{site}/tree">List</a></li>
         {if $logged_in}
-        <li><a href="{site}/tree/add">Add</a></li>
+        <li><a href="{site}/tree/add">Add/New</a></li>
         {if $is_admin}
         <li><a href="{site}/tree/import">Import</a></li>
         {/if}
@@ -91,10 +91,10 @@
       <li id="rank_menu"><a href="#">Ranks</a>
       <ul id="rank_id">
         <li><a href="{site}/rank/list_all">List</a></li>
-        <li><a href="{site}/rank/export">Export</a></li>
         {if $logged_in}
-        <li><a href="{site}/rank/add">Add</a></li>
+        <li><a href="{site}/rank/add">Add/New</a></li>
         {if $is_admin}
+        <li><a href="{site}/rank/export">Export</a></li>
         <li><a href="{site}/rank/import">Import</a></li>
         {/if}
         {/if}
