@@ -253,7 +253,6 @@ class ImportInfo
     $model = $this->controller->label_sequence_model;
     
     if($model->has_label_data($label_id, $seq_id, $label_type, $value)) {
-      echo "Has data";
       return true;
     }
 

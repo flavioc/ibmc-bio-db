@@ -507,7 +507,7 @@ class Sequence extends BioController
     $this->smarty->assign('sequences', $seqs);
     $this->smarty->assign('labels', $labels);
     $search_tree1 = get_search_tree_sequences($seqs);
-    $search_tree_get1 = rawurlencode(json_encode($search_tree1));
+    $search_tree_get1 = json_encode($search_tree1);
     $this->smarty->assign('search_tree_get1', $search_tree_get1);
     $this->smarty->assign('is_duo', $is_duo);
     
@@ -517,7 +517,7 @@ class Sequence extends BioController
       $this->smarty->assign('sequences2', $seqs2);
       $this->smarty->assign('labels2', $labels2);
       $search_tree2 = get_search_tree_sequences($seqs2);
-      $search_tree_get2 = rawurlencode(json_encode($search_tree2));
+      $search_tree_get2 = json_encode($search_tree2);
       $this->smarty->assign('search_tree_get2', $search_tree_get2);
       
       $info1->link_sequences($info2);
