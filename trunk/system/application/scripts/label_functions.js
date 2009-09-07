@@ -88,14 +88,10 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
         return build_user_url(row.update_user_id);
       },
       seqs: function (row) {
-        var search_term = {label: row.name, type: row.type, oper: 'exists'};
-        var query = encodeURIComponent($.toJSON(search_term));
-        return get_app_url() + '/sequence/search?type=label&id=' + row.id.toString() + '&term=' + query;
+        return get_app_url() + '/sequence/search?type=label&id=' + row.id.toString();
       },
       others: function (row) {
-        var search_term = {label: row.name, type: row.type, oper: 'notexists'};
-        var query = encodeURIComponent($.toJSON(search_term));
-        return get_app_url() + '/sequence/search?type=notlabel&id=' + row.id.toString() + '&term=' + query;
+        return get_app_url() + '/sequence/search?type=notlabel&id=' + row.id.toString();
       }
     },
     dataTransform: {
@@ -164,6 +160,16 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
       },
       add: function (row) {
         add_fn(row, grid);
+      },
+      seqs: function (row) {
+        var search_term = {label: row.name, type: row.type, oper: 'exists'};
+        $.cookie('saved_search_tree', $.toJSON(search_term, true), cookie_options);
+        return true;
+      },
+      others: function (row) {
+        var search_term = {label: row.name, type: row.type, oper: 'notexists'};
+        $.cookie('saved_search_tree', $.toJSON(search_term, true), cookie_options);
+        return true;
       }
     }
   });

@@ -1,4 +1,13 @@
-<p>The imported sequences can be <a href="{site}/sequence/search?type=batch&term={$search_tree_get}" id="batch_manipulate_{$what}">batch manipulated</a>.</p>
+<p>The imported sequences can be <a href="{site}/sequence/search?type=batch" id="batch_manipulate_{$what}">batch manipulated</a>.</p>
+
+{literal}<script>
+$(function () {
+  $('#batch_manipulate_{/literal}{$what}{literal}').click(function () {
+    $.cookie('saved_search_tree', $.toJSON({/literal}{$search_tree_get}{literal}, true), cookie_options);
+    return true;
+  });
+})
+</script>{/literal}
 
 {if count($labels) > 0}
 <h3>Labels</h3>
