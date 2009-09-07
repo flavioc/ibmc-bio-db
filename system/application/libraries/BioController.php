@@ -257,7 +257,7 @@ class BioController extends Controller
 
   protected function __get_label_types($only_searchable)
   {
-    $ret = array('integer', 'text', 'position', 'ref', 'tax', 'url', 'bool', 'date');
+    $ret = array('integer', 'float', 'text', 'position', 'ref', 'tax', 'url', 'bool', 'date');
 
     if(!$only_searchable) {
       array_push($ret, 'obj');
@@ -366,6 +366,8 @@ class BioController extends Controller
         }
       case 'integer':
         return $this->label_sequence_model->add_integer_label($seq_id, $label_id, $this->get_post('integer'));
+      case 'float':
+        return $this->label_sequence_model->add_float_label($seq_id, $label_id, $this->get_post('float'));
       case 'bool':
         return $this->label_sequence_model->add_bool_label($seq_id, $label_id,
             $this->get_post('boolean') ? TRUE : FALSE);
@@ -402,6 +404,8 @@ class BioController extends Controller
         return $this->label_sequence_model->edit_bool_label($id, $this->get_post('boolean') ? TRUE : FALSE);
       case 'integer':
         return $this->label_sequence_model->edit_integer_label($id, $this->get_post('integer'));
+      case 'float':
+        return $this->label_sequence_model->edit_float_label($id, $this->get_post('float'));
       case 'obj':
         try {
           $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());

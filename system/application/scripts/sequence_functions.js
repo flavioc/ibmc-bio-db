@@ -75,14 +75,14 @@ function select_field(row)
       case 'integer':
         field_to_add = 'int_data';
         break;
+      case 'float':
       case 'text':
-        field_to_add = 'text_data';
-        break;
       case 'url':
-        field_to_add = 'url_data';
-        break;
       case 'ref':
-        field_to_add = 'ref_data';
+      case 'obj':
+      case 'date':
+      case 'bool':
+        field_to_add = row.type + '_data';
         break;
       case 'tax':
         field_to_add = 'taxonomy_data';
@@ -90,15 +90,7 @@ function select_field(row)
       case 'position':
         field_to_add = 'position_start';
         break;
-      case 'obj':
-        field_to_add = 'obj_data';
-        break;
-      case 'date':
-        field_to_add = 'date_data';
-        break;
-      case 'bool':
-        field_to_add = 'bool_data';
-        break;
+      
     }
   }
 

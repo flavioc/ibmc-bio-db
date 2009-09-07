@@ -18,6 +18,7 @@ class Multiple_Labels extends BioController
   // data
   private $text = null;
   private $integer = null;
+  private $float = null;
   private $url = null;
   private $boolean = null;
   private $start = null;
@@ -69,6 +70,7 @@ class Multiple_Labels extends BioController
       switch($type) {
         case 'text':
         case 'integer':
+        case 'float':
         case 'url':
         case 'bool':
         case 'position':
@@ -214,6 +216,9 @@ class Multiple_Labels extends BioController
       case 'integer':
         $this->integer = $this->get_post('integer');
         break;
+      case 'float':
+        $this->float = $this->get_post('float');
+        break;
       case 'url':
         $this->url = $this->get_post('url');
         break;
@@ -252,6 +257,9 @@ class Multiple_Labels extends BioController
       return $this->label_sequence_model->add_text_label($seq_id, $this->label_id, $this->text);
     case 'integer':
       return $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->integer);
+    case 'float':
+      echo "$this->float;";
+      return $this->label_sequence_model->add_float_label($seq_id, $this->label_id, $this->float);
     case 'url':
       return $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->url);
     case 'bool':
@@ -290,6 +298,9 @@ class Multiple_Labels extends BioController
       break;
     case 'integer':
       $ret = $this->label_sequence_model->edit_integer_label($id, $this->integer);
+      break;
+    case 'float':
+      $ret = $this->label_sequence_model->edit_float_label($id, $this->float);
       break;
     case 'url':
       $ret = $this->label_sequence_model->edit_url_label($id, $this->url);
@@ -345,12 +356,12 @@ class Multiple_Labels extends BioController
             }
           }
         }
-      } else if($this->add_mode || ($this->edit_mode && $this->addnew)){
+      } else if($this->add_mode || ($this->edit_mode && $this->addnew)) {
         if($this->generate) {
           $this->label_sequence_model->add_generated_label($seq_id, $this->label_id);
           ++$this->count_new_generated;
         } else {
-          $this->__add_label_multiple($seq_id);
+          $this->__add_multiple_label($seq_id);
         }
       }
     }

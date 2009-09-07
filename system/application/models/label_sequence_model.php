@@ -2,7 +2,7 @@
 
 class Label_sequence_model extends BioModel
 {
-  private static $label_data_fields = 'int_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, DATE_FORMAT(date_data, "%d-%m-%Y") AS date_data, taxonomy_name, sequence_name';
+  private static $label_data_fields = 'int_data, float_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, DATE_FORMAT(date_data, "%d-%m-%Y") AS date_data, taxonomy_name, sequence_name';
 
   private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
   
@@ -62,6 +62,8 @@ class Label_sequence_model extends BioModel
   {
     switch($type) {
       case 'integer':
+        return isint($data1);
+      case 'float':
         return is_numeric($data1);
       case 'url':
         return strlen($data1) <= 2048 && (parse_url($data1) ? TRUE : FALSE);
@@ -107,6 +109,7 @@ class Label_sequence_model extends BioModel
   {
     switch($type) {
       case 'integer':
+      case 'float':
       case 'position':
       case 'bool':
       case 'ref':
@@ -369,6 +372,34 @@ class Label_sequence_model extends BioModel
 
     if($this->__is_integer($label) && $label['editable']) {
       return $this->edit($id, 'integer', $int);
+    } else {
+      return false;
+    }
+  }
+  
+  private function __is_float($label)
+  {
+    return $label['type'] == 'float';
+  }
+  
+  public function add_float_label($seq_id, $label_id, $float)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if($this->__is_float($label) && $label['editable']) {
+      return $this->add($seq_id, $label_id, 'float', $float);
+    } else {
+      return false;
+    }
+  }
+  
+  public function edit_float_label($id, $float)
+  {
+    $label = $this->get($id);
+
+    if($this->__is_float($label) && $label['editable']) {
+      return $this->edit($id, 'float', $float);
     } else {
       return false;
     }
@@ -827,6 +858,22 @@ class Label_sequence_model extends BioModel
   {
     return $this->has_id($id);
   }
+  
+  public function has_label_data($label_id, $seq_id, $label_type, $data)
+  {
+    $field = $this->__get_data_fields($label_type);
+    if(is_array($field)) {
+      // no support for multiple data
+      return false;
+    }
+    
+    $this->db->select('id');
+    $this->db->where('label_id', $label_id);
+    $this->db->where('seq_id', $seq_id);
+    $this->db->where($field, $data);
+    
+    return $this->count_total('label_sequence');
+  }
 
   public function select_data($label)
   {
@@ -907,21 +954,18 @@ class Label_sequence_model extends BioModel
     case 'integer':
       return 'int_data';
     case 'text':
-      return 'text_data';
+    case 'float':
+    case 'bool':
+    case 'date':
+    case 'url':
+    case 'ref':
+      return $type . '_data';
     case 'obj':
       return array('text_data', 'obj_data');
     case 'position':
       return array('position_start', 'position_length');
-    case 'ref':
-      return 'ref_data';
     case 'tax':
       return 'taxonomy_data';
-    case 'url':
-      return 'url_data';
-    case 'bool':
-      return 'bool_data';
-    case 'date':
-      return 'date_data';
     }
 
     return null;
@@ -968,6 +1012,7 @@ class Label_sequence_model extends BioModel
     switch($type) {
     case 'position':
     case 'integer':
+    case 'float':
       return sql_oper($oper);
     case 'text':
     case 'url':
@@ -1000,8 +1045,14 @@ class Label_sequence_model extends BioModel
     switch($type) {
     case 'position':
     case 'integer':
-      if(!is_numeric($value)) {
+      if(!isint($value)) {
         return 0;
+      }
+      
+      return $value;
+    case 'float':
+      if(!is_numeric($value)) {
+        return 0.0;
       }
       
       return $value;

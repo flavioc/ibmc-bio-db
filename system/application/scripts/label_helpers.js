@@ -18,6 +18,17 @@ $.fn.validateIntegerLabel = function () {
     rules: {
       integer: {
         required: generate_disabled,
+        digits: true
+      }
+    }
+  });
+};
+
+$.fn.validateFloatLabel = function () {
+  return this.validate({
+    rules: {
+      'float': {
+        required: generate_disabled,
         number: true
       }
     }
@@ -40,11 +51,11 @@ $.fn.validatePositionLabel = function () {
     rules: {
       start: {
         required: generate_disabled,
-        number: true
+        digits: true
       },
       length: {
         required: generate_disabled,
-        number: true
+        digits: true
       }
     }
   });

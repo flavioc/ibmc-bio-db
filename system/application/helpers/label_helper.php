@@ -20,6 +20,7 @@ function label_valid_type($type)
   switch($type) {
     case 'bool':
     case 'integer':
+    case 'float':
     case 'obj':
     case 'position':
     case 'ref':

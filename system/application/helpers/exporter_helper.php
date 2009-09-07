@@ -148,6 +148,7 @@ function __label_type_is_printable($type)
 {
   switch($type) {
   case 'integer':
+  case 'float':
   case 'text':
   case 'tax':
   case 'url':
@@ -219,6 +220,9 @@ function __get_label_export_data($label)
   switch($type) {
   case 'integer':
     $toadd = $label['int_data'];
+    break;
+  case 'float':
+    $toadd = $label['float_data'];
     break;
   case 'text':
     $toadd = $label['text_data'];

@@ -145,6 +145,7 @@ class Label extends BioController
     $this->assign_label_types();
     $this->smarty->assign('label', $label);
     $this->use_impromptu();
+    $this->smarty->load_stylesheets(MYGRID_THEME);
     $this->smarty->view('label/view');
   }
 
@@ -156,6 +157,7 @@ class Label extends BioController
 
     $this->smarty->assign('title', 'Add label');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'validate_label.js');
+    $this->smarty->load_stylesheets(MYGRID_THEME);
 
     $this->smarty->fetch_form_row('name');
     $this->smarty->fetch_form_row('type');

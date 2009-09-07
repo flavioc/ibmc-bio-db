@@ -218,6 +218,8 @@ class ImportInfo
     switch($type) {
       case 'integer':
         return $model->edit_integer_label($id, $value);
+      case 'float':
+        return $model->edit_float_label($id, $value);
       case 'text':
         return $model->edit_text_label($id, $value);
       case 'position':
@@ -249,10 +251,17 @@ class ImportInfo
   private function __add_label_content($seq_id, $label_id, $label_name, $label_type, $value)
   {
     $model = $this->controller->label_sequence_model;
+    
+    if($model->has_label_data($label_id, $seq_id, $label_type, $value)) {
+      echo "Has data";
+      return true;
+    }
 
     switch($label_type) {
       case 'integer':
         return $model->add_integer_label($seq_id, $label_id, $value);
+      case 'float':
+        return $model->add_float_label($seq_id, $label_id, $value);
       case 'text':
         return $model->add_text_label($seq_id, $label_id, $value);
       case 'position':

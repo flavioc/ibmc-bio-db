@@ -138,6 +138,7 @@ function humanize_search_terminal($term)
   
   switch($label_type) {
     case 'integer':
+    case 'float':
       $oper = sql_oper($oper);
       $ret = "$label_name $oper $value";
       break;
