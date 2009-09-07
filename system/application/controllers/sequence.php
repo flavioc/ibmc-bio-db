@@ -523,6 +523,7 @@ class Sequence extends BioController
       $info1->link_sequences($info2);
     }
   
+    $this->use_mygrid();
     $this->smarty->assign('title', 'Batch import');
     $this->smarty->view('sequence/batch_report');
   }

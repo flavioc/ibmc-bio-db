@@ -19,7 +19,7 @@
 <br />
 {/if}
 
-{foreach from=$sequences key=name item=seq}
+{foreach from=$sequences item=seq}
 <h4>Sequence</h4>
 <table class="data">
   <tr>
@@ -32,7 +32,7 @@
   </tr>
   <tr>
     <td class="centered">{boolean value=$seq.add}</td>
-    <td><a href="{site}/sequence/view/{$seq.id}">{$name}</a></td>
+    <td><a href="{site}/sequence/view/{$seq.id}">{$seq.name}</a></td>
     <td class="centered">{$seq.short_content}...</td>
     {if $seq.comment}
     <td>{$seq.comment}</td>

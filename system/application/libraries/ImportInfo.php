@@ -2,9 +2,7 @@
 
 class ImportInfo
 {
-  private $sequences = array();
   private $ordered_sequences = array();
-  private $sequence_labels = array();
   private $labels = array();
   private $controller = null;
   
@@ -23,7 +21,7 @@ class ImportInfo
   
   public function all_type($wanted_type)
   {
-    foreach($this->sequences as &$seq) {
+    foreach($this->ordered_sequences as &$seq) {
       $content =& $seq['content'];
       $type = sequence_type($content);
       
@@ -61,7 +59,8 @@ class ImportInfo
   public function write_simple_fasta()
   {
     $this->controller->load->helper('exporter');
-    $str = export_sequences_simple($this->sequences);
+    $str = export_sequences_simple($this->ordered_sequences);
+    
     return __write_fasta_file_export($str);
   }
   
@@ -77,7 +76,11 @@ class ImportInfo
     
     $protein = generate_new_file_name();
     
-    shell_exec("$transeq $fasta $protein");
+    exec("$transeq $fasta $protein", $cmdoutput, $ret);
+    
+    if($ret) {
+      throw new Exception("Error executing transeq");  
+    }
     
     unlink($fasta);
     
@@ -103,11 +106,9 @@ class ImportInfo
   public function add_sequence($name, $content, $id = null)
   {
     $name = trim($name);
-    $this->sequences[$name] = array('name' => $name, 'content' => sequence_normalize($content), 'id' => $id);
-    $this->sequence_labels[$name] = array();
-    $this->sequences[$name]['labels'] =& $this->sequence_labels[$name];
+    $data = array('name' => $name, 'content' => sequence_normalize($content), 'id' => $id, 'labels' => array());
     
-    $this->ordered_sequences[] =& $this->sequences[$name];
+    $this->ordered_sequences[] = $data;
   }
   
   public function add_sequence_label($sequence, $label, $value)
@@ -115,40 +116,30 @@ class ImportInfo
     $sequence = trim($sequence);
     $label = trim($label);
     
-    if(!array_key_exists($sequence, $this->sequence_labels)) {
-      return false;
-    }
-    
     if(!array_key_exists($label, $this->labels)) {
       return false;
     }
     
-    $labels =& $this->sequence_labels[$sequence];
-    
-    if(array_key_exists($label, $labels)) {
-      $current_label_info =& $labels[$label];
-      $values =& $current_label_info['values'];
-      $values[] = $value;
-    } else {
-      $labels[$label] = array('values' => array($value));
-    }
-    
-    return true;
-  }
-  
-  private function print_stats()
-  {
-    foreach($this->sequence_labels as $name => &$labels)
-    {
-      echo "SEQUENCE: $name ";
-      foreach($labels as $label => &$data) {
-        echo "$label -> ";
-        foreach($data['values'] as $value) {
-          echo "$value ";
+    // find sequence
+    for($i = count($this->ordered_sequences) - 1; $i >= 0; --$i) {
+      $sequence_data =& $this->ordered_sequences[$i];
+      
+      if($sequence_data['name'] == $sequence) {
+        $labels =& $sequence_data['labels'];
+        
+        if(array_key_exists($label, $labels)) {
+          $current_label_info =& $labels[$label];
+          $values =& $current_label_info['values'];
+          $values[] = $value;
+        } else {
+          $labels[$label] = array('values' => array($value));
         }
+        
+        return true;
       }
-      echo "<br />";
     }
+    
+    return false;
   }
   
   private function __get_labels()
@@ -290,13 +281,13 @@ class ImportInfo
     return null;
   }
   
-  private function __import_sequence_label($seq_name, &$seq_data, $label_name, &$label_data)
+  private function __import_sequence_label(&$seq_data, $label_name, &$label_data)
   {
-    $seq_labels =& $this->sequence_labels[$seq_name];
+    $seq_labels =& $seq_data['labels'];
     $this_label =& $seq_labels[$label_name];
     
     if($this_label == null) {
-      $this_label['status'] = 'Empty / Not inserted';
+      $seq_labels[$label_name] = array('status' => 'Empty / Not inserted');
       return;
     }
     
@@ -374,11 +365,15 @@ class ImportInfo
     }
   }
   
-  private function __import_labels($seq_name, &$data)
+  private function __import_labels(&$data)
   {
+    $seq_name = $data['name'];
+    //echo " => $seq_name ";
     foreach($this->labels as $name => &$label_data) {
-      $this->__import_sequence_label($seq_name, $data, $name, $label_data);
+      $this->__import_sequence_label($data, $name, $label_data);
     }
+    //print_r($data['labels']);
+    //echo "<br />";
   }
   
   private function __is_generated_protein_name($name)
@@ -396,20 +391,23 @@ class ImportInfo
     // fix sequence names: _n -> _p
     $new_sequences = array();
     
-    foreach($this->sequences as $name => &$data)
+    foreach($this->ordered_sequences as &$data)
     {
+      $old_name = $data['name'];
       $content =& $data['content'];
       
-      if(sequence_type($content) == 'protein' && $this->__is_generated_protein_name($name))
+      if(sequence_type($content) == 'protein' && $this->__is_generated_protein_name($old_name))
       {
-        $data['name'] = $this->__fix_protein_name($name);
+        $new_name = $this->__fix_protein_name($old_name);
+      } else {
+        $new_name = $old_name;
       }
       
-      $name = $data['name'];
-      $new_sequences[$name] =& $data;
+      $data['name'] = $new_name;
+      $new_sequences[] =& $data;
     }
     
-    $this->sequences = $new_sequences;
+    $this->ordered_sequences = $new_sequences;
   }
   
   public function import()
@@ -421,10 +419,10 @@ class ImportInfo
     $this->__get_labels();
     $this->__fix_sequence_names();
     
-    foreach($this->sequences as $name => &$data) {
-      $content = $data['content'];
-      $seq_labels =& $this->sequence_labels[$name];
+    foreach($this->ordered_sequences as &$data) {
+      $content =& $data['content'];
       $isnew = false;
+      $name = $data['name'];
       
       if($this->controller->sequence_model->has_same_sequence($name, $content)) {
         $data['id'] = $this->controller->sequence_model->get_id_by_name_and_content($name, $content);
@@ -438,9 +436,15 @@ class ImportInfo
       
       $data['short_content'] = sequence_short_content($data['content']);
       $data['add'] = $isnew;
-      $this->__import_labels($name, $data);
     }
     
-    return array($this->sequences, $this->labels);
+    // when importing a full set of sequences that are linked
+    // importing all the sequences first and then the labels
+    // makes it easy to link sequences using labels 
+    foreach($this->ordered_sequences as &$data) {
+      $this->__import_labels($data);
+    }
+    
+    return array($this->ordered_sequences, $this->labels);
   }
 }

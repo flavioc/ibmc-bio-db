@@ -1,19 +1,18 @@
 <?php
 
-function import_xml_file($controller, $file)
+function import_sequences_xml_file($controller, $file)
 {
   $xmlDoc = new DOMDocument();
   if(!$xmlDoc->load($file, LIBXML_NOERROR)) {
     return null;
   }
   
-  $top = $xmlDoc->documentElement;
-  
-  if(!$top) {
-    return null;
-  }
-  
-  if($top->nodeName != 'sequences') {
+  return import_sequences_xml_node($xmlDoc->documentElement, $controller);
+}
+
+function import_sequences_xml_node($top, $controller)
+{
+  if(!$top || $top->nodeName != 'sequences') {
     return null;
   }
   

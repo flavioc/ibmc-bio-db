@@ -213,6 +213,8 @@ class Tree extends BioController
       
       $ret = import_tree_xml_file($this->taxonomy_tree_model, $this->taxonomy_rank_model, $this->taxonomy_model, $file);
       
+      unlink($file);
+      
       if(!$ret) {
         $this->set_form_error('file', 'Error reading the XML file');
         redirect('tree/import');

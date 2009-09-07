@@ -238,6 +238,13 @@ function basicErrorPlacement(error, element)
   error.appendTo(element.next());
 }
 
+function number_of_properties(obj)
+{
+  var count = 0;
+  for (k in obj) if (obj.hasOwnProperty(k)) count++;
+  return count;
+}
+
 $.blockLoadingUI = function () {
   return $.blockUI({ message: $('img#loading_image') });
 };
