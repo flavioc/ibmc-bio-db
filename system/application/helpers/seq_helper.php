@@ -150,6 +150,7 @@ function humanize_search_terminal($term)
       break;
     case 'text':
     case 'url':
+    case 'obj':
       $ret = "$label_name $oper \"$value\"";
       break;
     case 'bool':

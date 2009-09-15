@@ -212,6 +212,7 @@ class Parser
         return 'like';
       case 'text':
       case 'url':
+      case 'obj':
         switch($oper) {
           case 'equal': return 'eq';
           case 'contains': return 'contains';

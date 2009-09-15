@@ -2,7 +2,7 @@
 
 {include file=edit_label/info.tpl}
 
-{form_open name=form_edit_label to="edit_labels/edit"}
+{form_open name=form_edit_label to="edit_labels/edit" multipart=yes}
 <fieldset>
 {include file=edit_label/hidden.tpl}
 {include file=common_label/obj.tpl}

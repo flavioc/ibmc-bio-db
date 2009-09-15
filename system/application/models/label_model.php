@@ -75,13 +75,6 @@ class Label_model extends BioModel
         $this->db->where('update_user_id', $user);
       }
     }
-
-    if(array_key_exists('only_searchable', $filtering)) {
-      $searchable = $filtering['only_searchable'];
-      if($searchable) {
-        $this->db->where("type <> 'obj'");
-      }
-    }
     
     if(array_key_exists('only_deletable', $filtering)) {
       $deletable = $filtering['only_deletable'];
