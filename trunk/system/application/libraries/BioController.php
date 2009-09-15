@@ -286,7 +286,7 @@ class BioController extends Controller
     $config['upload_path'] = UPLOAD_DIRECTORY;
     $config['overwrite'] = true;
     $config['encrypt_name'] = true;
-    $config['allowed_types'] = 'doc|fasta|pdf|xls|docx|xlsx|png|bmp|gif|jpg|hs';
+    $config['any_file'] = true;
 
     return $config;
   }

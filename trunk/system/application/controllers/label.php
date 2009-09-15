@@ -43,7 +43,6 @@ class Label extends BioController
       case 'searchable':
         $labels = $this->label_model->get_all(null, null,
           array('name' => $name,
-                'only_searchable' => true,
                 'only_public' => !$this->logged_in),
           array('name' => 'asc'));
         break;
@@ -74,7 +73,6 @@ class Label extends BioController
     $name_filter = $this->get_parameter('name');
     $type_filter = $this->get_parameter('type');
     $user_filter = $this->get_parameter('user');
-    $searchable_filter = $this->get_parameter('only_searchable');
 
     $ordering_name = $this->get_order('name');
     $ordering_type = $this->get_order('type');
@@ -83,7 +81,6 @@ class Label extends BioController
       array('name' => $name_filter,
             'type' => $type_filter,
             'user' => $user_filter,
-            'only_searchable' => $searchable_filter,
             'only_public' => !$this->logged_in),
       array('name' => $ordering_name,
             'type' => $ordering_type),
@@ -97,13 +94,11 @@ class Label extends BioController
     $name_filter = $this->get_parameter('name');
     $type_filter = $this->get_parameter('type');
     $user_filter = $this->get_parameter('user');
-    $searchable_filter = $this->get_parameter('only_searchable');
 
     $total = $this->label_model->get_total(
       array('name' => $name_filter,
             'type' => $type_filter,
             'user' => $user_filter,
-            'only_searchable' => $searchable_filter,
             'only_public' => !$this->logged_in));
 
     $this->json_return($total);

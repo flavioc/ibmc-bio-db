@@ -73,6 +73,7 @@ function convert_operator(oper, type)
       break;
     case 'text':
     case 'url':
+    case 'obj':
       switch(oper) {
         case 'eq': return 'equal';
         case 'contains': return 'contains';
@@ -116,6 +117,7 @@ function fill_operators_options(type)
                              le: '<='});
     case 'text':
     case 'url':
+    case 'obj':
       return $.extend(base, {eq: 'equal',
                             contains: 'contains',
                             starts: 'starts',
@@ -314,7 +316,7 @@ function term_form_submitted()
           return;
         }
         break;
-      default:
+      default: // text, url, obj
         obj.value = data_row.val();
 
         // other values
@@ -819,7 +821,7 @@ $.fn.clickTermName = function () {
   });
 };
 
-$(document).ready(function () {
+$(function () {
     
     operator_select = $('#operator');
     operator_input = $('#operator_input');

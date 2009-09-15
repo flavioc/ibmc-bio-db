@@ -45,6 +45,7 @@ class CI_Upload {
 	var $image_height	= '';
 	var $image_type		= '';
 	var $image_size_str	= '';
+	var $any_file = FALSE;
 	var $error_msg		= array();
 	var $mimes			= array();
 	var $remove_spaces	= TRUE;
@@ -101,7 +102,8 @@ class CI_Upload {
 							'mimes'				=> array(),
 							'remove_spaces'		=> TRUE,
 							'xss_clean'			=> FALSE,
-							'temp_prefix'		=> "temp_file_"
+							'temp_prefix'		=> "temp_file_",
+							'any_file' => FALSE
 						);	
 	
 	
@@ -551,6 +553,10 @@ class CI_Upload {
 	 */	
 	function is_allowed_filetype()
 	{
+	  if($this->any_file) {
+	    return TRUE;
+	  }
+	  
 		if (count($this->allowed_types) == 0 OR ! is_array($this->allowed_types))
 		{
 			$this->set_error('upload_no_file_types');

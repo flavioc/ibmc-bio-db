@@ -1016,6 +1016,7 @@ class Label_sequence_model extends BioModel
       return sql_oper($oper);
     case 'text':
     case 'url':
+    case 'obj':
       switch($oper) {
       case 'eq': return '=';
       case 'contains':
@@ -1058,6 +1059,7 @@ class Label_sequence_model extends BioModel
       return $value;
     case 'text':
     case 'url':
+    case 'obj':
       switch($oper) {
         case 'regexp':
         case 'eq': break;
@@ -1109,6 +1111,8 @@ class Label_sequence_model extends BioModel
     switch($type) {
       case 'date':
         return "DATE($field)";
+      case 'obj':
+        return $field[0];
       default:
         return $field;
     }
@@ -1229,20 +1233,22 @@ class Label_sequence_model extends BioModel
         $fields = $this->__get_data_fields($label_type);
 
         // handle position fields
-        if($label_type == 'position') {
-          $type = $value['type'];
-          if($type == 'start') {
-            $fields = 'position_start';
-          } else {
-            $fields = 'position_length';
-          }
+        switch($label_type) {
+          case 'position':
+            $type = $value['type'];
+            if($type == 'start') {
+              $fields = 'position_start';
+            } else {
+              $fields = 'position_length';
+            }
 
-          $value = $value['num'];
+            $value = $value['num'];
           
-          if(!is_numeric($value)) {
-            // invalid data
-            return 'FALSE';
-          }
+            if(!is_numeric($value)) {
+              // invalid data
+              return 'FALSE';
+            }
+            break;
         }
       }
 

@@ -2,7 +2,7 @@
 
 {include file=add_multiple_label/info.tpl}
 
-{form_open name=form_add_label to="multiple_labels/add_label"}
+{form_open name=form_add_label to="multiple_labels/add_label" multipart=yes}
 <fieldset>
 {include file=add_multiple_label/hidden.tpl}
 {include file=common_label/obj.tpl}
