@@ -42,4 +42,13 @@ class SigCleave
     
     return true;
   }
+  
+  public function get_number_signal_cleavage_sites()
+  {
+    if(preg_match('/HitCount: (.*)/', $this->output, $matches)) {
+      return (int)($matches[1]);
+    } else {
+      return null;
+    }
+  }
 }
