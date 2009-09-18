@@ -175,7 +175,7 @@ class Label_sequence_model extends BioModel
   {
     $res = $this->generate_label_value($seq, $label['code']);
 
-    if($res == null && $label['type'] != 'bool') {
+    if($res == null && $label['type'] != 'bool' && $label['type'] != 'integer' && $label['type'] != 'float') {
       return false;
     }
     
@@ -592,7 +592,7 @@ class Label_sequence_model extends BioModel
     $code = $label['code'];
     $value = $this->generate_label_value($seq, $code);
 
-    if($value == null) {
+    if($value == null && $label['type'] != 'bool' && $label['type'] != 'integer' && $label['type'] != 'float') {
       return false;
     }
     
