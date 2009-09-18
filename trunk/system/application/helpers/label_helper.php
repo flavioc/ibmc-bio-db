@@ -1,5 +1,10 @@
 <?php
 
+define('POSITION_START_INDEX', 0);
+define('POSITION_LENGTH_INDEX', 1);
+define('OBJ_FILE_NAME_INDEX', 0);
+define('OBJ_DATA_INDEX', 1);
+
 function label_special_purpose($name)
 {
   return in_array($name, array('name', 'content', 'creation_user', 'update_user', 'creation_date', 'update_date'));
