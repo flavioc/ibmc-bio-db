@@ -12,10 +12,10 @@ class Welcome extends BioController
   {
     $this->smarty->assign('title', 'Main');
     
-    $this->load->library('Antigenic');
+    $this->load->library('Epestfind');
     
-    $this->antigenic->run_seq('ATKXXA');
-    echo $this->antigenic->get_number_antigenic_sites();
+    $this->epestfind->run_seq('MPSSVSWGILLLAGLCCLVPVSLAEDPQGDAAQKTDTSHHDQDHPTFNKITPNLAEFAFSLYRQLAHQSNSTNIFFSPVSIATAFAMLSLGTKADTHDEILEGLNFNLTEIPEAQIHEGFQELLRTLNQPDSQLQLTTGNGLFLSEGLKLVDKFLEDVKKLYHSEAFTVNFGDTEEAKKQINDYVEKGTQGKIVDLVKELDRDTVFALVNYIFFKGKWERPFEVKDTEEEDFHVDQVTTVKVPMMKRLGMFNIQHCKKLSSWVLLMKYLGNATAIFFLPDEGKLQHLENELTHDIITKFLENEDRRSASLHLPKLSITGTYDLKSVLGQLGITKVFSNGADLSGVTEEAPLKLSKAVHKAVLTIDEKGTEAAGAMFLEAIPMSIPPEVKFNKPFVFLMIEQNTKSPLFMGKVVNPTQK');
+    echo $this->epestfind->get_proteolytic_cleavage_sites();
 
     // load comment
     $this->load->model('comment_model');

@@ -55,4 +55,13 @@ class Epestfind
     
     return true;
   }
+  
+  public function get_proteolytic_cleavage_sites()
+  {
+    if(preg_match('/(.*) PEST motifs were identified in/', $this->output, $matches)) {
+      return (int)($matches[1]);
+    } else {
+      return 0;
+    }
+  } 
 }

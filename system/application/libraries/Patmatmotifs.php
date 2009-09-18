@@ -42,4 +42,13 @@ class Patmatmotifs
     
     return true;
   }
+  
+  public function get_number_motifs()
+  {
+    if(preg_match('/HitCount: (.*)/', $this->output, $matches)) {
+      return (int)($matches[1]);
+    } else {
+      return null;
+    }
+  }
 }
