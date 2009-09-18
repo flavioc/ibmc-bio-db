@@ -18,13 +18,14 @@ class Label_sequence_model extends BioModel
     return self::$label_basic_fields . ", " . self::$label_data_fields . ", update_user_id, `update`, user_name";
   }
 
+  // get label instance id
   public function get_label_id($seq_id, $label_id)
   {
     $this->db->where('seq_id', $seq_id);
     return $this->get_id_by_field('label_id', $label_id);
   }
 
-  // retrieve label sequence row using seq id and label id
+  // retrieve label instance row using seq id and label id
   public function get_label_info($seq_id, $label_id)
   {
     $this->db->select($this->__get_select(), FALSE);
@@ -818,7 +819,7 @@ class Label_sequence_model extends BioModel
       ->where('seq_id', $seq_id)
       ->where('label_id', $label_id);
       
-      return $this->count_total();
+    return $this->count_total();
   }
 
   public function count_taxonomies($tax)
