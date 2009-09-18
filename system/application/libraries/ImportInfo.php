@@ -251,10 +251,6 @@ class ImportInfo
   private function __add_label_content($seq_id, $label_id, $label_name, $label_type, $value)
   {
     $model = $this->controller->label_sequence_model;
-    
-    if($model->has_label_data($label_id, $seq_id, $label_type, $value)) {
-      return true;
-    }
 
     switch($label_type) {
       case 'integer':

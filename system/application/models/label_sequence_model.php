@@ -128,11 +128,6 @@ class Label_sequence_model extends BioModel
 
   public function add($seq, $label, $type, $data1 = null, $data2 = null)
   {
-    $data = array(
-      'seq_id' => $seq,
-      'label_id' => $label
-    );
-
     $fields = $this->__get_data_fields($type);
     $this->__fix_data($type, $data1, $data2);
     
@@ -143,6 +138,16 @@ class Label_sequence_model extends BioModel
     if(!$this->label_is_valid($label, $seq, $data1, $data2)) {
       return false;
     }
+    
+    // check already inserted data
+    if($this->has_label_data($label, $seq, $type, $data1, $data2)) {
+      return true;
+    }
+    
+    $data = array(
+      'seq_id' => $seq,
+      'label_id' => $label
+    );
 
     if(is_array($fields)) {
       $data[$fields[0]] = $data1;
@@ -174,10 +179,6 @@ class Label_sequence_model extends BioModel
   public function add_auto_label($seq, $label)
   {
     $res = $this->generate_label_value($seq, $label['code']);
-
-    if($res == null && $label['type'] != 'bool' && $label['type'] != 'integer' && $label['type'] != 'float') {
-      return false;
-    }
     
     $data1 = null;
     $data2 = null;
@@ -591,10 +592,6 @@ class Label_sequence_model extends BioModel
     $type = $label['type'];
     $code = $label['code'];
     $value = $this->generate_label_value($seq, $code);
-
-    if($value == null && $label['type'] != 'bool' && $label['type'] != 'integer' && $label['type'] != 'float') {
-      return false;
-    }
     
     $data1 = null;
     $data2 = null;
@@ -843,18 +840,21 @@ class Label_sequence_model extends BioModel
     return $this->has_id($id);
   }
   
-  public function has_label_data($label_id, $seq_id, $label_type, $data)
+  public function has_label_data($label_id, $seq_id, $label_type, $data1, $data2 = null)
   {
     $field = $this->__get_data_fields($label_type);
-    if(is_array($field)) {
-      // no support for multiple data
-      return false;
-    }
-    
     $this->db->select('id');
     $this->db->where('label_id', $label_id);
     $this->db->where('seq_id', $seq_id);
-    $this->db->where($field, $data);
+    
+    if(is_array($field)) {
+      $field1 = $field[0];
+      $field2 = $field[1];
+      $this->db->where($field1, $data1);
+      $this->db->where($field2, $data2);
+    } else {
+      $this->db->where($field, $data1);
+    }
     
     return $this->count_total('label_sequence');
   }
