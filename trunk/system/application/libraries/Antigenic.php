@@ -44,4 +44,13 @@ class Antigenic
     
     return true;
   }
+  
+  public function get_number_antigenic_sites()
+  {
+    if(preg_match('/HitCount: (.*)/', $this->output, $matches)) {
+      return (int)($matches[1]);
+    } else {
+      return null;
+    }
+  }
 }
