@@ -25,7 +25,7 @@ class Tokenizer
     return in_array($val, array("'", '"'));
   }
   
-  private function __is_parenthesis($val)
+  private function __is_special_char($val)
   {
     return in_array($val, array('(', ')'));
   }
@@ -90,17 +90,16 @@ class Tokenizer
       ++$this->current_pos;
       
       $white = $this->__is_whitespace($char);
-      $paren = $this->__is_parenthesis($char);
       
       if($white && !$inside_token && !$inside_string) {
       } elseif($white && $inside_token) {
         return $build_token;
       } elseif($white && $inside_string) {
         $build_token = "$build_token$char";
-      } elseif($paren && $inside_token) {
+      } elseif($this->__is_special_char($char) && $inside_token) {
         --$this->current_pos;
         return $build_token;
-      } elseif($paren && !$inside_string) {
+      } elseif($this->__is_special_char($char) && !$inside_string) {
         // new token
         return $char;
       } else {
