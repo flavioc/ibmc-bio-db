@@ -45,4 +45,13 @@ class Chips
     
     return true;
   }
+  
+  public function get_codon_usage_statistic()
+  {
+    if(preg_match('/Nc = (.*)/', $this->output, $matches)) {
+      return (float)($matches[1]);
+    } else {
+      return null;
+    }
+  }
 }

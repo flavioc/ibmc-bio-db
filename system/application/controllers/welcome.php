@@ -12,10 +12,10 @@ class Welcome extends BioController
   {
     $this->smarty->assign('title', 'Main');
     
-    $this->load->library('IEP');
+    $this->load->library('Chips');
     
-    $this->iep->run_seq('ABKTX');
-    echo $this->iep->get_isoelectric_point();
+    $this->chips->run_seq('AGGTTAAAAAAAAAAAGGGGGGG');
+    echo $this->chips->get_codon_usage_statistic();
 
     // load comment
     $this->load->model('comment_model');

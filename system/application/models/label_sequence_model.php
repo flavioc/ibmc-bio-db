@@ -158,12 +158,29 @@ class Label_sequence_model extends BioModel
     return false;
   }
 
-  public function add_generated($seq_id, $label)
+  public function add_generated_label($seq_id, $label_id, $type = null)
   {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+
+    if(($type == null || $label['type'] == $type) && $label['code']) {
+      return $this->add_auto_label($seq_id, $label);
+    } else {
+      return false;
+    }
+  }
+  
+  
+  public function add_auto_label($seq, $label)
+  {
+    $res = $this->generate_label_value($seq, $label['code']);
+
+    if($res == null && $label['type'] != 'bool') {
+      return false;
+    }
+    
     $data1 = null;
     $data2 = null;
-
-    $res = $this->generate_label_value($seq_id, $label['code']);
 
     if(is_array($res)) {
       $data1 = $res[0];
@@ -172,19 +189,15 @@ class Label_sequence_model extends BioModel
       $data1 = $res;
     }
 
-    return $this->add($seq_id, $label['id'], $label['type'], $data1, $data2);
+    return $this->add($seq, $label['id'], $label['type'], $data1, $data2);
   }
 
-  public function add_generated_label($seq_id, $label_id, $type = null)
+  public function add_auto_label_id($seq, $label_id)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
-    if(($type == null || $label['type'] == $type) && $label['code']) {
-      return $this->add_generated($seq_id, $label);
-    } else {
-      return false;
-    }
+    return $this->add_auto_label($seq, $label);
   }
 
   public function edit($id, $type, $data1 = null, $data2 = null)
@@ -239,52 +252,19 @@ class Label_sequence_model extends BioModel
     // once the sequence has been fetched it can be used in the label code!
     $name = $seq['name'];
     $content = $seq['content'];
-
-    return eval($code);
+    
+    try {
+      return eval($code);
+    } catch(Exception $e) {
+      return null;
+    }
   }
 
   public function add_initial_label($id, $label)
   {
-    $data1 = null;
-    $data2 = null;
-
-    if($label['code'] || $label['auto_on_creation']) {
-      $res = $this->generate_label_value($id, $label['code']);
-
-      if(is_array($res)) {
-        $data1 = $res[0];
-        $data2 = $res[1];
-      } else {
-        $data1 = $res;
-      }
+    if($label['code'] && $label['auto_on_creation']) {
+      return $this->add_auto_label($id, $label);
     }
-
-    return $this->add($id, $label['id'], $label['type'], $data1, $data2);
-  }
-
-  public function add_auto_label($seq, $label)
-  {
-    $res = $this->generate_label_value($seq, $label['code']);
-
-    $data1 = null;
-    $data2 = null;
-
-    if(is_array($res)) {
-      $data1 = $res[0];
-      $data2 = $res[1];
-    } else {
-      $data1 = $res;
-    }
-
-    return $this->add($seq, $label['id'], $label['type'], $data1, $data2);
-  }
-
-  public function add_auto_label_id($seq, $label_id)
-  {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get($label_id);
-
-    return $this->add_auto_label($seq, $label);
   }
 
   public function edit_auto_label($id)
@@ -612,6 +592,10 @@ class Label_sequence_model extends BioModel
     $code = $label['code'];
     $value = $this->generate_label_value($seq, $code);
 
+    if($value == null) {
+      return false;
+    }
+    
     $data1 = null;
     $data2 = null;
 
