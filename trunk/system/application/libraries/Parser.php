@@ -200,6 +200,7 @@ class Parser
     switch($type) {
       case 'integer':
       case 'position':
+      case 'float':
         switch($oper) {
           case '=': return 'eq';
           case '>': return 'gt';
