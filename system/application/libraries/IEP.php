@@ -53,4 +53,13 @@ class IEP
     
     return true;
   }
+  
+  public function get_isoelectric_point()
+  {
+    if(preg_match('/Isoelectric Point = (.*)/', $this->output, $matches)) {
+      return (float)($matches[1]);
+    } else {
+      return null;
+    }
+  }
 }

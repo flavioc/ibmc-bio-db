@@ -11,6 +11,11 @@ class Welcome extends BioController
   public function index()
   {
     $this->smarty->assign('title', 'Main');
+    
+    $this->load->library('IEP');
+    
+    $this->iep->run_seq('ABKTX');
+    echo $this->iep->get_isoelectric_point();
 
     // load comment
     $this->load->model('comment_model');
