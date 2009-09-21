@@ -430,7 +430,7 @@ function after_add_label(form, responseText, statusText) {
   var resp = $.evalJSON(responseText);
 
   if(resp == true) {
-    if(label.multiple == 0) {
+    if(label.multiple == 0 || label.editable == 0) {
       reload_addable_list();
     }
 

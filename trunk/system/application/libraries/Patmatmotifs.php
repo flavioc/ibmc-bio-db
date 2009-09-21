@@ -51,4 +51,33 @@ class Patmatmotifs
       return null;
     }
   }
+  
+  public function get_motifs_positions()
+  {
+    if(preg_match_all('/Length = (.*)\\nStart = position (.*) of sequence/', $this->output, $matches)) {
+      $length = $matches[1];
+      $start = $matches[2];
+      $total = count($length);
+      
+      $ret = array();
+      for($i = 0; $i < $total; ++$i) {
+        $start_val = intval($start[$i]);
+        $length_val = intval($length[$i]);
+        $ret[] = array($start_val, $length_val);
+      }
+      
+      return $ret;
+    } else {
+      return null;
+    }
+  }
+  
+  public function get_motifs()
+  {
+    if(preg_match_all('/Motif = (.*)/', $this->output, $matches)) {
+      return $matches[1];
+    } else {
+      return null;
+    }
+  }
 }
