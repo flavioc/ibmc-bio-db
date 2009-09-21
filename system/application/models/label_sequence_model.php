@@ -149,7 +149,7 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  public function add($seq, $label, $type, $data)
+  public function add($seq, $label, $type, $data, $force_add = false)
   {
     $fields = $this->__get_data_fields($type);
     $this->__fix_data($type, $data);
@@ -163,7 +163,7 @@ class Label_sequence_model extends BioModel
     }
     
     // check already inserted data
-    if($this->has_label_data($label, $seq, $type, $data)) {
+    if(!$force_add && $this->has_label_data($label, $seq, $type, $data)) {
       return true;
     }
     
@@ -220,8 +220,14 @@ class Label_sequence_model extends BioModel
         $this->remove_labels_sequence($label_id, $seq);
       }
       
+      if($res == null) {
+        return false;
+      }
+      
+      $force_add = !$label['editable'];
+      
       foreach($res as &$data) {
-        $ret = $this->add($seq, $label_id, $type, $data) || $ret;
+        $ret = $this->add($seq, $label_id, $type, $data, $force_add) || $ret;
       }
       
       return $ret;
@@ -759,16 +765,18 @@ class Label_sequence_model extends BioModel
     return $this->rows_sql("SELECT id, name, type, must_exist, auto_on_creation,
           auto_on_modification, deletable, editable, multiple
       FROM label
-      WHERE multiple IS TRUE OR
-            id NOT IN (SELECT DISTINCT label_id AS id
-                      FROM label_sequence
-                      WHERE seq_id = $id)
-            AND name <> 'name'
+      WHERE name <> 'name'
             AND name <> 'content'
             AND name <> 'creation_user'
             AND name <> 'update_user'
             AND name <> 'creation_date'
-            AND name <> 'update_date'");
+            AND name <> 'update_date'
+            AND ((multiple IS TRUE AND editable IS TRUE)
+                  OR
+                    id NOT IN (SELECT DISTINCT label_id AS id
+                              FROM label_sequence
+                              WHERE seq_id = $id))
+      ORDER BY name");
   }
 
   private function __get_validation_status($label, $sequence, $valid_code, $data)

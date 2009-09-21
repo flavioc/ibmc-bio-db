@@ -63,5 +63,78 @@ class Epestfind
     } else {
       return 0;
     }
-  } 
+  }
+  
+  public function get_pest_positions()
+  {
+    if(preg_match_all('/amino acids between position (.*) and (.*)/', $this->output, $matches)) {
+      $starts = $matches[1];
+      $ends = $matches[2];
+      
+      $total = count($ends);
+      
+      $ret = array();
+      for($i = 0; $i < $total; ++$i) {
+        $start_val = intval($starts[$i]);
+        $end_val = intval($ends[$i]);
+        
+        $ret[] = array($start_val, $end_val - $start_val);
+      }
+      
+      return $ret;
+    } else {
+      return null;
+    }
+  }
+  
+  public function get_pest_amino_acids()
+  {
+    if(preg_match_all('/PEST motif with (.*) amino acids between position/', $this->output, $matches)) {
+      return $matches[1];
+    } else {
+      return null;
+    }
+  }
+  
+  public function get_pest_types()
+  {
+    if(preg_match_all('/(.*) PEST motif with/', $this->output, $matches)) {
+      return $matches[1];
+    } else {
+      return null;
+    }
+  }
+  
+  public function get_pest_scores()
+  {
+    if(preg_match_all('/PEST score: (.*)/', $this->output, $matches)) {
+      $ret = array();
+      
+      foreach($matches[1] as $score) {
+        $ret[] = (float)$score;
+      }
+      
+      return $ret;
+    } else {
+      return null;
+    }
+  }
+  
+  public function get_pest_depsts()
+  {
+    if(preg_match_all('/DEPST: (.*) %/', $this->output, $matches)) {
+      return $matches[1];
+    } else {
+      return null;
+    }
+  }
+  
+  public function get_pest_hydrophobicity()
+  {
+    if(preg_match_all('/Hydrophobicity index: (.*)/', $this->output, $matches)) {
+      return $matches[1];
+    } else {
+      return null;
+    }
+  }
 }

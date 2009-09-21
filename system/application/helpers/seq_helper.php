@@ -89,7 +89,12 @@ function sequence_join($content)
 
 function sequence_normalize($content)
 {
-  return strtoupper(trim($content));
+  $content = trim($content);
+  $content = str_replace(' ', '', $content);
+  $content = str_replace("\t", '', $content);
+  $content = str_replace("\n", '', $content);
+  
+  return strtoupper($content);
 }
 
 function sequence_short_content($content)
