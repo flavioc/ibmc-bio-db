@@ -171,15 +171,13 @@ class Tree extends BioController
       $id = $this->get_post('id');
     }
     
-    $this->load->helper('tree_exporter');
     $this->load->model('taxonomy_model');
+    $this->load->library('TreeExporter');
     
     header('Content-type: text/plain');
     header("Content-Disposition: attachment; filename=\"tree.xml\"");
     
-    echo export_tree_xml($this->taxonomy_tree_model,
-                         $this->taxonomy_model,
-                         $id);
+    echo $this->treeexporter->export_one($id);
   }
   
   public function import()

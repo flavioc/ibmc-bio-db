@@ -70,11 +70,9 @@ class Admin extends BioController
     echo export_labels_xml($this->label_model->get_all(), 1);
   
     // taxonomy trees
-    $this->load->model('taxonomy_tree_model');
-    $this->load->model('taxonomy_model');
-    $this->load->helper('tree_exporter');
+    $this->load->library('TreeExporter');
     $tree_ids = $this->taxonomy_tree_model->get_trees(array('no_ncbi' => true), array(), 'tree_id AS id');
-    echo export_trees_xml($this->taxonomy_tree_model, $this->taxonomy_model, $tree_ids, 1);
+    echo $this->treeexporter->export_group($tree_ids, 1);
     
     // sequences
     $this->load->model('sequence_model');
