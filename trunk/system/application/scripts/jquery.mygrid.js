@@ -396,7 +396,6 @@
       // build pagination div
       pagination_div.empty();
       
-      
       if(current_page != 1 && leftmost_page != 1) {
         pagination_div.append(get_page_html(1) + '&nbsp<span class="navigation_markers">&lt;</span>&nbsp');
       }
@@ -497,7 +496,7 @@ function get_results(obj, opts) {
       global: false,
       success: function(data) {
         var rows = $.evalJSON(data);
-
+        
         get_data_results(obj, opts, opts.inner.total, opts.inner.start, rows);
       },
       error: function (request, textstatus, error) {
@@ -652,10 +651,16 @@ function reload_grid(this_obj, $this, opts)
 }
 
 $.fn.grid = function(options) {
-  var opts = $.extend({}, $.fn.grid.defaults, options);
-
   return this.each(function() {
-    $this = $(this);
+    var opts = $.extend({}, $.fn.grid.defaults, options, 
+      {inner: {
+        ordering: {},
+        total: null,
+        start: 0,
+        params: {}
+      }
+    });
+    var $this = $(this);
 
     this.opts = opts;
     this.highlight = null;
@@ -672,7 +677,7 @@ $.fn.grid = function(options) {
       opts.paginate = this.paginate;
     }
 
-    reload_grid(this, $this, opts);
+    reload_grid(this, $this, this.opts);
   });
 };
 
@@ -710,10 +715,12 @@ $.fn.gridDeleteRow = function (row_id) {
 };
 
 $.fn.gridEnable = function(options) {
-  var opts = $.extend({}, $.fn.gridEnable.defaults, options);
-
+  var paginate = (options ? options.paginate : $.fn.gridEnable.defaults.paginate);
+  
   return this.each(function() {
-    $this = $(this);
+    var $this = $(this);
+    
+    this.paginate = paginate;
 
     $this.addClass('grid_box');
     $this.hide();
@@ -725,8 +732,8 @@ $.fn.gridEnable = function(options) {
     $this.append(results_tag);
     $this.append(img_tag);
     $this.append(data_tag);
-
-    if(opts.paginate) {
+    
+    if(paginate) {
       var pagination_tag = '<div class="pagination"></div>';
       
       $this.append(pagination_tag);
@@ -737,18 +744,10 @@ $.fn.gridEnable = function(options) {
     $('div[@class=data_place]', $this).hide();
     $('img[@class=loader]', $this).hide();
     $('h4', $this).hide();
-
-    this.paginate = opts.paginate;
   });
 }
 
 $.fn.grid.defaults = {
-  inner: { // do not change this
-    ordering: {},
-    total: null,
-    start: 0,
-    params: {}
-  },
   method: 'remote', // 'remote' or 'local'
   local_data: null,
   

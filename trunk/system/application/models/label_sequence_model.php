@@ -4,7 +4,7 @@ class Label_sequence_model extends BioModel
 {
   private static $label_data_fields = 'int_data, float_data, text_data, obj_data, ref_data, position_start, position_length, taxonomy_data, url_data, bool_data, DATE_FORMAT(date_data, "%d-%m-%Y") AS date_data, taxonomy_name, sequence_name';
 
-  private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
+  private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `param`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
   
   private static $public_sequence_where = "EXISTS (SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id AND label_sequence_info.name = 'perm_public' AND label_sequence_info.bool_data IS TRUE)";
 
@@ -59,102 +59,13 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
   
-  private function __validate_label_data($type, $data)
-  {
-    switch($type) {
-      case 'integer':
-        return isint($data);
-      case 'float':
-        return is_numeric($data);
-      case 'url':
-        return is_string($data) && strlen($data) <= 2048 && (parse_url($data) ? TRUE : FALSE);
-      case 'text':
-        if(!is_string($data)) {
-          return false;
-        }
-        $len = strlen($data);
-        return $len > 0 && $len <= 1024;
-      case 'bool':
-        return true;
-      case 'obj':
-        if(!is_array($data)) {
-          return false;
-        }
-        
-        if(count($data) != 2) {
-          return false;
-        }
-        
-        $filename = $data[0];
-        
-        $len = strlen($filename);
-        return $len > 0 && $len <= 1024;
-      case 'position':
-        if(!is_array($data) || count($data) != 2) {
-          return false;
-        }
-        
-        $start = $data[0];
-        $length = $data[1];
-        
-        if(!is_numeric($start) || !is_numeric($length)) {
-          return false;
-        }
-        
-        $start = intval($start);
-        $length = intval($length);
-        
-        return $start >= 0 && $length > 0;
-      case 'ref':
-        $seq_model = $this->load_model('sequence_model');
-        if(!is_numeric($data)) {
-          return false;
-        }
-        $num = intval($data);
-        return $num > 0 &&
-          $seq_model->has_sequence($num);
-      case 'tax':
-        if(!is_numeric($data)) {
-          return false;
-        }
-        $num = intval($data);
-        $tax_model = $this->load_model('taxonomy_model');
-        return $num > 0 &&
-          $tax_model->has_taxonomy($num);
-      case 'date':
-        return $data != null;
-    }
-    
-    return false;
-  }
-  
-  private function __fix_data($type, &$data)
-  {
-    switch($type) {
-      case 'integer':
-      case 'float':
-      case 'position':
-      case 'bool':
-      case 'ref':
-      case 'tax':
-        return;
-      case 'text':
-      case 'url':
-      case 'obj':
-        $data = trim($data);
-        return;
-      case 'date':
-        $data = convert_html_date_to_sql(trim($data));
-        return;
-    }
-  }
-
   public function add($seq, $label, $type, $data, $force_add = false)
   {
-    $fields = $this->__get_data_fields($type);
-    $this->__fix_data($type, $data);
+    $fields = label_data_fields($type);
     
-    if(!$this->__validate_label_data($type, $data)) {
+    label_fix_data($type, $data);
+    
+    if(!label_validate_data($type, $data)) {
       return false;
     }
     
@@ -166,24 +77,23 @@ class Label_sequence_model extends BioModel
     if(!$force_add && $this->has_label_data($label, $seq, $type, $data)) {
       return true;
     }
-    
+
     $db_data = array(
       'seq_id' => $seq,
-      'label_id' => $label
+      'label_id' => $label,
+      'param' => label_get_param($data)
     );
 
+    $data_value = label_get_data($data);
+    
     if(is_array($fields)) {
-      $db_data[$fields[0]] = $data[0];
-      $db_data[$fields[1]] = $data[1];
+      $db_data[$fields[0]] = $data_value[0];
+      $db_data[$fields[1]] = $data_value[1];
     } else {
-      $db_data[$fields] = $data;
+      $db_data[$fields] = $data_value;
     }
 
-    if($this->insert_data_with_history($db_data)) {
-      return true;
-    }
-    
-    return false;
+    return $this->insert_data_with_history($db_data) ? TRUE : FALSE;
   }
 
   public function add_generated_label($seq_id, $label_id, $type = null)
@@ -246,11 +156,11 @@ class Label_sequence_model extends BioModel
 
   public function edit($id, $type, $value)
   {
-    $fields = $this->__get_data_fields($type);
+    $fields = label_data_fields($type);
 
-    $this->__fix_data($type, $value);
+    label_fix_data($type, $value);
     
-    if(!$this->__validate_label_data($type, $value)) {
+    if(!label_validate_data($type, $value)) {
       return false;
     }
     
@@ -261,13 +171,16 @@ class Label_sequence_model extends BioModel
     }
     
     $data = array();
-
+    $data_value = label_get_data($value);
+    
     if(is_array($fields)) {
-      $data[$fields[0]] = $value[0];
-      $data[$fields[1]] = $value[1];
+      $data[$fields[0]] = $data_value[0];
+      $data[$fields[1]] = $data_value[1];
     } else {
-      $data[$fields] = $value;
+      $data[$fields] = $data_value;
     }
+    
+    $data['param'] = label_get_param($value);
 
     return $this->edit_data_with_history($id, $data);
   }
@@ -894,12 +807,14 @@ class Label_sequence_model extends BioModel
     return $this->has_id($id);
   }
   
-  public function has_label_data($label_id, $seq_id, $label_type, $data)
+  public function has_label_data($label_id, $seq_id, $label_type, $label_data)
   {
-    $field = $this->__get_data_fields($label_type);
+    $field = label_data_fields($label_type);
     $this->db->select('id');
     $this->db->where('label_id', $label_id);
     $this->db->where('seq_id', $seq_id);
+    
+    $data = label_get_data($label_data);
     
     if(is_array($field)) {
       $field1 = $field[0];
@@ -910,12 +825,14 @@ class Label_sequence_model extends BioModel
       $this->db->where($field, $data);
     }
     
+    $this->db->where('param', label_get_param($label_data));
+    
     return $this->count_total('label_sequence');
   }
 
   public function select_data($label)
   {
-    $fields = $this->__get_data_fields($label['type']);
+    $fields = label_data_fields($label['type']);
 
     if(is_array($fields)) {
       return array($label[$fields[0]], $label[$fields[1]]);
@@ -945,7 +862,7 @@ class Label_sequence_model extends BioModel
     
     $this->db->select('seq_id');
     
-    $fields = $this->__get_data_fields($type);
+    $fields = label_data_fields($type);
     
     if(is_array($fields)) {
       $this->db->where($fields[0], $data[0]);
@@ -984,29 +901,6 @@ class Label_sequence_model extends BioModel
     $this->db->where('seq_id', $seq_id);
 
     return $this->get_row('label_id', $label_id, 'label_sequence_info');
-  }
-
-  private function __get_data_fields($type)
-  {
-    switch($type) {
-    case 'integer':
-      return 'int_data';
-    case 'text':
-    case 'float':
-    case 'bool':
-    case 'date':
-    case 'url':
-    case 'ref':
-      return $type . '_data';
-    case 'obj':
-      return array('text_data', 'obj_data');
-    case 'position':
-      return array('position_start', 'position_length');
-    case 'tax':
-      return 'taxonomy_data';
-    }
-
-    return null;
   }
 
   private function __compound_oper($oper)
@@ -1268,7 +1162,7 @@ class Label_sequence_model extends BioModel
       $value = $term['value'];
 
       if(!label_special_purpose($label_name)) {
-        $fields = $this->__get_data_fields($label_type);
+        $fields = label_data_fields($label_type);
 
         // handle position fields
         switch($label_type) {
