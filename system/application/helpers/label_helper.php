@@ -35,6 +35,11 @@ class LabelData
   {
     return $this->param;
   }
+  
+  public function set_param($val)
+  {
+    $this->param = $val;
+  }
 };
 
 function label_get_data($obj)
@@ -55,7 +60,7 @@ function label_get_param($obj)
   }
 }
 
-function label_fix_data($type, &$label_data)
+function label_fix_data($type, &$label_data, $multiple = false)
 {
   $data = label_get_data($label_data);
   
@@ -79,6 +84,11 @@ function label_fix_data($type, &$label_data)
   
   if($label_data instanceof LabelData) {
     $label_data->set_data($data);
+    
+    if(!$multiple) {
+      // remove param
+      $label_data->set_param(null);
+    }
   } else {
     $label_data = $data;
   }

@@ -7,4 +7,5 @@
 {form_row name=start msg="Start:"}
 {form_row name=length msg="Length:"}
 {/if}
+{include file=common_label/param.tpl}
 </span>

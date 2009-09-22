@@ -5,4 +5,5 @@
 {else}
 {form_row name=url msg='URL:'}
 {/if}
+{include file=common_label/param.tpl}
 </span>

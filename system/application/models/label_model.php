@@ -271,6 +271,11 @@ class Label_model extends BioModel
   {
     return $this->get_field($id, 'deletable');
   }
+  
+  public function is_multiple($id)
+  {
+    return $this->get_field($id, 'multiple');
+  }
 
   public function get_name($id)
   {
