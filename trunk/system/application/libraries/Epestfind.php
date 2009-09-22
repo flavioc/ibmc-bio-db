@@ -81,7 +81,7 @@ class Epestfind
         $ret[] = array($start_val, $end_val - $start_val);
       }
       
-      return $ret;
+      return label_transform_data_array_ordered($ret);
     } else {
       return null;
     }
@@ -90,7 +90,7 @@ class Epestfind
   public function get_pest_amino_acids()
   {
     if(preg_match_all('/PEST motif with (.*) amino acids between position/', $this->output, $matches)) {
-      return $matches[1];
+      return label_transform_data_array_ordered($matches[1]);
     } else {
       return null;
     }
@@ -99,7 +99,7 @@ class Epestfind
   public function get_pest_types()
   {
     if(preg_match_all('/(.*) PEST motif with/', $this->output, $matches)) {
-      return $matches[1];
+      return label_transform_data_array_ordered($matches[1]);
     } else {
       return null;
     }
@@ -114,7 +114,7 @@ class Epestfind
         $ret[] = (float)$score;
       }
       
-      return $ret;
+      return label_transform_data_array_ordered($ret);
     } else {
       return null;
     }
@@ -123,7 +123,7 @@ class Epestfind
   public function get_pest_depsts()
   {
     if(preg_match_all('/DEPST: (.*) %/', $this->output, $matches)) {
-      return $matches[1];
+      return label_transform_data_array_ordered($matches[1]);
     } else {
       return null;
     }
@@ -132,7 +132,7 @@ class Epestfind
   public function get_pest_hydrophobicity()
   {
     if(preg_match_all('/Hydrophobicity index: (.*)/', $this->output, $matches)) {
-      return $matches[1];
+      return label_transform_data_array_ordered($matches[1]);
     } else {
       return null;
     }

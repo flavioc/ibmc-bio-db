@@ -178,6 +178,20 @@ function label_data_fields($type)
   return null;
 }
 
+function label_transform_data_array_ordered($array)
+{
+  $ret = array();
+  $i = 0;
+  
+  foreach($array as &$data) {
+    ++$i;
+    
+    $ret[] = new LabelData($data, $i);
+  }
+  
+  return $ret;
+}
+
 function label_special_purpose($name)
 {
   return in_array($name, array('name', 'content', 'creation_user', 'update_user', 'creation_date', 'update_date'));
