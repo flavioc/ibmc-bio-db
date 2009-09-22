@@ -638,7 +638,7 @@ function got_new_label(data)
   operator_text.hide();
   data_date_input.hide();
   fill_operators(data.type);
-  show_type_input(type);
+  show_type_input(data.type);
   term_other_fields.show();
   current_label = data;
   submit_term.show();
