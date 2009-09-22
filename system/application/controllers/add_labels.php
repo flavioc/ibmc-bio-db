@@ -72,7 +72,7 @@ class Add_Labels extends BioController
     if($this->label_sequence_model->label_used_up($seq_id, $label_id)) {
       return $this->json_return("Label with id $label_id is already being used");
     } else {
-      return $this->json_return($this->label_sequence_model->add_auto_label_id($seq_id, $label_id));
+      return $this->json_return($this->label_sequence_model->add_auto_label_id($seq_id, $label_id) ? TRUE : FALSE);
     }
   }
   

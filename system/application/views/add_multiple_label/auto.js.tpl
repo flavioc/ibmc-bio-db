@@ -1,1 +1,0 @@
-$('#info_results').show().html("<p>New labels: {$count_new}; Regenerated: {$count_regenerate}; New multiple: {$count_new_multiple}; New generated: {$count_new_generated}; Updated: {$count_updated}; New multiple generated: {$count_new_multiple_generated}; Invalid: {$count_invalid}</p>").effect("highlight", {literal}{}{/literal}, 3000);

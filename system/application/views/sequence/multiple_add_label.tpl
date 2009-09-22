@@ -22,7 +22,6 @@
 {form_row type=checkbox name=addnew msg='Add new:'}
 {/if}
 
-{form_row type=checkbox name=multiple msg="Add multiple:"}
 {form_submit name='submit_add_label' msg='Open dialog'}
 {form_end}
 

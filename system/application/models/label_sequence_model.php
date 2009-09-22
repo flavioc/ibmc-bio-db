@@ -144,7 +144,7 @@ class Label_sequence_model extends BioModel
     $res = $this->generate_label_value($seq, $label['code']);
     
     if($label['multiple']) {
-      $ret = false;
+      $ret = 0;
       
       if(!$label['editable']) {
         $this->remove_labels_sequence($label_id, $seq);
@@ -156,13 +156,17 @@ class Label_sequence_model extends BioModel
       
       $force_add = !$label['editable'];
       
+      if(!is_array($res)) {
+        return 0;
+      }
+      
       foreach($res as &$data) {
-        $ret = $this->add($seq, $label_id, $type, $data, $force_add) || $ret;
+        $ret = $ret + ($this->add($seq, $label_id, $type, $data, $force_add) ? 1 : 0);
       }
       
       return $ret;
     } else {
-      return $this->add($seq, $label_id, $type, $res);
+      return $this->add($seq, $label_id, $type, $res) ? 1 : 0;
     }
   }
 
