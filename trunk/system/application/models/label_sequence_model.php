@@ -24,6 +24,15 @@ class Label_sequence_model extends BioModel
     $this->db->where('seq_id', $seq_id);
     return $this->get_id_by_field('label_id', $label_id);
   }
+  
+  // get label instance id by param
+  private function get_label_param_id($seq_id, $label_id, $param)
+  {
+    $this->db->where('seq_id', $seq_id);
+    $this->db->where('param', $param);
+    
+    return $this->get_id_by_field('label_id', $label_id);
+  }
 
   // retrieve label instance row using seq id and label id
   public function get_label_info($seq_id, $label_id)
@@ -68,6 +77,16 @@ class Label_sequence_model extends BioModel
     
     if(!label_validate_data($type, $data)) {
       return false;
+    }
+    
+    $param = label_get_param($data);
+    
+    // if multiple and has parameter and label instance with that
+    // parameter is present, edit it instead of adding it
+    if($param && $multiple && $this->has_label_param($label, $seq, $param)) {
+      $id = $this->get_label_param_id($seq, $label, $param);
+      
+      return $this->edit($id, $type, $data);
     }
     
     // check already inserted data
@@ -817,22 +836,32 @@ class Label_sequence_model extends BioModel
     return $this->has_id($id);
   }
   
-  public function has_label_data($label_id, $seq_id, $label_type, $label_data, $except_id = null)
+  public function has_label_param($label_id, $seq_id, $param)
   {
-    $field = label_data_fields($label_type);
     $this->db->select('id');
     $this->db->where('label_id', $label_id);
     $this->db->where('seq_id', $seq_id);
+    $this->db->where('param', $param);
+    
+    return $this->has_something();
+  }
+  
+  public function has_label_data($label_id, $seq_id, $label_type, $label_data, $except_id = null)
+  {
+    $param = label_get_param($label_data);
     
     if($except_id) {
       $this->db->where("id <> $except_id");
     }
     
-    $param = label_get_param($label_data);
-    
     if($param) {
-      $this->db->where('param', $param);
+      return $this->has_label_param($label_id, $seq_id, $param);
     } else {
+      $field = label_data_fields($label_type);
+      $this->db->select('id');
+      $this->db->where('label_id', $label_id);
+      $this->db->where('seq_id', $seq_id);
+    
       $data = label_get_data($label_data);
     
       if(is_array($field)) {
@@ -843,9 +872,9 @@ class Label_sequence_model extends BioModel
       } else {
         $this->db->where($field, $data);
       }
+      
+      return $this->has_something();
     }
-    
-    return $this->count_total('label_sequence') ? TRUE : FALSE;
   }
 
   public function select_data($label)

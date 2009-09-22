@@ -32,6 +32,15 @@ var data_transform_labels = {
       },
       select: function (row) {
         return img_go;
+      },
+      name: function (row) {
+        return 'ahahah';
+        alert(row.param);
+        if(row.param) {
+          return row.name + '[' + row.param + ']';
+        } else {
+          return row.name;
+        }
       }
   };
 var link_labels = {
@@ -89,8 +98,7 @@ function select_field(row)
         break;
       case 'position':
         field_to_add = 'position_start';
-        break;
-      
+        break; 
     }
   }
 
@@ -99,6 +107,17 @@ function select_field(row)
 
 function setup_labels_list()
 {
+  var mydata_transform_labels = $.extend({}, data_transform_labels,
+    {
+      name: function (row) {
+        if(row.param) {
+          return row.name + '[' + row.param + ']';
+        } else {
+          return row.name;
+        }
+      }
+    });
+    
   var options = {
     url: label_site,
     retrieve: 'get_labels/' + seq_id,
@@ -128,7 +147,7 @@ function setup_labels_list()
     },
     hiddenFields: ['user_name', 'update', 'param'],
     links: link_labels,
-    dataTransform: data_transform_labels,
+    dataTransform: mydata_transform_labels,
     enableRemove: logged_in,
     enableRemoveFun: function (row) {
       return sql_true(row.deletable);
