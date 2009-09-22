@@ -30,6 +30,8 @@ class Multiple_Labels extends BioController
   private $bytes = null;
   private $date = null;
   
+  private $param = null;
+  
   // stats
   private $count_new_multiple = 0;
   private $count_regenerate = 0;
@@ -135,6 +137,8 @@ class Multiple_Labels extends BioController
       $this->add_mode = false;
       $this->edit_mode = true;
     }
+    
+    $this->param = $this->get_post('param');
   }
 
   private function __can_do_multiple()
@@ -211,32 +215,32 @@ class Multiple_Labels extends BioController
   {
     switch($this->label_type) {
       case 'text':
-        $this->text = $this->get_post('text');
+        $this->text = new LabelData($this->get_post('text'), $this->param);
         break;
       case 'integer':
-        $this->integer = $this->get_post('integer');
+        $this->integer = new LabelData($this->get_post('integer'), $this->param);
         break;
       case 'float':
-        $this->float = $this->get_post('float');
+        $this->float = new LabelData($this->get_post('float'), $this->param);
         break;
       case 'url':
-        $this->url = $this->get_post('url');
+        $this->url = new LabelData($this->get_post('url'), $this->param);
         break;
       case 'bool':
-        $this->boolean = $this->get_post('boolean') ? TRUE : FALSE;
+        $this->boolean = new LabelData($this->get_post('boolean') ? TRUE : FALSE, $this->param);
         break;
       case 'date':
-        $this->date = $this->get_post('date');
+        $this->date = new LabelData($this->get_post('date'), $this->param);
         break;
       case 'position':
         $this->start = $this->get_post('start');
         $this->length = $this->get_post('length');
         break;
       case 'tax':
-        $this->tax = $this->get_post('hidden_tax');
+        $this->tax = new LabelData($this->get_post('hidden_tax'), $this->param);
         break;
       case 'ref':
-        $this->ref = $this->get_post('hidden_ref');
+        $this->ref = new LabelData($this->get_post('hidden_ref'), $this->param);
         break;
       case 'obj':
         try {
@@ -265,13 +269,13 @@ class Multiple_Labels extends BioController
     case 'bool':
       return $this->label_sequence_model->add_bool_label($seq_id, $this->label_id, $this->boolean);
     case 'position':
-      return $this->label_sequence_model->add_position_label($seq_id, $this->label_id, $this->start, $this->length);
+      return $this->label_sequence_model->add_position_label($seq_id, $this->label_id, $this->start, $this->length, $this->param);
     case 'tax':
       return $this->label_sequence_model->add_tax_label($seq_id, $this->label_id, $this->tax);
     case 'ref':
       return $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->ref);
     case 'obj':
-      return $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes);
+      return $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes, $this->param);
     case 'date':
       return $this->label_sequence_model->add_date_label($seq_id, $this->label_id, $this->date);
     }
@@ -309,7 +313,7 @@ class Multiple_Labels extends BioController
       $ret = $this->label_sequence_model->edit_bool_label($id, $this->boolean);
       break;
     case 'position':
-      $ret = $this->label_sequence_model->edit_position_label($id, $this->start, $this->length);
+      $ret = $this->label_sequence_model->edit_position_label($id, $this->start, $this->length, $this->param);
       break;
     case 'tax':
       $ret = $this->label_sequence_model->edit_tax_label($id, $this->tax);
@@ -318,7 +322,7 @@ class Multiple_Labels extends BioController
       $ret = $this->label_sequence_model->edit_ref_label($id, $this->ref);
       break;
     case 'obj':
-      $ret = $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes);
+      $ret = $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes, $this->param);
       break;
     case 'date':
       $ret = $this->label_sequence_model->edit_date_label($id, $this->date);

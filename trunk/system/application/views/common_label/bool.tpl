@@ -5,4 +5,5 @@
 {else}
 {form_row type=checkbox name=boolean msg='Value:'}
 {/if}
+{include file=common_label/param.tpl}
 </span>

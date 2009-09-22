@@ -85,7 +85,8 @@ class Add_Labels extends BioController
     $seq_id = $this->get_post('seq_id');
     $label_id = $this->get_post('label_id');
     $generate = $this->get_post('generate_check') ? TRUE : FALSE;
+    $param = $this->get_post('param');
     
-    $this->json_return($this->__add_label($seq_id, $label_id, $generate));
+    $this->json_return($this->__add_label($seq_id, $label_id, $generate, $param));
   }
 }

@@ -62,20 +62,21 @@ class Label_sequence_model extends BioModel
   public function add($seq, $label, $type, $data, $force_add = false)
   {
     $fields = label_data_fields($type);
+    $multiple = $this->load_model('label_model')->is_multiple($label);
     
-    label_fix_data($type, $data);
+    label_fix_data($type, $data, $multiple);
     
     if(!label_validate_data($type, $data)) {
-      return false;
-    }
-    
-    if(!$this->label_is_valid($label, $seq, $data)) {
       return false;
     }
     
     // check already inserted data
     if(!$force_add && $this->has_label_data($label, $seq, $type, $data)) {
       return true;
+    }
+    
+    if(!$this->label_is_valid($label, $seq, $data)) {
+      return false;
     }
 
     $db_data = array(
@@ -157,17 +158,24 @@ class Label_sequence_model extends BioModel
   public function edit($id, $type, $value)
   {
     $fields = label_data_fields($type);
+    $label_info = $this->get($id);
+    $multiple = $label_info['multiple'];
 
-    label_fix_data($type, $value);
+    label_fix_data($type, $value, $multiple);
     
     if(!label_validate_data($type, $value)) {
       return false;
     }
     
-    $label_info = $this->get($id);
+    $param = label_get_param($value);
+    $label_id = $label_info['label_id'];
+    $seq_id = $label_info['seq_id'];
     
-    if(!$this->label_is_valid($label_info['label_id'], $label_info['seq_id'], $value)) {
-      
+    if($multiple && $this->has_label_data($label_id, $seq_id, $type, $value, $id)) {
+      return false;
+    }
+    
+    if(!$this->label_is_valid($label_id, $seq_id, $value)) {
       return false;
     }
     
@@ -180,8 +188,8 @@ class Label_sequence_model extends BioModel
     } else {
       $data[$fields] = $data_value;
     }
-    
-    $data['param'] = label_get_param($value);
+  
+    $data['param'] = $param;
 
     return $this->edit_data_with_history($id, $data);
   }
@@ -405,24 +413,24 @@ class Label_sequence_model extends BioModel
     return $label['type'] == 'obj';
   }
 
-  public function add_obj_label($seq_id, $label_id, $filename, $data)
+  public function add_obj_label($seq_id, $label_id, $filename, $data, $param = null)
   {
     $label_model = $this->load_model('label_model');
     $label = $label_model->get($label_id);
 
     if($this->__is_obj($label)) {
-      return $this->add($seq_id, $label_id, 'obj', array($filename, $data));
+      return $this->add($seq_id, $label_id, 'obj', new LabelData(array($filename, $data), $param));
     } else {
       return false;
     }
   }
 
-  public function edit_obj_label($id, $filename, $data)
+  public function edit_obj_label($id, $filename, $data, $param = null)
   {
     $label = $this->get($id);
 
     if($this->__is_obj($label)) {
-      return $this->edit($id, 'obj', array($filename, $data));
+      return $this->edit($id, 'obj', new LabelData(array($filename, $data), $param));
     } else {
       return false;
     }
@@ -809,27 +817,35 @@ class Label_sequence_model extends BioModel
     return $this->has_id($id);
   }
   
-  public function has_label_data($label_id, $seq_id, $label_type, $label_data)
+  public function has_label_data($label_id, $seq_id, $label_type, $label_data, $except_id = null)
   {
     $field = label_data_fields($label_type);
     $this->db->select('id');
     $this->db->where('label_id', $label_id);
     $this->db->where('seq_id', $seq_id);
     
-    $data = label_get_data($label_data);
-    
-    if(is_array($field)) {
-      $field1 = $field[0];
-      $field2 = $field[1];
-      $this->db->where($field1, $data[0]);
-      $this->db->where($field2, $data[1]);
-    } else {
-      $this->db->where($field, $data);
+    if($except_id) {
+      $this->db->where("id <> $except_id");
     }
     
-    $this->db->where('param', label_get_param($label_data));
+    $param = label_get_param($label_data);
     
-    return $this->count_total('label_sequence');
+    if($param) {
+      $this->db->where('param', $param);
+    } else {
+      $data = label_get_data($label_data);
+    
+      if(is_array($field)) {
+        $field1 = $field[0];
+        $field2 = $field[1];
+        $this->db->where($field1, $data[0]);
+        $this->db->where($field2, $data[1]);
+      } else {
+        $this->db->where($field, $data);
+      }
+    }
+    
+    return $this->count_total('label_sequence') ? TRUE : FALSE;
   }
 
   public function select_data($label)

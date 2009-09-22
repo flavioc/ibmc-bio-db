@@ -308,7 +308,7 @@ class BioController extends Controller
                   'bytes' => $bytes);
   }
   
-  protected function __add_label($seq_id, $label_id, $generate)
+  protected function __add_label($seq_id, $label_id, $generate, $param = null)
   {
     $this->load->model('sequence_model');
     $this->load->model('label_model');
@@ -329,9 +329,9 @@ class BioController extends Controller
     
     switch($label['type']) {
       case 'url':
-        return $this->label_sequence_model->add_url_label($seq_id, $label_id, $this->get_post('url'));
+        return $this->label_sequence_model->add_url_label($seq_id, $label_id, new LabelData($this->get_post('url'), $param));
       case 'text':
-        return $this->label_sequence_model->add_text_label($seq_id, $label_id, $this->get_post('text'));
+        return $this->label_sequence_model->add_text_label($seq_id, $label_id, new LabelData($this->get_post('text'), $param));
       case 'tax':
         $tax = $this->get_post('hidden_tax');
 
@@ -341,7 +341,7 @@ class BioController extends Controller
           return "Taxonomy with id $tax [$tax_name] doesn't exist";
         }
 
-        return $this->label_sequence_model->add_tax_label($seq_id, $label_id, $tax);
+        return $this->label_sequence_model->add_tax_label($seq_id, $label_id, new LabelData($tax, $param));
       case 'ref':
         $ref = $this->get_post('hidden_ref');
 
@@ -350,36 +350,36 @@ class BioController extends Controller
           return "Sequence with id $ref [$ref_name] doesn't exist";
         }
 
-        return $this->label_sequence_model->add_ref_label($seq_id, $label_id, $ref);
+        return $this->label_sequence_model->add_ref_label($seq_id, $label_id, new LabelData($ref, $param));
       case 'position':
         $start = $this->get_post('start');
         $length = $this->get_post('length');
         
-        return $this->label_sequence_model->add_position_label($seq_id, $label_id, $start, $length);
+        return $this->label_sequence_model->add_position_label($seq_id, $label_id, $start, $length, $param);
       case 'obj':
         try {
           $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
           return $this->label_sequence_model->add_obj_label($seq_id, $label_id,
-                $data['filename'], $data['bytes']);
+                $data['filename'], $data['bytes'], $param);
         } catch(Exception $e) {
           return $e->getMessage();
         }
       case 'integer':
-        return $this->label_sequence_model->add_integer_label($seq_id, $label_id, $this->get_post('integer'));
+        return $this->label_sequence_model->add_integer_label($seq_id, $label_id, new LabelData($this->get_post('integer'), $param));
       case 'float':
-        return $this->label_sequence_model->add_float_label($seq_id, $label_id, $this->get_post('float'));
+        return $this->label_sequence_model->add_float_label($seq_id, $label_id, new LabelData($this->get_post('float'), $param));
       case 'bool':
         return $this->label_sequence_model->add_bool_label($seq_id, $label_id,
-            $this->get_post('boolean') ? TRUE : FALSE);
+            new LabelData($this->get_post('boolean') ? TRUE : FALSE, $param));
       case 'date':
         return $this->label_sequence_model->add_date_label($seq_id, $label_id,
-            $this->get_post('date'));
+            new LabelData($this->get_post('date'), $param));
       default:
         return "Label type is invalid";
     }
   }
   
-  protected function __edit_label($id, $generate)
+  protected function __edit_label($id, $generate, $param = null)
   {
     $this->load->model('sequence_model');
     $this->load->model('label_model');
@@ -401,21 +401,21 @@ class BioController extends Controller
     
     switch($label['type']) {
       case 'bool':
-        return $this->label_sequence_model->edit_bool_label($id, $this->get_post('boolean') ? TRUE : FALSE);
+        return $this->label_sequence_model->edit_bool_label($id, new LabelData($this->get_post('boolean') ? TRUE : FALSE, $param));
       case 'integer':
-        return $this->label_sequence_model->edit_integer_label($id, $this->get_post('integer'));
+        return $this->label_sequence_model->edit_integer_label($id, new LabelData($this->get_post('integer'), $param));
       case 'float':
-        return $this->label_sequence_model->edit_float_label($id, $this->get_post('float'));
+        return $this->label_sequence_model->edit_float_label($id, new LabelData($this->get_post('float'), $param));
       case 'obj':
         try {
           $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
-          return $this->label_sequence_model->edit_obj_label($id, $data['filename'], $data['bytes']);
+          return $this->label_sequence_model->edit_obj_label($id, $data['filename'], $data['bytes'], $param);
         } catch(Exception $e) {
           return $e->getMessage();
         }
       case 'position':
         return $this->label_sequence_model->edit_position_label($id,
-            $this->get_post('start'), $this->get_post('length'));
+            $this->get_post('start'), $this->get_post('length'), $param);
       case 'ref':
         $ref = $this->get_post('hidden_ref');
 
@@ -424,7 +424,7 @@ class BioController extends Controller
           return "Sequence with id $ref [$ref_name] doesn't exist";
         }
 
-        return $this->label_sequence_model->edit_ref_label($id, $ref);      
+        return $this->label_sequence_model->edit_ref_label($id, new LabelData($ref, $param));      
       case 'tax':
         $tax = $this->get_post('hidden_tax');
 
@@ -434,13 +434,13 @@ class BioController extends Controller
           return "Taxonomy with id $tax [$tax_name] doesn't exist";
         }
 
-        return $this->label_sequence_model->edit_tax_label($id, $tax);
+        return $this->label_sequence_model->edit_tax_label($id, new LabelData($tax, $param));
       case 'text':
-        return $this->label_sequence_model->edit_text_label($id, $this->get_post('text'));
+        return $this->label_sequence_model->edit_text_label($id, new LabelData($this->get_post('text'), $param));
       case 'url':
-        return $this->label_sequence_model->edit_url_label($id, $this->get_post('url'));
+        return $this->label_sequence_model->edit_url_label($id, new LabelData($this->get_post('url'), $param));
       case 'date':
-        return $this->label_sequence_model->edit_date_label($id, $this->get_post('date'));
+        return $this->label_sequence_model->edit_date_label($id, new LabelData($this->get_post('date'), $param));
       default:
         return "Label/Sequence id $id with invalid type";
     }

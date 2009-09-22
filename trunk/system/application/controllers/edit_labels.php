@@ -93,7 +93,8 @@ class Edit_Labels extends BioController
 
     $id = $this->get_post('id');
     $generate = $this->get_post('generate_check') ? TRUE : FALSE;
+    $param = $this->get_post('param');
     
-    return $this->json_return($this->__edit_label($id, $generate));
+    return $this->json_return($this->__edit_label($id, $generate, $param));
   }
 }

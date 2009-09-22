@@ -5,4 +5,5 @@
 {else}
 {form_row name=float msg='Float:'}
 {/if}
+{include file=common_label/param.tpl}
 </span>

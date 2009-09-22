@@ -5,4 +5,5 @@
 {else}
 {form_row name=date msg='Date:' readonly=yes}
 {/if}
+{include file=common_label/param.tpl}
 </span>
