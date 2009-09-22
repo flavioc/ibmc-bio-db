@@ -26,7 +26,7 @@ class TreeExporter
     return "$ret$t</trees>\n";
   }
 
-  function export_one($tree_id, $tab = 0)
+  public function export_one($tree_id, $tab = 0)
   {
     $t = tabs($tab);
 

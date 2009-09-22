@@ -228,11 +228,11 @@ class Rank extends BioController
       array('name' => $filter_name,
             'parent_name' => $filter_parent,
             'user' => $filter_user));
-    $this->load->helper('rank_exporter');
+    $this->load->library('RankExporter');
     
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="ranks.xml"');
-    echo export_ranks_xml($ranks);
+    echo $this->rankexporter->export_group($ranks);
   }
   
   public function import()
