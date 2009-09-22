@@ -74,12 +74,14 @@ function import_sequences_xml_node($top, $controller)
         continue;
       }
       
+      $label_param = xmlspecialchars_decode($label->getAttribute('param'));
+      
       $label_value = xmlspecialchars_decode($label->textContent);
       if(!$label_value && $label_value != '0') {
         continue;
       }
       
-      $info->add_sequence_label($name, $label_name, $label_value);
+      $info->add_sequence_label($name, $label_name, $label_value, $label_param);
     }
   }
   

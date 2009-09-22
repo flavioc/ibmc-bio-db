@@ -87,13 +87,28 @@ function __get_sequence_labels($info, $name, $line)
           continue;
         }
         
-        $info->add_sequence_label($name, $label_name, $part);
+        $vec = __parse_sequence_label_fasta($part);
+        echo "$label_name $part;";
+        $info->add_sequence_label($name, $label_name, $vec[0], $vec[1]);
       }
     } else {
-      $info->add_sequence_label($name, $label_name, $data);
+      echo "$label_name $data;";
+      $vec = __parse_sequence_label_fasta($data);
+      $info->add_sequence_label($name, $label_name, $vec[0], $vec[1]);
     }
     
     ++$i;
+  }
+}
+
+function __parse_sequence_label_fasta($name)
+{
+  $vec = explode(' -> ', $name);
+  
+  if(count($vec) == 2) {
+    return $vec;
+  } else {
+    return array($name, null);
   }
 }
 

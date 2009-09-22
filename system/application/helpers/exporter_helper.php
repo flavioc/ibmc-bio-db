@@ -91,7 +91,14 @@ function __export_sequence_xml($sequence, $labels, $merged_labels, $tab = 1)
         $str = xmlspecialchars(__get_label_export_data($label));
 
         $name = xmlspecialchars($label['name']);
-        $ret .= "$t\t<label name=\"$name\">$str</label>\n";
+        $ret .= "$t\t<label name=\"$name\"";
+        
+        $param = $label['param'];
+        
+        if($param) {
+          $ret .= " param=\"$param\"";
+        }
+        $ret .= ">$str</label>\n";
       }
     }
   }
@@ -250,6 +257,18 @@ function __get_label_export_data($label)
   return trim(strval($toadd));
 }
 
+function __get_export_label_fasta_name($label)
+{
+  $toadd = __get_label_export_data($label);
+  
+  $param = $label['param'];
+  if($param) {
+    $toadd = $toadd . ' -> ' . $param;
+  }
+  
+  return $toadd;
+}
+
 function __get_sequence_header($sequence, $labels, $merged_labels)
 {
   $seq_name = trim($sequence['name']);
@@ -260,13 +279,13 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
     if(count($res_labels) == 0) {
       $ret .= '|';
     } else if(count($res_labels) == 1) {
-      $ret .= __get_label_export_data($res_labels[0]) . '|';
+      $ret .= __get_export_label_fasta_name($res_labels[0]) . '|';
     } else if($merged_label['multiple']) {
       // multiple labels
       $ret .= '[';
       $first = true;
       foreach($res_labels as &$label) {
-        $str = __get_label_export_data($label);
+        $str = __get_export_label_fasta_name($label);
         if($first) {
           $first = false;
         } else {
@@ -275,7 +294,7 @@ function __get_sequence_header($sequence, $labels, $merged_labels)
         
         $ret .= $str;
       }
-      $ret .= ']';
+      $ret .= ']|';
     }
   }
 

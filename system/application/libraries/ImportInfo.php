@@ -111,7 +111,7 @@ class ImportInfo
     $this->ordered_sequences[] = $data;
   }
   
-  public function add_sequence_label($sequence, $label, $value)
+  public function add_sequence_label($sequence, $label, $value, $param = null)
   {
     $sequence = trim($sequence);
     $label = trim($label);
@@ -127,12 +127,14 @@ class ImportInfo
       if($sequence_data['name'] == $sequence) {
         $labels =& $sequence_data['labels'];
         
+        $label_data = new LabelData($value, $param);
+        
         if(array_key_exists($label, $labels)) {
           $current_label_info =& $labels[$label];
           $values =& $current_label_info['values'];
-          $values[] = $value;
+          $values[] = $label_data;
         } else {
-          $labels[$label] = array('values' => array($value));
+          $labels[$label] = array('values' => array($label_data));
         }
         
         return true;
@@ -167,16 +169,24 @@ class ImportInfo
   
   private function __import_label_text_natural($value, $type)
   {
+    $data = label_get_data($value);
+    $param = label_get_param($value);
+    
     switch($type) {
     case 'bool':
-      return $value == '0' ? 'No' : 'Yes';
+      $data == '0' ? 'No' : 'Yes';
     }
-
-    return $value;
+    
+    if($param) {
+      return "$param -> $data";
+    } else {
+      return $data;
+    }
   }
   
   private function __get_ref_value($seq_id, $name, $value)
   {
+    $value = label_get_data($value);
     
     if($name == 'translated') {
       $type = $this->controller->sequence_model->get_type($seq_id);
@@ -203,13 +213,14 @@ class ImportInfo
   
   private function __get_tax_value($value)
   {
+    $value = label_get_data($value);
     $row = $this->controller->taxonomy_model->get_by_name($value);
     return $row['id'];
   }
   
   private function __update_label_content($id, $seq_id, $type, $name, $value)
   {
-    if($value == '') {
+    if(label_get_data($value) == '') {
       return;
     }
     
@@ -223,11 +234,12 @@ class ImportInfo
       case 'text':
         return $model->edit_text_label($id, $value);
       case 'position':
-        $vec = explode(' ', $value);
+        $data = label_get_data($value);
+        $vec = explode(' ', $data);
         if(count($vec) != 2) {
           return false;
         }
-        return $model->edit_position_label($id, $vec[0], $vec[1]);
+        return $model->edit_position_label($id, $vec[0], $vec[1], label_get_param($value));
       case 'url':
         return $model->edit_url_label($id, $value);
       case 'bool':
@@ -250,6 +262,10 @@ class ImportInfo
   
   private function __add_label_content($seq_id, $label_id, $label_name, $label_type, $value)
   {
+    if(label_get_data($value) == '') {
+      return;
+    }
+    
     $model = $this->controller->label_sequence_model;
 
     switch($label_type) {
@@ -260,11 +276,12 @@ class ImportInfo
       case 'text':
         return $model->add_text_label($seq_id, $label_id, $value);
       case 'position':
-        $vec = explode(' ', $value);
+        $data = label_get_data($value);
+        $vec = explode(' ', $data);
         if(count($vec) != 2) {
           return false;
         }
-        return $model->add_position_label($seq_id, $label_id, $vec[0], $vec[1]);
+        return $model->add_position_label($seq_id, $label_id, $vec[0], $vec[1], label_get_param($value));
       case 'ref':
         $data = $this->__get_ref_value($seq_id, $label_name, $value);
         if($data) {
@@ -316,14 +333,15 @@ class ImportInfo
       $id = $this->controller->label_sequence_model->get_label_id($seq_id, $label_id);
       $value = $values[0];
       
+      $text_natural = $this->__import_label_text_natural($value, $label_type);
+      
       if($this->__update_label_content($id, $seq_id, $label_type, $label_name, $value)) {
-        $text_natural = $this->__import_label_text_natural($value, $label_type);
         $this_label['status'] = "Updated value: $text_natural";
       } else {
-        $this_label['status'] = "Parse error: $value";
+        $this_label['status'] = "Parse error: $text_natural";
       }
     } else if(!$already_there) {
-      if($label_info['auto_on_creation'] && $label_info['code']) {
+      if($label_info['auto_on_creation']) {
         $this_label['status'] = 'Generated';
         $this->controller->label_sequence_model->add_auto_label($seq_id, $label_info);
       } else {
@@ -333,14 +351,12 @@ class ImportInfo
           $status_text = 'Values:';
           
           foreach($values as $value) {
-            if($value == '') {
-              continue;
-            }
+            $text_natural = $this->__import_label_text_natural($value, $label_type);
+            
             if($this->__add_label_content($seq_id, $label_id, $label_name, $label_type, $value)) {
-              $text_natural = $this->__import_label_text_natural($value, $label_type);
               $status_text .= " ($text_natural, OK)";
             } else {
-              $status_text .= " ($value, ERROR)";
+              $status_text .= " ($text_natural, ERROR)";
             }
           }
           
@@ -361,11 +377,11 @@ class ImportInfo
       return;
     }
     
+    $text_natural = $this->__import_label_text_natural($value, $label_type);
     if($this->__add_label_content($seq_id, $label_id, $label_name, $label_type, $value)) {
-      $text_natural = $this->__import_label_text_natural($value, $label_type);
       $this_label['status'] = "Value: $text_natural";
     } else {
-      $this_label['status'] = "Parse error: $value";
+      $this_label['status'] = "Parse error: $text_natural";
     }
   }
   
