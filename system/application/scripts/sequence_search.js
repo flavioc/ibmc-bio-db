@@ -37,6 +37,8 @@ var data_date_input = null;
 var date_input = null;
 var select_transform = null;
 var current_selected_li = null;
+var param_input = null;
+var data_param = null;
 var search_type = 'all';
 
 $(function () {
@@ -144,22 +146,19 @@ function init_operator_select(type)
 
 function fill_operators(type)
 {
-  data_input.hide();
-  data_boolean_input.hide();
-  data_tax_input.hide();
-  data_seq_input.hide();
-  data_position_input.hide();
-  operator_text.hide();
-  data_date_input.hide();
   init_operator_select(type);
   operator_select.show();
   operator_input.show();
-
-  show_type_input(type);
 }
 
 function show_type_input(type, oper)
 {
+  param_input.show();
+  
+  if(oper == 'exists' || oper == 'notexists') {
+    return;
+  }
+  
   switch(type) {
     case 'bool':
       data_boolean_input.show();
@@ -241,9 +240,16 @@ function term_form_submitted()
   var type = current_label.type;
   var label = current_label.name;
   var oper = operator_select.val();
+  var param = data_param.val();
+  
+  if(param == '') {
+    param = null;
+  }
+  
   var obj = {label: label,
              type: type,
-             oper: oper};
+             oper: oper,
+             param: param};
 
   if(oper != 'exists' && oper != 'notexists') {
     switch(type) {
@@ -394,7 +400,7 @@ function build_operator_text(obj)
 
 function add_li_term(li, obj)
 {
-  var txt = obj.label + " " + build_operator_text(obj);
+  var txt = obj.label + (obj.param ? ("[" + obj.param + "]") : '') + " " + build_operator_text(obj);
   var level = li.parent().attr("level");
 
   li.attr("level", level);
@@ -624,7 +630,15 @@ function got_new_label(data)
 {
   label_name.text(data.name).show();
   label_row.hide();
+  data_input.hide();
+  data_boolean_input.hide();
+  data_tax_input.hide();
+  data_seq_input.hide();
+  data_position_input.hide();
+  operator_text.hide();
+  data_date_input.hide();
   fill_operators(data.type);
+  show_type_input(type);
   term_other_fields.show();
   current_label = data;
   submit_term.show();
@@ -670,7 +684,7 @@ function operator_was_selected()
   operator_text.text(selected_text).show();
 
   var op = operator_select.val();
-
+  
   if(op == 'exists' || op == 'notexists') {
     hide_type_input(current_label.type);
   } else {
@@ -858,6 +872,8 @@ $(function () {
     submit_term = $('#submit_term').hide();
     search_human = $('#search_human');
     select_transform = $('#select_transform');
+    param_input = $('#param_input');
+    data_param = $('#data_param');
     
     select_transform.change(update_transform);
     

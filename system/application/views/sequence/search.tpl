@@ -31,9 +31,7 @@ $(function () {
 <div id="term_form_div">
 {form_open to='#' name=term_form}
 <fieldset>
-<label for="label_row" class="search-desc">Label </label>
-<input id="label_row" type="text" value="" name="label_row" />
-<span id="label_name" {display_none}></span>
+<label for="label_row" class="search-desc">Label</label><input id="label_row" type="text" value="" name="label_row" /><span id="label_name" {display_none}></span>
 
 <div id="term_other_fields" {display_none} >
   <div id="operator_input">
@@ -48,7 +46,7 @@ $(function () {
     </select>
   </div>
   <div id="data_input">
-    <input id="data_row" type="text" value="" name="data_row" />
+    <input id="data_row" type="text" value="" name="data_row" size="10"/>
   </div>
   <div id="data_boolean_input">
     <input id="data_boolean_checkbox" type="checkbox" value="yes" name="data_boolean_checkbox" />
@@ -63,6 +61,10 @@ $(function () {
   <div id="data_seq_input">
     <span id="data_seq"></span>
     <span id="change_seq">(Find sequence)</span>
+  </div>
+  <div id="param_input">
+    <label for="label_row" class="data_param">Param </label>
+    <input id="data_param" type="text" value="" name="data_param" size="5"/>
   </div>
 </div>
 
