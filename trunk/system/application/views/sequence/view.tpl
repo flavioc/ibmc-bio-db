@@ -31,7 +31,6 @@ $(document).ready(function() {
     cols: 50,
     rows: 15,
     submitdata: seqdata,
-    finishHook: reload_labels_list,
     loadurl: base_site + '/fetch/' + sequence.id
   });
   
