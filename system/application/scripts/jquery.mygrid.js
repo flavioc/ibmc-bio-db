@@ -431,7 +431,14 @@
       pagination_div.show();
     }
 
-    obj.gridHideDefault();
+    $.each(opts.inner.shown_columns, function (column, val) {
+      if(val) {
+        obj.gridShowColumn(column);
+      } else {
+        obj.gridHideColumn(column);
+      }
+    });
+    
     apply_td_styles(opts, obj);
     apply_th_widths(opts, obj);
     table.fadeIn();
@@ -575,6 +582,8 @@ $.fn.gridHideColumn = function(column) {
     var opts = this.opts;
     var obj = $(get_data_column(this, column), $this);
     
+    opts.inner.shown_columns[column] = false;
+    
     obj.hide();
   });
 };
@@ -596,6 +605,8 @@ $.fn.gridShowColumn = function(column) {
     var opts = this.opts;
     var obj = $(get_data_column(this, column), $this);
     var class_name = opts.tdClass[column];
+    
+    opts.inner.shown_columns[column] = true;
     
     obj.show();
   });
@@ -653,14 +664,21 @@ function reload_grid(this_obj, $this, opts)
 $.fn.grid = function(options) {
   return this.each(function() {
     var opts = $.extend({}, $.fn.grid.defaults, options, 
-      {inner: {
-        ordering: {},
-        total: null,
-        start: 0,
-        params: {}
-      }
+      {
+        inner: {
+          ordering: {},
+          total: null,
+          start: 0,
+          params: {},
+          shown_columns: {}
+        },
     });
     var $this = $(this);
+    
+    // mark hidden columns
+    $.each(opts.hiddenFields, function (i, column) {
+      opts.inner.shown_columns[column] = false;
+    });
 
     this.opts = opts;
     this.highlight = null;

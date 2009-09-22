@@ -75,7 +75,7 @@ class Antigenic
         $ret[] = array($start_val, $end_val - $start_val);
       }
       
-      return $ret;
+      return label_transform_data_array_ordered($ret);
     } else {
       return null;
     }
@@ -84,7 +84,7 @@ class Antigenic
   public function get_antigenic_scores()
   {
     if(preg_match_all($this->__get_single_regex(), $this->output, $matches)) {
-      return $matches[1];
+      return label_transform_data_array_ordered($matches[1]);
     } else {
       return null;
     }
