@@ -120,12 +120,26 @@ class Parser
     return $ret;
   }
   
-  private function terminal_expr()
+  /* parses label name including label param label_name[param] */
+  private function parse_label_name()
   {
-    $label_name = $this->tokenizer->get_next();
-    if(!$label_name) {
+    $raw = $this->tokenizer->get_next();
+    if(!$raw) {
       throw new Exception('parser error: missing label name');
     }
+    
+    if(preg_match('/(.*)\\[(.*)\\]$/', $raw, $matches)) {
+      return array($matches[1], $matches[2]);
+    } else {
+      return array($raw, null);
+    }
+  }
+  
+  private function terminal_expr()
+  {
+    $label_data = $this->parse_label_name();
+    $label_name = $label_data[0];
+    $label_param = $label_data[1];
     
     $label = $this->controller->label_model->get_by_name($label_name);
     if(!$label) {
@@ -143,13 +157,13 @@ class Parser
     $oper = $this->tokenizer->peek();
     if($type == 'bool' && ($oper == null || !$this->__valid_boolean_oper($oper)))
     {
-      return array('label' => $label_name, 'type' => $type, 'oper' => 'eq', 'value' => true);
+      return array('label' => $label_name, 'type' => $type, 'oper' => 'eq', 'value' => true, 'param' => $label_param);
     }
     
     $oper = $this->tokenizer->get_next(); // consume operator
     
     if(label_special_operator($oper)) {
-      return array('label' => $label_name, 'type' => $type, 'oper' => $oper);
+      return array('label' => $label_name, 'type' => $type, 'oper' => $oper, 'param' => $label_param);
     }
     
     if($type == 'position') {
@@ -192,7 +206,7 @@ class Parser
         $value_data = $value;
     }
     
-    return array('label' => $label_name, 'type' => $type, 'oper' => $oper, 'value' => $value_data);
+    return array('label' => $label_name, 'type' => $type, 'oper' => $oper, 'value' => $value_data, 'param' => $label_param);
   }
   
   private function __convert_oper($type, $oper)

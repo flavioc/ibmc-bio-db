@@ -32,7 +32,9 @@
 #delete_label_form,
 #delete_label_form *,
 #data_date_input,
-#date_input
+#date_input,
+#param_input *,
+#param_input
 {
   display: inline;
 }

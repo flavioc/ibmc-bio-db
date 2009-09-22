@@ -1112,6 +1112,18 @@ class Label_sequence_model extends BioModel
         return 'FALSE'; // invalid label id
       }
 
+      if(array_key_exists('param', $term)) {
+        $param = $term['param'];
+      } else {
+        $param = null;
+      }
+      
+      if($param) {
+        $param_sql = " AND `param` = '$param'";
+      } else {
+        $param_sql = '';
+      }
+
       if(label_special_operator($oper)) {
         if(label_special_purpose($label_name)) {
           switch($label_name) {
@@ -1150,7 +1162,7 @@ class Label_sequence_model extends BioModel
         }
         
         $sql = "EXISTS (SELECT label_sequence.id FROM label_sequence
-          WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id)";
+          WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id $param_sql)";
 
         if($oper == 'notexists') {
           $sql = "NOT $sql";
@@ -1204,9 +1216,9 @@ class Label_sequence_model extends BioModel
       }
 
       $sql_field = $this->__translate_sql_field($fields, $label_type);
-      
+    
       return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id
-            AND label_sequence.label_id = $label_id AND $sql_field $sql_oper $sql_value)";
+            AND label_sequence.label_id = $label_id AND $sql_field $sql_oper $sql_value $param_sql)";
     }
   }
   

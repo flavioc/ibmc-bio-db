@@ -129,12 +129,24 @@ function humanize_search_terminal($term)
   $label_name = $term['label'];
   $label_type = $term['type'];
   $oper = $term['oper'];
+  
+  if(array_key_exists('param', $term)) {
+    $param = $term['param'];
+  } else {
+    $param = null;
+  }
+  
+  $full_label_name = $label_name;
+  
+  if($param) {
+    $full_label_name = $full_label_name.'['.$param.']';
+  }
 
   if(label_special_operator($oper)) {
     if($oper == 'exists') {
-      return "$label_name $oper";
+      return "$full_label_name $oper";
     } else {
-      return "$label_name not exists";
+      return "$full_label_name not exists";
     }
   }
 
@@ -145,37 +157,37 @@ function humanize_search_terminal($term)
     case 'integer':
     case 'float':
       $oper = sql_oper($oper);
-      $ret = "$label_name $oper $value";
+      $ret = "$full_label_name $oper $value";
       break;
     case 'position':
       $oper = sql_oper($oper);
       $type = $value['type'];
       $num = $value['num'];
-      $ret = "$label_name $type $oper $num";
+      $ret = "$full_label_name $type $oper $num";
       break;
     case 'text':
     case 'url':
     case 'obj':
-      $ret = "$label_name $oper \"$value\"";
+      $ret = "$full_label_name $oper \"$value\"";
       break;
     case 'bool':
       if($value) {
-        $ret = "$label_name is true";
+        $ret = "$full_label_name is true";
       } else {
-        $ret = "$label_name is false";
+        $ret = "$full_label_name is false";
       }
       break;
     case 'tax':
     case 'ref':
       if($oper == 'eq') {
         $name = $value['name'];
-        $ret = "$label_name = $name";
+        $ret = "$full_label_name = $name";
       } elseif($oper == 'like') {
-        $ret = "$label_name like $value";
+        $ret = "$full_label_name like $value";
       }
       break;
     case 'date':
-      $ret = "$label_name $oper $value";
+      $ret = "$full_label_name $oper $value";
       break;
   }
 
