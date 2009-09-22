@@ -3,7 +3,6 @@
 class Multiple_Labels extends BioController
 {
   private $search_tree = null;
-  private $multiple = FALSE;
   private $update = FALSE;
   private $label = null;
   private $label_type = null;
@@ -115,7 +114,6 @@ class Multiple_Labels extends BioController
     $transform = $this->__get_transform_label('transform', 'post');
     
     $this->seqs = $this->label_sequence_model->get_search($this->search_tree, null, null, array(), $transform);
-    $this->multiple = json_decode($this->get_post('multiple'));
     
     $update = $this->get_post('update');
     if($update) {
@@ -140,10 +138,76 @@ class Multiple_Labels extends BioController
     
     $this->param = $this->get_post('param');
   }
-
-  private function __can_do_multiple()
+  
+  private function __add_auto_label()
   {
-    return $this->multiple && $this->label['multiple'];
+    foreach($this->seqs as &$seq) {
+      $seq_id = $seq['id'];
+      
+      if($this->label['multiple']) {
+        $total = $this->label_sequence_model->add_auto_label($seq_id, $this->label);
+        
+        if($total) {
+          ++$this->count_new_multiple_generated;
+        } else {
+          ++$this->count_invalid;
+        }
+      } else { // simple labels
+        if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
+          if($this->update) {
+            $this->__regenerate_label($seq_id);
+          }
+        } else {
+          $total = $this->label_sequence_model->add_auto_label($seq_id, $this->label);
+
+          if($total) {
+            ++$this->count_new_generated;
+          } else {
+            ++$this->count_invalid;
+          }
+        }
+      }
+    }
+  }
+  
+  private function __edit_auto_label()
+  {
+    foreach($this->seqs as &$seq) {
+      $seq_id = $seq['id'];
+
+      if($this->label['multiple']) {
+        $total = $this->label_sequence_model->add_auto_label($seq_id, $this->label);
+        
+        if($total) {
+          ++$this->count_new_multiple_generated;
+        } else {
+          ++$this->count_invalid;
+        }
+      } else { // simple labels
+        if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
+          $this->__regenerate_label($seq_id);
+        } else {
+          if($this->addnew) {
+            $total = $this->label_sequence_model->add_auto_label($seq_id, $this->label);
+
+            if($total) {
+              ++$this->count_new_generated;
+            } else {
+              ++$this->count_invalid;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  private function __super_auto_label()
+  {
+    if($this->add_mode) {
+      $this->__add_auto_label();
+    } else if($this->edit_mode) {
+      $this->__edit_auto_label();
+    }
   }
 
   public function add_auto_label()
@@ -154,28 +218,8 @@ class Multiple_Labels extends BioController
 
     $this->__get_info();
 
-    foreach($this->seqs as &$seq) {
-      $seq_id = $seq['id'];
-
-      if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
-        if($this->__can_do_multiple()) {
-          if($this->label_sequence_model->add_auto_label($seq_id, $this->label)) {
-            ++$this->count_new_multiple;
-          } else {
-            ++$this->count_invalid;
-          }
-        } else if($this->edit_mode || $this->update) {
-          $this->__regenerate_label($seq_id);
-        }
-      } else if($this->add_mode || ($this->edit_mode && $this->addnew)){
-        if($this->label_sequence_model->add_auto_label($seq_id, $this->label)) {
-          ++$this->count_new_generated;
-        } else {
-          ++$this->count_invalid;
-        }
-      }
-    }
-
+    $this->__super_auto_label();
+    
     $this->__show_stats();
   }
 
@@ -189,7 +233,7 @@ class Multiple_Labels extends BioController
     $this->smarty->assign('count_new_multiple_generated', $this->count_new_multiple_generated);
     $this->smarty->assign('count_invalid', $this->count_invalid);
 
-    $this->smarty->view_js('add_multiple_label/auto');
+    $this->smarty->view_js('add_multiple_label/stats');
   }
 
   private function __regenerate_label($seq_id)
@@ -336,35 +380,42 @@ class Multiple_Labels extends BioController
     }
   }
   
-  private function __iterate_seqs()
+  // iterate sequences adding label instances (not generating)
+  private function __iterate_add()
   {
     foreach($this->seqs as &$seq) {
       $seq_id = $seq['id'];
-
-      if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
-        if($this->__can_do_multiple()) {
-          if($this->generate) {
-            $this->label_sequence_model->add_generated_label($seq_id, $this->label_id);
-            ++$this->count_new_multiple_generated;
-          } else {
-            $this->__add_label_multiple($seq_id);
-          }
-        } else {
-          if(($this->add_mode && $this->update) || $this->edit_mode) {
+      
+      if($this->label['multiple']) {
+        $this->__add_label_multiple($seq_id);
+      } else { // simple labels
+        if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
+          if($this->update) {
             $id = $this->label_sequence_model->get_label_id($seq_id, $this->label_id);
-            if($this->generate) {
-              $this->label_sequence_model->edit_auto_label($id);
-              ++$this->count_regenerate;
-            } else {
-              $this->__edit_label_multiple($id);
-            }
+            $this->__edit_label_multiple($id);
           }
+        } else { // not exists
+          $this->__add_multiple_label($seq_id);
         }
-      } else if($this->add_mode || ($this->edit_mode && $this->addnew)) {
-        if($this->generate) {
-          $this->label_sequence_model->add_generated_label($seq_id, $this->label_id);
-          ++$this->count_new_generated;
-        } else {
+      }
+    }
+  }
+  
+  // iterate sequences adding/editing label instances (not generating)
+  private function __iterate_edit()
+  {
+    foreach($this->seqs as &$seq) {
+      $seq_id = $seq['id'];
+      
+      if($this->label['multiple']) {
+        if($this->addnew || $this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
+          $this->__add_label_multiple($seq_id);
+        }
+      } else { // simple label
+        if($this->label_sequence_model->sequence_has_label($seq_id, $this->label_id)) {
+          $id = $this->label_sequence_model->get_label_id($seq_id, $this->label_id);
+          $this->__edit_label_multiple($id);
+        } else if($this->addnew){ // not exists
           $this->__add_multiple_label($seq_id);
         }
       }
@@ -381,7 +432,13 @@ class Multiple_Labels extends BioController
     $this->__get_values();
     
     if(!$this->upload_error) {
-      $this->__iterate_seqs();
+      if($this->generate) {
+        $this->__super_auto_label();
+      } else if($this->add_mode) {
+        $this->__iterate_add();
+      } else if($this->edit_mode) {
+        $this->__iterate_edit();
+      }
     }
     
     $this->__show_stats();

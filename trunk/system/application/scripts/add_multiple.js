@@ -1,4 +1,3 @@
-var multiple = null;
 var update = null;
 var addnew = null;
 var mode = 'add';
@@ -53,7 +52,6 @@ function update_new_label_form()
   }
   
   $('input[name=mode]', form).val(mode);
-  $('input[name=multiple]', form).val(multiple.is(":checked"));
   $('input[name=label_id]', form).val(current_label.id);
 }
 
@@ -62,10 +60,7 @@ $(function () {
   var label_input = $('input[name=label]', label_form);
 
   update = $('#update');
-  multiple = $('#multiple');
   addnew = $('#addnew');
-
-  var multiple_row = multiple.parent();
 
   hidden_transform = $('input[name=transform]', label_form);
   hidden_search = $('input[name=search]', label_form);
@@ -81,13 +76,9 @@ $(function () {
   
   label_input.selectLabel(function () {
     current_label = null;
-    multiple_row.hide();
   },
   function (label) {
     current_label = label;
-    if(label.multiple == '1' && label.editable == '1') {
-      multiple_row.show();
-    }
   },
   'addable');
 
