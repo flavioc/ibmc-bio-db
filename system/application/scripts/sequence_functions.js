@@ -116,9 +116,9 @@ function setup_labels_list()
       name: w_label_name,
       user_name: w_user
     },
-    fieldNames: ['Name', 'Data', 'Type', 'Update', 'User'],
+    fieldNames: ['Name', 'Data', 'Type', 'Param', 'Update', 'User'],
     fieldGenerator: function (row) {
-      var base = ['name', select_field(row), 'type', 'update', 'user_name'];
+      var base = ['name', select_field(row), 'type', 'param', 'update', 'user_name'];
 
       if(logged_in) {
         base.push('edit');
@@ -126,7 +126,7 @@ function setup_labels_list()
 
       return base;
     },
-    hiddenFields: ['user_name', 'update'],
+    hiddenFields: ['user_name', 'update', 'param'],
     links: link_labels,
     dataTransform: data_transform_labels,
     enableRemove: logged_in,

@@ -85,7 +85,7 @@ $(function () {
   },
   function (label) {
     current_label = label;
-    if(label.multiple == '1') {
+    if(label.multiple == '1' && label.editable == '1') {
       multiple_row.show();
     }
   },
