@@ -88,11 +88,9 @@ function __get_sequence_labels($info, $name, $line)
         }
         
         $vec = __parse_sequence_label_fasta($part);
-        echo "$label_name $part;";
         $info->add_sequence_label($name, $label_name, $vec[0], $vec[1]);
       }
     } else {
-      echo "$label_name $data;";
       $vec = __parse_sequence_label_fasta($data);
       $info->add_sequence_label($name, $label_name, $vec[0], $vec[1]);
     }
