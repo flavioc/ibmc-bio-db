@@ -153,8 +153,6 @@ function fill_operators(type)
 
 function show_type_input(type, oper)
 {
-  param_input.show();
-  
   if(oper == 'exists' || oper == 'notexists') {
     return;
   }
@@ -628,6 +626,16 @@ function hide_term() {
 
 function got_new_label(data)
 {
+  current_label = data;
+  
+  data_param.val('');
+  
+  if(current_label.multiple == '1') {
+    param_input.show();
+  } else {
+    param_input.hide();
+  }
+  
   label_name.text(data.name).show();
   label_row.hide();
   data_input.hide();
@@ -640,7 +648,6 @@ function got_new_label(data)
   fill_operators(data.type);
   show_type_input(data.type);
   term_other_fields.show();
-  current_label = data;
   submit_term.show();
 }
 
