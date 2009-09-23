@@ -123,6 +123,12 @@ class BioController extends Controller
     $error_str = build_error_name($what);
     $this->session->set_flashdata($error_str, $msg);
   }
+  
+  public function get_form_error($what)
+  {
+    $error_str = build_error_name($what);
+    return $this->session->flashdata($error_str);
+  }
 
   protected function set_upload_form_error($what)
   {

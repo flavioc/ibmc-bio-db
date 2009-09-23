@@ -2,6 +2,13 @@
 
 require "Smarty-2.6.20/libs/Smarty.class.php";
 
+function form_label_error($what, $for, $data = array())
+{
+  $data['class'] = 'formerror';
+
+  return form_label($what, $for, $data);
+}
+
 function smarty_block_evalphp($params, $content, &$smarty, &$repeat)
 {
   $content = trim($content);
@@ -796,9 +803,8 @@ class BioSmarty extends Smarty
     } else if($default) {
       $this->assign($initial_str, $default);
     }
-
-    $error_str = build_error_name($what);
-    $error = $this->controller->session->flashdata($error_str);
+    
+    $error = $this->controller->get_form_error($what);
     if($error) {
       $this->assign($error_str, $error);
     }
