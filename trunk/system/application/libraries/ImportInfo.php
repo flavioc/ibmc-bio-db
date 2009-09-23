@@ -58,10 +58,12 @@ class ImportInfo
   // writes imported sequences to a temporary fasta file returning the temporary filename
   public function write_simple_fasta()
   {
-    $this->controller->load->helper('exporter');
-    $str = export_sequences_simple($this->ordered_sequences);
+    $CI =& get_instance();
+    $CI->load->library('SequenceExporter');
     
-    return __write_fasta_file_export($str);
+    $str = $CI->sequenceexporter->export_simple_fasta($this->ordered_sequences);
+    
+    return write_file_export($str);
   }
   
   public function convert_protein_file()

@@ -143,7 +143,10 @@ function label_validate_data($type, $label_data)
       
       return $start >= 0 && $length > 0;
     case 'ref':
-      $seq_model = $this->load_model('sequence_model');
+      $CI =& get_instance();
+      $CI->load->model('sequence_model');
+      $seq_model = $CI->sequence_model;
+      
       if(!is_numeric($data)) {
         return false;
       }
@@ -155,7 +158,9 @@ function label_validate_data($type, $label_data)
         return false;
       }
       $num = intval($data);
-      $tax_model = $this->load_model('taxonomy_model');
+      $CI =& get_instance();
+      $CI->load->model('taxonomy_model');
+      $tax_model = $CI->taxonomy_model;
       return $num > 0 &&
         $tax_model->has_taxonomy($num);
     case 'date':
@@ -234,4 +239,22 @@ function label_valid_type($type)
   }
   
   return false;
+}
+
+function label_type_is_printable($type)
+{
+  switch($type) {
+  case 'integer':
+  case 'float':
+  case 'text':
+  case 'tax':
+  case 'url':
+  case 'bool':
+  case 'ref':
+  case 'position':
+  case 'date':
+    return true;
+  default:
+    return false;
+  }
 }
