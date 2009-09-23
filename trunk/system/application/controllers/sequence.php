@@ -441,7 +441,6 @@ class Sequence extends BioController
     $this->load->model('label_model');
     $this->load->model('taxonomy_model');
     $this->load->plugin('import_info');
-    $this->load->helper('xml_importer');
     $this->load->helper('fasta_importer');
     $this->load->helper('seq_importer');
       
