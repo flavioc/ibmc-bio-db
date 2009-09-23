@@ -141,11 +141,8 @@ class Admin extends BioController
       $this->treeimporter->import_group_xml_node($trees));
     
     // import sequences
-    $this->load->model('sequence_model');
-    $this->load->model('label_sequence_model');
-    $this->load->helper('xml_importer');
-    $this->load->plugin('import_info');
-    $info = import_sequences_xml_node($sequences, $this);
+    $this->load->library('SequenceImporter');
+    $info = $this->sequenceimporter->import_xml_node($sequences);
     list($seqs, $imported_seq_labels) = $info->import();
     $this->smarty->assign('sequences', $seqs);
     

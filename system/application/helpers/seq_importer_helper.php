@@ -3,7 +3,8 @@
 function import_sequence_file($controller, $file)
 {
   if(file_extension($file) == 'xml') {
-    return import_sequences_xml_file($controller, $file);
+    $controller->load->library('SequenceImporter');
+    return $controller->sequenceimporter->import_xml($file);
   } else {
     return import_fasta_file($controller, $file);
   }
