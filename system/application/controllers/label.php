@@ -472,9 +472,9 @@ class Label extends BioController
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="labels.xml"');
 
-    $this->load->helper('label_exporter');
-
-    echo export_labels_xml($labels);
+    $this->load->library('LabelExporter');
+    
+    echo $this->labelexporter->export_group($labels);
   }
   
   public function import()
