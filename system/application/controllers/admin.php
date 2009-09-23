@@ -131,9 +131,8 @@ class Admin extends BioController
     }
     
     // import labels
-    $this->load->helper('label_importer');
-    $this->load->model('label_model');
-    $label_data = import_label_xml_node($labels, $this->label_model);
+    $this->load->library('LabelImporter');
+    $label_data = $this->labelimporter->import_xml_node($labels);
     $this->smarty->assign('labels', $label_data);
     
     // import taxonomy trees
