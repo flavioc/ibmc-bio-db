@@ -4,11 +4,18 @@ class ImportInfo
 {
   private $ordered_sequences = array();
   private $labels = array();
-  private $controller = null;
   
-  function ImportInfo($ctr = null)
+  private $label_model = null;
+  private $sequence_model = null;
+  private $label_sequence_model = null;
+  private $taxonomy_model = null;
+  
+  function ImportInfo()
   {
-    $this->controller = $ctr; 
+    $this->label_model = load_ci_model('label_model');
+    $this->sequence_model = load_ci_model('sequence_model');
+    $this->label_sequence_model = load_ci_model('label_sequence_model');
+    $this->taxonomy_model = load_ci_model('taxonomy_model');
   }
   
   public function duo_match($info2)
@@ -51,7 +58,7 @@ class ImportInfo
       $seq2 =& $info2->ordered_sequences[$i++];
       $protein_id = $seq2['id'];
       
-      $this->controller->sequence_model->set_translated_sequence($dna_id, $protein_id);
+      $this->sequence_model->set_translated_sequence($dna_id, $protein_id);
     }
   }
   
@@ -149,10 +156,10 @@ class ImportInfo
   private function __get_labels()
   {
     foreach($this->labels as $name => &$data) {
-      if(!$this->controller->label_model->has($name)) {
+      if(!$this->label_model->has($name)) {
         $data['status'] = 'not_found';
       } else {
-        $new_label = $this->controller->label_model->get_by_name($name);
+        $new_label = $this->label_model->get_by_name($name);
         
         if($new_label) {
           if($new_label['type'] != $data['type']) {
@@ -191,7 +198,7 @@ class ImportInfo
     $value = label_get_data($value);
     
     if($name == 'translated') {
-      $type = $this->controller->sequence_model->get_type($seq_id);
+      $type = $this->sequence_model->get_type($seq_id);
       
       if(!valid_sequence_type($type)) {
         return null;
@@ -199,9 +206,9 @@ class ImportInfo
       
       $other_type = ($type == 'dna' ? 'protein' : 'dna');
       
-      return $this->controller->sequence_model->locate_sequence_type($value, $other_type);
+      return $this->sequence_model->locate_sequence_type($value, $other_type);
     } else {
-      $all = $this->controller->sequence_model->locate_all($value);
+      $all = $this->sequence_model->locate_all($value);
       
       if(count($all) > 0) {
         return $all[0];
@@ -216,7 +223,7 @@ class ImportInfo
   private function __get_tax_value($value)
   {
     $value = label_get_data($value);
-    $row = $this->controller->taxonomy_model->get_by_name($value);
+    $row = $this->taxonomy_model->get_by_name($value);
     return $row['id'];
   }
   
@@ -226,7 +233,7 @@ class ImportInfo
       return;
     }
     
-    $model = $this->controller->label_sequence_model;
+    $model = $this->label_sequence_model;
     
     switch($type) {
       case 'integer':
@@ -268,7 +275,7 @@ class ImportInfo
       return;
     }
     
-    $model = $this->controller->label_sequence_model;
+    $model = $this->label_sequence_model;
 
     switch($label_type) {
       case 'integer':
@@ -324,7 +331,7 @@ class ImportInfo
     $label_id = $label_info['id'];
     $label_type = $label_info['type'];
     
-    $already_there = $this->controller->label_sequence_model->label_used_up($seq_id, $label_id);
+    $already_there = $this->label_sequence_model->label_used_up($seq_id, $label_id);
     $editable = $label_info['editable'];
     $multiple = $label_info['multiple'];
     $values =& $this_label['values'];
@@ -332,7 +339,7 @@ class ImportInfo
     if($already_there && !$editable && !$multiple) {
       $this_label['status'] = 'Already inserted';
     } else if($already_there && $editable && !$multiple) {
-      $id = $this->controller->label_sequence_model->get_label_id($seq_id, $label_id);
+      $id = $this->label_sequence_model->get_label_id($seq_id, $label_id);
       $value = $values[0];
       
       $text_natural = $this->__import_label_text_natural($value, $label_type);
@@ -345,7 +352,7 @@ class ImportInfo
     } else if(!$already_there) {
       if($label_info['auto_on_creation']) {
         $this_label['status'] = 'Generated';
-        $this->controller->label_sequence_model->add_auto_label($seq_id, $label_info);
+        $this->label_sequence_model->add_auto_label($seq_id, $label_info);
       } else {
         
         if($multiple && count($values) > 1) {
@@ -434,10 +441,6 @@ class ImportInfo
   
   public function import()
   {
-    $this->controller->load->model('label_model');
-    $this->controller->load->model('label_sequence_model');
-    $this->controller->load->model('sequence_model');
-    
     $this->__get_labels();
     $this->__fix_sequence_names();
     
@@ -446,14 +449,14 @@ class ImportInfo
       $isnew = false;
       $name = $data['name'];
       
-      if($this->controller->sequence_model->has_same_sequence($name, $content)) {
-        $data['id'] = $this->controller->sequence_model->get_id_by_name_and_content($name, $content);
-        $data['content'] = $this->controller->sequence_model->get_content($data['id']);
+      if($this->sequence_model->has_same_sequence($name, $content)) {
+        $data['id'] = $this->sequence_model->get_id_by_name_and_content($name, $content);
+        $data['content'] = $this->sequence_model->get_content($data['id']);
         $data['comment'] = 'Sequence name and content are identical.';
       } else {
         $isnew = true;
         $data['comment'] = '';
-        $data['id'] = $this->controller->sequence_model->add($name, $content);
+        $data['id'] = $this->sequence_model->add($name, $content);
       }
       
       $data['short_content'] = sequence_short_content($data['content']);

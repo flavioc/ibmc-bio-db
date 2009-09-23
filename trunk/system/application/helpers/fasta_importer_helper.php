@@ -112,7 +112,7 @@ function __parse_sequence_label_fasta($name)
 
 function import_fasta_file($controller, $file)
 {
-  $info = new ImportInfo($controller);
+  $info = new ImportInfo();
   $fp = fopen($file, 'rb');
   $line_cnt = 0;
   $has_header = false;

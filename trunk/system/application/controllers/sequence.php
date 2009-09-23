@@ -440,7 +440,7 @@ class Sequence extends BioController
     
     $this->load->model('label_model');
     $this->load->model('taxonomy_model');
-    $this->load->library('ImportInfo');
+    $this->load->plugin('import_info');
     $this->load->helper('xml_importer');
     $this->load->helper('fasta_importer');
     $this->load->helper('seq_importer');
@@ -580,8 +580,8 @@ class Sequence extends BioController
 
       $protein = $this->get_post('protein');
       if($protein) {
-        $this->load->library('ImportInfo');
-        $info = new ImportInfo($this);
+        $this->load->plugin('import_info');
+        $info = new ImportInfo();
         $info->add_sequence($name, $content, $id);
         
         if($info->all_dna()) {
