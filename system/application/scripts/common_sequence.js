@@ -28,6 +28,11 @@ function start_sequence_grid(place, click)
         return get_app_url() + '/profile/view/' + row.update_user_id;
       }
     },
+    ordering: {
+      name: 'asc',
+      update: 'def',
+      user: 'def'
+    },
     clickFun: click
   });
 }
