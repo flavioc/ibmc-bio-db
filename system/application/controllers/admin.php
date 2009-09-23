@@ -77,10 +77,11 @@ class Admin extends BioController
     // sequences
     $this->load->model('sequence_model');
     $this->load->model('label_sequence_model');
-    $this->load->helper('exporter');
+    $this->load->library('SequenceExporter');
+    
     $sequences = $this->sequence_model->get_all(null, null, array(), array(), 'id, name, content');
     $seq_labels = $this->label_sequence_model->get_sequences($sequences);
-    echo export_sequences_xml($sequences, $seq_labels, $this->username, 'all sequences', 1);
+    echo $this->sequenceexporter->export_xml($sequences, $seq_labels, $this->username, 'all sequences', 1);
     
     echo "\n</biodata>";
   }

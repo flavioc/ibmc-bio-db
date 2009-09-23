@@ -24,6 +24,8 @@ class Sequence extends BioController
 
   public function get_export()
   {
+    $this->load->library('SequenceExporter');
+    
     $tree_str = $this->get_post('tree');
     $tree = json_decode(stripslashes($tree_str), true);
 
@@ -695,12 +697,16 @@ class Sequence extends BioController
     
     $type = $this->get_post('format');
     $seqs = array($this->sequence_model->get($id));
+    
+    $this->load->library('SequenceExporter');
 
     return $this->__export_sequences($seqs, $type, "sequence id $id");
   }
 
   public function export_all()
-  { 
+  {
+    $this->load->library('SequenceExporter');
+    
     $filter_name = $this->get_post('export_name');
     $filter_user = $this->get_post('export_user');
 
@@ -804,7 +810,7 @@ class Sequence extends BioController
     header('Content-type: text/plain');
     header("Content-Disposition: attachment; filename=\"sequences.$type\"");
     
-    echo export_sequences_others($sequences, $type);
+    echo $this->sequenceexporter->export_others($sequences, $type);
   }
 
   private function __do_export_fasta($sequences, $seq_labels, $extra_comments = '')
@@ -812,7 +818,7 @@ class Sequence extends BioController
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.fasta"');
     
-    echo export_sequences_fasta($sequences, $seq_labels,
+    echo $this->sequenceexporter->export_fasta($sequences, $seq_labels,
       $this->__get_basic_comments() . " $extra_comments");
   }
 
@@ -821,7 +827,7 @@ class Sequence extends BioController
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="sequences.xml"');
     
-    echo export_sequences_xml($sequences, $seq_labels, $this->username, $comment);
+    echo $this->sequenceexporter->export_xml($sequences, $seq_labels, $this->username, $comment);
   }
 
   private function __get_basic_comments()
