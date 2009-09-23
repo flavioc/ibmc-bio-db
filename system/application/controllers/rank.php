@@ -261,9 +261,9 @@ class Rank extends BioController
       
       $file = $data['full_path'];
       
-      $this->load->helper('rank_importer');
+      $this->load->library('RankImporter');
       
-      $ret = import_rank_xml_file($this->taxonomy_rank_model, $file);
+      $ret = $this->rankimporter->import_xml($file);
       if(!$ret) {
         $this->set_form_error('file', 'Error reading the XML file');
         redirect('rank/import');

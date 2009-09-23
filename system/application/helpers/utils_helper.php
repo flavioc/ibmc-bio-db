@@ -248,3 +248,11 @@ function write_file_export($seq_content)
 
   return $temp_file;
 }
+
+function load_ci_model($name)
+{
+  $CI =& get_instance();
+  $CI->load->model($name, '', TRUE);
+  
+  return $CI->$name;
+}
