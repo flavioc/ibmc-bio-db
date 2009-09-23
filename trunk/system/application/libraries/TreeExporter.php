@@ -7,11 +7,8 @@ class TreeExporter
   
   function TreeExporter()
   {
-    $CI =& get_instance();
-    $CI->load->model('taxonomy_tree_model', '', true);
-    $CI->load->model('taxonomy_model', '', true);
-    $this->tree_model = $CI->taxonomy_tree_model;
-    $this->tax_model = $CI->taxonomy_model;
+    $this->tree_model = load_ci_model('taxonomy_tree_model');
+    $this->tax_model = load_ci_model('taxonomy_model');
   }
   
   public function export_group($trees, $tab = 0)
