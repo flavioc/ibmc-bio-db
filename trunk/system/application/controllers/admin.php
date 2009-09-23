@@ -66,8 +66,8 @@ class Admin extends BioController
     
     // labels
     $this->load->model('label_model');
-    $this->load->helper('label_exporter');
-    echo export_labels_xml($this->label_model->get_all(), 1);
+    $this->load->library('LabelExporter');
+    echo $this->labelexporter->export_group($this->label_model->get_all(), 1);
   
     // taxonomy trees
     $this->load->library('TreeExporter');
