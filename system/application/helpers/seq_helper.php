@@ -293,8 +293,11 @@ function search_tree_to_string($term, $start_compound = null, $end_compound = nu
 
 function run_util_over_sequence($sequence, $command)
 {
+  $CI =& get_instance();
+  $CI->load->library('SequenceExporter');
+  
   $sequence = array('name' => 'SEQ', 'content' => $sequence);
-  $fasta = write_sequences_to_fasta(array($sequence));
+  $fasta = $CI->sequenceexporter->write_sequences_to_fasta(array($sequence));
   $output_file = generate_new_file_name();
   
   $command .= " $fasta -outfile $output_file";
