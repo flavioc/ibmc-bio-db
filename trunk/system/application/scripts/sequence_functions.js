@@ -27,6 +27,13 @@ var data_transform_labels = {
       edit: function (row) {
         return img_edit;
       },
+      int_data: function (row) {
+        if(row.int_data == null) {
+          return 0;
+        } else {
+          return row.int_data;
+        }
+      },
       '$delete': function (row) {
         return img_del;
       },

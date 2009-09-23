@@ -205,11 +205,9 @@ class Tree extends BioController
       $data = $this->upload->data();
       $file = $data['full_path'];
       
-      $this->load->helper('tree_importer');
-      $this->load->model('taxonomy_model');
-      $this->load->model('taxonomy_rank_model');
+      $this->load->library('TreeImporter');
       
-      $ret = import_tree_xml_file($this->taxonomy_tree_model, $this->taxonomy_rank_model, $this->taxonomy_model, $file);
+      $ret = $this->treeimporter->import_xml($file);
       
       unlink($file);
       
