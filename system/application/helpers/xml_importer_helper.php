@@ -21,12 +21,13 @@ function import_sequences_xml_node($top, $controller)
     return null;
   }
   
-  $info = new ImportInfo($controller);
+  $info = new ImportInfo();
   
   foreach($labels_node->childNodes as $label) {
     if($label->nodeName != 'label') {
       continue;
     }
+    
     $type = $label->getAttribute('type');
     if(!$type) {
       continue;
