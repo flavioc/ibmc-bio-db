@@ -200,8 +200,7 @@ class Profile extends BioController
       $imagecontent = null;
 
       if($image_data) {
-        $this->load->helper("image_utils");
-        process_user_image($this, $image_data);
+        $this->__process_user_image($image_data);
         $imagecontent = read_file_and_delete($image_data);
       }
 
@@ -362,9 +361,7 @@ class Profile extends BioController
       $imagecontent = NULL;
 
       if($image_data) {
-        $this->load->helper("image_utils");
-
-        process_user_image($this, $image_data);
+        $this->__process_user_image($image_data);
         $imagecontent = read_file_and_delete($image_data);
       }
 
@@ -373,5 +370,21 @@ class Profile extends BioController
 
       redirect('');
     }
+  }
+  
+  /* resizes image before putting it on the DB.
+   * $data is the array returned by file upload library.
+   */
+  private function __process_user_image($data)
+  {
+    $config['image_library'] = 'gd2';
+    $config['source_image'] = $data['full_path'];
+    $config['maintain_ratio'] = TRUE;
+    $config['width'] = 300;
+    $config['height'] = 300;
+
+    $this->load->library('image_lib', $config); 
+
+    $this->image_lib->resize();
   }
 }

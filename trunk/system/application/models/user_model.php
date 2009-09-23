@@ -65,14 +65,12 @@ class User_model extends BioModel
 
   private function _get_user_image($key, $value)
   {
-    $this->load->helper('image_utils');
-
     $this->db->select('image');
     $this->db->where('image IS NOT NULL');
     $this->db->where('enabled', TRUE);
     $array = $this->get_row($key, $value);
 
-    return process_db_image($array['image']);
+    return imagecreatefromstring(stripslashes($array['image']));
   }
 
   public function get_user_image_by_id($id)
