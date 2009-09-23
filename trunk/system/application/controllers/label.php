@@ -503,9 +503,9 @@ class Label extends BioController
       
       $file = $data['full_path'];
       
-      $this->load->helper('label_importer');
+      $this->load->library('LabelImporter');
       
-      $ret = import_label_xml_file($this->label_model, $file);
+      $ret = $this->labelimporter->import_xml($file);
       unlink($file);
       
       if(!$ret) {

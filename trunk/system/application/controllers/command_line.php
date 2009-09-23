@@ -198,9 +198,10 @@ class Command_Line extends BioController
       return;
     }
     
-    $this->load->helper('label_importer');
+    $this->load->library('LabelImporter');
     
-    $labels = import_label_xml_file($this->label_model, $file);
+    $labels = $this->labelimporter->import_xml($file);
+    
     if($labels) {
       echo "Label report:\n\n";
       foreach ($labels as &$label) {
