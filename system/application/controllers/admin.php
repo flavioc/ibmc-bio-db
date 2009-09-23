@@ -137,12 +137,9 @@ class Admin extends BioController
     $this->smarty->assign('labels', $label_data);
     
     // import taxonomy trees
-    $this->load->model('taxonomy_rank_model');
-    $this->load->model('taxonomy_tree_model');
-    $this->load->model('taxonomy_model');
-    $this->load->helper('tree_importer');
+    $this->load->library('TreeImporter');
     $this->smarty->assign('trees',
-      import_trees_xml_node($trees, $this->taxonomy_tree_model, $this->taxonomy_rank_model, $this->taxonomy_model));
+      $this->treeimporter->import_group_xml_node($trees));
     
     // import sequences
     $this->load->model('sequence_model');

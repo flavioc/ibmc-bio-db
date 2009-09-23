@@ -224,9 +224,9 @@ class Command_Line extends BioController
       return;
     }
     
-    $this->load->helper('rank_importer');
+    $this->load->library('RankImporter');
     
-    $ranks = import_rank_xml_file($this->taxonomy_rank_model, $file);
+    $ranks = $this->rankimporter->import_xml($file);
     if ($ranks) {
       echo "Ranks report:\n";
       
@@ -252,9 +252,9 @@ class Command_Line extends BioController
       return;
     }
     
-    $this->load->helper('tree_importer');
+    $this->load->library('TreeImporter');
     
-    $stats = import_tree_xml_file($this->taxonomy_tree_model, $this->taxonomy_rank_model, $this->taxonomy_model, $file);
+    $stats = $this->treeimporter->import_xml($file);
     
     if($stats) {
       $name = $stats['name'];
