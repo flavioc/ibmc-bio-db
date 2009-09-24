@@ -437,16 +437,12 @@ class Sequence extends BioController
         return;
       }
     }
-    
-    $this->load->model('label_model');
-    $this->load->model('taxonomy_model');
-    $this->load->plugin('import_info');
-    $this->load->helper('fasta_importer');
-    $this->load->helper('seq_importer');
+
+    $this->load->library('SequenceImporter');
       
     $this->load->helper('search');
     
-    $info1 = import_sequence_file($this, $file1);
+    $info1 = $this->sequenceimporter->import_file($file1);
     unlink($file1);
     
     if($to_link) {
@@ -472,7 +468,7 @@ class Sequence extends BioController
     }
     
     if($is_duo) {
-      $info2 = import_sequence_file($this, $file2);
+      $info2 = $this->sequenceimporter->import_file($file2);
       unlink($file2);
       
       if(!$info2->all_protein()) {
@@ -585,9 +581,11 @@ class Sequence extends BioController
         
         if($info->all_dna()) {
           $file = $info->convert_protein_file();
-          $this->load->helper('fasta_importer');
           
-          $info2 = import_fasta_file($this, $file);
+          $this->load->library('SequenceImporter');
+          
+          $info2 = $this->sequenceimporter->import_fasta($file);
+          
           unlink($file);
           
           $info2->import();

@@ -35,14 +35,6 @@ class Command_Line extends BioController
     return str_replace('FILE_SEPARATOR', '/', $file);
   }
   
-  private function __load_import()
-  {
-    $this->load->library('ImportInfo');
-    $this->load->helper('xml_importer');
-    $this->load->helper('fasta_importer');
-    $this->load->helper('seq_importer'); 
-  }
-  
   public function import_and_link($file1, $file2)
   {
     $file1 = $this->__get_file($file1);
@@ -57,9 +49,9 @@ class Command_Line extends BioController
       return;
     }
     
-    $this->__load_import();
+    $this->load->library('SequenceImporter');
     
-    $info1 = import_sequence_file($this, $file1);
+    $info1 = $this->sequenceimporter->import_file($file1);
     if(!$info1) {
       echo "Invalid sequence file: $file1\n";
       return;
@@ -70,7 +62,7 @@ class Command_Line extends BioController
       return;
     }
     
-    $info2 = import_sequence_file($this, $file2);
+    $info2 = $this->sequenceimporter->import_file($file2);
     if(!$info2) {
       echo "Invalid sequence file: $file2\n";
       return;
@@ -97,9 +89,9 @@ class Command_Line extends BioController
       return;
     }
     
-    $this->__load_import();
+    $this->load->library('SequenceImporter');
     
-    $info = import_sequence_file($this, $file);
+    $info = $this->sequenceimporter->import_file($file);
     if(!$info) {
       echo "Invalid sequence file: $file\n";
       return;
@@ -116,7 +108,7 @@ class Command_Line extends BioController
       return;
     }
     
-    $info2 = import_sequence_file($this, $file2);
+    $info2 = $this->sequenceimporter->import_file($file2);
     if(!$info2) {
       echo "Couldn't import protein sequences from $file2";
       unlink($file2);
@@ -148,9 +140,9 @@ class Command_Line extends BioController
       return;
     }
     
-    $this->__load_import();
+    $this->load->library('SequenceImporter');
     
-    $info = import_sequence_file($this, $file);
+    $info = $this->sequenceimporter->import_file($file);
     if(!$info) {
       echo "Invalid sequence file: $file\n";
       return;
