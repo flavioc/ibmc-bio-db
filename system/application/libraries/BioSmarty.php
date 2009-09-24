@@ -806,7 +806,7 @@ class BioSmarty extends Smarty
     
     $error = $this->controller->get_form_error($what);
     if($error) {
-      $this->assign($error_str, $error);
+      $this->assign(build_error_name($what), $error);
     }
   }
 
