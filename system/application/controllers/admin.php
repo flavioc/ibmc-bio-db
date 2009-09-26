@@ -68,6 +68,11 @@ class Admin extends BioController
     $this->load->model('label_model');
     $this->load->library('LabelExporter');
     echo $this->labelexporter->export_group($this->label_model->get_all(), 1);
+    
+    // ranks
+    $this->load->model('taxonomy_rank_model');
+    $this->load->library('RankExporter');
+    echo $this->rankexporter->export_group($this->taxonomy_rank_model->get_ranks(), 1);
   
     // taxonomy trees
     $this->load->library('TreeExporter');
