@@ -232,6 +232,7 @@ class Rank extends BioController
     
     header('Content-type: text/plain');
     header('Content-Disposition: attachment; filename="ranks.xml"');
+    
     echo $this->rankexporter->export_group($ranks);
   }
   
