@@ -3,6 +3,12 @@
 <h3>Imported labels</h3>
 {include file=label/import_results.tpl}
 
+{if $ranks}
+<h3>Imported ranks</h3>
+
+{include file=rank/common_import.tpl}
+{/if}
+
 <h3>Imported taxonomy trees</h3>
 
 {if $trees && !empty($trees)}
