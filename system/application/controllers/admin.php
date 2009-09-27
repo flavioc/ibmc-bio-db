@@ -123,6 +123,8 @@ class Admin extends BioController
       return null;
     }
     
+    $ranks = find_xml_child($top, 'ranks');
+    
     $trees = find_xml_child($top, 'trees');
     if(!$trees) {
       $this->import_error_message = "Missing trees node";
@@ -139,6 +141,15 @@ class Admin extends BioController
     $this->load->library('LabelImporter');
     $label_data = $this->labelimporter->import_xml_node($labels);
     $this->smarty->assign('labels', $label_data);
+    
+    // import ranks
+    if($ranks) {
+      $this->load->library('RankImporter');
+      $rank_data = $this->rankimporter->import_xml_node($ranks);
+      $this->smarty->assign('ranks', $rank_data);
+    } else {
+      $this->smarty->assign('ranks', null);
+    }
     
     // import taxonomy trees
     $this->load->library('TreeImporter');

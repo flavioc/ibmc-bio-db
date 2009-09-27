@@ -9,15 +9,18 @@ class RankImporter
     $this->model = load_ci_model('taxonomy_rank_model');
   }
   
-  function import_xml($file)
+  public function import_xml($file)
   {
     $xmlDoc = new DOMDocument();
     if(!$xmlDoc->load($file, LIBXML_NOERROR)) {
       return null;
     }
-
-    $top = $xmlDoc->documentElement;
-
+    
+    return $this->import_xml_node($xmlDoc->documentElement);
+  }
+  
+  public function import_xml_node($top)
+  {
     if(!$top) {
       return null;
     }
