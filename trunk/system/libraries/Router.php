@@ -211,7 +211,7 @@ class CI_Router {
 				// Does the requested controller exist in the sub-folder?
 				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$segments[0].EXT))
 				{
-					show_404($this->fetch_directory().$segments[0]);
+					return $this->custom_404($this->fetch_directory().$segments[0]);
 				}
 			}
 			else
@@ -232,7 +232,14 @@ class CI_Router {
 		}
 
 		// Can't find the requested controller...
-		show_404($segments[0]);
+		return $this->custom_404($segments[0]);
+	}
+	
+	private function custom_404($page)
+	{
+    $this->set_class('Welcome');
+    $this->set_method('not_found');
+	  return array();
 	}
 
 	// --------------------------------------------------------------------
