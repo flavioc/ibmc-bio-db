@@ -6,8 +6,6 @@
 <h2>Edit label in multiple sequences</h2>
 {/if}
 
-<h3>Form</h3>
-
 {form_open to='#' name=label_form}
 {form_hidden name=search value=$encoded}
 {form_hidden name=transform value=$transform}
@@ -22,7 +20,7 @@
 {form_row type=checkbox name=addnew msg='Add new:'}
 {/if}
 
-{form_submit name='submit_add_label' msg='Open dialog'}
+{form_submit name='submit_add_label' msg='Next...'}
 {form_end}
 
 <div id="info_results"></div>

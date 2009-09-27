@@ -14,14 +14,12 @@
 </style>
 {/literal}
 
-<h3>Form</h3>
-
 {form_open to='#' name=label_form}
 {form_hidden name=search value=$encoded}
 {form_hidden name=transform value=$transform}
 {include file=common_label/select_label.tpl}
 
-{form_submit name='submit_delete_label' msg='Open dialog'}
+{form_submit name='submit_delete_label' msg='Next...'}
 {form_end}
 
 <div id="info_results"></div>
