@@ -1,0 +1,9 @@
+.sequence_segment {
+  background-color: lightgrey;
+  font-size: 140%;
+}
+
+.sequence_segment_error {
+  color: red;
+  font-size: 140%;
+}

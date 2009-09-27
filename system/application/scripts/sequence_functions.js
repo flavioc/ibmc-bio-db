@@ -13,7 +13,12 @@ var data_transform_labels = {
         return row.taxonomy_name;
       },
       position_start: function (row) {
-        return row.position_start + ' ' + row.position_length;
+        var start = row.position_start;
+        var length = row.position_length;
+        var url = base_site + '/get_position_content?id=' + row.seq_id
+          + '&start=' + start + '&length=' + length
+          + '&width=500&height=200';
+        return start + ' ['+ length + '] ' + '<a class="thickbox small-button" href="' + url +'">view</a>';
       },
       obj_data: function (row) {
         return row.text_data;
@@ -174,6 +179,9 @@ function setup_labels_list()
         var url = get_app_url() + '/edit_labels/edit_dialog/' + row.id;
         tb_show('Edit label', url);
       }
+    },
+    finishedFun: function () {
+      tb_init('#labels_list a.thickbox');
     }
   };
 

@@ -161,22 +161,6 @@ label.search-desc {
   margin-left: 5px;
 }
 
-.term-delete {
-  font-size: 95%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top:0;
-  text-decoration: none;
-  background: #C1CDCD;
-  border: solid 1px #cc0000;
-}
-
-.term-delete:hover {
-  background: #cc0000;;
-  color: white;
-  cursor: pointer;
-}
-
 #show_tree {
   margin-top: 25px;
 }

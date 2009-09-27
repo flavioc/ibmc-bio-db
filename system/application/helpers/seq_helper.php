@@ -62,13 +62,13 @@ function valid_sequence_type($type)
 
 define('SEQUENCE_SPACING', 40);
 
-function sequence_split($content)
+function sequence_split($content, $separator = "\n")
 {
   $size = strlen($content);
 
   $ret = '';
   for($i = 0; $i < $size; $i = $i + SEQUENCE_SPACING) {
-    $ret .= substr($content, $i, SEQUENCE_SPACING) . "\n";
+    $ret .= substr($content, $i, SEQUENCE_SPACING) . $separator;
   }
 
   return $ret;

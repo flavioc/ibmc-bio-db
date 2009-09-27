@@ -182,6 +182,35 @@ class Sequence extends BioController
     $this->json_return(
       $this->label_sequence_model->get_search_total($search, $transform, !$this->logged_in));
   }
+  
+  public function get_position_content()
+  {
+    $id = $this->get_parameter('id');
+    
+    if(!$this->__can_access($id)) {
+      return $this->invalid_permission();
+    }
+    
+    $start = $this->get_parameter('start');
+    $length = $this->get_parameter('length');
+    
+    $this->smarty->assign('start', $start);
+    $this->smarty->assign('length', $length);
+    
+    $seq_length = $this->sequence_model->get_content_length($id);
+    $max_position = (int)$start + (int)$length;
+    
+    if($max_position > $seq_length) {
+      $this->smarty->assign('invalid', true);
+      $this->smarty->assign('actual_length', $seq_length);
+    } else {
+      $segment = $this->sequence_model->get_content_segment($id, $start, $length);
+      $this->smarty->assign('segment', sequence_split($segment, "<br />"));
+      $this->smarty->assign('invalid', false);
+    }
+    
+    $this->smarty->view_s('sequence/view_position');
+  }
 
   public function multiple_add_label()
   {
@@ -314,6 +343,7 @@ class Sequence extends BioController
     $this->use_plusminus();
     $this->use_datepicker();
     $this->use_blockui();
+    $this->smarty->load_stylesheets('labels.css');
 
     $this->__load_sequence($id);
     $this->smarty->assign('missing',

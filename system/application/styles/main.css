@@ -406,3 +406,19 @@ p.image-para img {
 p.image-para img:hover {
   border: 2px solid #c00;
 }
+
+.small-button {
+  font-size: 95%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top:0;
+  text-decoration: none;
+  background: #CDCDCD;
+  border: solid 1px #cc0000;
+}
+
+.small-button:hover {
+  background: #cc0000;;
+  color: white;
+  cursor: pointer;
+}
