@@ -126,6 +126,32 @@ class Sequence_model extends BioModel
   {
     return $this->get_field($id, 'content');
   }
+  
+  public function get_content_length($id)
+  {
+    $this->db->select('CHAR_LENGTH(content) AS length', FALSE);
+    
+    $row = $this->get_row('id', $id);
+    
+    if(!$row) {
+      return 0;
+    }
+    
+    return (int)$row['length'];
+  }
+  
+  public function get_content_segment($id, $start, $length)
+  {
+    $this->db->select("SUBSTR(content, $start, $length) AS segment", FALSE);
+    
+    $row = $this->get_row('id', $id);
+    
+    if(!$row) {
+      return '';
+    }
+    
+    return $row['segment'];
+  }
 
   public function get_name($id)
   {

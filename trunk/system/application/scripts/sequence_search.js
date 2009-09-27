@@ -49,7 +49,7 @@ $(function () {
   }
 });
 
-var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete">Delete</span> [<span class="term-count"></span>]</span>';
+var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete small-button">Delete</span> [<span class="term-count"></span>]</span>';
 
 function get_cookie_tree_name()
 {
