@@ -113,4 +113,10 @@ class Welcome extends BioController
     setcookie('logged-in', false);
     redirect('');
   }
+  
+  public function not_found()
+  {
+    $this->smarty->assign('title', 'Page not found - 404');
+    $this->smarty->view('404');
+  }
 }
