@@ -119,12 +119,14 @@ class Sequence extends BioController
     $ordering_user = $this->get_order('user_name', 'post');
 
     $this->json_return($this->label_sequence_model->get_search($search,
-      $start, $size,
-      array('name' => $ordering_name,
-            'update' => $ordering_update,
-            'user_name' => $ordering_user),
-            $transform,
-            !$this->logged_in));
+      array('start' => $start,
+            'size' => $size,
+            'ordering' => 
+              array('name' => $ordering_name,
+                    'update' => $ordering_update,
+                    'user_name' => $ordering_user),
+            'transform' => $transform,
+            'only_public' => !$this->logged_in)));
   }
 
   public function get_search_total()
@@ -703,7 +705,7 @@ class Sequence extends BioController
     $transform = $this->__get_transform_label('transform', 'post');
     
     $results = $this->label_sequence_model->get_search($tree,
-        null, null, array(), $transform, false, 'id');
+        array('transform' => transform, 'select' => 'id'));
         
     $total = 0;
         
