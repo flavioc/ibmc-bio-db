@@ -501,6 +501,7 @@ function reload_results(encoded)
   show_seqs.gridReload();
 }
 
+// reload results and search string
 function update_search()
 {
   var encoded = get_main_search_term_encoded();
@@ -509,6 +510,7 @@ function update_search()
   reload_results(encoded);
 }
 
+// upload screen based on new transform
 function update_transform()
 {
   var encoded = get_main_search_term_encoded();
@@ -645,9 +647,11 @@ function got_new_label(data)
   data_position_input.hide();
   operator_text.hide();
   data_date_input.hide();
+  
   fill_operators(data.type);
   show_type_input(data.type);
   term_other_fields.show();
+  
   submit_term.show();
 }
 

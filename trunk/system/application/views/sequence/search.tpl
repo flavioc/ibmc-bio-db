@@ -125,7 +125,7 @@ $(function () {
 <h3>Operations</h3>
 
 <div id="operations_box">
-{form_open to='sequence/export_search' name=tree_form}
+{form_open to='export/export_search' name=tree_form}
 {form_hidden name=encoded_tree value=null}
 {form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Export' id="submit_tree"}
@@ -149,6 +149,13 @@ $(function () {
 {form_hidden name=transform_hidden value=null}
 {form_submit name=submit msg='Delete label' id='submit_delete_label'}
 {form_end}
+
+{form_open to='sequence/delete_results' name=delete_results_form}
+{form_hidden name=encoded_tree value=null}
+{form_hidden name=transform_hidden value=null}
+{form_submit name=submit msg='Delete results' id='submit_delete_results'}
+{form_end}
+
 {/if}
 
 </div>

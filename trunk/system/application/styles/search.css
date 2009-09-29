@@ -34,7 +34,9 @@
 #data_date_input,
 #date_input,
 #param_input *,
-#param_input
+#param_input,
+#delete_results_form,
+#delete_results_form *
 {
   display: inline;
 }

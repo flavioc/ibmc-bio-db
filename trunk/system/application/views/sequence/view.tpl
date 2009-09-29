@@ -50,7 +50,7 @@ $(document).ready(function() {
 
 </div>
 
-{form_open to='sequence/export' name=export_form}
+{form_open to='export/export_one' name=export_form}
 {form_hidden name=id value=$sequence.id}
 {include file=sequence/export_types.tpl}
 {form_submit name=submit msg='Export'}
