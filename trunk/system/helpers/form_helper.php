@@ -367,8 +367,12 @@ if ( ! function_exists('form_submit'))
 {	
 	function form_submit($data = '', $value = '', $extra = '')
 	{
-		$defaults = array('type' => 'submit', 'name' => (( ! is_array($data)) ? $data : ''), 'value' => $value);
+		$defaults = array('type' => 'submit', 'value' => $value);
 
+    if(!is_array($data)) {
+      $defaults['name'] = $data;
+    }
+    
 		return "<input "._parse_form_attributes($data, $defaults).$extra." />";
 	}
 }

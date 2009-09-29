@@ -34,7 +34,7 @@ class Export extends BioController
   public function export_search()
   {
     $this->smarty->assign('title', 'Export search');
-    $this->smarty->load_stylesheets('export.css');
+    $this->smarty->load_stylesheets('export.css', 'operations.css');
 
     $encoded = $this->get_post('encoded_tree');
 

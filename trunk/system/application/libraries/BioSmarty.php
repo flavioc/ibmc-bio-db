@@ -80,11 +80,18 @@ function smarty_function_form_submit($params, &$smarty)
   }
 
   $data = array(
-    'name' => $name,
     'value' => $params['msg'],
-    'class' => $class,
-    'id' => $id,
+    'class' => $class
   );
+  
+  if($name) {
+    $data['name'] = $name;
+  }
+  
+  if($id) {
+    $data['id'] = $id;
+  }
+  
   return form_submit($data);
 }
 

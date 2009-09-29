@@ -1,0 +1,62 @@
+<div id="sequence_list"></div>
+
+<script>
+{literal}
+$(function () {
+  $('#sequence_list')
+  .gridEnable()
+  .grid({
+    ajax_method: 'post',
+    url: get_app_url() + '/sequence',
+    retrieve: 'get_search',
+    total: 'get_search_total',
+    params: {
+      search: '{/literal}{$encoded}{literal}'
+      {/literal}
+      {if $transform}
+      , transform: {$transform}
+      {/if}
+      {literal}
+    },
+    fieldNames: ['Change', 'Name', 'Last update', 'User'],
+    fields: ['change', 'name', 'update', 'user_name'],
+    tdClass: {user_name: 'centered', update: 'centered', change: 'centered'},
+    width: {
+      user_name: w_user,
+      update: w_update,
+      change: w_add
+    },
+    ordering: {
+      name: 'asc',
+      update: 'def',
+      user_name: 'def'
+    },
+    links: {
+      name: function (row) {
+        return get_app_url() + '/sequence/view/' + row.id;
+      },
+      user_name: function (row) {
+        return get_app_url() + '/profile/view/' + row.update_user_id;
+      }
+    },
+    dataTransform: {
+      change: function (row) {
+        return img_add;
+      }
+    },
+    clickFun: {
+      change: function (row) {
+        if(!current_label) {
+          return false;
+        }
+        
+        var url = get_app_url() + '/change_labels/change_dialog/' + row.id + '/' + current_label.id;
+        
+        tb_show('Add label', url);
+        return false;
+      }
+    }
+  });
+});
+{/literal}
+</script>
