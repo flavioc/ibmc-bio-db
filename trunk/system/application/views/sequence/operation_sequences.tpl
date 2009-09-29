@@ -7,7 +7,7 @@ $(function () {
   .gridEnable()
   .grid({
     ajax_method: 'post',
-    url: get_app_url() + '/sequence',
+    url: get_app_url() + '/search',
     retrieve: 'get_search',
     total: 'get_search_total',
     params: {

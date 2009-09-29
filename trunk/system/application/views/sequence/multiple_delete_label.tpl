@@ -26,47 +26,4 @@
 
 <h3>Sequences</h3>
 
-<div id="sequence_list"></div>
-
-<script>
-{literal}
-$(function () {
-  $('#sequence_list')
-  .gridEnable()
-  .grid({
-    ajax_method: 'post',
-    url: get_app_url() + '/sequence',
-    retrieve: 'get_search',
-    total: 'get_search_total',
-    params: {
-      search: '{/literal}{$encoded}{literal}'
-      {/literal}
-      {if $transform}
-      ,transform: {$transform}
-      {/if}
-      {literal}
-    },
-    fieldNames: ['Name', 'Last update', 'User'],
-    fields: ['name', 'update', 'user_name'],
-    tdClass: {user_name: 'centered', update: 'centered'},
-    width: {
-      user_name: w_user,
-      update: w_update
-    },
-    ordering: {
-      name: 'asc',
-      update: 'def',
-      user_name: 'def'
-    },
-    links: {
-      name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
-      },
-      user_name: function (row) {
-        return get_app_url() + '/profile/view/' + row.update_user_id;
-      }
-    }
-  });
-});
-{/literal}
-</script>
+{include file=sequence/operation_sequences.tpl}

@@ -88,10 +88,10 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
         return build_user_url(row.update_user_id);
       },
       seqs: function (row) {
-        return get_app_url() + '/sequence/search?type=label&id=' + row.id.toString();
+        return get_app_url() + '/search?type=label&id=' + row.id.toString();
       },
       others: function (row) {
-        return get_app_url() + '/sequence/search?type=notlabel&id=' + row.id.toString();
+        return get_app_url() + '/search?type=notlabel&id=' + row.id.toString();
       }
     },
     dataTransform: {
