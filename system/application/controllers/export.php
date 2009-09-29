@@ -17,7 +17,9 @@ class Export extends BioController
     $tree = json_decode(stripslashes($tree_str), true);
 
     $transform = $this->__get_transform_label('transform', 'post');
-    $seqs = $this->label_sequence_model->get_search($tree,
+    
+    $this->load->model('search_model');
+    $seqs = $this->search_model->get_search($tree,
       array('transform' => $transform, 'only_public' => !$this->logged_in));
     
     $type = $this->get_post('format');
@@ -48,8 +50,11 @@ class Export extends BioController
     $this->smarty->assign('tree_html', $tree_html);
 
     $transform = $this->__get_transform_label('transform_hidden', 'post');
+    
     $this->smarty->assign('transform', $transform);
-    $seqs = $this->label_sequence_model->get_search($tree,
+    
+    $this->load->model('search_model');
+    $seqs = $this->search_model->get_search($tree,
       array('transform' => $transform, 'only_public' => !$this->logged_in));
     
     $all = $this->label_sequence_model->get_all_labels($seqs);

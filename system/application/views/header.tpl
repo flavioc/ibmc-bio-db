@@ -46,9 +46,9 @@
   <ul id="main_menu">
     <li id="search_menu"><a href="#">Search</a>
     <ul id="search_id">
-      <li><a href="{site}/sequence/search?type=dna">DNA</a></li>
-      <li><a href="{site}/sequence/search?type=protein">Protein</a></li>
-      <li><a href="{site}/sequence/search">All</a></li>
+      <li><a href="{site}/search?type=dna">DNA</a></li>
+      <li><a href="{site}/search?type=protein">Protein</a></li>
+      <li><a href="{site}/search">All</a></li>
     </ul></li>
     <li id="sequence_menu"><a href="#">Sequences</a>
     <ul id="sequence_id">

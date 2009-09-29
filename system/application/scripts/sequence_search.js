@@ -475,7 +475,7 @@ function update_humanize(encoded)
     encoded = get_main_search_term_encoded();
   }
   
-  $.post(get_app_url() + '/sequence/humanize_search',
+  $.post(get_app_url() + '/search/humanize',
     {
       search: encoded
     },
@@ -735,7 +735,7 @@ function compute_total_term(li)
   
   current_selected_li = li;
   
-  $.post(get_app_url() + '/sequence/get_search_total',
+  $.post(get_app_url() + '/search/get_search_total',
     {
       search: encoded,
       transform: select_transform.val()
@@ -793,6 +793,9 @@ function restore_old_tree()
     } else {
       $('#search_tree .term-name:first').clickTermName();
     }
+    
+    // refresh cookie
+    save_search_tree();
   }
   
   if(we_are_starting) {
@@ -905,13 +908,13 @@ $(function () {
     });
 
     change_tax.click(function () {
-        var url = get_app_url() + '/sequence/search_tax';
+        var url = get_app_url() + '/search/tax';
         tb_show('Find taxonomy', url);
         return false;
     });
 
     change_seq.click(function () {
-        var url = get_app_url() + '/sequence/search_ref';
+        var url = get_app_url() + '/search/ref';
         tb_show('Find sequence', url);
         return false;
     });
@@ -1010,7 +1013,7 @@ $(function () {
   show_seqs
   .gridEnable()
   .grid({
-    url: get_app_url() + '/sequence',
+    url: get_app_url() + '/search',
     ajax_method: 'post',
     retrieve: 'get_search',
     total: 'get_search_total',
