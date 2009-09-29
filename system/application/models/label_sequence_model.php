@@ -1384,12 +1384,12 @@ class Label_sequence_model extends BioModel
     }
   }
 
-  public function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null, $only_public = false)
+  public function get_search($search, $start = null, $size = null, $ordering = array(), $transform = null, $only_public = false, $select = 'id, user_name, update_user_id, `update`, name')
   {
     $sql_where = $this->__get_search_sql($search, $only_public);
     $sql_limit = sql_limit($start, $size);
     $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
-    $select_sql = "DISTINCT id, user_name, update_user_id, `update`, name";
+    $select_sql = "DISTINCT $select";
     
     if($transform) {
       if($only_public) {

@@ -238,16 +238,21 @@ function term_form_submitted()
   var type = current_label.type;
   var label = current_label.name;
   var oper = operator_select.val();
-  var param = data_param.val();
   
-  if(param == '') {
-    param = null;
-  }
+  
   
   var obj = {label: label,
              type: type,
-             oper: oper,
-             param: param};
+             oper: oper};
+             
+  if(current_label.multiple == '1') {
+    var param = data_param.val();
+    if(param == '') {
+      param = null;
+    }
+    
+    obj.param = param;
+  }
 
   if(oper != 'exists' && oper != 'notexists') {
     switch(type) {
@@ -456,6 +461,7 @@ function update_form_hidden(encoded)
 {
   $('input[name=encoded_tree]').val(encoded);
   $('input[name=transform_hidden]').val(select_transform.val());
+  $('input[name=type_hidden]').val(search_type);
 }
 
 function get_main_search_term_encoded()

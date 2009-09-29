@@ -153,6 +153,7 @@ $(function () {
 {form_open to='sequence/delete_results' name=delete_results_form}
 {form_hidden name=encoded_tree value=null}
 {form_hidden name=transform_hidden value=null}
+{form_hidden name=type_hidden value=null}
 {form_submit name=submit msg='Delete results' id='submit_delete_results'}
 {form_end}
 

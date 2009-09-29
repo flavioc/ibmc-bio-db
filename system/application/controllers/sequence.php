@@ -661,4 +661,71 @@ class Sequence extends BioController
 
     echo sequence_short_content($value) . "...";
   }
+  
+  public function delete_results()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $encoded = $this->get_post('encoded_tree');
+    $json = stripslashes($encoded);
+    $tree = json_decode($json, true);
+    
+    $this->smarty->assign('encoded', $json);
+    
+    $tree_str = search_tree_to_string($tree);
+    $this->smarty->assign('tree_str', $tree_str);
+
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $this->smarty->assign('transform', $transform);
+    
+    $type = $this->get_post('type_hidden');
+    $this->smarty->assign('type', $type);
+   
+    $this->smarty->load_stylesheets('operations.css');
+    $this->smarty->assign('title', 'Delete results');
+    $this->use_mygrid();
+    $this->smarty->view('sequence/delete_results');
+  }
+  
+  public function do_delete_results()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $encoded = $this->get_post('encoded_tree');
+
+    $json = stripslashes($encoded);
+    $tree = json_decode($json, true);
+    
+    $transform = $this->__get_transform_label('transform', 'post');
+    
+    $results = $this->label_sequence_model->get_search($tree,
+        null, null, array(), $transform, false, 'id');
+        
+    $total = 0;
+        
+    foreach($results as &$result) {
+      $id = $result['id'];
+      
+      $this->sequence_model->delete($id);
+      
+      ++$total;
+    }
+    
+    $this->smarty->assign('title', 'Delete results report');
+    
+    $tree_str = search_tree_to_string($tree);
+    $this->smarty->assign('tree_str', $tree_str);
+    
+    $this->smarty->load_stylesheets('operations.css');
+    $this->smarty->assign('total', $total);
+    
+    $type = $this->get_post('type');
+    $this->smarty->assign('type', $type);
+    
+    $this->smarty->view('sequence/delete_results_report'); 
+  }
 }
