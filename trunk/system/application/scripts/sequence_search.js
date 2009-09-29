@@ -478,7 +478,7 @@ function update_humanize(encoded)
     });
 }
 
-function update_tree (encoded)
+function update_tree(encoded)
 {
   if(!encoded) {
     encoded = get_main_search_term_encoded();
@@ -773,7 +773,7 @@ function restore_old_tree()
     restore_aux(obj, first_ol);
     we_are_starting = false;
 
-    update_form_hidden(encoded);
+    update_form_hidden($.toJSON(enclose_search_tree(obj)));
     update_humanize(encoded);
     
     // select the first term
