@@ -21,7 +21,7 @@ $(function () {
 
 <div id="show_sequences"></div>
 
-{form_open to='sequence/export_all' name=export_form}
+{form_open to='export/export_all' name=export_form}
 {form_hidden name=export_name}
 {form_hidden name=export_user}
 {include file=sequence/export_types.tpl}

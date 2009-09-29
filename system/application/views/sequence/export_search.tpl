@@ -25,7 +25,7 @@ $(function () {
 {/literal}
 </script>
 
-{form_open to='sequence/get_export' name=add_form}
+{form_open to='export/get_export' name=add_form}
 <fieldset>
 {form_hidden name=tree value=$tree_json}
 {form_hidden name=transform value=$transform}
