@@ -113,7 +113,8 @@ class Multiple_Labels extends BioController
     
     $transform = $this->__get_transform_label('transform', 'post');
     
-    $this->seqs = $this->label_sequence_model->get_search($this->search_tree, null, null, array(), $transform);
+    $this->seqs = $this->label_sequence_model->get_search($this->search_tree,
+      array('transform' => $transform));
     
     $update = $this->get_post('update');
     if($update) {
