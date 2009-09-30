@@ -6,8 +6,6 @@ class Label_sequence_model extends BioModel
 
   private static $label_basic_fields = "label_id, id, seq_id, history_id, `type`, `name`, `param`, `default`, must_exist, auto_on_creation, auto_on_modification, deletable, editable, multiple";
   
-  private static $public_sequence_where = "EXISTS (SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id AND label_sequence_info.name = 'perm_public' AND label_sequence_info.bool_data IS TRUE)";
-
   function Label_sequence_model()
   {
     parent::BioModel('label_sequence');

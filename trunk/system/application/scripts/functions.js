@@ -46,6 +46,17 @@ function add_new_info_message(msg)
       '/info.png"></img>' + msg + hide_box_html + '</div>');
 }
 
+function get_app_location()
+{
+  var v = window.location.href.split(/\index\.php\//);
+  
+  if(v.length != 2) {
+    return '';
+  }
+  
+  return v[1];
+}
+
 var base_url_cache = null;
 
 function get_base_url()
@@ -53,27 +64,12 @@ function get_base_url()
   if(base_url_cache != null) {
     return base_url_cache;
   }
-
-  var url = window.location.href;
-  var vec = url.split("/");
-  var ret = "";
-
-  for(var i = 0; i < vec.length; ++i) {
-    vec[i] = rtrim(vec[i], '#');
-    
-    if(vec[i] == "index.php") {
-      base_url_cache = ret;
-      return ret;
-    } else {
-      if(ret != "") {
-        ret += "/";
-      }
-
-      ret += vec[i];
-    }
-  }
-
-  return url;
+  
+  var v = window.location.href.split(/\index\.php\//);
+  
+  base_url_cache = rtrim(v[0], '/');
+  
+  return base_url_cache;
 }
 
 function get_images_url()

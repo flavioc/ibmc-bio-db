@@ -51,12 +51,17 @@ class Welcome extends BioController
     // form rules
     $this->form_validation->set_username_rule('login_username');
     $this->form_validation->set_password_rule('login_password');
+    
+    $redirect = $this->get_post('redirect');
+    if($redirect == null) {
+      $redirect = '';
+    }
 
     // validate data
     if($this->form_validation->run() == false) {
       $this->assign_row_data('login_username');
       $this->assign_row_data('login_password', false);
-      redirect('welcome/index');
+      redirect($redirect);
     } else {
       $username = $this->get_post('login_username');
       $password = $this->get_post('login_password');
@@ -64,7 +69,7 @@ class Welcome extends BioController
       if($this->user_model->validate($username, $password)) {
         // everything's fine.
         $this->__do_login($username);
-        redirect($this->get_post('redirect'));
+        redirect($redirect);
       } else {
         $this->set_form_value('login_username');
         if($this->user_model->user_exists($username)) {
@@ -72,8 +77,8 @@ class Welcome extends BioController
         } else {
           $this->set_form_error('login_username', 'User does not exist.');
         }
-
-        redirect('');
+        
+        redirect($redirect);
       }
     }
   }
