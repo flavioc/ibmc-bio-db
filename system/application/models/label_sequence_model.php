@@ -45,6 +45,139 @@ class Label_sequence_model extends BioModel
     $this->db->select($this->__get_select() . ", `code`", FALSE);
     return $this->get_id($id, 'label_sequence_info');
   }
+  
+  public function label_used_up($seq, $label)
+  {
+    $this->db
+      ->where('seq_id', $seq)
+      ->where('label_id', $label)
+      ->where('multiple IS FALSE');
+
+    return $this->count_total('label_sequence_info') > 0;
+  }
+
+  public function sequence_has_label($seq, $label)
+  {
+    return $this->num_label($seq, $label) > 0;
+  }
+  
+  public function num_label($seq_id, $label_id)
+  {
+    $this->db
+      ->where('seq_id', $seq_id)
+      ->where('label_id', $label_id);
+      
+    return $this->count_total();
+  }
+  
+  
+  public function label_exists($id)
+  {
+    return $this->has_id($id);
+  }
+  
+  public function has_label_param($label_id, $seq_id, $param)
+  {
+    $this->db->select('id');
+    $this->db->where('label_id', $label_id);
+    $this->db->where('seq_id', $seq_id);
+    $this->db->where('param', $param);
+    
+    return $this->has_something();
+  }
+  
+  public function has_label_data($label_id, $seq_id, $label_type, $label_data, $except_id = null)
+  {
+    $param = label_get_param($label_data);
+    
+    if($except_id) {
+      $this->db->where("id <> $except_id");
+    }
+    
+    if($param) {
+      return $this->has_label_param($label_id, $seq_id, $param);
+    } else {
+      $field = label_data_fields($label_type);
+      $this->db->select('id');
+      $this->db->where('label_id', $label_id);
+      $this->db->where('seq_id', $seq_id);
+    
+      $data = label_get_data($label_data);
+    
+      if(is_array($field)) {
+        $field1 = $field[0];
+        $field2 = $field[1];
+        $this->db->where($field1, $data[0]);
+        $this->db->where($field2, $data[1]);
+      } else {
+        $this->db->where($field, $data);
+      }
+      
+      return $this->has_something();
+    }
+  }
+
+  public function get_data($id)
+  {
+    $this->db->select('id, type, ' . self::$label_data_fields);
+
+    $data = $this->get_id($id, 'label_sequence_info');
+
+    return label_get_type_data($data);
+  }
+  
+  // locate sequence id which contains a label with data
+  public function get_reverse_data($name_label, $data)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get_by_name($name_label);
+    if(!$label) {
+      return null;
+    }
+    $type = $label['type'];
+    
+    $this->db->select('seq_id');
+    
+    $fields = label_data_fields($type);
+    
+    if(is_array($fields)) {
+      $this->db->where($fields[0], $data[0]);
+      $this->db->where($fields[1], $data[1]);
+    } else {
+      $this->db->where($fields, $data);
+    }
+    
+    $row = $this->get_row('name', $name_label, 'label_sequence_info');
+    if(!$row) {
+      return null;
+    }
+    
+    return $row['seq_id'];
+  }
+
+  // retrieve the data field using the label name
+  public function get_label($seq_id, $label_name)
+  {
+    $this->db->select('id, `type`, ' . self::$label_data_fields, FALSE);
+    $this->db->where('name', $label_name);
+    $this->db->where('seq_id', $seq_id);
+    $all = $this->get_all('label_sequence_info');
+
+    if(!$all || count($all) == 0) {
+      return null;
+    }
+
+    return label_get_type_data($all[0]);
+  }
+
+  // get label by sequence and label id
+  public function get_label_ids($seq_id, $label_id)
+  {
+    $this->db->select($this->__get_select(), FALSE);
+    $this->db->where('seq_id', $seq_id);
+
+    return $this->get_row('label_id', $label_id, 'label_sequence_info');
+  }
 
   // get all labels from a sequence
   public function get_sequence($id)
@@ -795,30 +928,6 @@ class Label_sequence_model extends BioModel
     return $this->total_sql($sql) > 0;
   }
 
-  public function label_used_up($seq, $label)
-  {
-    $this->db
-      ->where('seq_id', $seq)
-      ->where('label_id', $label)
-      ->where('multiple IS FALSE');
-
-    return $this->count_total('label_sequence_info') > 0;
-  }
-
-  public function sequence_has_label($seq, $label)
-  {
-    return $this->num_label($seq, $label) > 0;
-  }
-  
-  public function num_label($seq_id, $label_id)
-  {
-    $this->db
-      ->where('seq_id', $seq_id)
-      ->where('label_id', $label_id);
-      
-    return $this->count_total();
-  }
-
   public function count_taxonomies($tax)
   {
     $this->db->select('id');
@@ -833,126 +942,7 @@ class Label_sequence_model extends BioModel
     return $this->count_total();
   }
 
-  public function label_exists($id)
-  {
-    return $this->has_id($id);
-  }
-  
-  public function has_label_param($label_id, $seq_id, $param)
-  {
-    $this->db->select('id');
-    $this->db->where('label_id', $label_id);
-    $this->db->where('seq_id', $seq_id);
-    $this->db->where('param', $param);
-    
-    return $this->has_something();
-  }
-  
-  public function has_label_data($label_id, $seq_id, $label_type, $label_data, $except_id = null)
-  {
-    $param = label_get_param($label_data);
-    
-    if($except_id) {
-      $this->db->where("id <> $except_id");
-    }
-    
-    if($param) {
-      return $this->has_label_param($label_id, $seq_id, $param);
-    } else {
-      $field = label_data_fields($label_type);
-      $this->db->select('id');
-      $this->db->where('label_id', $label_id);
-      $this->db->where('seq_id', $seq_id);
-    
-      $data = label_get_data($label_data);
-    
-      if(is_array($field)) {
-        $field1 = $field[0];
-        $field2 = $field[1];
-        $this->db->where($field1, $data[0]);
-        $this->db->where($field2, $data[1]);
-      } else {
-        $this->db->where($field, $data);
-      }
-      
-      return $this->has_something();
-    }
-  }
-
-  public function select_data($label)
-  {
-    $fields = label_data_fields($label['type']);
-
-    if(is_array($fields)) {
-      return array($label[$fields[0]], $label[$fields[1]]);
-    } else {
-      return $label[$fields];
-    }
-  }
-
-  public function get_data($id)
-  {
-    $this->db->select('id, type, ' . self::$label_data_fields);
-
-    $data = $this->get_id($id, 'label_sequence_info');
-
-    return $this->select_data($data);
-  }
-  
-  // locate sequence id which contains a label with data
-  public function get_reverse_data($name_label, $data)
-  {
-    $label_model = $this->load_model('label_model');
-    $label = $label_model->get_by_name($name_label);
-    if(!$label) {
-      return null;
-    }
-    $type = $label['type'];
-    
-    $this->db->select('seq_id');
-    
-    $fields = label_data_fields($type);
-    
-    if(is_array($fields)) {
-      $this->db->where($fields[0], $data[0]);
-      $this->db->where($fields[1], $data[1]);
-    } else {
-      $this->db->where($fields, $data);
-    }
-    
-    $row = $this->get_row('name', $name_label, 'label_sequence_info');
-    if(!$row) {
-      return null;
-    }
-    
-    return $row['seq_id'];
-  }
-
-  // retrieve the data field using the label name
-  public function get_label($seq_id, $label_name)
-  {
-    $this->db->select('id, `type`, ' . self::$label_data_fields, FALSE);
-    $this->db->where('name', $label_name);
-    $this->db->where('seq_id', $seq_id);
-    $all = $this->get_all('label_sequence_info');
-
-    if(!$all || count($all) == 0) {
-      return null;
-    }
-
-    return $this->select_data($all[0]);
-  }
-
-  // get label by sequence and label id
-  public function get_label_ids($seq_id, $label_id)
-  {
-    $this->db->select($this->__get_select(), FALSE);
-    $this->db->where('seq_id', $seq_id);
-
-    return $this->get_row('label_id', $label_id, 'label_sequence_info');
-  }
-
-  // get all labels from this sequence
+  // get all unique label ids from this sequence
   public function get_sequence_labels($id)
   {
     $this->db->select('label_id AS id');

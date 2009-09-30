@@ -193,6 +193,24 @@ function label_data_fields($type)
   return null;
 }
 
+function label_get_type_data(&$label_info, $type = null)
+{
+  if($type == null) {
+    $type = $label_info['type'];
+  }
+  
+  $fields = label_data_fields($type);
+  
+  if(is_array($fields)) {
+    $field1 = $fields[0];
+    $field2 = $fields[1];
+    
+    return array($label_info[$field1], $label_info[$field2]);
+  } else {
+    return $label_info[$fields];
+  }
+}
+
 function label_transform_data_array_ordered($array)
 {
   $ret = array();
