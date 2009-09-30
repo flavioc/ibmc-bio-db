@@ -628,6 +628,9 @@ function reload_grid(this_obj, $this, opts)
   show_loading($this);
   
   if(opts.method == 'remote') {
+    
+    $('.reload-button', $this).show();
+    
     if(opts.paginate) {
       var url_total = opts.url + '/' + opts.total;
       var params = $.extend({}, opts.inner.params, opts.params);
@@ -657,6 +660,10 @@ function reload_grid(this_obj, $this, opts)
     set_results($this, total);
     opts.inner.total = total;
     opts.inner.start = 0;
+    
+    // hide reload-button
+    $('.reload-button', $this).hide();
+    
     get_results($this, opts);
   }
 }
@@ -674,14 +681,15 @@ $.fn.grid = function(options) {
         },
     });
     var $this = $(this);
+    var grid = this;
     
     // mark hidden columns
     $.each(opts.hiddenFields, function (i, column) {
       opts.inner.shown_columns[column] = false;
     });
 
-    this.opts = opts;
-    this.highlight = null;
+    grid.opts = opts;
+    grid.highlight = null;
     $this.show();
 
     if(opts.enableRemove &&
@@ -691,11 +699,21 @@ $.fn.grid = function(options) {
       opts.fieldNames.push(opts.deleteHeader);
     }
 
-    if(this.paginate != null) {
-      opts.paginate = this.paginate;
+    if(grid.paginate != null) {
+      opts.paginate = grid.paginate;
+    }
+    
+    
+    // enable remote reload button
+    if(opts.method == 'remote') {
+      $('.reload-button', $this).click(function () {
+        reload_grid(grid, $this, grid.opts);
+        
+        return false;
+      });
     }
 
-    reload_grid(this, $this, this.opts);
+    reload_grid(grid, $this, grid.opts);
   });
 };
 
@@ -743,7 +761,7 @@ $.fn.gridEnable = function(options) {
     $this.addClass('grid_box');
     $this.hide();
 
-    var results_tag = '<h4>Results (<span class="total_results">-</span>)</h4>';
+    var results_tag = '<h4>Results (<span class="total_results">-</span>)<span class="reload-button small-button">reload</span></h4>';
     var img_tag = '<img src="' + get_images_url() + '/loading.gif" class="loader"></img>';
     var data_tag = '<div class="data_place"></div>';
 
