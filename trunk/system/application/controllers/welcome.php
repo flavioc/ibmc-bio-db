@@ -11,6 +11,9 @@ class Welcome extends BioController
   public function index()
   {
     $this->smarty->assign('title', 'Main');
+    
+    $this->load->library('Plotter');
+    print_r($this->plotter->make_distribution(null, null, 15, 'avg'));
 
     // load comment
     $this->load->model('comment_model');

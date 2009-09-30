@@ -92,6 +92,12 @@ class Label_model extends BioModel
         $this->db->where('public is TRUE');
       }
     }
+    
+    if(array_key_exists('only_plotable', $filtering)) {
+      if($filtering['only_plotable']) {
+        $this->db->where("type = 'integer' OR type = 'float'");
+      }
+    }
   }
 
   public function get_all($start = null, $size = null,

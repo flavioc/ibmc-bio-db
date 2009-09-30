@@ -487,19 +487,10 @@ class Search_model extends BioModel
     $select_sql = "DISTINCT $select";
     
     if($transform) {
-      if($only_public) {
-        $public_where = 'WHERE ' . self::$public_sequence_where;
-      } else {
-        $public_where = '';
-      }
+      $transform_sql = $this->__get_transform_sql($sql_where, $transform, $only_public);
       
       $sql = "SELECT $select_sql
-              FROM (SELECT id AS orig_id FROM sequence_info_history WHERE $sql_where) all_seqs
-                  NATURAL JOIN
-                   (SELECT seq_id AS orig_id, ref_data AS id FROM label_sequence WHERE label_id = $transform
-                                                                    AND ref_data IS NOT NULL) label_seqs
-                  NATURAL JOIN
-                 (SELECT * FROM sequence_info_history $public_where) every_seqs
+              FROM $transform_sql
               $sql_order $sql_limit";
     } else {
       $sql = "SELECT $select_sql
@@ -507,6 +498,141 @@ class Search_model extends BioModel
           WHERE $sql_where $sql_order $sql_limit";
     }
 
+    return $this->rows_sql($sql);
+  }
+  
+  private function __get_transform_sql($sql_where, $transform, $only_public)
+  {
+    $base = "(SELECT id AS orig_id FROM sequence_info_history WHERE $sql_where) all_seqs
+        NATURAL JOIN
+         (SELECT seq_id AS orig_id, ref_data AS id FROM label_sequence WHERE label_id = $transform
+                                                          AND ref_data IS NOT NULL) label_seqs
+        NATURAL JOIN ";
+    
+    if(!$only_public) {
+      return "$base sequence_info_history";
+    } else {
+      $public_where = 'WHERE ' . self::$public_sequence_where;
+      return "$base (SELECT * FROM sequence_info_history $public_where) every_seqs";
+    }
+  }
+  
+  private function __get_base_search_sql($search, $transform, $only_public)
+  {
+    $sql_where = $this->__get_search_sql($search, $only_public);
+    
+    if($transform) {
+      $transform_sql = $this->__get_transform_sql($sql_where, $transform, $only_public);
+      
+      $base_sql = "SELECT id AS seq_id
+                   FROM $transform_sql";
+    } else {
+      $base_sql = "SELECT id AS seq_id
+             FROM sequence_info_history
+             WHERE $sql_where";
+    }
+    
+    return $base_sql;
+  }
+  
+  public function get_numeral_search_distribution($search, $label_id, $coptions = array())
+  {
+    $default = array('transform' => null,
+                     'distr' => 'avg',
+                     'label_type' => null,
+                     'only_public' => false,
+                     'param' => null);
+                     
+    $options = array_merge($default, $coptions);
+    $transform = $options['transform'];
+    $distr = $options['distr'];
+    $label_type = $options['label_type'];
+    $only_public = $options['only_public'];
+    $param = $options['param'];
+    
+    $base_sql = $this->__get_base_search_sql($search, $transform, $only_public);
+    
+    $field = label_data_fields($label_type);
+    
+    switch($distr) {
+      case 'min': $sql_distr = 'MIN'; break;
+      case 'max': $sql_distr = 'MAX'; break;
+      case 'avg': $sql_distr = 'AVG'; break;
+    }
+    $sql_distr = "$sql_distr($field)";
+    
+    if($param) {
+      $param_sql = "AND param ='$param'";
+    } else {
+      $param_sql = '';
+    }
+    
+    $sql =
+      "SELECT distr, COUNT(distr) AS total
+       FROM (SELECT seq_id, $sql_distr AS distr
+             FROM ($base_sql) seqs
+                  NATURAL JOIN
+                  (SELECT seq_id, $field FROM label_sequence
+                   WHERE label_id = $label_id $param_sql) labels
+              GROUP BY seq_id) distr_table
+       GROUP BY distr
+       ORDER BY distr ASC";
+    
+    echo $sql;
+    
+    return $this->rows_sql($sql);
+  }
+  
+  public function get_other_search_distribution($search, $label_id, $coptions = array())
+  {
+    $default = array('transform' => null,
+                     'label_type' => null,
+                     'only_public' => false,
+                     'param' => null);
+                     
+    $options = array_merge($default, $coptions);
+    $transform = $options['transform'];
+    $label_type = $options['label_type'];
+    $only_public = $options['only_public'];
+    $param = $options['param'];
+    
+    $base_sql = $this->__get_base_search_sql($search, $transform, $only_public);
+    
+    $field = label_data_fields($label_type);
+    
+    if(is_array($field)) {
+      $field = $field[0];
+    }
+    
+    switch($label_type) {
+      case 'position':
+        $field = "CONCAT(position_start, ' ', position_length)";
+        break;
+      case 'ref':
+        $field = 'sequence_name';
+        break;
+      case 'tax':
+        $field = 'taxonomy_name';
+        break;
+    }  
+    
+    if($param) {
+      $param_sql = "AND param ='$param'";
+    } else {
+      $param_sql = '';
+    }
+    
+    $sql =
+      "SELECT distr, COUNT(distr) AS total
+       FROM ($base_sql) seqs
+          NATURAL JOIN
+        (SELECT seq_id, $field AS distr FROM label_sequence_extra
+         WHERE label_id = $label_id $param_sql) labels
+       GROUP BY distr
+       ORDER BY distr ASC";
+    
+    echo $sql;
+    
     return $this->rows_sql($sql);
   }
 }
