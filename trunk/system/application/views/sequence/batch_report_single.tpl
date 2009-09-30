@@ -1,4 +1,4 @@
-<p>The imported sequences can be <a href="{site}/sequence/search?type=batch" id="batch_manipulate_{$what}">batch manipulated</a>.</p>
+<p>The imported sequences can be <a href="{site}/search?type=batch" id="batch_manipulate_{$what}">batch manipulated</a>.</p>
 
 {literal}<script>
 $(function () {
