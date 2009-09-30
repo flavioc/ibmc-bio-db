@@ -132,7 +132,9 @@
 <script>
 {literal}
   $(function() {
-    $("#login_form").validate({
+    var form = $('#login_form');
+    
+    form.validate({
       rules: {
         login_username: {
           required: true,
@@ -146,12 +148,18 @@
       },
       errorPlacement: basicErrorPlacement
     });
+    
+    form.submit(function () {
+      $('input[name=redirect]', form).val(get_app_location());
+      return true;
+    });
 });
 {/literal}
 </script>
 {form_row name=login_username msg='Username:'}
 
 {form_row name=login_password msg='Password:' type=password}
+{form_hidden name=redirect value=null}
 
 {form_submit name=login msg=Login} 
 

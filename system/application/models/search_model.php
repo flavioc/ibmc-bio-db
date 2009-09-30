@@ -2,6 +2,8 @@
 
 class Search_model extends BioModel
 {
+  private static $public_sequence_where = "EXISTS (SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id AND label_sequence_info.name = 'perm_public' AND label_sequence_info.bool_data IS TRUE)";
+  
   function Search_model()
   {
     parent::BioModel('label_sequence');
