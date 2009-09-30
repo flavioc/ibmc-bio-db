@@ -88,3 +88,8 @@ div.grid_box div.pagination span.navigate_page:hover {
   background-color: #ccc;
   font-size: 100%;
 }
+
+div.grid_box .reload-button {
+  font-size: 80%;
+  margin-left: 3px;
+}
