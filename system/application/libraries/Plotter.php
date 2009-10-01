@@ -43,7 +43,9 @@ class Plotter
     foreach($this->result as &$data) {
       $what = $data['distr'];
       
-      if(is_numeric($what)) {
+      if($label_type == 'bool') {
+        $data['distr'] = parse_yes_r_full($what);
+      } else if(is_numeric($what)) {
         $data['distr'] = (float)$what;
       }
     }

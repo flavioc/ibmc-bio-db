@@ -19,6 +19,11 @@ function parse_yes_r($val)
   return $val ? 'Y' : 'N';
 }
 
+function parse_yes_r_full($val)
+{
+  return $val ? 'Yes' : 'No';
+}
+
 function newline_tab_html($text)
 {
   return ascii_to_entities(str_replace("\t", "   ", str_replace("\n", "<br />", $text)));

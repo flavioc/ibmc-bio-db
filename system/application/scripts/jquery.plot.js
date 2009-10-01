@@ -46,6 +46,7 @@ $.fn.plot = function (data, options) {
       $(this).css('background-color', 'white');
       $(this).next().css('background-color', '#c00').css('color', 'white');
     });
+    
     $('div.graph-bar', $html).hover(function () {
       $(this).css('background-color', 'yellow').css('color', 'black');
       $(this).prev().css('background-color', 'yellow');

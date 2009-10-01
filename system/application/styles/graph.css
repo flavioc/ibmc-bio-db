@@ -20,7 +20,11 @@ div.graph-line {
 
 .graph-label {
   float: left;
-  margin-right: 4px; 
+  margin-right: 4px;
+}
+
+.graph-label:hover, .graph-bar:hover {
+  cursor: pointer;
 }
 
 .graph-bar {
