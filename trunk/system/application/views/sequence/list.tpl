@@ -28,14 +28,44 @@ $(function () {
 {form_submit name=submit_export msg='Export all'}
 {form_end}
 
+{form_open to='search?type=list' name=form_search_seqs}
+{form_submit msg='Search'}
+{form_end}
+
 {if $logged_in}
 {button name="add_seq" msg="Add new" to="sequence/add"}
 {/if}
 
 {literal}
 <style>
-#form_add_seq, #export_form {
+#form_add_seq, #export_form, #form_search_seqs {
   display: inline;
 }
 </style>
+
+<script>
+$(function () {
+  $('#form_search_seqs').submit(function () {
+    var name = $('#name').val();
+    var user = $('#user').children('[@selected]').text();
+    
+    var operand_list = [];
+    
+    if(name != '') {
+      operand_list.push({label: 'name', type: 'text', oper: 'regexp', value: name});
+    }
+    
+    if(user != '0') {
+      operand_list.push({label: 'update_user', type: 'text', oper: 'regexp', value: user});
+    }
+    
+    var obj = null;
+    if(operand_list.length != 0)
+      obj = {oper: 'and', operands: operand_list};
+      
+    $.cookie('saved_search_tree', $.toJSON(obj, true), cookie_options);
+    return true;
+  });
+});
+</script>
 {/literal}
