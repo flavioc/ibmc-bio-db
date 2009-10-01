@@ -4,6 +4,7 @@ $.fn.plot = function (data, options) {
   return this.each(function () {
     var $this = $(this);
     var graph_width = options['width'];
+    var MAX_LABEL = 40;
     
     // find maximum value and maximum length what string
     var maximum = 0;
@@ -13,7 +14,7 @@ $.fn.plot = function (data, options) {
       if(y > maximum)
         maximum = y;
       
-      var length = x.toString().length;
+      var length = Math.min(MAX_LABEL, x.toString().length);
       if(length > maximum_length)
         maximum_length = length;
     });
@@ -26,6 +27,8 @@ $.fn.plot = function (data, options) {
     $.each(data, function (what, total) {
       var dec = Math.max(0.02, total / maximum);
       var width = parseInt(dec * bar_width);
+      
+      what = what.toString().substr(0, MAX_LABEL);
       
       html = html + '<div class="graph-line"><div class="graph-label">' + what + '</div>';
       html = html + '<div class="graph-bar" style="width: ' + width + 'px;">' + total + '</div>';
