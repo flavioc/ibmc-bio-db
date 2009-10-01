@@ -13,8 +13,8 @@ class Search extends BioController
     $this->smarty->assign('title', 'Search sequences');
     $this->smarty->load_scripts(VALIDATE_SCRIPT, 'label_helpers.js',
       'sequence_search.js', SELECTBOXES_SCRIPT, 'taxonomy_functions.js',
-      'common_sequence.js', GETPARAMS_SCRIPT);
-    $this->smarty->load_stylesheets('search.css');
+      'common_sequence.js', GETPARAMS_SCRIPT, FORM_SCRIPT, 'jquery.plot.js');
+    $this->smarty->load_stylesheets('search.css', 'graph.css');
     $this->use_mygrid();
     $this->use_datepicker();
     $this->use_plusminus();
@@ -238,12 +238,44 @@ class Search extends BioController
     $this->smarty->view_s('sequence/search_tax');
   }
   
-  private function __get_search_term($method = 'get')
+  public function get_histogram()
+  {
+    $search = $this->__get_search_term('post', 'encoded_tree');
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $type = $this->get_post('generate_histogram_type');
+    
+    $label_id = $this->get_post('histogram_label');
+    $this->load->model('label_model');
+    $label = $this->label_model->get($label_id);
+    $this->smarty->assign('label', $label);
+    
+    $this->load->library('Plotter');
+    
+    $this->plotter->make_distribution($search, $transform, $label_id, $type);
+    $this->smarty->assign('hist_data', $this->plotter->get_js_data());
+    $this->smarty->assign('total', $this->plotter->get_total());
+    $this->smarty->assign('number_classes', $this->plotter->get_number_classes());
+    
+    switch($label['type']) {
+      case 'integer':
+      case 'float':
+        $this->smarty->assign('min_class', $this->plotter->get_minimal_class());
+        $this->smarty->assign('max_class', $this->plotter->get_maximal_class());
+        $this->smarty->assign('average', $this->plotter->get_average());
+        $this->smarty->assign('median', $this->plotter->get_median());
+        $this->smarty->assign('mode', $this->plotter->get_mode());
+        break;
+    }
+    
+    $this->smarty->view_s('search/histogram');
+  }
+  
+  private function __get_search_term($method = 'get', $param = 'search')
   {
     if($method == 'get') {
-      $search = $this->get_parameter('search');
+      $search = $this->get_parameter($param);
     } else {
-      $search = $this->get_post('search');
+      $search = $this->get_post($param);
     }
     $search = stripslashes($search);
     $search_term = null;

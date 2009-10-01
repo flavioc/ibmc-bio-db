@@ -11,6 +11,10 @@ a {
   color: #c00;
 }
 
+h2 {
+  font-size: 18pt;
+}
+
 body>div#leftmenu {
   margin-left: 50px;
   margin-top: 15px;

@@ -1,0 +1,30 @@
+div.graph {
+  padding: 10px;
+  border: 3px double black;
+}
+
+div.graph-line {
+    margin-bottom: 5px;
+}
+
+.graph-label {
+  display: inline;
+  border: 1px dotted black;
+  padding-left: 2px;
+}
+
+.graph-bar {
+  margin-left: 4px;
+  padding-left: 4px;
+}
+
+.graph-label {
+  float: left;
+  margin-right: 4px; 
+}
+
+.graph-bar {
+  background-color: #c00;
+  border: 1px solid black;
+  color: white;
+}

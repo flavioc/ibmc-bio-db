@@ -39,6 +39,9 @@ var select_transform = null;
 var current_selected_li = null;
 var param_input = null;
 var data_param = null;
+var histogram_label = null;
+var histogram_button = null;
+var generate_histogram_type = null;
 var search_type = 'all';
 
 $(function () {
@@ -827,6 +830,24 @@ function restore_aux(obj, ol)
   }
 }
 
+function no_histogram_label()
+{
+  histogram_label = null;
+  histogram_button.hide();
+  generate_histogram_type.hide();
+}
+
+function new_histogram_label(label)
+{
+  histogram_label = label;
+  histogram_button.show();
+  $('input[name=histogram_label]').val(label.id);
+  if(label.multiple == '1')
+    generate_histogram_type.show();
+  else
+    generate_histogram_type.hide();
+}
+
 $.fn.clickCompoundName = function () {
   return this.each(function () {
     var what = $(this).text();
@@ -894,6 +915,8 @@ $(function () {
     select_transform = $('#select_transform');
     param_input = $('#param_input');
     data_param = $('#data_param');
+    histogram_button = $('#show_histogram_button');
+    generate_histogram_type = $('#generate_histogram_type');
     
     select_transform.change(update_transform);
     
@@ -966,12 +989,10 @@ $(function () {
 
     operator_select.change(operator_was_selected);
 
+    // label autocomplete input
+    
     label_row.autocomplete_labels('searchable');
-
-    label_row.autocompleteEmpty(function () {
-        hide_term();
-    });
-
+    label_row.autocompleteEmpty(hide_term);
     label_row.result(function (event, data, formatted) {
         var name = data;
 
@@ -991,7 +1012,42 @@ $(function () {
 
         return false;
     });
+    
+    // generate label autocomplete input
+    var label_hist = $('#generate_label');
+    
+    no_histogram_label();
+    label_hist.autocomplete_labels('addable');
+    label_hist.autocompleteEmpty(no_histogram_label);
+    label_hist.result(function (event, data, formatted) {
+      var name = data;
+      
+      if(!name) {
+        no_histogram_label();
+        return;
+      }
+      
+      get_label_by_name(name, 
+        function (data) {
+          if(data == null) {
+            no_histogram_label();
+          } else {
+            new_histogram_label(data);
+          }
+      });
+      
+      return false;
+    });
+    
+    $('#generate_histogram_form').ajaxForm({
+      success: function (data) {
+        // HACK to show page data into the thickbox
+        tb_show('Histogram', '#TB_inline?inlineId=histogram_data&width=700&height=500');
+      },
+      target: '#histogram_data'
+    });
 
+    // validations
     term_form.validate({
       submitHandler: term_form_submitted
     });

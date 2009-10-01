@@ -803,7 +803,7 @@ jQuery.extend({
 	css: function( elem, name, force ) {
 		if ( name == "width" || name == "height" ) {
 			var val, props = { position: "absolute", visibility: "hidden", display:"block" }, which = name == "width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ];
-
+      
 			function getWH() {
 				val = name == "width" ? elem.offsetWidth : elem.offsetHeight;
 				var padding = 0, border = 0;

@@ -578,8 +578,6 @@ class Search_model extends BioModel
        GROUP BY distr
        ORDER BY distr ASC";
     
-    echo $sql;
-    
     return $this->rows_sql($sql);
   }
   
@@ -630,8 +628,6 @@ class Search_model extends BioModel
          WHERE label_id = $label_id $param_sql) labels
        GROUP BY distr
        ORDER BY distr ASC";
-    
-    echo $sql;
     
     return $this->rows_sql($sql);
   }
