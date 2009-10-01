@@ -7,6 +7,10 @@ $(function () {
   var show_ranks = $('#show_ranks');
   var fieldNames = ['Name', 'Parent', 'Last update', 'User'];
   var fields = ['rank_name', 'rank_parent_name', 'update', 'user'];
+  var changed = false;
+  var name_field = $('#name');
+  var parent_field = $('#parent_name');
+  var user_field = $('#user');
   
   if(get_logged_in()) {
     fieldNames.push('Taxonomy');
@@ -78,30 +82,28 @@ $(function () {
       user: 'def'
     },
     total: 'get_total',
-    idField: 'rank_id'
+    idField: 'rank_id',
+    params: {
+      name: function () { return name_field.val(); },
+      parent_name: function () { return parent_field.val(); },
+      user: function () { return user_field.val(); }
+    }
   });
-
-  var changed = false;
-  var name_field = $('#name');
-  var parent_field = $('#parent_name');
-  var user_field = $('#user');
 
   function changed_function ()
   {
     changed = true;
   }
+  
+  function try_reload()
+  {
+    show_ranks.gridReload();
+  }
 
   function when_submit()
   {
     if(changed) {
-      var name_val = name_field.val();
-      var parent_val = parent_field.val();
-      var user_val = user_field.val();
-
-      show_ranks.gridColumnFilter('name', name_val);
-      show_ranks.gridColumnFilter('parent_name', parent_val);
-      show_ranks.gridColumnFilter('user', user_val);
-      show_ranks.gridReload();
+      try_reload();
     }
 
     changed = false;

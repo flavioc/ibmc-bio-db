@@ -48,7 +48,7 @@ class Plotter
       }
     }
     
-    return true;
+    return count($this->result) > 0;
   }
   
   public function get_js_data()
@@ -180,7 +180,7 @@ class Plotter
       $total = $data['total'];
       $distr = $data['distr'];
       
-      if($max == 'undefined') {
+      if($mode == null) {
         $max = $total;
         $mode = $distr;
       } elseif($max < $total) {

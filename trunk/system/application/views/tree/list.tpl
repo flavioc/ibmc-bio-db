@@ -65,18 +65,22 @@ $(function () {
       user_name: w_user,
       update: w_update,
       'export': w_export
+    },
+    params: {
+      name: function () { return name_field.val(); },
+      user: function () { return user_field.val(); }
     }
   });
+  
+  function try_reload()
+  {
+    show_trees.gridReload();
+  }
 
   function when_submit()
   {
     if(changed) {
-      var name_val = name_field.val();
-      var user_val = user_field.val();
-
-      show_trees.gridColumnFilter('name', name_val);
-      show_trees.gridColumnFilter('user', user_val);
-      show_trees.gridReload();
+      try_reload();
     }
 
     changed = false;
@@ -84,7 +88,7 @@ $(function () {
 
   name_field.change(changed_function);
   user_field.change(changed_function);
-
+  
   $("#form_search").validate({
     submitHandler: when_submit,
     errorPlacement: basicErrorPlacement

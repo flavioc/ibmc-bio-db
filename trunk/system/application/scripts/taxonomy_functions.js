@@ -34,13 +34,6 @@ function start_tax_search_form(dom, put_addchild, click_fun)
   function form_tax_when_submit()
   {
     if(form_tax_changed) {
-      var name_value = taxonomy_name_field.val();
-      var rank_value = taxonomy_rank_field.val();
-      var tree_value = taxonomy_tree_field.val();
-
-      data_tax.gridColumnFilter('name', name_value);
-      data_tax.gridColumnFilter('rank', rank_value);
-      data_tax.gridColumnFilter('tree', tree_value);
       data_tax.gridReload();
 
       form_tax_changed = false;
@@ -88,9 +81,9 @@ function start_tax_search_form(dom, put_addchild, click_fun)
       total: 'search_total',
       retrieve: 'search',
       params: {
-        name: function () { return $('#name').val(); },
-        rank: function () { return $('#rank').val(); },
-        tree: function () { return $('#tree').val(); }
+        name: function () { return taxonomy_name_field.val(); },
+        rank: function () { return taxonomy_rank_field.val(); },
+        tree: function () { return taxonomy_tree_field.val(); }
       },
       tdClass: {
         tree_name: 'centered',

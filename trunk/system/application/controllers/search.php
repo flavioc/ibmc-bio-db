@@ -251,20 +251,24 @@ class Search extends BioController
     
     $this->load->library('Plotter');
     
-    $this->plotter->make_distribution($search, $transform, $label_id, $type);
-    $this->smarty->assign('hist_data', $this->plotter->get_js_data());
-    $this->smarty->assign('total', $this->plotter->get_total());
-    $this->smarty->assign('number_classes', $this->plotter->get_number_classes());
+    if($this->plotter->make_distribution($search, $transform, $label_id, $type)) {
+      $this->smarty->assign('hist_data', $this->plotter->get_js_data());
+      $this->smarty->assign('total', $this->plotter->get_total());
+      $this->smarty->assign('number_classes', $this->plotter->get_number_classes());
+      $this->smarty->assign('mode', $this->plotter->get_mode());
     
-    switch($label['type']) {
-      case 'integer':
-      case 'float':
-        $this->smarty->assign('min_class', $this->plotter->get_minimal_class());
-        $this->smarty->assign('max_class', $this->plotter->get_maximal_class());
-        $this->smarty->assign('average', $this->plotter->get_average());
-        $this->smarty->assign('median', $this->plotter->get_median());
-        $this->smarty->assign('mode', $this->plotter->get_mode());
-        break;
+      switch($label['type']) {
+        case 'integer':
+        case 'float':
+          $this->smarty->assign('min_class', $this->plotter->get_minimal_class());
+          $this->smarty->assign('max_class', $this->plotter->get_maximal_class());
+          $this->smarty->assign('average', $this->plotter->get_average());
+          $this->smarty->assign('median', $this->plotter->get_median());
+          break;
+      }
+      $this->smarty->assign('empty', false);
+    } else {
+      $this->smarty->assign('empty', true);
     }
     
     $this->smarty->view_s('search/histogram');
