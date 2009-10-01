@@ -554,18 +554,11 @@ $.fn.gridColumnFilter = function(column, what) {
       var $this = $(this);
       var opts = this.opts;
 
-      opts.inner.params[column] = what;
+      this.opts.params[column] = what;
   });
 };
 
-$.fn.gridFilter = function (name, what) {
-  return this.each(function () {
-      var $this = $(this);
-      var opts = this.opts;
-
-      opts.params[name] = what;
-  });
-};
+$.fn.gridFilter = $.fn.gridColumnFilter;
 
 $.fn.gridReload = function () {
   return this.each(function () {
@@ -670,7 +663,7 @@ function reload_grid(this_obj, $this, opts)
 
 $.fn.grid = function(options) {
   return this.each(function() {
-    var opts = $.extend({}, $.fn.grid.defaults, options, 
+    var opts = $.extend(true, this.opts, $.fn.grid.defaults, options, 
       {
         inner: {
           ordering: {},
@@ -698,11 +691,6 @@ $.fn.grid = function(options) {
       opts.fields.push(opts.deleteTag);
       opts.fieldNames.push(opts.deleteHeader);
     }
-
-    if(grid.paginate != null) {
-      opts.paginate = grid.paginate;
-    }
-    
     
     // enable remote reload button
     if(opts.method == 'remote') {
@@ -756,7 +744,7 @@ $.fn.gridEnable = function(options) {
   return this.each(function() {
     var $this = $(this);
     
-    this.paginate = paginate;
+    this.opts = {paginate: paginate, params: {}};
 
     $this.addClass('grid_box');
     $this.hide();

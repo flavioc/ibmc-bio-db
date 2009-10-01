@@ -332,7 +332,7 @@ function smarty_function_form_select($params, &$smarty)
   if($start == null && $start != "0" && $start != 0) {
     $start = '1';
   }
-
+  
   return form_dropdown($name, $options, $start, "id=\"$id\"");
 }
 
@@ -461,7 +461,7 @@ function smarty_function_form_row($params, &$smarty)
       'blank' => $params['blank'],
       'key' => $params['key'],
       'value' => $params['value'],
-      'data' => $params['data'],
+      'data' => $params['data']
     );
 
     $ret .= smarty_function_form_select($select_data, $smarty);

@@ -3,13 +3,20 @@
 {literal}
 <script>
 $(function () {
+  var name_field = $('#name');
+  var user_field = $('#user');
   var show_seqs = $('#show_sequences');
+  
   activate_sequence_search(show_seqs);
-  start_sequence_grid(show_seqs);
-
+  
+  start_sequence_grid(show_seqs, {}, {
+      name: function () { return $('#name').val(); },
+      user: function () { return $('#user').val(); }
+  });
+  
   $('#submit_export').click(function () {
-    $('input[name=export_name]').val($('#name').val());
-    $('input[name=export_user]').val($('#user').val());
+    $('input[name=export_name]').val(name_field.val());
+    $('input[name=export_user]').val(user_field.val());
     
     return true;
   });

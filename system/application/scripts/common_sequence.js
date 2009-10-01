@@ -1,7 +1,11 @@
-function start_sequence_grid(place, click)
+function start_sequence_grid(place, click, params)
 {
   if(click == null) {
     click = {};
+  }
+  
+  if(params == null) {
+    params = {};
   }
   
   place
@@ -33,7 +37,8 @@ function start_sequence_grid(place, click)
       update: 'def',
       user: 'def'
     },
-    clickFun: click
+    clickFun: click,
+    params: params
   });
 }
 
@@ -52,11 +57,6 @@ function activate_sequence_search(show_seqs)
   function when_submit()
   {
     if(changed) {
-      var name_val = name_field.val();
-      var user_val = user_field.val();
-
-      show_seqs.gridColumnFilter('name', name_val);
-      show_seqs.gridColumnFilter('user', user_val);
       show_seqs.gridReload();
     }
 

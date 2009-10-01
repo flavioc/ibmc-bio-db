@@ -38,6 +38,22 @@ $.fn.plot = function (data, options) {
     
     $('div.graph-label', $html).css('width', width_what.toString() + 'px');
     $('div.graph-bar', $html).css('margin-left', margin_bar.toString() + 'px');
+    $('div.graph-label', $html).hover(function () {
+      $(this).css('background-color', 'yellow');
+      $(this).next().css('background-color', 'yellow').css('color', 'black');
+    },
+    function () {
+      $(this).css('background-color', 'white');
+      $(this).next().css('background-color', '#c00').css('color', 'white');
+    });
+    $('div.graph-bar', $html).hover(function () {
+      $(this).css('background-color', 'yellow').css('color', 'black');
+      $(this).prev().css('background-color', 'yellow');
+    },
+    function () {
+      $(this).css('background-color', '#c00').css('color', 'white');
+      $(this).prev().css('background-color', 'white');
+    });
     
     $this.empty();
     $html.appendTo($this);

@@ -24,13 +24,6 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
   function when_submit()
   {
     if(changed) {
-      var name_val = name_field.val();
-      var type_val = type_field.val();
-      var user_val = user_field.val();
-
-      grid.gridColumnFilter('name', name_val);
-      grid.gridColumnFilter('type', type_val);
-      grid.gridColumnFilter('user', user_val);
       grid.gridReload();
     }
 
@@ -52,6 +45,13 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
     submitHandler: when_submit,
     errorPlacement: basicErrorPlacement
   });
+  
+  params = $.extend({}, params,
+    {
+      name: function () { return name_field.val(); },
+      type: function () { return type_field.val(); },
+      user: function () { return user_field.val(); }
+    });
 
   var fieldNames = ['Name', 'Type', 'Must Exist', 'Creation', 'Modification', 'Deletable', 'Editable', 'Multiple', 'Public', 'User', 'Total'];
   var fields = ['name', 'type', 'must_exist', 'auto_on_creation', 'auto_on_modification', 'deletable', 'editable', 'multiple', 'public', 'user_name', 'num_seqs'];
