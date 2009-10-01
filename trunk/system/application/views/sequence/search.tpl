@@ -116,11 +116,27 @@ $(function () {
 
 </div>
 
-<div id="transform_box">
 <fieldset>
-<label for="select_transform" class="search-desc">Transform results: </label>{form_select blank=yes name=select_transform start=0 data=$refs key=id}
-</fieldset>
+<div id="transform_box">
+  <label for="select_transform" class="search-desc">Transform results: </label>
+  {form_select blank=yes name=select_transform start=0 data=$refs key=id}
 </div>
+<div id="generate_histogram_box">
+  {form_open to='search/get_histogram' name=generate_histogram_form}
+    {form_hidden name=encoded_tree value=null}
+    {form_hidden name=transform_hidden value=null}
+    {form_hidden name=histogram_label value=null}
+    <label for="generate_histogram" class="search-desc">Generate histogram: </label>
+    {form_input name=generate_label}
+    <select name="generate_histogram_type" id="generate_histogram_type">
+      <option value="avg">avg</option>
+      <option value="max">max</option>
+      <option value="min">min</option>
+    </select>
+    {form_submit msg='Show' id='show_histogram_button'}
+  {form_end}
+</div>
+</fieldset>
 
 <h3>Operations</h3>
 
@@ -164,3 +180,7 @@ $(function () {
 <p>
 <div id="show_sequences"></div>
 </p>
+
+<!-- Needed for the histogram thickbox -->
+<div id="histogram_data" {display_none}>
+</div>

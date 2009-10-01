@@ -221,7 +221,7 @@ function compound_term($term)
 function search_tree_to_string($term, $start_compound = null, $end_compound = null)
 {
   if(!$term) {
-    return '-';
+    return 'Empty query';
   }
   
   $oper = $term['oper'];
@@ -247,7 +247,7 @@ function search_tree_to_string($term, $start_compound = null, $end_compound = nu
     }
 
     if($total == 0) {
-      return "-";
+      return "Empty query";
     }
 
     if($oper == 'not') {
