@@ -261,3 +261,18 @@ function load_ci_model($name)
   
   return $CI->$name;
 }
+
+function split_string($string, $blocks, $separator)
+{
+  $size = strlen($string);
+  
+  if($size <= $blocks)
+    return $string;
+
+  $ret = '';
+  for($i = 0; $i < $size; $i = $i + $blocks) {
+    $ret .= substr($string, $i, $blocks) . $separator;
+  }
+
+  return $ret;
+}

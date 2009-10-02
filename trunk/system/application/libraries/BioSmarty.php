@@ -657,6 +657,14 @@ function smarty_function_encode_json($params, &$smarty)
   return json_encode($value);
 }
 
+function smarty_function_split_value($params, &$smarty)
+{
+  $value =& $params['val'];
+  $MAX_SPACING = 40;
+  
+  return split_string($value, $MAX_SPACING, '<br />');
+}
+
 class BioSmarty extends Smarty
 {
   private $controller;
@@ -692,6 +700,7 @@ class BioSmarty extends Smarty
     $this->register_function('to_js', 'smarty_function_to_js');
     $this->register_function('display_none', 'smarty_function_display_none');
     $this->register_function('encode_json', 'smarty_function_encode_json');
+    $this->register_function('split_value', 'smarty_function_split_value');
 
 		$config =& get_config();
 		
