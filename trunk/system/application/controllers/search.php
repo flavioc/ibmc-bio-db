@@ -53,12 +53,13 @@ class Search extends BioController
     $size = $this->get_post('size');
     $search = $this->__get_search_term('post');
     $transform = $this->__get_transform_label('transform', 'post');
+    $labels = $this->get_post('labels');
 
     $ordering_name = $this->get_order('name', 'post');
     $ordering_update = $this->get_order('update', 'post');
     $ordering_user = $this->get_order('user_name', 'post');
 
-    $this->json_return($this->search_model->get_search($search,
+    $data = $this->search_model->get_search($search,
       array('start' => $start,
             'size' => $size,
             'ordering' => 
@@ -66,7 +67,25 @@ class Search extends BioController
                     'update' => $ordering_update,
                     'user_name' => $ordering_user),
             'transform' => $transform,
-            'only_public' => !$this->logged_in)));
+            'only_public' => !$this->logged_in));
+            
+    if($labels && $labels != '') {
+      $names = explode('|', $labels);
+      $this->load->model('label_model');
+      $this->load->model('label_sequence_model');
+      
+      foreach($names as $name) {
+        $label_id = $this->label_model->get_id_by_name($name);
+        
+        foreach($data as &$row) {
+          $seq_id = $row['id'];
+          $instance_info = $this->label_sequence_model->get_instances_info($seq_id, $label_id, !$this->logged_in);
+          $row[$name] = $instance_info;
+        }
+      }
+    }
+            
+    $this->json_return($data);
   }
 
   public function get_search_total()

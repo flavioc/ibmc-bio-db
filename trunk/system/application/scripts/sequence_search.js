@@ -42,6 +42,8 @@ var data_param = null;
 var histogram_label = null;
 var histogram_button = null;
 var generate_histogram_type = null;
+var label_result = null;
+var shown_labels = [];
 var search_type = 'all';
 
 $(function () {
@@ -848,6 +850,102 @@ function new_histogram_label(label)
     generate_histogram_type.hide();
 }
 
+function no_label_result()
+{
+}
+
+function build_label_filter()
+{
+  var filter = '';
+  
+  $.each(shown_labels, function (i, l) {
+    if(filter.length > 0)
+      filter += '|';
+    
+    filter += l;
+  });
+  
+  return filter;
+}
+
+function new_label_result(label)
+{
+  if(show_seqs.gridHasColumn(label.name))
+    return false;
+  
+  shown_labels.push(label.name);
+  
+  show_seqs.gridFilter('labels', build_label_filter());
+  show_seqs.gridAddColumn(label.name, label.name,
+    function (row) {
+      var data = row[label.name];
+      
+      return label_data_transform(data, label.type);
+    });
+    
+  show_seqs.gridColumnSetDeletable(label.name, function () {
+    
+    shown_labels = $.grep(shown_labels, function (l) {
+      return l != label.name;
+    });
+    
+    show_seqs.gridFilter('labels', build_label_filter());
+  });
+  
+  show_seqs.gridReload();
+}
+
+function get_label_field_data(data, type)
+{
+  var MAX_LABEL_TEXT = 40;
+  
+  switch(type) {
+    case 'ref':
+      return '<a href="' + get_app_url() + '/sequence/view/' + data.id + '">' + data.string + '</a>';
+    case 'tax':
+      return '<a href="' + get_app_url() + '/taxonomy/view/' + data.id + '">' + data.string + '</a>';
+    case 'obj':
+      return '<a href="' + get_app_url() + '/label_sequence/download_label/' + data.id + '">' + data.string + '</a>';
+    case 'text':
+      if(data.string.length > MAX_LABEL_TEXT)
+        return split_string_html(data.string, MAX_LABEL_TEXT);
+      else
+        return data.string;
+    default:
+      return data.string;
+  }
+}
+
+function label_data_transform(label_data, type)
+{
+  if(!label_data)
+    return null;
+    
+  var ret = '';
+    
+  if(label_data.length == 1) {
+    return get_label_field_data(label_data[0], type);
+  } else {
+    var ret = '(';
+    
+    $.each(label_data, function (i, data) {
+      var param = data.param;
+      
+      if(ret.length > 1) {
+        ret += ', ';
+      }
+      
+      if(param) {
+        ret += param + ' -> ';
+      }
+      
+      ret += get_label_field_data(data);
+    });
+  }
+  
+  return ret + ')';
+}
+
 $.fn.clickCompoundName = function () {
   return this.each(function () {
     var what = $(this).text();
@@ -917,6 +1015,7 @@ $(function () {
     data_param = $('#data_param');
     histogram_button = $('#show_histogram_button');
     generate_histogram_type = $('#generate_histogram_type');
+    label_result = $('#label_result');
     
     select_transform.change(update_transform);
     
@@ -1013,6 +1112,27 @@ $(function () {
         return false;
     });
     
+    // label result
+    label_result.autocomplete_labels('searchable');
+    label_result.autocompleteEmpty(no_label_result);
+    label_result.result(function (event, data, formatted) {
+      var name = data;
+      
+      if(!name) {
+        no_label_result();
+        return;
+      }
+      
+      get_label_by_name(name, function (data) {
+        if(data == null)
+          no_label_result();
+        else
+          new_label_result(data);
+      });
+      
+      return false;
+    });
+    
     // generate label autocomplete input
     var label_hist = $('#generate_label');
     
@@ -1074,7 +1194,7 @@ $(function () {
     retrieve: 'get_search',
     total: 'get_search_total',
     params: {
-      search: get_start_search_param()
+      search: function () { return get_start_search_param(); }
     },
     fieldNames: ['Name', 'Last update', 'User'],
     fields: ['name', 'update', 'user_name'],

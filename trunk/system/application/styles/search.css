@@ -127,8 +127,8 @@ label.search-desc {
   margin-right: 5px;
 }
 
-#transform_box {
-  margin-bottom: 10px;
+#transform_box, #generate_histogram_box {
+  margin-bottom: 5px;
   margin-top: 5px;
 }
 

@@ -241,6 +241,17 @@ function number_of_properties(obj)
   return count;
 }
 
+function split_string_html(str, block)
+{
+  var size = str.length;
+  var ret = '';
+  
+  for(var i = 0; i < size; i = i + block)
+    ret += str.substr(i, block) + '<br />';
+
+  return ret;
+}
+
 $.blockLoadingUI = function () {
   return $.blockUI({ message: $('img#loading_image') });
 };
