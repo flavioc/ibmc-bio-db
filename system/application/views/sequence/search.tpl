@@ -192,3 +192,5 @@ $(function () {
 <!-- Needed for the histogram thickbox -->
 <div id="histogram_data" {display_none}>
 </div>
+
+{include file=loading.tpl}

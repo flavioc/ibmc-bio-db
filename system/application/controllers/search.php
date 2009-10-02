@@ -18,6 +18,7 @@ class Search extends BioController
     $this->use_mygrid();
     $this->use_datepicker();
     $this->use_plusminus();
+    $this->use_blockui();
     
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
