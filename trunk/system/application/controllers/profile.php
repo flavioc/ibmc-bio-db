@@ -110,7 +110,6 @@ class Profile extends BioController
 
     $this->smarty->assign('title', 'Edit profile');
 
-    $this->use_datepicker();
     $this->smarty->load_scripts(VALIDATE_SCRIPT);
 
     $userdata = $this->user_model->get_user_by_id($id);
@@ -119,10 +118,8 @@ class Profile extends BioController
     $this->smarty->fetch_form_row('old_password');
     $this->smarty->fetch_form_row('complete_name', $userdata['complete_name']);
     $this->smarty->fetch_form_row('email', $userdata['email']);
-    $this->smarty->fetch_form_row('birthday', $userdata['birthday']);
     $this->smarty->fetch_form_row('password1');
     $this->smarty->fetch_form_row('password2');
-    $this->smarty->fetch_form_row('image');
 
     $this->smarty->view('profile/edit');
   }
@@ -155,7 +152,6 @@ class Profile extends BioController
     $this->form_validation->set_password_rule('old_password');
     $this->form_validation->set_complete_name_rule();
     $this->form_validation->set_email_rule();
-    $this->form_validation->set_date_rule('birthday', 'Birthday');
     $this->form_validation->set_password_rule('password1', false);
     $this->form_validation->set_password_retype_rule('password2', 'password1', false);
 
@@ -163,7 +159,6 @@ class Profile extends BioController
       $errors = true;
       $this->assign_row_data('complete_name');
       $this->assign_row_data('email');
-      $this->assign_row_data('birthday');
       $this->assign_row_data('old_password', false);
       $this->assign_row_data('password1', false);
       $this->assign_row_data('password2', false);
@@ -175,37 +170,15 @@ class Profile extends BioController
       $errors = true;
     }
 
-    $image_str = $this->get_post_filename('image'); 
-    $image_data = null;
-    if($image_str) {
-      // verify image upload
-      $this->load->library('upload', $this->__get_upload_config());
-      $upload_ret = $this->upload->do_upload("image");
-
-      if(!$upload_ret) {
-        $this->set_upload_form_error('image');
-        $errors = true;
-      } else {
-        $image_data = $this->upload->data();
-      }
-    }
-
     if($errors) {
       redirect('profile/edit');
     } else {
       $complete_name = $this->get_post('complete_name');
       $email = $this->get_post('email');
-      $birthday = $this->get_post('birthday');
       $new_password = $this->get_post('password1');
-      $imagecontent = null;
-
-      if($image_data) {
-        $this->__process_user_image($image_data);
-        $imagecontent = read_file_and_delete($image_data);
-      }
-
+      
       $this->user_model->edit_user($id, $complete_name,
-        $email, $birthday, $imagecontent, $new_password);
+        $email, $new_password);
 
       $this->set_info_message("Profile has been saved");
       redirect("profile/view/$id");
@@ -274,16 +247,13 @@ class Profile extends BioController
 
     $this->smarty->assign('title', 'Register');
 
-    $this->smarty->load_scripts(DATEPICKER_SCRIPT, VALIDATE_SCRIPT);
-    $this->smarty->load_stylesheets(DATEPICKER_THEME);
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
 
     $this->smarty->fetch_form_row('username');
     $this->smarty->fetch_form_row('complete_name');
     $this->smarty->fetch_form_row('email');
-    $this->smarty->fetch_form_row('birthday');
     $this->smarty->fetch_form_row('password1');
     $this->smarty->fetch_form_row('password2');
-    $this->smarty->fetch_form_row('image');
 
     $this->smarty->view('profile/register');
 	}
@@ -315,7 +285,6 @@ class Profile extends BioController
     $this->form_validation->set_username_rule();
     $this->form_validation->set_complete_name_rule();
     $this->form_validation->set_email_rule();
-    $this->form_validation->set_date_rule('birthday', 'Birthday');
     $this->form_validation->set_password_rule('password1');
     $this->form_validation->set_password_retype_rule('password2', 'password1');
 
@@ -329,62 +298,22 @@ class Profile extends BioController
       $errors = true;
     }
 
-    $image_str = $this->get_post_filename('image'); 
-    $image_data = null;
-
-    if($image_str) {
-      // verify image upload
-      $this->load->library('upload', $this->__get_upload_config());
-      $upload_ret = $this->upload->do_upload("image");
-
-      if(!$upload_ret) {
-        $this->set_upload_form_error('image');
-        $errors = true;
-      } else {
-        $image_data = $this->upload->data();
-      }
-    }
-
     if($errors) {
       $this->assign_row_data('username');
       $this->assign_row_data('complete_name');
       $this->assign_row_data('email');
-      $this->assign_row_data('birthday');
       $this->assign_row_data('password1', false);
       $this->assign_row_data('password2', false);
       redirect('profile/register');
     } else {
       $complete_name = $this->get_post('complete_name');
       $email = $this->get_post('email');
-      $birthday = $this->get_post('birthday');
       $password = $this->get_post('password1');
-      $imagecontent = NULL;
-
-      if($image_data) {
-        $this->__process_user_image($image_data);
-        $imagecontent = read_file_and_delete($image_data);
-      }
 
       $this->user_model->new_user($username, $complete_name, $email,
-        $birthday, $password, $imagecontent);
+        $password);
 
       redirect('');
     }
-  }
-  
-  /* resizes image before putting it on the DB.
-   * $data is the array returned by file upload library.
-   */
-  private function __process_user_image($data)
-  {
-    $config['image_library'] = 'gd2';
-    $config['source_image'] = $data['full_path'];
-    $config['maintain_ratio'] = TRUE;
-    $config['width'] = 300;
-    $config['height'] = 300;
-
-    $this->load->library('image_lib', $config); 
-
-    $this->image_lib->resize();
   }
 }

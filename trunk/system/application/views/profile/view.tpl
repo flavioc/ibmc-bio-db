@@ -5,9 +5,6 @@
   <li>Name: {$user.name}</li>
   <li>Complete name: {$user.complete_name}</li>
   <li>Email: {$user.email}</li>
-  {if $user.birthday}
-    <li>Birthday: {$user.birthday}</li>
-  {/if}
   <li>User type: {if $user.user_type == 'admin'}Administrador{else}Normal{/if}</li>
 </ul>
 {if $user.id == $user_id || $is_admin}

@@ -1006,8 +1006,6 @@ CREATE TABLE `user` (
   `password` char(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User password md5 hashed.',
   `email` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'User email.',
   `user_type` enum('user','admin') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'user' COMMENT 'User type.',
-  `birthday` date DEFAULT NULL COMMENT 'User''s birthday.',
-  `image` blob COMMENT 'User''s image file.',
   `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Enable/Disable user.',
   `history_id` bigint(20) unsigned DEFAULT NULL,
   `last_access` datetime DEFAULT NULL COMMENT 'Date/Time of last access for this user.',
@@ -1078,8 +1076,6 @@ SET character_set_client = utf8;
   `password` char(32),
   `email` varchar(128),
   `user_type` enum('user','admin'),
-  `birthday` date,
-  `image` blob,
   `enabled` tinyint(1)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
@@ -1663,7 +1659,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `user_norm` AS select `user`.`id` AS `user_id`,`user`.`name` AS `user_name`,`user`.`complete_name` AS `complete_name`,`user`.`password` AS `password`,`user`.`email` AS `email`,`user`.`user_type` AS `user_type`,`user`.`birthday` AS `birthday`,`user`.`image` AS `image`,`user`.`enabled` AS `enabled` from `user` */;
+/*!50001 VIEW `user_norm` AS select `user`.`id` AS `user_id`,`user`.`name` AS `user_name`,`user`.`complete_name` AS `complete_name`,`user`.`password` AS `password`,`user`.`email` AS `email`,`user`.`user_type` AS `user_type`,`user`.`enabled` AS `enabled` from `user` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1695,4 +1691,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-10-01 15:28:21
+-- Dump completed on 2009-10-02 23:37:23
