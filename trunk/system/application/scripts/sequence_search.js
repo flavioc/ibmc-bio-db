@@ -731,7 +731,7 @@ function can_add_leafs()
 
 function cant_add_leafs()
 {
-  $('input, select', insert_terms).attr('disabled', 'true');
+  $('input, select', insert_terms).attr("disabled", true);
   $('#change_tax, #change_seq', insert_terms).hide();
 }
 
@@ -838,10 +838,12 @@ function no_histogram_label()
 {
   histogram_label = null;
   generate_histogram_type.hide();
+  histogram_button.attr('disabled', true);
 }
 
 function new_histogram_label(label)
 {
+  histogram_button.removeAttr('disabled');
   histogram_label = label;
   $('input[name=histogram_label]').val(label.id);
   if(label.multiple == '1')
@@ -853,6 +855,7 @@ function new_histogram_label(label)
 function no_label_result()
 {
   label_result_info = null;
+  add_label_button.attr('disabled', true);
 }
 
 function build_label_filter()
@@ -872,6 +875,7 @@ function build_label_filter()
 function new_label_result(label)
 {
   label_result_info = label;
+  add_label_button.removeAttr('disabled');
 }
 
 function push_new_column_label()
@@ -1131,6 +1135,7 @@ $(function () {
     });
     
     // label result
+    no_label_result();
     label_result.autocomplete_labels('searchable');
     label_result.autocompleteEmpty(no_label_result);
     label_result.result(function (event, data, formatted) {
