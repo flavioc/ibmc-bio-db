@@ -75,15 +75,15 @@ $(function () {
 
 <div id="operator_box">
 {form_open to='#' name=and_form}
-{form_submit name=submit msg='Add AND'}
+{form_submit msg='Add AND'}
 {form_end}
 
 {form_open to='#' name=or_form}
-{form_submit name=submit msg='Add OR'}
+{form_submit msg='Add OR'}
 {form_end}
 
 {form_open to='#' name=not_form}
-{form_submit name=submit msg='Add NOT'}
+{form_submit msg='Add NOT'}
 {form_end}
 </div>
 

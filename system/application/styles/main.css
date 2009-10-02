@@ -1,8 +1,9 @@
 body {
-  font: 14px/1.2 Verdana, Arial, Helvetica, sans-serif;
+  font-family: Helvetica, Arial, Helvetica, sans-serif;
   background: #ddd;
   padding: 0px;
   margin: 0px;
+  font-size: 12pt;
 }
 
 a {
@@ -15,34 +16,39 @@ h2 {
   font-size: 18pt;
 }
 
+h3 {
+  font-size: 16pt;
+}
+
+h1, h2, h3, h4 {
+  font-family: Arial, Helvetica,Verdana, Arial;
+}
+
 body>div#leftmenu {
-  margin-left: 50px;
-  margin-top: 15px;
   margin-bottom: 20px;
-  width: 205px;
+  width: 195px;
   background: #fff;
   border: 1px solid #000;
-  padding-right: 10px;
-  padding-left: 10px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 20px;
   float:left;
-  
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
+}
+
+body>div#content, body>div#footer, body>div#top {
+  margin-right: 30px;
+}
+
+body>div#leftmenu, body>div#content {
+  margin-top: 10px;
 }
 
 body>div#content, body>div#footer {
-  margin-top: 15px;
   background:#fff;
-  margin-left: 285px;
-  margin-right: 50px;
+  margin-left: 245px;
   border: 1px solid #000;
   margin-bottom: 15px;
   padding-left: 25px;
-  
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
 }
 
 body>div#content {
@@ -63,25 +69,19 @@ body>div#footer {
   vertical-align: middle;
 }
 
+body>div#top, body>div#leftmenu {
+  margin-left: 30px;
+}
+
 body>div#top {
   background: #fff;
   border: 1px solid #000;
   margin-top: 30px;
-  margin-left: 50px;
-  margin-right: 50px;
   voice-family: "\"}\"";
   voice-family: inherit;
   height: 120px;
   padding-left: 10px;
   position: relative;
-  
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-  -webkit-border-radius: 15px;
-  
-  -moz-box-shadow: 0.6em 0.6em 0.5em darkgrey;
-  -webkit-box-shadow: 0.6em 0.6em 0.5em darkgrey;
-  box-shadow: 0.6em 0.6em 0.5em darkgrey;
 }
 
 body>div#top #left_top {
@@ -108,7 +108,6 @@ body>div#top #right_top {
 }
 
 body>div#top h1 {
-  font-family: Verdana, Arial;
   margin-top: 10px;
   margin-bottom: 5px;
   font-size: 40pt;
@@ -306,33 +305,34 @@ table.fixed_table {
 
 input[type=text], input[type=password], input[type=file], textarea, select {
   padding: 0;
-  border: solid 1px #cc0000;
-  background: white;
-  font-size: 110%;
+  border: solid 1px black;
+  background: #F8F8FF;
+  font-size: 100%;
+}
+
+input, textarea, select {
+  font-family: Arial;
 }
 
 input[type=text]:hover, input[type=password]:hover, input[type=file]:hover, textarea:hover, select:hover {
   background: #E0EEEE;
-  -moz-box-shadow: 0 0 0.4em red;
-  -webkit-box-shadow: 0 0 0.4em red;
-  box-shadow: 0 0 0.4em red;
-}
-
-input[disabled], select[disabled] {
-  background: lightgrey;
 }
 
 input[type=submit] {
-  background: #C1CDCD;
-  border: solid 1px #cc0000;
+  background: #F8F8FF;
+  border: solid 1px black;
   color: black;
+  font-size: 100%;
   cursor: pointer;
-  font-size: 110%;
 }
 
 input[type=submit]:hover {
   color: white;
   background: #cc0000;
+}
+
+input[disabled], select[disabled] {
+  background: lightgrey;
 }
 
 div#leftmenu ul {
@@ -343,19 +343,20 @@ div#leftmenu ul {
 }
 
 div#leftmenu ul#main_menu {
-  margin-left: 15px;
-  margin-top: 20px;
   margin-bottom: 20px;
-  width: 170px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 div#leftmenu ul li {
   position: relative;
+  margin-bottom: 1px;
 }
 
 div#leftmenu li ul {
   position: absolute;
-  left: 170px;
+  left: 175px;
   top: 0;
   display: none;
 }
@@ -379,20 +380,13 @@ div#leftmenu ul li a {
 }
 
 div#leftmenu ul li ul, div#leftmenu ul li a:hover {
-  -moz-box-shadow: 0 0 0.7em red;
-  -webkit-box-shadow: 0 0 0.7em red;
-  box-shadow: 0 0 0.7em red;
+  
 }
 
 div#leftmenu li:hover ul, div#leftmenu li ul li:hover ul { display: block; }
 div#leftmenu li:hover li ul { display: none; }
 
-h1 {
-  text-shadow: 2px 2px 2px darkgrey;
-}
-
 p.image-para {
-  border: 1px solid black;
   width: 95%;
   margin-top: 40px;
 }
@@ -400,11 +394,11 @@ p.image-para {
 p.image-para img {
   vertical-align: top;
   margin: 10px;
-  border: 1px dotted black;
+  border: 1px solid black;
 }
 
 p.image-para img:hover {
-  border: 2px solid #c00;
+  border: 5px double #c00;
 }
 
 .small-button {
@@ -413,7 +407,7 @@ p.image-para img:hover {
   padding-right: 4px;
   padding-top:0;
   text-decoration: none;
-  background: #CDCDCD;
+  background: #F8F8FF;
   border: solid 1px #cc0000;
 }
 

@@ -68,7 +68,7 @@ label.search-desc {
 }
 
 .search-expand {
-  background: lightgray;
+  background: #FFFFFE;
   margin: 5px 5px 5px 5px;
   padding: 5px 5px 5px 5px;
   width: 95%;
@@ -83,21 +83,16 @@ label.search-desc {
   border-left: 0;
 }
 
-.search-expand[level="1"] {
-  border: 0px solid black;
-  background: darkgray;
+.search-expand[level="2"], .search-expand[level="3"] {
+  border: 1px dotted black;
 }
-
-.search-expand[level="2"] { background: #888888; }
-.search-expand[level="3"] { background: #A8A8A8; }
-.search-expand[level="4"] { background: #C8C8C8; }
 
 #search_tree, #search_human {
   margin-left: 10px;
   margin-bottom: 15px;
-  border: 4px solid black;
+  border: 1px solid black;
   width: 95%;
-  background: darkgray;
+  background: #FFFFFE;
   padding: 0px;
 }
 
