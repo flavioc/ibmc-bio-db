@@ -45,7 +45,7 @@ class Search extends BioController
     }
     
     $this->smarty->assign('type', $type);
-    $this->smarty->view('sequence/search');
+    $this->smarty->view('search/index');
   }
   
   public function get_search()
@@ -127,7 +127,7 @@ class Search extends BioController
     $this->smarty->load_stylesheets('operations.css');
     $this->smarty->assign('title', 'Delete results');
     $this->use_mygrid();
-    $this->smarty->view('sequence/delete_results');
+    $this->smarty->view('search/delete_results');
   }
   
   public function do_delete_results()
@@ -165,7 +165,7 @@ class Search extends BioController
     $this->smarty->load_stylesheets('operations.css');
     $this->smarty->assign('total', $total);
     
-    $this->smarty->view('sequence/delete_results_report'); 
+    $this->smarty->view('search/delete_results_report'); 
   }
   
   public function delete_label()
@@ -194,7 +194,7 @@ class Search extends BioController
     $this->smarty->assign('transform', $transform);
 
     $this->smarty->assign('title', 'Multiple delete label');
-    $this->smarty->view('sequence/multiple_delete_label');
+    $this->smarty->view('search/multiple_delete_label');
   }
   
   public function add_label()
@@ -234,14 +234,14 @@ class Search extends BioController
     $this->smarty->assign('mode', $mode);
     $this->smarty->assign('encoded', $encoded);
 
-    $this->smarty->view('sequence/multiple_add_label');
+    $this->smarty->view('search/multiple_add_label');
   }
   
   public function ref()
   {
     $this->load->model('user_model');
     $this->smarty->assign('users', $this->user_model->get_users_all());
-    $this->smarty->view_s('sequence/search_ref');
+    $this->smarty->view_s('search/ref');
   }
 
   public function tax()
@@ -255,7 +255,7 @@ class Search extends BioController
     $this->smarty->assign('ranks', $ranks);
     $this->smarty->assign('trees', $trees);
 
-    $this->smarty->view_s('sequence/search_tax');
+    $this->smarty->view_s('search/tax');
   }
   
   public function get_histogram()
