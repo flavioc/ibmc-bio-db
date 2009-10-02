@@ -175,7 +175,7 @@ class Label_sequence_model extends BioModel
     $rows = $this->get_all('label_sequence_info');
     
     if(count($rows) == 0)
-      return 'Empty';
+      return null;
     
     $value = array();
     

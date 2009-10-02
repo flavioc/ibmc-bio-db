@@ -189,3 +189,11 @@ span.compound-operator {
 #term_form fieldset {
   padding-top: 10px;
 }
+
+#label_box {
+  font-size: 85%;
+}
+
+#transform_box, #generate_histogram_box {
+  font-size: 90%;
+}

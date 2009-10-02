@@ -311,10 +311,6 @@ input[type=text], input[type=password], input[type=file], textarea, select {
   font-size: 110%;
 }
 
-input[type=text], input[type=password], input[type=file] {
-  height: 23px;
-}
-
 input[type=text]:hover, input[type=password]:hover, input[type=file]:hover, textarea:hover, select:hover {
   background: #E0EEEE;
   -moz-box-shadow: 0 0 0.4em red;

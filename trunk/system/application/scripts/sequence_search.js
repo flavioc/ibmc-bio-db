@@ -43,6 +43,8 @@ var histogram_label = null;
 var histogram_button = null;
 var generate_histogram_type = null;
 var label_result = null;
+var label_result_info = null;
+var add_label_button = null;
 var shown_labels = [];
 var search_type = 'all';
 
@@ -835,14 +837,12 @@ function restore_aux(obj, ol)
 function no_histogram_label()
 {
   histogram_label = null;
-  histogram_button.hide();
   generate_histogram_type.hide();
 }
 
 function new_histogram_label(label)
 {
   histogram_label = label;
-  histogram_button.show();
   $('input[name=histogram_label]').val(label.id);
   if(label.multiple == '1')
     generate_histogram_type.show();
@@ -852,6 +852,7 @@ function new_histogram_label(label)
 
 function no_label_result()
 {
+  label_result_info = null;
 }
 
 function build_label_filter()
@@ -870,6 +871,16 @@ function build_label_filter()
 
 function new_label_result(label)
 {
+  label_result_info = label;
+}
+
+function push_new_column_label()
+{
+  var label = label_result_info;
+
+  if(!label)
+    return;
+
   if(show_seqs.gridHasColumn(label.name))
     return false;
   
@@ -925,6 +936,9 @@ function label_data_transform(label_data, type, name)
     return null;
     
   var ret = '';
+  
+  if(typeof label_data == 'string')
+    return label_data;
     
   if(label_data.length == 1) {
     return get_label_field_data(label_data[0], type, name);
@@ -1019,6 +1033,7 @@ $(function () {
     histogram_button = $('#show_histogram_button');
     generate_histogram_type = $('#generate_histogram_type');
     label_result = $('#label_result');
+    add_label_button = $('#add_label_button');
     
     select_transform.change(update_transform);
     
@@ -1136,6 +1151,11 @@ $(function () {
       return false;
     });
     
+    add_label_button.click(function () {
+      push_new_column_label();
+      return false;
+    });
+    
     // generate label autocomplete input
     var label_hist = $('#generate_label');
     
@@ -1163,6 +1183,9 @@ $(function () {
     });
     
     $('#generate_histogram_form').ajaxForm({
+      beforeSubmit: function () {
+        return histogram_label != null;
+      },
       success: function (data) {
         // HACK to show page data into the thickbox
         tb_show('Histogram', '#TB_inline?inlineId=histogram_data&width=700&height=500');

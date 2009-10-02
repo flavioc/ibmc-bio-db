@@ -136,10 +136,6 @@ $(function () {
     {form_submit msg='Show' id='show_histogram_button'}
   {form_end}
 </div>
-<div id="label_box">
-  <label for="label_result" class="search-desc">Show label: </label>
-  {form_input name=label_result size=10}
-</div>
 </fieldset>
 
 <h3>Operations</h3>
@@ -182,6 +178,14 @@ $(function () {
 
 <h3>Preview</h3>
 <p>
+<div id="label_box">
+  {form_open to='#' name=add_label_form}
+  <label for="label_result" class="search-desc">Add label: </label>
+  {form_input name=label_result size=10}
+  {form_submit msg='Add' id='add_label_button'}
+  {form_end}
+</div>
+
 <div id="show_sequences"></div>
 </p>
 
