@@ -64,14 +64,7 @@ define('SEQUENCE_SPACING', 40);
 
 function sequence_split($content, $separator = "\n")
 {
-  $size = strlen($content);
-
-  $ret = '';
-  for($i = 0; $i < $size; $i = $i + SEQUENCE_SPACING) {
-    $ret .= substr($content, $i, SEQUENCE_SPACING) . $separator;
-  }
-
-  return $ret;
+  return split_string($content, SEQUENCE_SPACING, $separator);
 }
 
 function sequence_join($content)

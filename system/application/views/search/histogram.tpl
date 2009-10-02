@@ -48,7 +48,7 @@ $(function () {
   {/if}
   <tr>
     <td>Mode</td>
-    <td>{$mode}</td>
+    <td>{split_value val=$mode}</td>
   </tr>
 </table>
 
