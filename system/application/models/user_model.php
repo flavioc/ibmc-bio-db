@@ -45,11 +45,6 @@ class User_model extends BioModel
       return null;
     }
 
-    if($data['birthday']) {
-      $this->load->helper('date_utils');
-      $data['birthday'] = convert_sql_date_to_html($data['birthday']);
-    }
-
     return $data;
   }
 
@@ -61,26 +56,6 @@ class User_model extends BioModel
   public function get_user_by_id($id)
   {
     return $this->_get_user('id', $id);
-  }
-
-  private function _get_user_image($key, $value)
-  {
-    $this->db->select('image');
-    $this->db->where('image IS NOT NULL');
-    $this->db->where('enabled', TRUE);
-    $array = $this->get_row($key, $value);
-
-    return imagecreatefromstring(stripslashes($array['image']));
-  }
-
-  public function get_user_image_by_id($id)
-  {
-    return $this->_get_user_image('id', $id);
-  }
-
-  public function get_user_image_by_name($name)
-  {
-    return $this->_get_user_image('name', $name);
   }
 
   public function user_exists($name)
@@ -97,7 +72,7 @@ class User_model extends BioModel
   }
 
   public function new_user($name, $complete_name, $email,
-    $birthday, $password, $image)
+    $password)
   {
     $name = trim($name);
     if(strlen($name) <= 0 || strlen($name) > 32 || $this->username_used($name)) {
@@ -128,20 +103,11 @@ class User_model extends BioModel
       }
     }
 
-    if($birthday != null) {
-      $this->load->helper('date_utils');
-      $data['birthday'] = convert_html_date_to_sql(trim($birthday));
-    }
-
-    if($image != null) {
-      $data['image'] = $image;
-    }
-
     return $this->insert_data_with_history($data);
   }
 
-  public function edit_user($id, $complete_name, $email, $birthday,
-    $imagecontent, $new_password)
+  public function edit_user($id, $complete_name, $email,
+    $new_password)
   {
     $complete_name = trim($complete_name);
     if(strlen($complete_name) > 512) {
@@ -157,15 +123,6 @@ class User_model extends BioModel
       'complete_name' => $complete_name,
       'email' => $email,
     );
-
-    if($birthday) {
-      $this->load->helper('date_utils');
-      $data['birthday'] = convert_html_date_to_sql(trim($birthday));
-    }
-
-    if($imagecontent) {
-      $data['image'] = $imagecontent;
-    }
 
     $new_password = trim($new_password);
     if($new_password && strlen($new_password) > 0) {

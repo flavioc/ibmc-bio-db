@@ -24,17 +24,11 @@
           required: false,
           minlength: 6,
           equalTo: "#password1"
-        },
-        image: {
-          accept: "bmp|png|jpg|gif"
         }
       },
       messages: {
-        image: {
-          accept: "Please enter a valid image file."
-        }
       },
-      errorPlacement: birthdayErrorPlacement
+      errorPlacement: basicErrorPlacement
     });
   });
 {/literal}

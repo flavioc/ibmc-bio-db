@@ -178,7 +178,9 @@ $(function () {
 
 <p>
 {form_open name=form_search}
+<fieldset>
 {form_row type=select data=$trees name=tree msg='Tree:' blank=yes start=$start_tree}
+</fieldset>
 {form_submit name=submit_search msg=Search}
 {form_end}
 </p>

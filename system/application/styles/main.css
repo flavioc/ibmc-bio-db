@@ -189,7 +189,7 @@ body>div#leftmenu form
 }
 
 div.data_show, fieldset {
-  border: dotted 1px black;
+  border: solid 1px black;
   margin-right: 20px;
 }
 

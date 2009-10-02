@@ -33,7 +33,6 @@ class Welcome extends BioController
 
       $this->smarty->assign('complete_name', $userdata['complete_name']);
       $this->smarty->assign('email', $userdata['email']);
-      $this->smarty->assign('birthday', $userdata['birthday']);
     }
 
     $this->smarty->view('welcome_message');
