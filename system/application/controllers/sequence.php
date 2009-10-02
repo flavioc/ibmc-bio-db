@@ -201,127 +201,210 @@ class Sequence extends BioController
     
     return null;
   }
+  
+  private function __show_batch_report()
+  {
+    $this->smarty->load_stylesheets(MYGRID_THEME);
+    $this->smarty->assign('title', 'Batch import');
+    $this->smarty->view('sequence/batch_report');
+  }
+  
+  private function __batch_init()
+  {
+    $this->load->library('upload', $this->__get_sequence_upload_config());
+    $this->load->library('SequenceImporter');
+    $this->load->library('SeqSearchTree');
+  }
+  
+  private function __batch_import_and_show($info, $n)
+  {
+    list($seqs, $labels) = $info->import();
+  
+    $this->smarty->assign("sequences$n", $seqs);
+    $this->smarty->assign("labels$n", $labels);
+    $search_tree = $this->seqsearchtree->get_tree($seqs);
+    $search_tree_get = json_encode($search_tree);
+    $this->smarty->assign("search_tree_get$n", $search_tree_get);
+  }
+  
+  private function __do_add_batch_none()
+  {
+    $this->__batch_init();
+    
+    $file = $this->__get_sequence_upload('file');
+    if(!$file) {
+      $this->set_upload_form_error('file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $info = $this->sequenceimporter->import_file($file);
+    unlink($file);
+    
+    if(!$info) {
+      $this->set_form_error('file', 'Error reading file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $this->__batch_import_and_show($info, 1);
+    $this->__show_batch_report();
+  }
+  
+  private function __do_add_batch_generate()
+  {
+    $this->__batch_init();
+    
+    $file1 = $this->__get_sequence_upload('file');
+    $file2 = $this->__get_sequence_upload('file2');
+    
+    if(!$file1 || !$file2) {
+      if($file1)
+        unlink($file1);
+      if($file2)
+        unlink($file2);
+      if(!$file1)
+        $this->set_upload_form_error('file');
+      if(!$file)
+        $this->set_upload_form_error('file2');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $info1 = $this->sequenceimporter->import_file($file1);
+    unlink($file1);
+    
+    if(!$info1) {
+      $this->set_form_error('file', 'Error reading file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if(!$info1->all_dna()) {
+      $this->set_form_error('file', 'All sequences should be DNA sequences');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $file2 = $info1->convert_protein_file();
+    
+    if(!$file2) {
+      $this->set_form_error('file', 'Error generating protein file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $info2 = $this->sequenceimporter->import_file($file2);
+    unlink($file2);
+    
+    if(!$info2) {
+      $this->set_form_error('file2', 'Error reading file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if(!$info2->all_protein()) {
+      $this->set_form_error('file', 'All sequences must be protein sequences');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if(!$info1->duo_match($info2)) {
+      $this->set_form_error('file', 'Sequence files must have the same number of sequences');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $this->__batch_import_and_show($info1, 1);
+    $this->__batch_import_and_show($info2, 2);
+    
+    $info1->link_sequences($info2);
+    
+    $this->__show_batch_report();
+  }
+  
+  private function __do_add_batch_duo()
+  {
+    $this->__batch_init();
+    
+    $file1 = $this->__get_sequence_upload('file');
+    $file2 = $this->__get_sequence_upload('file2');
+    
+    if(!$file1 || !$file2) {
+      if($file1)
+        unlink($file1);
+      if($file2)
+        unlink($file2);
+      if(!$file1)
+        $this->set_upload_form_error('file');
+      if(!$file)
+        $this->set_upload_form_error('file2');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $info1 = $this->sequenceimporter->import_file($file1);
+    unlink($file1);
+    
+    if(!$info1) {
+      unlink($file2);
+      $this->set_form_error('file', 'Error reading file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if(!$info1->all_dna()) {
+      unlink($file2);
+      $this->set_form_error('file', 'All sequences should be DNA sequences');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    $info2 = $this->sequenceimporter->import_file($file2);
+    unlink($file2);
+    
+    if(!$info2) {
+      $this->set_form_error('file2', 'Error reading file');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if(!$info2->all_protein()) {
+      $this->set_form_error('file', 'All sequences must be protein sequences');
+      redirect('sequence/add_batch');
+      return;
+    }
+    
+    if(!$info1->duo_match($info2)) {
+      $this->set_form_error('file', "Sequence files must have the same number of sequences");
+      redirect('sequence/add_batch');
+      return;
+    }
+  
+    $this->__batch_import_and_show($info1, 1);
+    $this->__batch_import_and_show($info2, 2);
+      
+    $info1->link_sequences($info2);
+  
+    $this->__show_batch_report();
+  }
 
   public function do_add_batch()
   {
     if(!$this->logged_in) {
       return $this->invalid_permission();
     }
-
-    $this->load->library('upload', $this->__get_sequence_upload_config());
+    
     $option = $this->get_post('upload_option');
-    $is_duo = ($option == 'duo');
-    $is_generate = ($option == 'generate');
-    $to_link = ($is_duo || $is_generate);
     
-    $file1 = $this->__get_sequence_upload('file');
-    if(!$file1) {
-      $this->set_upload_form_error('file');
-      redirect('sequence/add_batch');
-      return;
+    switch($option) {
+      case 'none':
+        return $this->__do_add_batch_none();
+      case 'duo':
+        return $this->__do_add_batch_duo();
+      case 'generate':
+        return $this->__do_add_batch_generate();
     }
-    
-    if($is_duo) {
-      $file2 = $this->__get_sequence_upload('file2');
-      if(!$file2) {
-        unlink($file1);
-        $this->set_upload_form_error('file2');
-        redirect('sequence/add_batch');
-        return;
-      }
-      
-      if($file1 == $file2) {
-        unlink($file1);
-        $this->set_form_error('file', 'The files are the same');
-        redirect('sequence/add_batch');
-        return;
-      }
-    }
-
-    $this->load->library('SequenceImporter');
-    $this->load->library('SeqSearchTree');
-    
-    $info1 = $this->sequenceimporter->import_file($file1);
-    unlink($file1);
-    
-    if($to_link) {
-      if(!$info1->all_dna()) {
-        if($is_duo) {
-          unlink($file2);
-        }
-        $this->set_form_error('file', 'All sequences should be DNA sequences');
-        redirect('sequence/add_batch');
-        return;
-      }
-    }
-    
-    if($is_generate) {
-      $is_duo = true;
-      $file2 = $info1->convert_protein_file();
-      
-      if(!$file2) {
-        $this->set_form_error('file', 'Error generating protein file');
-        redirect('sequence/add_batch');
-        return;
-      }
-    }
-    
-    if($is_duo) {
-      $info2 = $this->sequenceimporter->import_file($file2);
-      unlink($file2);
-      
-      if(!$info2->all_protein()) {
-        $this->set_form_error('file', 'All sequences must be protein sequences');
-        redirect('sequence/add_batch');
-        return;
-      }
-    } else {
-      $info2 = null;
-    }
-    
-    if(!$info1 || ($is_duo && !$info2)) {
-      if(!$info1) {
-        $this->set_form_error('file', 'Error reading file');
-      }
-      if($is_duo && !$info2) {
-        $this->set_form_error('file2', 'Error reading file');
-      }
-      redirect('sequence/add_batch');
-      return;
-    }
-    
-    if($is_duo) {
-      if(!$info1->duo_match($info2)) {
-        $this->set_form_error('file', "Sequence files must have the same number of sequences");
-        redirect('sequence/add_batch');
-        return;
-      }
-    }
-    
-    list($seqs, $labels) = $info1->import();
-  
-    $this->smarty->assign('sequences', $seqs);
-    $this->smarty->assign('labels', $labels);
-    $search_tree1 = $this->seqsearchtree->get_tree($seqs);
-    $search_tree_get1 = json_encode($search_tree1);
-    $this->smarty->assign('search_tree_get1', $search_tree_get1);
-    $this->smarty->assign('is_duo', $is_duo);
-    
-    if($is_duo) {
-      list($seqs2, $labels2) = $info2->import();
-      
-      $this->smarty->assign('sequences2', $seqs2);
-      $this->smarty->assign('labels2', $labels2);
-      $search_tree2 = $this->seqsearchtree->get_tree($seqs2);
-      $search_tree_get2 = json_encode($search_tree2);
-      $this->smarty->assign('search_tree_get2', $search_tree_get2);
-      
-      $info1->link_sequences($info2);
-    }
-  
-    $this->smarty->load_stylesheets(MYGRID_THEME);
-    $this->smarty->assign('title', 'Batch import');
-    $this->smarty->view('sequence/batch_report');
   }
 
   public function add()
