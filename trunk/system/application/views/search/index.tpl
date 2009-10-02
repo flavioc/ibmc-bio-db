@@ -116,7 +116,6 @@ $(function () {
 
 </div>
 
-<fieldset>
 <div id="transform_box">
   <label for="select_transform" class="search-desc">Transform results: </label>
   {form_select blank=yes name=select_transform start=0 data=$refs key=id}
@@ -136,7 +135,6 @@ $(function () {
     {form_submit msg='Show' id='show_histogram_button'}
   {form_end}
 </div>
-</fieldset>
 
 <h3>Operations</h3>
 
