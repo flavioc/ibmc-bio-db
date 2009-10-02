@@ -127,6 +127,36 @@ class Sequence_model extends BioModel
     return $this->get_field($id, 'content');
   }
   
+  public function get_creation_user($id)
+  {
+    return $this->get_field($id, 'creation_user_name', 'sequence_info_history');
+  }
+  
+  public function get_creation_user_id($id)
+  {
+    return $this->get_field($id, 'creation_user_id', 'sequence_info_history');
+  }
+  
+  public function get_update_user($id)
+  {
+    return $this->get_field($id, 'user_name', 'sequence_info_history');
+  }
+  
+  public function get_update_user_id($id)
+  {
+    return $this->get_field($id, 'update_user_id', 'sequence_info_history');
+  }
+  
+  public function get_creation_date($id)
+  {
+    return $this->get_field($id, 'creation', 'sequence_info_history');
+  }
+  
+  public function get_update_date($id)
+  {
+    return $this->get_field($id, 'update', 'sequence_info_history');
+  }
+  
   public function get_content_length($id)
   {
     $this->db->select('CHAR_LENGTH(content) AS length', FALSE);

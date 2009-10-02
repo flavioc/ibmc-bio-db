@@ -127,7 +127,7 @@ $(function () {
     {form_hidden name=transform_hidden value=null}
     {form_hidden name=histogram_label value=null}
     <label for="generate_histogram" class="search-desc">Generate histogram: </label>
-    {form_input name=generate_label}
+    {form_input name=generate_label size=10}
     <select name="generate_histogram_type" id="generate_histogram_type">
       <option value="avg">avg</option>
       <option value="max">max</option>
@@ -135,6 +135,10 @@ $(function () {
     </select>
     {form_submit msg='Show' id='show_histogram_button'}
   {form_end}
+</div>
+<div id="label_box">
+  <label for="label_result" class="search-desc">Show label: </label>
+  {form_input name=label_result size=10}
 </div>
 </fieldset>
 

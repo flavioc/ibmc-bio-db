@@ -41,6 +41,22 @@
 
     return false;
   }
+  
+  function is_deletable_column(opts, column)
+  {
+    var ret = false;
+    
+    $.each(opts.deletableColumns, function (i, field) {
+      if(field == column) {
+        ret = true;
+        return false;
+      }
+      
+      return true;
+    });
+    
+    return ret;
+  }
 
   function get_fields(opts, row)
   {
@@ -235,6 +251,21 @@
         });
     });
   }
+  
+  function activate_column_deletion(opts, obj) {
+    $('.delete-column', obj).click(function () {
+      var $this = $(this);
+      var column = $this.attr('field');
+      var hook = opts.deletableColumnsHook[column];
+      
+      obj.gridRemoveColumn(column);
+      
+      if(hook)
+        hook(column);
+        
+      obj.gridReload();
+    });
+  }
 
   function activate_edition(opts, obj, table) {
     var id = obj[0].id;
@@ -308,9 +339,11 @@
       var field_name = fields[i];
       var order = opts.ordering[field_name];
 
-      if(order != null) {
-        inner = '<a id="ordering_' + id + '_' + fields[i] + '" href="#">' + inner + '</a>';
-      }
+      if(order != null)
+        inner = '<a id="ordering_' + id + '_' + field_name + '" href="#">' + inner + '</a>';
+      
+      if(is_deletable_column(opts, field_name))
+        inner += '<span class="delete-column" field="' + field_name + '">x</span>';
 
       ret[i] = {
         tagName: 'th',
@@ -444,6 +477,7 @@
     table.fadeIn();
     activate_edition(opts, obj, table);
     activate_ordering(opts, obj);
+    activate_column_deletion(opts, obj);
 
     if(opts.clickFun) {
       $.each(opts.clickFun, function (key, value) {
@@ -560,6 +594,13 @@ $.fn.gridColumnFilter = function(column, what) {
 
 $.fn.gridFilter = $.fn.gridColumnFilter;
 
+$.fn.gridGetFilter = function (column) {
+  var first = this[0];
+  var opts = first.opts;
+  
+  return opts.params[column];
+};
+
 $.fn.gridReload = function () {
   return this.each(function () {
       var $this = $(this);
@@ -603,6 +644,85 @@ $.fn.gridShowColumn = function(column) {
     
     obj.show();
   });
+};
+
+$.fn.gridAddColumn = function (field, fieldName, transform) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+    
+    if($this.gridHasColumn(field))
+      return true;
+      
+    opts.fields.push(field);
+    opts.fieldNames.push(fieldName);
+    
+    if(transform)
+      opts.dataTransform[field] = transform;
+  });
+};
+
+$.fn.gridColumnSetDeletable = function (field, hook) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+    
+    if(!is_deletable_column(opts, field))
+      opts.deletableColumns.push(field);
+      
+    if(hook)
+      opts.deletableColumnsHook[field] = hook;
+  })
+};
+
+$.fn.gridRemoveColumn = function (field) {
+  return this.each(function () {
+    var $this = $(this);
+    var opts = this.opts;
+    
+    if(!$this.gridHasColumn(field))
+      return false;
+      
+    var field_pos = -1;
+    
+    $.each(opts.fields, function (i, name) {
+      if(name == field) {
+        field_pos = i;
+        return false;
+      }
+      
+      return true;
+    });
+    
+    if(field_pos == -1)
+      return false;
+      
+    opts.fields = $.grep(opts.fields, function (n, i) {
+      return i != field_pos;
+    });
+    
+    opts.fieldNames = $.grep(opts.fieldNames, function (n, i) {
+      return i != field_pos;
+    });
+    
+    return true;
+  });
+}
+
+$.fn.gridHasColumn = function (column) {
+  var first = this[0];
+  var has_field = false;
+  
+  $.each(first.opts.fields, function (i, field) {
+    if(field == column) {
+      has_field = true;
+      return false;
+    }
+    
+    return true;
+  });
+  
+  return has_field;
 };
 
 $.fn.gridShowDefault = function (type) {
@@ -809,6 +929,8 @@ $.fn.grid.defaults = {
   width: {},
   ordering: {},
   params: {},
+  deletableColumns: [],
+  deletableColumnsHook: {},
   ajax_method: 'get'
 }
 

@@ -126,6 +126,85 @@ class Label_sequence_model extends BioModel
     return label_get_type_data($data);
   }
   
+  public function get_instances_info($seq_id, $label_id, $only_public = false)
+  {
+    $label_model = $this->load_model('label_model');
+    $name = $label_model->get_name($label_id);
+    
+    if(label_special_purpose($name)) {
+      $seq_model = $this->load_model('sequence_model');
+      $ret = array();
+      
+      switch($name) {
+        case 'name':
+          $value = $seq_model->get_name($seq_id);
+          break;
+        case 'content':
+          $value = $seq_model->get_content($seq_id);
+          break;
+        case 'creation_user':
+          $value = $seq_model->get_creation_user($seq_id);
+          $ret['id'] = $seq_model->get_creation_user_id($seq_id);
+          break;
+        case 'update_user':
+          $value = $seq_model->get_update_user($seq_id);
+          $ret['id'] = $seq_model->get_update_user_id($seq_id);
+          break;
+        case 'creation_date':
+          $value = $seq_model->get_creation_date($seq_id);
+          break;
+        case 'update_date':
+          $value = $seq_model->get_update_date($seq_id);
+          break;
+        default:
+          $value = '';
+          break;
+      }
+      
+      $ret['string'] = $value;
+      
+      return array($ret);
+    }
+    
+    $this->db->select('id, param, `type`, ' . self::$label_data_fields, FALSE);
+    $this->db->where('seq_id', $seq_id);
+    $this->db->where('label_id', $label_id);
+    if($only_public)
+      $this->db->where('public IS TRUE');
+    
+    $rows = $this->get_all('label_sequence_info');
+    
+    if(count($rows) == 0)
+      return 'Empty';
+    
+    $value = array();
+    
+    foreach($rows as &$row) {
+      $new = array('string' => label_get_printable_string($row));
+      
+      switch($row['type']) {
+        case 'ref':
+          $new['id'] = $row['ref_data'];
+          break;
+        case 'tax':
+          $new['id'] = $row['taxonomy_data'];
+          break;
+        case 'obj':
+          $new['id'] = $row['id'];
+          break;
+      }
+      
+      $param = $row['param'];
+      if($param) {
+        $new['param'] = $param;
+      }
+      
+      $value[] = $new;
+    }
+    
+    return $value;
+  }
+  
   // locate sequence id which contains a label with data
   public function get_reverse_data($name_label, $data)
   {

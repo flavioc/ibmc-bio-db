@@ -259,6 +259,39 @@ function label_valid_type($type)
   return false;
 }
 
+function label_get_printable_string($row, $type = null)
+{
+  if($type == null) {
+    $type = $row['type'];
+  }
+  
+  $data = label_get_type_data($row);
+  $ret = null;
+  
+  switch($type) {
+    case 'position':
+      $ret = $data[0] . ' ' . $data[1];
+      break;
+    case 'bool':
+      $ret = parse_yes_r_full($data);
+      break;
+    case 'tax':
+      $ret = $row['taxonomy_name'];
+      break;
+    case 'ref':
+      $ret = $row['sequence_name'];
+      break;
+    case 'obj':
+      $ret = $data[0];
+      break;
+    default:
+      $ret = $data;
+      break;
+  }
+  
+  return $ret;
+}
+
 function label_type_is_printable($type)
 {
   switch($type) {
