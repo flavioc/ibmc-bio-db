@@ -60,7 +60,7 @@ class Export extends BioController
     $all = $this->label_sequence_model->get_all_labels($seqs);
     $this->smarty->assign('labels', $all);
 
-    $this->smarty->view('sequence/export_search');
+    $this->smarty->view('export/search');
   }
   
   public function export_one()

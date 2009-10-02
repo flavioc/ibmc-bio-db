@@ -52,7 +52,7 @@ $(document).ready(function() {
 
 {form_open to='export/export_one' name=export_form}
 {form_hidden name=id value=$sequence.id}
-{include file=sequence/export_types.tpl}
+{include file=export/types.tpl}
 {form_submit name=submit msg='Export'}
 {form_end}
 
