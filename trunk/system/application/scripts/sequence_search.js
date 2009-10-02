@@ -880,7 +880,7 @@ function new_label_result(label)
     function (row) {
       var data = row[label.name];
       
-      return label_data_transform(data, label.type);
+      return label_data_transform(data, label.type, label.name);
     });
     
   show_seqs.gridColumnSetDeletable(label.name, function () {
@@ -895,7 +895,7 @@ function new_label_result(label)
   show_seqs.gridReload();
 }
 
-function get_label_field_data(data, type)
+function get_label_field_data(data, type, name)
 {
   var MAX_LABEL_TEXT = 40;
   
@@ -907,6 +907,9 @@ function get_label_field_data(data, type)
     case 'obj':
       return '<a href="' + get_app_url() + '/label_sequence/download_label/' + data.id + '">' + data.string + '</a>';
     case 'text':
+      if(name == 'creation_user' || name == 'update_user')
+        return '<a href="' + get_app_url() + '/profile/view/' + data.id + '">' + data.string + '</a>';
+      
       if(data.string.length > MAX_LABEL_TEXT)
         return split_string_html(data.string, MAX_LABEL_TEXT);
       else
@@ -916,7 +919,7 @@ function get_label_field_data(data, type)
   }
 }
 
-function label_data_transform(label_data, type)
+function label_data_transform(label_data, type, name)
 {
   if(!label_data)
     return null;
@@ -924,7 +927,7 @@ function label_data_transform(label_data, type)
   var ret = '';
     
   if(label_data.length == 1) {
-    return get_label_field_data(label_data[0], type);
+    return get_label_field_data(label_data[0], type, name);
   } else {
     var ret = '(';
     
