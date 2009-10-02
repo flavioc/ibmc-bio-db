@@ -1184,9 +1184,17 @@ $(function () {
     
     $('#generate_histogram_form').ajaxForm({
       beforeSubmit: function () {
-        return histogram_label != null;
+        if(histogram_label == null)
+          return false;
+        
+        $.blockLoadingUI();
+        
+        return true;
       },
       success: function (data) {
+        
+        $.unblockUI();
+        
         // HACK to show page data into the thickbox
         tb_show('Histogram', '#TB_inline?inlineId=histogram_data&width=700&height=500');
       },
