@@ -1140,7 +1140,7 @@ $(function () {
     var label_hist = $('#generate_label');
     
     no_histogram_label();
-    label_hist.autocomplete_labels('addable');
+    label_hist.autocomplete_labels('searchable');
     label_hist.autocompleteEmpty(no_histogram_label);
     label_hist.result(function (event, data, formatted) {
       var name = data;
@@ -1199,8 +1199,8 @@ $(function () {
     params: {
       search: function () { return get_start_search_param(); }
     },
-    fieldNames: ['Name', 'Last update', 'User'],
-    fields: ['name', 'update', 'user_name'],
+    fieldNames: ['Name'],
+    fields: ['name'],
     tdClass: {user_name: 'centered', update: 'centered'},
     width: {
       user_name: w_user,

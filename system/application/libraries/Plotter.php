@@ -52,6 +52,11 @@ class Plotter
     
     return count($this->result) > 0;
   }
+
+  private function __escape_js_property($str)
+  {
+    return str_replace("'", "\\'", $str);
+  }
   
   public function get_js_data()
   {
@@ -65,7 +70,8 @@ class Plotter
         $ret .= ', ';
       }
       
-      $ret .= "'$what': $total";
+      $property = $this->__escape_js_property($what);
+      $ret .= "'$property': $total";
     }
     
     return "$ret}";
