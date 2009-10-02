@@ -25,7 +25,7 @@ $.fn.plot = function (data, options) {
     var bar_width = graph_width - margin_bar - 4 ;
     
     $.each(data, function (what, total) {
-      var dec = Math.max(0.02, total / maximum);
+      var dec = Math.max(0.05, total / maximum);
       var width = parseInt(dec * bar_width);
       
       what = what.toString().substr(0, MAX_LABEL);

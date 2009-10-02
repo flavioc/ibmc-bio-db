@@ -583,6 +583,13 @@ class Search_model extends BioModel
   
   public function get_other_search_distribution($search, $label_id, $coptions = array())
   {
+    $label_model = $this->load_model('label_model');
+    $label = $label_model->get($label_id);
+    
+    if(label_special_purpose($label['name'])) {
+      return $this->get_special_purpose_search_distribution($search, $label['name'], $coptions);
+    }
+    
     $default = array('transform' => null,
                      'label_type' => null,
                      'only_public' => false,
@@ -628,6 +635,60 @@ class Search_model extends BioModel
          WHERE label_id = $label_id $param_sql) labels
        GROUP BY distr
        ORDER BY distr ASC";
+    
+    return $this->rows_sql($sql);
+  }
+  
+  private function get_special_purpose_search_distribution($search, $name, $coptions = array())
+  {
+    $default = array('transform' => null,
+                     'only_public' => false);
+                     
+    $options = array_merge($default, $coptions);
+    $transform = $options['transform'];
+    $only_public = $options['only_public'];
+    
+    $base_sql = $this->__get_base_search_sql($search, $transform, $only_public);
+    
+    switch($name) {
+      case 'name':
+      case 'content':
+        $sql = "SELECT $name AS distr, count(seq_id) AS total
+                FROM ($base_sql) seqs
+                     NATURAL JOIN
+                   (SELECT id AS seq_id, $name FROM sequence) allseqs
+                GROUP BY $name
+                ORDER BY $name ASC";
+        break;
+      case 'creation_user':
+      case 'update_user':
+        if($name == 'creation_user')
+          $field = 'creation_user_name';
+        else
+          $field = 'user_name';
+        
+        $sql = "SELECT $field AS distr, count(seq_id) AS total
+                FROM ($base_sql) seqs
+                      NATURAL JOIN
+                      (SELECT id AS seq_id, $field FROM sequence_info_history) allseqs
+                GROUP BY $field
+                ORDER BY $field ASC";
+        break;
+      case 'creation_date':
+      case 'update_date':
+        if($name == 'creation_date')
+          $field = 'creation';
+        else
+          $field = '`update`';
+          
+        $sql = "SELECT distr, count(seq_id) AS total
+                FROM ($base_sql) seqs
+                     NATURAL JOIN
+                     (SELECT id AS seq_id, DATE_FORMAT($field, \"%d-%m-%Y\") AS distr FROM sequence_info_history) allseqs
+                GROUP BY distr
+                ORDER BY distr ASC";
+        break;
+    }
     
     return $this->rows_sql($sql);
   }
