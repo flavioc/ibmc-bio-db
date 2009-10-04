@@ -24,7 +24,7 @@ def update_label(name, type, default, must_exist, auto_on_creation, auto_on_modi
 
 def add_new_label(name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, action_modification):
   cursor = db.cursor()
-  sql = "INSERT INTO label(name, type, `default`, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple) VALUES(\"%s\", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" \
+  sql = "INSERT INTO label(name, type, `default`, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, action_modification) VALUES(\"%s\", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" \
     % (name, type, default, must_exist, auto_on_creation, auto_on_modification, code, valid_code, deletable, editable, multiple, action_modification)
   cursor.execute(sql)
   id = int(db.insert_id())
