@@ -51,11 +51,13 @@ $.fn.validatePositionLabel = function () {
     rules: {
       start: {
         required: generate_disabled,
-        digits: true
+        digits: true,
+        min: 1 
       },
       length: {
         required: generate_disabled,
-        digits: true
+        digits: true,
+        min: 1
       }
     }
   });
