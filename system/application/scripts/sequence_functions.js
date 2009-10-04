@@ -319,6 +319,10 @@ function hide_missing_list()
 
 function setup_addable_list()
 {
+  var name_field = $('#addable_name_field');
+  var type_field = $('#addable_type_field');
+  var user_field = $('#addable_user_field');
+  
   $('#addable_list')
   .grid({
     url: get_app_url() + '/label_sequence',
@@ -365,7 +369,18 @@ function setup_addable_list()
       type: function (row) {
       }
     },
-    hiddenFields: hiddenFields
+    hiddenFields: hiddenFields,
+    params: {
+      name: function () {
+        return name_field.val();
+      },
+      type: function () {
+        return type_field.val();
+      },
+      user: function () {
+        return user_field.val();
+      }
+    }
   });
 
   addable_loaded = true;

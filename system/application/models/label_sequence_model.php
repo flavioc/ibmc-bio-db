@@ -1003,15 +1003,15 @@ class Label_sequence_model extends BioModel
     return count($this->get_missing_obligatory($id)) > 0;
   }
 
-  public function get_addable_labels($id)
+  public function get_addable_labels($id, $filtering = array())
   {
     if(!is_numeric($id)) {
       return false;
     }
     
-    return $this->rows_sql("SELECT id, name, type, must_exist, auto_on_creation,
+    $sql = "SELECT label_id AS id, name, type, must_exist, auto_on_creation,
           auto_on_modification, deletable, editable, multiple
-      FROM label
+      FROM label_info_history
       WHERE name <> 'name'
             AND name <> 'content'
             AND name <> 'creation_user'
@@ -1020,10 +1020,32 @@ class Label_sequence_model extends BioModel
             AND name <> 'update_date'
             AND ((multiple IS TRUE AND editable IS TRUE)
                   OR
-                    id NOT IN (SELECT DISTINCT label_id AS id
+                    label_id NOT IN (SELECT DISTINCT label_id
                               FROM label_sequence
-                              WHERE seq_id = $id))
-      ORDER BY name");
+                              WHERE seq_id = $id))";
+                              
+    if(array_key_exists('name', $filtering)) {
+      $name = $filtering['name'];
+      if($name)
+        $sql .= " AND name REGEXP '$name'";
+    }
+    
+    if(array_key_exists('type', $filtering)) {
+      $type = $filtering['type'];
+      if($type)
+        $sql .= " AND type = '$type'";
+    }
+    
+    if(array_key_exists('user', $filtering)) {
+      $user = $filtering['user'];
+      if(!sql_is_nothing($user)) {
+        $sql .= " AND update_user_id = $user";
+      }
+    }
+    
+    $sql .= " ORDER BY name";
+      
+    return $this->rows_sql($sql);
   }
 
   private function __get_validation_status($label, $sequence, $valid_code, $data)
