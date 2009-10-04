@@ -30,11 +30,25 @@ $(function () {
   .grid({
     method: 'local',
     local_data: {/literal}{encode_json value=$failed}{literal},
-    fields: ['name', 'position'],
-    fieldNames: ['Name', 'Position'],
+    fields: ['labels', 'name', 'position'],
+    fieldNames: ['Labels', 'Name', 'Position'],
+    tdClass: {
+      labels: 'centered'
+    },
+    width: {
+      labels: w_select
+    },
     links: {
       name: function (row) {
         return get_app_url() + '/sequence/view/' + row.id;
+      },
+      labels: function (row) {
+        return get_app_url() + '/sequence/labels/' + row.id;
+      }
+    },
+    dataTransform: {
+      labels: function (row) {
+        return img_go;
       }
     }
   });
