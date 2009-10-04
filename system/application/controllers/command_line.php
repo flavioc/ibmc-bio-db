@@ -34,9 +34,9 @@ class Command_Line extends BioController
   public function search($str, $transform_label = null)
   {
     try {
-      $this->load->library('Parser');
+      $this->load->plugin('parser');
       
-      $parser = new Parser($this, $str);
+      $parser = new Parser($str);
       $tree = $parser->parse();
       
       if($transform_label) {
