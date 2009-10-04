@@ -127,11 +127,10 @@ class Search_model extends BioModel
       
       return $value;
     case 'ref':
-      $id = $value['id'];
-      if(!is_numeric($id)) {
+      if(!is_numeric($value)) {
         return 0;
       }
-      return $id;
+      return $value;
     case 'date':
       $newvalue = convert_html_date_to_sql($value);
       if(!$newvalue) {
