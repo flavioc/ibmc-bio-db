@@ -202,8 +202,9 @@ span.comment {
   font-style: italic;
 }
 
-span.code {
+.code {
   font-family: "courier";
+  text-align: left;
 }
 
 div.error_msg, div.info_msg {

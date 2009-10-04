@@ -10,6 +10,7 @@ validate_label_form('#add_form');
 {form_row type=select data=$types name=type msg='Type:' key=name}
 {form_row type=textarea name=code msg='Code:' cols=50 rows=5}
 {form_row type=textarea name=valid_code msg='Validation code:' cols=50 rows=5}
+{form_row type=textarea name=action_modification msg='Modification code:' cols=50 rows=5}
 {form_row type=textarea name=comment msg='Comment:' cols=50 rows=5}
 
 <div class="grid_form">

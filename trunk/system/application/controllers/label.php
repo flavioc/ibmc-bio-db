@@ -166,6 +166,7 @@ class Label extends BioController
     $this->smarty->fetch_form_row('public');
     $this->smarty->fetch_form_row('code');
     $this->smarty->fetch_form_row('valid_code');
+    $this->smarty->fetch_form_row('action_modification');
     $this->smarty->fetch_form_row('comment');
 
     $this->assign_label_types();
@@ -222,6 +223,7 @@ class Label extends BioController
       $this->assign_row_data('default');
       $this->assign_row_data('public');
       $this->assign_row_data('code');
+      $this->assign_row_data('action_modification');
       $this->assign_row_data('valid_code');
       $this->assign_row_data('comment');
 
@@ -235,6 +237,7 @@ class Label extends BioController
       $default = $this->get_post('default');
       $public = $this->get_post('public');
       $comment = $this->get_post('comment');
+      $action_modification = $this->get_post('action_modification');
 
       $mustexist = ($mustexist ? TRUE : FALSE);
       $deletable = ($deletable ? TRUE : FALSE);
@@ -255,6 +258,7 @@ class Label extends BioController
                    'public' => $public,
                    'code' => $code,
                    'valid_code' => $valid_code,
+                   'action_modification' => $action_modification,
                    'comment' => $comment);
     }
   }
@@ -275,6 +279,7 @@ class Label extends BioController
         $result['default'],
         $result['public'],
         $result['code'],
+        $result['action_modification'],
         $result['valid_code'],
         $result['comment']);
 
@@ -356,6 +361,24 @@ class Label extends BioController
       $this->return_empty();
     }
   }
+  
+  public function edit_actionmodification()
+  {
+    if(!$this->is_admin) {
+      return $this->invalid_permission_field();
+    }
+    
+    $id = $this->get_post('label');
+    $value = $this->get_post('value');
+    
+    $result = $this->label_model->edit_actionmodification($id, $value);
+    
+    if($value) {
+      echo newline_tab_html($value);
+    } else {
+      $this->return_empty();
+    }
+  }
 
   public function edit_validcode()
   {
@@ -422,6 +445,15 @@ class Label extends BioController
     }
     
     echo $this->label_model->get_validcode($id);
+  }
+  
+  public function get_actionmodification($id)
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission_field();
+    }
+    
+    return $this->label_model->get_actionmodification($id);
   }
 
   public function edit_bool($what)

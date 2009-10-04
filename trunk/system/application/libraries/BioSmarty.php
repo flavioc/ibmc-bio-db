@@ -235,7 +235,12 @@ function smarty_function_form_hidden($params, &$smarty)
 }
 
 function smarty_function_form_checkbox($params, &$smarty)
-{
+{ 
+  $initial = $smarty->get_initial_var($params['name']);
+  if($initial) {
+    $params['checked'] = TRUE;
+  }
+  
   return form_checkbox(__fill_checkbox_radio($params));
 }
 
@@ -417,11 +422,6 @@ function smarty_function_form_row($params, &$smarty)
   } else if($type == 'checkbox') {
     $value = $params['value'];
     $checked = $params['checked'];
-
-    $initial = $smarty->get_initial_var($what);
-    if($initial) {
-      $checked = TRUE;
-    }
 
     $check_data = array(
       'name' => $what,
