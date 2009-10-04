@@ -62,6 +62,19 @@
       submitdata: senddata,
       loadurl: base_site + 'get_validcode/' + label.id
     });
+    
+    $('#labelactionmodification').editable(base_site + 'edit_actionmodification', {
+      select: true,
+      submit: 'OK',
+      cancel: 'cancel',
+      width: '150px',
+      style: 'inherit',
+      type: 'textarea',
+      cols: 70,
+      rows: 15,
+      submitdata: senddata,
+      loadurl: base_site + 'get_actionmodification/' + label.id
+    });
 
     $('#labelcomment').editable(base_site + 'edit_comment', {
       select: true,
@@ -102,7 +115,7 @@
 
 {literal}
 <style type="text/css">
-#labelcomment, #labelcode, #labelvalidcode {
+#labelcomment, #labelcode, #labelvalidcode, #labelactionmodification {
   margin-left: 180px;
   width: 50%;
 }
@@ -112,15 +125,18 @@
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="labelname">{$label.name}</span></p>
   <p><span class="desc">Type: </span><span id="labeltype">{$label.type}</span></p>
-  <p><span class="desc">Code: </span>
-    <div class="code" id="labelcode">{if $label.code}{$label.code}{else}---{/if}</div>
-  </p>
-  <p><span class="desc">Validation code: </span>
-    <div class="code" id="labelvalidcode">{if $label.valid_code}{$label.valid_code}{else}---{/if}</div>
-  </p>
-  <p><span class="desc">Comment: </span>
-     <div id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</div>
-  </p>
+  
+  <p><span class="desc">Code: </span></p>
+  <div class="code" id="labelcode">{if $label.code}{$label.code}{else}---{/if}</div>
+  
+  <p><span class="desc">Validation code: </span></p>
+  <div class="code" id="labelvalidcode">{if $label.valid_code}{$label.valid_code}{else}---{/if}</div>
+  
+  <p><span class="desc">Modification code: </span></p>
+  <div class="code" id="labelactionmodification">{if $label.action_modification}{$label.action_modification}{else}---{/if}</div>
+  
+  <p><span class="desc">Comment: </span></p>
+  <div id="labelcomment">{if $label.comment}{$label.comment}{else}---{/if}</div>
 
 {include file='history/form_view.tpl' data=$label}
 
@@ -153,7 +169,7 @@
 {if $is_admin && !$label.default}
   {literal}<script>
   $(function () {
-    $('td span, #labelname, #labeltype, #labelcode, #labelvalidcode, #labelcomment').addClass('writeable');
+    $('td span, #labelname, #labeltype, #labelcode, #labelvalidcode, #labelactionmodification, #labelcomment').addClass('writeable');
   });
   </script>{/literal}
 {/if}

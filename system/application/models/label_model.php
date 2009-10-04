@@ -155,7 +155,7 @@ class Label_model extends BioModel
     $auto_on_modification, $deletable,
     $editable, $multiple,
     $default, $public,
-    $code,
+    $code, $action_modification,
     $valid_code, $comment)
   {
     $type = trim($type);
@@ -193,55 +193,11 @@ class Label_model extends BioModel
       'public' => $public,
       'code' => trim($code),
       'valid_code' => trim($valid_code),
+      'action_modification' => trim($action_modification),
       'comment' => $comment,
     );
 
     return $this->insert_data_with_history($data);
-  }
-
-  public function edit($id, $name, $type, $mustexist, $auto_on_creation,
-    $auto_on_modification, $deletable,
-    $editable, $multiple,
-    $default, $public,
-    $code, $valid_code, $comment)
-  {
-    $type = trim($type);
-    $name = trim($name);
-    $comment = trim($comment);
-    
-    if(strlen($name) <= 0 || strlen($name) > 255) {
-      return false;
-    }
-    
-    if(!$this->has($name)) {
-      return false;
-    }
-    
-    if(strlen($comment) > 1024) {
-      return false;
-    }
-    
-    if(!label_valid_type($type)) {
-      return false;
-    }
-    
-    $data = array(
-      'name' => $name,
-      'type' => $type,
-      'must_exist' => $mustexist,
-      'auto_on_creation' => $auto_on_creation,
-      'auto_on_modification' => $auto_on_modification,
-      'deletable' => $deletable,
-      'editable' => $editable,
-      'multiple' => $multiple,
-      'default' => $default,
-      'public' => $public,
-      'code' => trim($code),
-      'valid_code' => trim($valid_code),
-      'comment' => $comment,
-    );
-
-    return $this->edit_data_with_history($id, $data);
   }
 
   public function has($name)
@@ -301,6 +257,11 @@ class Label_model extends BioModel
   {
     return $this->get_field($id, 'valid_code');
   }
+  
+  public function get_actionmodification($id)
+  {
+    return $this->get_field($id, 'action_modification');
+  }
 
   public function get_to_add()
   {
@@ -351,6 +312,11 @@ class Label_model extends BioModel
   public function edit_code($id, $code)
   {
     return $this->edit_field($id, 'code', trim($code));
+  }
+  
+  public function edit_actionmodification($id, $code)
+  {
+    return $this->edit_field($id, 'action_modification', trim($code));
   }
 
   public function edit_validcode($id, $code)
