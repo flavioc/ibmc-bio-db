@@ -7,7 +7,6 @@ $(function () {
   var show_ranks = $('#show_ranks');
   var fieldNames = ['Name', 'Parent', 'Last update', 'User'];
   var fields = ['rank_name', 'rank_parent_name', 'update', 'user'];
-  var changed = false;
   var name_field = $('#name');
   var parent_field = $('#parent_name');
   var user_field = $('#user');
@@ -90,33 +89,15 @@ $(function () {
     }
   });
 
-  function changed_function ()
-  {
-    changed = true;
-  }
-  
-  function try_reload()
-  {
-    show_ranks.gridReload();
-  }
-
   function when_submit()
   {
-    if(changed) {
-      try_reload();
-    }
-
-    changed = false;
+    show_ranks.gridReload();
   }
 
   $("#form_search").validate({
     submitHandler: when_submit,
     errorPlacement: basicErrorPlacement
   });
-
-  name_field.change(changed_function);
-  parent_field.change(changed_function);
-  user_field.change(changed_function);
   
 });
 </script>

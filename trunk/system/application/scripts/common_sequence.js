@@ -54,27 +54,14 @@ function start_sequence_grid(place, click, params)
 
 function activate_sequence_search(show_seqs)
 {
-  var changed = false;
   var form = $('#form_search');
   var name_field = $('#name', form)
   var user_field = $('#user', form);
 
-  function changed_function ()
-  {
-    changed = true;
-  }
-
   function when_submit()
   {
-    if(changed) {
-      show_seqs.gridReload();
-    }
-
-    changed = false;
+    show_seqs.gridReload();
   }
-
-  name_field.change(changed_function);
-  user_field.change(changed_function);
 
   form.validate({
     submitHandler: when_submit,

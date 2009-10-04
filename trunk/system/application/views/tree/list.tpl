@@ -4,7 +4,6 @@
 <script>
 $(function () {
   var base_site = get_app_url() + '/tree';
-  var changed = false;
   var show_trees = $('#show_trees');
   var name_field = $('#name');
   var user_field = $('#user');
@@ -14,11 +13,6 @@ $(function () {
   if(get_logged_in()) {
     fieldNames.push('Root');
     fields.push('add');
-  }
-
-  function changed_function()
-  {
-    changed = true;
   }
 
   show_trees
@@ -71,23 +65,11 @@ $(function () {
       user: function () { return user_field.val(); }
     }
   });
-  
-  function try_reload()
-  {
-    show_trees.gridReload();
-  }
 
   function when_submit()
   {
-    if(changed) {
-      try_reload();
-    }
-
-    changed = false;
+    show_trees.gridReload();
   }
-
-  name_field.change(changed_function);
-  user_field.change(changed_function);
   
   $("#form_search").validate({
     submitHandler: when_submit,

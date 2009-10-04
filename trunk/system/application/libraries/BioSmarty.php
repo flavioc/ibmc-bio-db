@@ -157,11 +157,14 @@ function common_input_textarea(&$data, $params)
   }
 
   $name = $params['name'];
-  $data = array(
-    'name' => $name,
-  );
+  
+  $data = array();
+  
+  if($name)
+    $data['name'] = $name;
+    
   $id = $params['id'];
-  if(!$id) {
+  if(!$id && $name) {
     $id = $name;
   }
 
