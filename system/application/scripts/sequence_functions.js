@@ -119,6 +119,10 @@ function select_field(row)
 
 function setup_labels_list()
 {
+  var name_field = $('#label_name_field');
+  var type_field = $('#label_type_field');
+  var user_field = $('#label_user_field');
+  
   var mydata_transform_labels = $.extend({}, data_transform_labels,
     {
       name: function (row) {
@@ -182,6 +186,17 @@ function setup_labels_list()
     },
     finishedFun: function () {
       tb_init('#labels_list a.thickbox');
+    },
+    params: {
+      name: function () {
+        return name_field.val();
+      },
+      type: function () {
+        return type_field.val();
+      },
+      user: function () {
+        return user_field.val();
+      }
     }
   };
 

@@ -59,8 +59,26 @@ $(function() {
 {/literal}
 </script>
 
-<p>
 <h3>Associated labels</h3>
+
+{form_open to='#' name="filter_labels_form"}
+{form_row msg='Name:' id=label_name_field}
+{form_row type=select data=$types msg='Type:' key=name blank=yes id=label_type_field}
+{form_row type=select data=$users msg='User:' key=id blank=yes id=label_user_field}
+{form_submit id=filter_label_button msg="Filter"}
+{form_end}
+
+{literal}<script>
+$(function () {
+  $('#filter_label_button').click(function () {
+    $('#labels_list').gridReload();
+    return false;
+  });
+});
+</script>{/literal}
+
+<br />
+
 <div id="hide_show_labels"></div>
 <div id="labels_box">
   <div id="labels_list">
@@ -69,7 +87,6 @@ $(function() {
   <div id="hide_show_labels_details">
   </div>
 </div>
-</p>
 
 {if $missing}
 <script>

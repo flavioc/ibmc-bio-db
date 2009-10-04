@@ -269,11 +269,34 @@ class Label_sequence_model extends BioModel
   }
 
   // get all labels from a sequence
-  public function get_sequence($id)
+  public function get_sequence($id, $filtering = array())
   {
     $this->db->select($this->__get_select(), FALSE);
     $this->db->where('seq_id', $id);
+    $this->__filter($filtering);
     return $this->get_all('label_sequence_info');
+  }
+  
+  private function __filter($filtering)
+  {
+    if(array_key_exists('name', $filtering)) {
+      $name = $filtering['name'];
+      if($name)
+        $this->db->where("name REGEXP '$name'");
+    }
+    
+    if(array_key_exists('type', $filtering)) {
+      $type = $filtering['type'];
+      if($type)
+        $this->db->where('type', $type);
+    }
+    
+    if(array_key_exists('user', $filtering)) {
+      $user = $filtering['user'];
+      if(!sql_is_nothing($user)) {
+        $this->db->where('update_user_id', $user);
+      }
+    }
   }
   
   // get labels from a set of sequences

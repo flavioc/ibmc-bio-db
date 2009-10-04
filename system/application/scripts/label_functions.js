@@ -10,30 +10,15 @@ function start_label_list(params, select_fn, add_fn, link_to_seqs)
   }
 
   var base_site = get_app_url() + "/label";
-  var changed = false;
   var name_field = $('#label_name');
   var type_field = $('#label_type');
   var user_field = $('#label_user');
   var grid = $('#label_show');
   
-  function changed_function ()
-  {
-    changed = true;
-  }
-
   function when_submit()
   {
-    if(changed) {
-      grid.gridReload();
-    }
-
-    changed = false;
+    grid.gridReload();
   }
-
-  // watch changes
-  name_field.change(changed_function);
-  type_field.change(changed_function);
-  user_field.change(changed_function);
 
   $("#form_label_search").validate({
     rules: {

@@ -20,7 +20,6 @@ class Label extends BioController
     $this->use_plusminus();
 
     $this->load->model('user_model');
-
     $this->smarty->assign('users', $this->user_model->get_users_all());
 
     $this->smarty->assign('title', 'View labels');

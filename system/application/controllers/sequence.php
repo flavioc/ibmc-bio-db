@@ -123,6 +123,10 @@ class Sequence extends BioController
     $this->use_datepicker();
     $this->use_blockui();
     $this->smarty->load_stylesheets('labels.css');
+    
+    $this->assign_label_types();
+    $this->load->model('user_model');
+    $this->smarty->assign('users', $this->user_model->get_users_all());
 
     $this->__load_sequence($sequence);
     $this->smarty->assign('missing',
