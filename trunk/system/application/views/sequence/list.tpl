@@ -62,7 +62,7 @@ $(function () {
       operand_list.push({label: 'name', type: 'text', oper: 'regexp', value: name});
     }
     
-    if(user != '0') {
+    if(user != '') {
       operand_list.push({label: 'update_user', type: 'text', oper: 'regexp', value: user});
     }
     
