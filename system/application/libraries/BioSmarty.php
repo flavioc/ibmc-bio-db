@@ -182,7 +182,7 @@ function smarty_function_form_input($params, &$smarty)
 {
   $data = array();
 
-  common_input_textarea(&$data, $params);
+  common_input_textarea($data, $params);
 
   $max_value = $params['max'];
   if($max_value) {
@@ -211,7 +211,7 @@ function smarty_function_form_textarea($params, &$smarty)
 {
   $data = array();
 
-  common_input_textarea(&$data, $params);
+  common_input_textarea($data, $params);
 
   $rows = $params['rows'];
   if($rows) {
@@ -520,9 +520,9 @@ function smarty_function_button($params, &$smarty)
 
   $form_end_params = array();
 
-  return smarty_function_form_open($form_open_params, &$smarty) .
+  return smarty_function_form_open($form_open_params, $smarty) .
     '<input class="submit" type="submit" value="' . $params['msg'] . '" />' .
-    smarty_function_form_end($form_end_params, &$smarty);
+    smarty_function_form_end($form_end_params, $smarty);
 }
 
 function smarty_function_assign_id($params, &$smarty)
@@ -631,9 +631,9 @@ function findexts($filename)
 
 function smarty_function_include_js($params, &$smarty)
 {
-  $top_dir = smarty_function_top_dir(array(), &$smarty);
+  $top_dir = smarty_function_top_dir(array(), $smarty);
   $name = $params['name'];
-  $random = smarty_function_random(array(), &$smarty);
+  $random = smarty_function_random(array(), $smarty);
   $ext = findexts($name);
   if($ext == null) {
     $name = "$name.js";
