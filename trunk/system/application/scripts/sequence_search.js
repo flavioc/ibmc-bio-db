@@ -375,6 +375,14 @@ function not_form_submitted()
   handle_compound('not');
 }
 
+function reset_form_submitted()
+{
+  $('#search_tree .term-delete:first').click();
+  and_form_submitted();
+  
+  return false;
+}
+
 function build_operator_text(obj)
 {
   if(obj.oper == 'exists' || obj.oper == 'notexists') {
@@ -723,15 +731,22 @@ function node_unselected()
   $('#search_tree .term-options').hide();
 }
 
+function get_term_input_elements()
+{
+  var parent = $('#term_form_div, #and_form, #or_form, #not_form');
+  
+  return $('input, select', parent);
+}
+
 function can_add_leafs()
 {
-  $('input, select', insert_terms).removeAttr('disabled');
+  get_term_input_elements().removeAttr('disabled');
   $('#change_tax, #change_seq', insert_terms).show();
 }
 
 function cant_add_leafs()
 {
-  $('input, select', insert_terms).attr("disabled", true);
+  get_term_input_elements().attr("disabled", true);
   $('#change_tax, #change_seq', insert_terms).hide();
 }
 
@@ -789,9 +804,11 @@ function restore_old_tree()
     cant_add_leafs();
     restore_aux(obj, first_ol);
     we_are_starting = false;
+    
+    var enclosed = $.toJSON(enclose_search_tree(obj));
 
-    update_form_hidden($.toJSON(enclose_search_tree(obj)));
-    update_humanize(encoded);
+    update_form_hidden(enclosed);
+    update_humanize(enclosed);
     
     // select the first term
     var first_compound = $('#search_tree .expand-name:first');
@@ -1221,6 +1238,10 @@ $(function () {
 
     not_form.validate({
       submitHandler: not_form_submitted
+    });
+    
+    $('#reset_form').validate({
+      submitHandler: reset_form_submitted
     });
 
   restore_old_tree();
