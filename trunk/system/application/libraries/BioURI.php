@@ -29,6 +29,7 @@
  */
 class BioURI extends CI_URI {
 
+  private $is_cli = false;
     /**
 	 * Get the URI String, with added support for command line
 	 *
@@ -111,9 +112,10 @@ class BioURI extends CI_URI {
     
     // Convert arguments into a 
     function _parse_cli_args() {
-    	
         // Get all arguments from command line
         $args = $_SERVER['argv'];
+        
+        $this->is_cli = true;
         
         // Remove the first, its the file name
         unset($args[0]);
@@ -124,6 +126,26 @@ class BioURI extends CI_URI {
 
         return '/'.implode('/', $args); 
     }
+    
+    function _filter_uri($str)
+  	{
+  	  if($this->is_cli)
+  	    return $str;
+  	    
+  		if ($str != '' && $this->config->item('permitted_uri_chars') != '' && $this->config->item('enable_query_strings') == FALSE)
+  		{
+  			if ( ! preg_match("|^[".preg_quote($this->config->item('permitted_uri_chars'))."]+$|i", $str))
+  			{
+  				exit('The URI you submitted has disallowed characters.');
+  			}
+  		}	
+
+  		// Convert programatic characters to entities
+  		$bad	= array('$', 		'(', 		')',	 	'%28', 		'%29');
+  		$good	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;');
+
+  		return str_replace($bad, $good, $str);
+  	}
 
 }
 // END MY_URI Class
