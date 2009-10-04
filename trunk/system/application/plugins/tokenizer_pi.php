@@ -8,11 +8,10 @@ class Tokenizer
   private $current_pos = 0;
   private $the_end = false;
   
-  function Tokenizer($mystr = '')
+  function Tokenizer($mystr)
   {
-    $mystr = trim($mystr);
-    $this->str = $mystr;
-    $this->total = strlen($mystr);
+    $this->str = trim($mystr);
+    $this->total = strlen($this->str);
   }
   
   private function __is_whitespace($val)
