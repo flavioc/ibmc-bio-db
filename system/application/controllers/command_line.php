@@ -28,6 +28,38 @@ class Command_Line extends BioController
     $this->load->model('taxonomy_model');
     $this->load->model('taxonomy_rank_model');
     $this->load->model('taxonomy_tree_model');
+    $this->load->model('search_model');
+  }
+  
+  public function search($str, $transform_label = null)
+  {
+    try {
+      $this->load->library('Tokenizer');
+      $this->load->library('Parser');
+      
+      $parser = new Parser($this, $str);
+      $tree = $parser->parse();
+      
+      if($transform_label) {
+        $label_id = $this->label_model->get_id_by_name($transform_label);
+      } else {
+        $label_id = null;
+      }
+      
+      $results = $this->search_model->get_search($tree, array('transform' => $label_id, 'select' => 'id, name, content'));
+      
+      foreach($results as &$result) {
+        $id = $result['id'];
+        $name = $result['name'];
+        $content = $result['content'];
+        
+        echo "$id - $name - $content\n";
+      }
+      
+    } catch(Exception $e) {
+      echo "Error parsing $str: ".$e->getMessage() . "\n";
+      return 1;
+    }
   }
   
   private function __get_file($file)
