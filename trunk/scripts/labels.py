@@ -116,5 +116,61 @@ add_label(name = "translated",
     deletable = True,
     default = True)
 
+add_label(name = "super",
+    type = "ref",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    multiple = False,
+    must_exist = False,
+    deletable = False,
+    default = True)
+
+add_label(name = "super_position",
+    type = "position",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    must_exist = False,
+    deletable = False,
+    multiple = False,
+    default = True)
+
+add_label(name = "immutable",
+    type = "bool",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = True,
+    must_exist = False,
+    deletable = True,
+    multiple = False,
+    default = True)
+
+add_label(name = "subsequence",
+    type = "ref",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    action_modification = "$infos = $this->get_label_infos($sequence_id, $label_id);\
+    foreach($infos as &$info) {\
+      $sub_id = label_get_type_data($info);\
+      $sequence_model->delete($sub_id); \
+    } \
+    $this->remove_labels_sequence($label_id, $sequence_id);",
+    editable = False,
+    must_exist = False,
+    deletable = False,
+    multiple = True,
+    default = True)
+
+add_label(name = "lifetime",
+    type = "date",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    must_exist = False,
+    deletable = False,
+    multiple = False,
+    default = True)
+
 db.close()
 
