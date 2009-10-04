@@ -2,21 +2,18 @@
 
 class Parser
 {
-  private $controller = null;
+  private $label_model = null;
+  
   private $tokenizer = null;
   
-  function Parser($ctr = null, $str = '')
+  function Parser($str)
   {
     $CI =& get_instance();
     $CI->load->plugin('tokenizer');
     
-    $this->controller = $ctr;
-    if($ctr) {
-      $ctr->load->model('label_model');
-      $ctr->load->model('taxonomy_model');
-      $ctr->load->model('sequence_model');
-      $this->tokenizer = new Tokenizer($str);
-    }
+    $this->label_model = load_ci_model('label_model');
+    
+    $this->tokenizer = new Tokenizer($str);
   }
   
   public function parse()
@@ -144,7 +141,7 @@ class Parser
     $label_name = $label_data[0];
     $label_param = $label_data[1];
     
-    $label = $this->controller->label_model->get_by_name($label_name);
+    $label = $this->label_model->get_by_name($label_name);
     if(!$label) {
       throw new Exception("unknown label $label_name");
     }

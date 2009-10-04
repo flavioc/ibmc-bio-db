@@ -14,13 +14,13 @@ class Wide_Search extends BioController
   
   public function search()
   {
-    $this->load->library('Parser');
+    $this->load->plugin('parser');
     
     $search = stripslashes($this->get_parameter('search_global'));
     $this->session->set_userdata('search_term', $search);
     
     try {
-      $parser = new Parser($this, $search);
+      $parser = new Parser($search);
       $tree = $parser->parse();
       $tree_json = json_encode($tree);
       setcookie('saved_search_tree', $tree_json, time()+500, '/');
