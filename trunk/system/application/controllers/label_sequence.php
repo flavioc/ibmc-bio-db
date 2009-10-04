@@ -42,8 +42,15 @@ class Label_Sequence extends BioController
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
     }
+    
+    $filter_name = $this->get_parameter('name');
+    $filter_type = $this->get_parameter('type');
+    $filter_user = $this->get_parameter('user');
 
-    $data = $this->label_sequence_model->get_addable_labels($id);
+    $data = $this->label_sequence_model->get_addable_labels($id,
+      array('name' => $filter_name,
+            'type' => $filter_type,
+            'user' => $filter_user));
 
     $this->json_return($data);
   }

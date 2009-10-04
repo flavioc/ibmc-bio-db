@@ -59,39 +59,39 @@ $(function() {
 {/literal}
 </script>
 
-<h3>Associated labels</h3>
-
-{form_open to='#' name="filter_labels_form"}
-{form_row msg='Name:' id=label_name_field}
-{form_row type=select data=$types msg='Type:' key=name blank=yes id=label_type_field}
-{form_row type=select data=$users msg='User:' key=id blank=yes id=label_user_field}
-{form_submit id=filter_label_button msg="Filter"}
-{form_end}
-
 {literal}<script>
 $(function () {
   $('#filter_label_button').click(function () {
     $('#labels_list').gridReload();
     return false;
   });
+  
+  $('#filter_addable_button').click(function () {
+    $('#addable_list').gridReload();
+    return false;
+  });
 });
 </script>{/literal}
 
-<br />
+<h3>Associated labels</h3>
 
 <div id="hide_show_labels"></div>
 <div id="labels_box">
+  {form_open to='#' name="filter_labels_form"}
+  {form_row msg='Name:' id=label_name_field}
+  {form_row type=select data=$types msg='Type:' key=name blank=yes id=label_type_field}
+  {form_row type=select data=$users msg='User:' key=id blank=yes id=label_user_field}
+  {form_submit id=filter_label_button msg="Filter"}
+  {form_end}
   <div id="labels_list">
   </div>
-  <br />
   <div id="hide_show_labels_details">
   </div>
 </div>
 
 {if $missing}
-<script>
-{literal}
-$(document).ready(function () {
+<script>{literal}
+$(function () {
 
   $('#missing_list').gridEnable({paginate: false});
 
@@ -122,17 +122,14 @@ $(document).ready(function () {
 
 <hr />
 
-<p>
 <h3>Missing labels</h3>
 <div id="hide_show_missing"></div>
 <div id="missing_box">
   <div id="missing_list">
   </div>
-  <br />
   <div id="hide_show_missing_details">
   </div>
 </div>
-</p>
 
 {/if}
 
@@ -140,7 +137,7 @@ $(document).ready(function () {
 
 <script>
 {literal}
-$(document).ready(function () {
+$(function () {
   $('#addable_list').gridEnable({paginate: false});
 
   hide_addable_list();
@@ -172,17 +169,20 @@ $(document).ready(function () {
 
 <hr />
 
-<p>
 <h3>Addable labels</h3>
 <div id="hide_show_addable"></div>
 <div id="addable_box">
+  {form_open to='#' name="filter_addable_form"}
+  {form_row msg='Name:' id=addable_name_field}
+  {form_row type=select data=$types msg='Type:' key=name blank=yes id=addable_type_field}
+  {form_row type=select data=$users msg='User:' key=id blank=yes id=addable_user_field}
+  {form_submit id=filter_addable_button msg="Filter"}
+  {form_end}
   <div id="addable_list">
   </div>
-  <br />
   <div id="hide_show_addable_details">
   </div>
 </div>
-</p>
 {/if}
 
 <hr />
@@ -190,7 +190,7 @@ $(document).ready(function () {
 {if $bad_multiple}
 <script>
 {literal}
-$(document).ready(function () {
+$(function () {
 
   $('#bad_multiple_list').gridEnable({paginate: false});
 
@@ -208,13 +208,10 @@ $(document).ready(function () {
 
 <hr />
 
-<p>
 <h3>Bad multiple</h3>
 <div id="hide_show_bad_multiple"></div>
 <div id="bad_multiple_box">
   <div id="bad_multiple_list">
   </div>
-  <br />
 </div>
-</p>
 {/if}
