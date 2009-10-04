@@ -307,3 +307,8 @@ function run_util_over_sequence($sequence, $command)
   
   return $output;
 }
+
+function build_sub_sequence_name($name, $start, $length)
+{
+  return 'sub_'.$name.'_'.$start.'_'.$length;
+}

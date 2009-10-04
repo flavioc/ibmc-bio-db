@@ -24,7 +24,7 @@ class Sequence extends BioController
     $this->smarty->assign('length', $length);
     
     $seq_length = $this->sequence_model->get_content_length($id);
-    $max_position = (int)$start + (int)$length;
+    $max_position = (int)$start + (int)$length - 1;
     
     if($max_position > $seq_length) {
       $this->smarty->assign('invalid', true);
@@ -33,6 +33,13 @@ class Sequence extends BioController
       $segment = $this->sequence_model->get_content_segment($id, $start, $length);
       $this->smarty->assign('segment', sequence_split($segment, "<br />"));
       $this->smarty->assign('invalid', false);
+      
+      // check if there is a subsequence with this content
+      $sub_name = build_sub_sequence_name($this->sequence_model->get_name($id), $start, $length);
+      $sub_id = $this->sequence_model->get_id_by_name_and_content($sub_name, $segment);
+      
+      if($sub_id)
+        $this->smarty->assign('sub_id', $sub_id);
     }
     
     $this->smarty->view_s('sequence/view_position');
@@ -105,8 +112,10 @@ class Sequence extends BioController
       $this->__invalid_sequence($id);
       return;
     }
+    
+    $sequence = $this->sequence_model->get($id);
 
-    $this->smarty->assign('title', 'View labels');
+    $this->smarty->assign('title', 'Labels '.$sequence['name']);
     $this->__load_js();
     $this->use_thickbox();
     $this->use_mygrid();
@@ -115,7 +124,7 @@ class Sequence extends BioController
     $this->use_blockui();
     $this->smarty->load_stylesheets('labels.css');
 
-    $this->__load_sequence($id);
+    $this->__load_sequence($sequence);
     $this->smarty->assign('missing',
       $this->label_sequence_model->has_missing($id));
     $this->smarty->assign('bad_multiple',
@@ -145,18 +154,22 @@ class Sequence extends BioController
       return;
     }
 
+    $sequence = $this->sequence_model->get($id);
+    
     $this->smarty->assign('id', $id);
-    $this->smarty->assign('title', 'View sequence');
+    $this->smarty->assign('title', 'View '.$sequence['name']);
     $this->__load_js();
     $this->use_impromptu();
-    $this->__load_sequence($id);
+    $this->__load_sequence($sequence);
+    $this->smarty->assign('immutable', $this->sequence_model->is_immutable($id));
 
     $this->smarty->view('sequence/view');
   }
 
-  private function __load_sequence($id)
+  private function __load_sequence($sequence)
   {
-    $sequence = $this->sequence_model->get($id);
+    $id = $sequence['id'];
+    
     $sequence['content'] = sequence_short_content($sequence['content']);
     $this->smarty->assign('sequence', $sequence);
     
@@ -165,6 +178,16 @@ class Sequence extends BioController
       $trans_sequence = $this->sequence_model->get($trans_id);
       $this->smarty->assign('trans_sequence', $trans_sequence);
     }
+    
+    $super_id = $this->sequence_model->get_super($id);
+    if($super_id) {
+      $super = $this->sequence_model->get($super_id);
+      $this->smarty->assign('super', $super);
+    }
+    
+    $lifetime = $this->sequence_model->get_lifetime($id);
+    if($lifetime)
+      $this->smarty->assign('lifetime', $lifetime);
   }
 
   public function add_batch()

@@ -12,4 +12,4 @@
 
 <p id="search_tree_string">{$tree_str}</p>
 
-{include file=search/operation_sequences.tpl}
+{include file=search/operation_sequences.tpl dom_id=input_list}

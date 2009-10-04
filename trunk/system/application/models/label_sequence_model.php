@@ -39,6 +39,16 @@ class Label_sequence_model extends BioModel
     $this->db->where('seq_id', $seq_id);
     return $this->get_row('label_id', $label_id, 'label_sequence_info');
   }
+  
+  // retrieve multiple label instances
+  public function get_label_infos($seq_id, $label_id)
+  {
+    $this->db->select($this->__get_select(), FALSE);
+    $this->db->where('seq_id', $seq_id);
+    $this->db->where('label_id', $label_id);
+    
+    return $this->get_all('label_sequence_info');
+  }
 
   public function get($id)
   {
@@ -291,12 +301,21 @@ class Label_sequence_model extends BioModel
     
     $param = label_get_param($data);
     
-    // if multiple and has parameter and label instance with that
+    // if multiple and label instance with that
     // parameter is present, edit it instead of adding it
-    if($param && $multiple && $this->has_label_param($label, $seq, $param)) {
+    if($multiple && $this->has_label_param($label, $seq, $param)) {
       $id = $this->get_label_param_id($seq, $label, $param);
       
       return $this->edit($id, $type, $data);
+    }
+    
+    if(!$multiple) {
+      // if not multiple and label instance is present
+      // edit instead of adding
+      $old_id = $this->get_label_id($seq, $label);
+      if($old_id) {
+        return $this->edit($old_id, $type, $data);
+      }
     }
     
     // check already inserted data
@@ -339,7 +358,7 @@ class Label_sequence_model extends BioModel
   }
   
   // remove all label instances of a certain label from a sequence
-  private function remove_labels_sequence($label_id, $seq_id)
+  public function remove_labels_sequence($label_id, $seq_id)
   {
     $this->db->where('seq_id', $seq_id);
     $this->db->where('label_id', $label_id);
@@ -422,8 +441,9 @@ class Label_sequence_model extends BioModel
       $data[$fields] = $data_value;
     }
   
-    $data['param'] = $param;
-
+    if($param)
+      $data['param'] = $param;
+      
     return $this->edit_data_with_history($id, $data);
   }
 
@@ -478,6 +498,7 @@ class Label_sequence_model extends BioModel
     return $label['type'] == 'date';
   }
   
+  // $date: dd-mm-yyyy hh:mm:ss
   public function add_date_label($seq_id, $label_id, $date)
   {
     $label_model = $this->load_model('label_model');
@@ -779,10 +800,58 @@ class Label_sequence_model extends BioModel
   {
     $this->db->select('label_id');
     $this->db->distinct();
-    $this->db->where('auto_on_modification', true);
     $this->db->where('seq_id', $seq);
+    $this->db->where('auto_on_modification', true);
     $this->__filter_special_labels();
 
+    return $this->get_all('label_sequence_info');
+  }
+  
+  private function run_modification_action($seq_id, $label_id)
+  {
+    $label_model = $this->load_model('label_model');
+    $label = $this->label_model->get($label_id);
+    
+    if(!$label['action_modification'] || $label['action_modification'] == '') {
+      return null;
+    }
+  
+    $sequence_model = $this->load_model('sequence_model');
+    $sequence = $this->sequence_model->get($seq_id);
+    
+    $label_name = $label['name'];
+    $label_id = $label['id'];
+    $code = $label['action_modification'];
+    $sequence_id = $sequence['id'];
+    $content = $sequence['content'];
+    
+    try {
+      eval($code);
+      return true;
+    } catch(Exception $e) {
+      return null;
+    }
+  }
+  
+  public function run_modification_actions($seq)
+  {
+    $labels = $this->get_labels_with_action_modification($seq);
+    
+    foreach($labels as &$label) {
+      $label_id = $label['label_id'];
+      
+      $this->run_modification_action($seq, $label_id);
+    }
+  }
+  
+  private function get_labels_with_action_modification($seq)
+  {
+    $this->db->select('label_id');
+    $this->db->distinct();
+    $this->db->where('seq_id', $seq);
+    $this->db->where('action_modification IS NOT NULL');
+    $this->__filter_special_labels();
+    
     return $this->get_all('label_sequence_info');
   }
 

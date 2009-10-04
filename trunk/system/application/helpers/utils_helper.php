@@ -115,23 +115,43 @@ function build_data_array($array, $column = 'name')
 
 function convert_html_date_to_sql($date)
 {
-  $vec = explode('-', $date);
-
-  if(count($vec) != 3) {
+  $date = trim($date);
+  
+  $super_vec = explode(' ', $date);
+  
+  if(count($super_vec) == 0) {
     return null;
   }
   
-  foreach($vec as $num) {
-    if(!is_numeric($num)) {
+  $date_block = $super_vec[0];
+  $vec = explode('-', $date_block);
+
+  if(count($vec) < 3) {
+    return null;
+  }
+  
+  for($i = 0; $i < 3; ++$i) {
+    if(!is_numeric($vec[$i])) {
       return null;
     }
   }
 
-  $day = $vec[0];
-  $month = $vec[1];
-  $year = $vec[2];
+  $day = (int)$vec[0];
+  $month = (int)$vec[1];
+  $year = (int)$vec[2];
 
-  return "$year-$month-$day";
+  if($year > 1000)
+    $ret = "$year-$month-$day";
+  else
+    $ret = "$day-$month-$year";
+  
+  if(count($super_vec) == 2) {
+    $time_block = $super_vec[1];
+    
+    $ret .= " $time_block";
+  }
+  
+  return $ret;
 }
 
 function convert_sql_date_to_html($date)

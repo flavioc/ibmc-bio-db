@@ -7,15 +7,10 @@ class SeqSearchTree
     
   }
   
-  public function get_tree($sequences)
+  public function get_tree_ids($ids)
   {
     $operands = array();
-
-    $ids = array();
-    foreach($sequences as &$seq) {
-      $ids[] = intval($seq['id']);
-    }
-
+    
     sort($ids);
 
     $current = null;
@@ -46,6 +41,16 @@ class SeqSearchTree
     } else {
       return array('oper' => 'or', 'operands' => $operands);
     }
+  }
+  
+  public function get_tree($sequences)
+  {
+    $ids = array();
+    foreach($sequences as &$seq) {
+      $ids[] = intval($seq['id']);
+    }
+
+    return $this->get_tree_ids($ids);
   }
 
   private function __push_new_operand(&$operands, $start, $end)

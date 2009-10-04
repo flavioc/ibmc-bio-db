@@ -245,6 +245,21 @@ class Sequence_model extends BioModel
     return $this->load_model('label_sequence_model')->get_label($id, 'type');
   }
   
+  public function is_immutable($id)
+  {
+    return $this->load_model('label_sequence_model')->get_label($id, 'immutable');
+  }
+  
+  public function get_super($id)
+  {
+    return $this->load_model('label_sequence_model')->get_label($id, 'super');
+  }
+  
+  public function get_lifetime($id)
+  {
+    return $this->load_model('label_sequence_model')->get_label($id, 'lifetime');
+  }
+  
   public function get_translated_sequence($id)
   {
     return $this->load_model('label_sequence_model')->get_label($id, 'translated');
@@ -285,8 +300,10 @@ class Sequence_model extends BioModel
     $this->update_history($id);
     $ret = $this->edit_field($id, 'content', $content);
     if($ret) {
-      $label_sequence = $this->load_model('label_sequence_model');
-      $ret = $label_sequence->regenerate_labels($id);
+      $label_sequence_model = $this->load_model('label_sequence_model');
+      $ret = $label_sequence_model->regenerate_labels($id);
+      
+      $label_sequence_model->run_modification_actions($id);
     }
 
     $this->db->trans_complete();

@@ -846,7 +846,7 @@ function new_histogram_label(label)
   histogram_button.removeAttr('disabled');
   histogram_label = label;
   $('input[name=histogram_label]').val(label.id);
-  if(label.multiple == '1')
+  if(label.multiple == '1' && (label.type == 'integer' || label.type == 'float'))
     generate_histogram_type.show();
   else
     generate_histogram_type.hide();
