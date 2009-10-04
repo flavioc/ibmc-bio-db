@@ -7,6 +7,9 @@ class Parser
   
   function Parser($ctr = null, $str = '')
   {
+    $CI =& get_instance();
+    $CI->load->plugin('tokenizer');
+    
     $this->controller = $ctr;
     if($ctr) {
       $ctr->load->model('label_model');
