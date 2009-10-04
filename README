@@ -23,6 +23,9 @@ First, create an empty database in mysql, then you have two options:
 	cd scripts && sh run_all.sh
   # update user set password = 'admin_password' where name = 'admin'
 
+You should also install the following cron jobs:
+0 0 * * * /usr/bin/python $(PWD)/scripts/gc_subsequences.py
+
 To install the NCBI taxonomy database, you should do:
   cd scripts && sh ncbi.sh
 
