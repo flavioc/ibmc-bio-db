@@ -1,15 +1,17 @@
+<script>{to_js var=sequence value=$sequence}</script>
+
 {if $logged_in}
 <h2>View/Edit sequence</h2>
 {else}
 <h2>View sequence</h2>
 {/if}
 
-{if $logged_in}
+{if $logged_in && !$immutable}
 <script>
 {to_js var=sequence value=$sequence}
 
 {literal}
-$(document).ready(function() {
+$(function() {
   seq_id = sequence.id;
   var seqdata = {seq: seq_id};
 
@@ -45,6 +47,12 @@ $(document).ready(function() {
   <p><span class="desc"><a href="{site}/sequence/download/{$sequence.id}">Content</a>: </span><span id="seqcontent">{$sequence.content}...</span></p>
   {if $trans_sequence}
   <p><span class="desc">Translated:</span><a href="{site}/sequence/view/{$trans_sequence.id}">{$trans_sequence.name}</a></p>
+  {/if}
+  {if $super}
+  <p><span class="desc">Super:</span><a href="{site}/sequence/view/{$super.id}">{$super.name}</a></p>
+  {/if}
+  {if $lifetime}
+  <p><span class="desc">Lifetime:</span>{$lifetime}</p>
   {/if}
 {include file='history/form_view.tpl' data=$sequence}
 

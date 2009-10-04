@@ -5,3 +5,7 @@
 {else}
 <p class="sequence_segment">{$segment}</p>
 {/if}
+
+{if $sub_id}
+<p>The subsequence for this segment is <a href="{site}/sequence/view/{$sub_id}">here</a>.</p>
+{/if}

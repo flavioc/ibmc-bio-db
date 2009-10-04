@@ -22,6 +22,7 @@ class Change_Labels extends BioController
     $this->smarty->assign('label_info', $label);
     
     $label_seq = $this->label_sequence_model->get_label_info($seq_id, $label_id);
+    $label_seq['code'] = $label['code']; // to show generate box
     $this->smarty->assign('label', $label_seq);
     
     $this->smarty->assign('toadd', $label['multiple'] || !$label_seq);

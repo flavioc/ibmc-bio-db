@@ -26,4 +26,4 @@
 
 <h3>Sequences</h3>
 
-{include file=search/operation_sequences.tpl}
+{include file=search/operation_sequences.tpl dom_id=input_list}

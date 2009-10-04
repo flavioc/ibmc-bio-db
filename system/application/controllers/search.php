@@ -26,6 +26,8 @@ class Search extends BioController
     $this->load->model('label_model');
     $this->smarty->assign('refs', $this->label_model->get_refs());
     
+    $this->smarty->assign('positions', $this->label_model->get_positions());
+    
     $this->assign_label_types(true);
     $this->use_autocomplete();
     $this->use_thickbox();
@@ -292,6 +294,40 @@ class Search extends BioController
     }
     
     $this->smarty->view_s('search/histogram');
+  }
+  
+  public function subsequences()
+  {
+    if(!$this->logged_in) {
+      return $this->invalid_permission();
+    }
+    
+    $search = $this->__get_search_term('post', 'encoded_tree');
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $label_id = $this->get_post('select_position');
+    
+    $this->load->library('SubSequence');
+    
+    $this->load->model('label_model');
+    $this->smarty->assign('label', $this->label_model->get($label_id));
+    
+    $this->use_mygrid();
+    
+    if($this->subsequence->generate($search, $transform, !$this->logged_in, $label_id)) {
+      $new_search = $this->subsequence->get_search_tree();
+      $search_get = json_encode($new_search);
+      $this->smarty->assign('encoded_sub', $search_get);
+    } else {
+      $this->smarty->assign('failure', true);
+    }
+    
+    $this->smarty->assign('failed', $this->subsequence->get_failed());
+    
+    $this->smarty->assign('encoded_input', json_encode($search));
+    $this->smarty->assign('transform_input', $transform);
+    
+    $this->smarty->assign('title', 'Generate sub sequences');
+    $this->smarty->view('search/subsequences');
   }
   
   private function __get_search_term($method = 'get', $param = 'search')

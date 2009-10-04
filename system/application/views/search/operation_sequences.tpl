@@ -1,9 +1,9 @@
-<div id="sequence_list"></div>
+<div id="{$dom_id}"></div>
 
 <script>
 {literal}
 $(function () {
-  $('#sequence_list')
+  $('#{/literal}{$dom_id}{literal}')
   .gridEnable()
   .grid({
     ajax_method: 'post',
@@ -12,14 +12,12 @@ $(function () {
     total: 'get_search_total',
     params: {
       search: '{/literal}{$encoded}{literal}'
-      {/literal}
-      {if $transform}
+      {/literal}{if $transform}
       , transform: {$transform}
-      {/if}
-      {literal}
+      {/if}{literal}
     },
-    fieldNames: ['Change', 'Name', 'Last update', 'User'],
-    fields: ['change', 'name', 'update', 'user_name'],
+    fieldNames: [{/literal}{if $add_change}'Change',{/if}{literal} 'Name', 'Last update', 'User'],
+    fields: [{/literal}{if $add_change}'change',{/if}{literal} 'name', 'update', 'user_name'],
     tdClass: {user_name: 'centered', update: 'centered', change: 'centered'},
     width: {
       user_name: w_user,
@@ -40,10 +38,16 @@ $(function () {
       }
     },
     dataTransform: {
+      {/literal}{if $add_change}
+      {literal}
       change: function (row) {
         return img_add;
       }
-    },
+      {/literal}
+      {/if}{literal}
+    }
+    {/literal}{if $add_change}
+    ,{literal}
     clickFun: {
       change: function (row) {
         if(!current_label) {
@@ -55,7 +59,8 @@ $(function () {
         tb_show('Add label', url);
         return false;
       }
-    }
+    }{/literal}
+    {/if}{literal}
   });
 });
 {/literal}

@@ -189,6 +189,6 @@ span.compound-operator {
   font-size: 85%;
 }
 
-#transform_box, #generate_histogram_box {
+#transform_box, #generate_histogram_box, #generate_sequences_box {
   font-size: 90%;
 }

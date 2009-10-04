@@ -8,11 +8,17 @@
   {if $trans_sequence}
   <p><span class="desc">Translated:</span><a href="{site}/sequence/labels/{$trans_sequence.id}">{$trans_sequence.name}</a></p>
   {/if}
+  {if $super}
+  <p><span class="desc">Super:</span><a href="{site}/sequence/view/{$super.id}">{$super.name}</a></p>
+  {/if}
+  {if $lifetime}
+  <p><span class="desc">Lifetime:</span>{$lifetime}</p>
+  {/if}
 </div>
 
 <script>
 {to_js var=sequence value=$sequence}
-seq_id = sequence.id;
+var seq_id = sequence.id;
 {literal}
 $(function() {
   $('#labels_list').gridEnable({paginate: false});

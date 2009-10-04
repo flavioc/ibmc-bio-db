@@ -116,10 +116,17 @@ $(function () {
 
 </div>
 
-<div id="transform_box">
-  <label for="select_transform" class="search-desc">Transform results: </label>
-  {form_select blank=yes name=select_transform start=0 data=$refs key=id}
+{if $logged_in}
+<div id="generate_sequences_box">
+  {form_open to="search/subsequences" name=generate_sequences_form}
+  <label for="select_position" class="search-desc">Generate subsequences: </label>
+  {form_hidden name=encoded_tree value=null}
+  {form_hidden name=transform_hidden value=null}
+  {form_select name=select_position data=$positions key=id}
+  {form_submit msg="Generate" id="generate_sequences_button"}
+  {form_end}
 </div>
+{/if}
 <div id="generate_histogram_box">
   {form_open to='search/get_histogram' name=generate_histogram_form}
     {form_hidden name=encoded_tree value=null}
@@ -176,6 +183,10 @@ $(function () {
 
 <h3>Preview</h3>
 <p>
+<div id="transform_box">
+  <label for="select_transform" class="search-desc">Transform results: </label>
+  {form_select blank=yes name=select_transform start=0 data=$refs key=id}
+</div>
 <div id="label_box">
   {form_open to='#' name=add_label_form}
   <label for="label_result" class="search-desc">Add label: </label>
