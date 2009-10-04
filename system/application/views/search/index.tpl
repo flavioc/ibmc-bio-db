@@ -85,6 +85,10 @@ $(function () {
 {form_open to='#' name=not_form}
 {form_submit msg='Add NOT'}
 {form_end}
+
+{form_open to='#' name=reset_form}
+{form_submit msg='Reset'}
+{form_end}
 </div>
 
 {literal}
