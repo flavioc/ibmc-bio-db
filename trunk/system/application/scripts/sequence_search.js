@@ -1235,17 +1235,21 @@ $(function () {
     params: {
       search: function () { return get_start_search_param(); }
     },
-    fieldNames: ['Name'],
-    fields: ['name'],
-    tdClass: {user_name: 'centered', update: 'centered'},
+    fieldNames: ['Labels', 'Name'],
+    fields: ['labels', 'name'],
+    tdClass: {labels: 'centered'},
     width: {
-      user_name: w_user,
-      update: w_update
+      labels: w_select
     },
     ordering: {
       name: 'asc',
       update: 'def',
       user_name: 'def'
+    },
+    dataTransform: {
+      labels: function (row) {
+        return img_go;
+      }
     },
     links: {
       name: function (row) {
@@ -1253,6 +1257,9 @@ $(function () {
       },
       user_name: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;
+      },
+      labels: function (row) {
+        return get_app_url() + '/sequence/labels/' + row.id;
       }
     }
   });
