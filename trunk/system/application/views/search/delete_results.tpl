@@ -1,6 +1,6 @@
 <h2>Delete results</h2>
 
-<p>You can delete the search results by clicking the button. <em>The action is irreversible</em>.</p>
+<p>You can delete the search results by clicking the button. <span class="warning">The action is irreversible</em>.</p>
 
 {form_open to='search/do_delete_results' name=delete_form}
 {form_hidden name=encoded_tree value=$encoded}

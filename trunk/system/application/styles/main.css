@@ -417,3 +417,8 @@ p.image-para img:hover {
   color: white;
   cursor: pointer;
 }
+
+.warning {
+  font-size: 130%;
+  color: red;
+}

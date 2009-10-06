@@ -55,7 +55,6 @@ $(function () {
   $('#form_search_seqs').submit(function () {
     var name = $('#name').val();
     var user = $('#user').children('[@selected]').text();
-    
     var operand_list = [];
     
     if(name != '') {
@@ -71,6 +70,7 @@ $(function () {
       obj = {oper: 'and', operands: operand_list};
       
     $.cookie('saved_search_tree', $.toJSON(obj, true), cookie_options);
+    
     return true;
   });
 });
