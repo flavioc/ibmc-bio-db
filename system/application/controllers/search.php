@@ -278,6 +278,7 @@ class Search extends BioController
       $this->smarty->assign('total', $this->plotter->get_total());
       $this->smarty->assign('number_classes', $this->plotter->get_number_classes());
       $this->smarty->assign('mode', $this->plotter->get_mode());
+      $this->smarty->assign('result', $this->plotter->get_result());
     
       switch($label['type']) {
         case 'integer':
