@@ -18,7 +18,7 @@ class SubSequence
     $this->sequence_model = load_ci_model('sequence_model');
   }
   
-  public function generate($search, $transform, $only_public, $label_position)
+  public function generate($search, $transform, $only_public, $label_position, $keep = false)
   {
     $label = $this->label_model->get($label_position);
     if($label['type'] != 'position') {
@@ -72,10 +72,14 @@ class SubSequence
           $this->label_sequence_model->add_ref_label($id, $subsequence_id,
             new LabelData($new_id, "$start,$length"));
           
-          $plus = time() + 60 * 60 * 24 * 3; // 3 days
-          $date = date("d-m-Y H:i:s", $plus);
+          if($keep) {
+            $this->label_sequence_model->remove_labels_sequence($lifetime_id, $new_id);
+          } else {
+            $plus = time() + 60 * 60 * 24 * 3; // 3 days
+            $date = date("d-m-Y H:i:s", $plus);
           
-          $this->label_sequence_model->add_date_label($new_id, $lifetime_id, $date);
+            $this->label_sequence_model->add_date_label($new_id, $lifetime_id, $date);
+          }
             
           $sequences[] = $new_id;
         } else {
