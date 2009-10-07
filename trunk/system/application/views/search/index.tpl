@@ -127,6 +127,7 @@ $(function () {
   {form_hidden name=encoded_tree value=null}
   {form_hidden name=transform_hidden value=null}
   {form_select name=select_position data=$positions key=id}
+  {form_checkbox name=keep_subsequence} Keep
   {form_submit msg="Generate" id="generate_sequences_button"}
   {form_end}
 </div>

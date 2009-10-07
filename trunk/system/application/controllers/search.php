@@ -305,6 +305,7 @@ class Search extends BioController
     $search = $this->__get_search_term('post', 'encoded_tree');
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $label_id = $this->get_post('select_position');
+    $keep = $this->get_post('keep_subsequence');
     
     $this->load->library('SubSequence');
     
@@ -313,7 +314,7 @@ class Search extends BioController
     
     $this->use_mygrid();
     
-    if($this->subsequence->generate($search, $transform, !$this->logged_in, $label_id)) {
+    if($this->subsequence->generate($search, $transform, !$this->logged_in, $label_id, $keep ? TRUE : FALSE)) {
       $new_search = $this->subsequence->get_search_tree();
       $search_get = json_encode($new_search);
       $this->smarty->assign('encoded_sub', $search_get);
