@@ -24,7 +24,6 @@ div.graph-line {
 }
 
 .graph-label:hover, .graph-bar:hover {
-  cursor: pointer;
 }
 
 .graph-bar {

@@ -58,6 +58,11 @@ class Plotter
     return str_replace("'", "\\'", $str);
   }
   
+  public function get_result()
+  {
+    return $this->result;
+  }
+  
   public function get_js_data()
   {
     $ret = '{';

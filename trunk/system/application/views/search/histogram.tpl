@@ -52,4 +52,48 @@ $(function () {
   </tr>
 </table>
 
+{literal}<script>
+$(function () {
+  $('#csv_show').minusPlus({
+    enabled: false,
+    plusText: 'Show CSV',
+    minusText: 'Hide CSV',
+    plusEnabled: function () {
+      $('#csv_data').show();
+    },
+    minusEnabled: function () {
+      $('#csv_data').hide();
+    }
+  });
+  
+  $('#tsv_show').minusPlus({
+    enabled: false,
+    plusText: 'Show TSV',
+    minusPlus: 'Hide TSV',
+    plusEnabled: function () {
+      $('#tsv_data').show();
+    },
+    minusEnabled: function () {
+      $('#tsv_data').hide();
+    }
+  })
+});
+</script>{/literal}
+
+<div id="csv_show"></div>
+<div id="csv_data" {display_none}>
+{foreach from=$result item=data}
+{$data.distr} , {$data.total}<br />
+{/foreach}
+</div>
+
+<div id="tsv_show"></div>
+<div id="tsv_data" {display_none}>
+<table>
+{foreach from=$result item=data}
+<tr><td>{$data.distr}</td><td>{$data.total}</td></tr>
+{/foreach}
+</table>
+</div>
+
 {/if}

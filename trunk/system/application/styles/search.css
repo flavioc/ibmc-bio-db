@@ -193,3 +193,15 @@ span.compound-operator {
 #transform_box, #generate_histogram_box, #generate_sequences_box {
   font-size: 90%;
 }
+
+#csv_show, #tsv_show {
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+#csv_data, #tsv_data {
+  border: 1px solid black;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
