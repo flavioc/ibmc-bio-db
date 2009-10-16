@@ -283,17 +283,9 @@ class Sequence extends BioController
     $this->__batch_init();
     
     $file1 = $this->__get_sequence_upload('file');
-    $file2 = $this->__get_sequence_upload('file2');
     
-    if(!$file1 || !$file2) {
-      if($file1)
-        unlink($file1);
-      if($file2)
-        unlink($file2);
-      if(!$file1)
-        $this->set_upload_form_error('file');
-      if(!$file)
-        $this->set_upload_form_error('file2');
+    if(!$file1) {
+      $this->set_upload_form_error('file');
       redirect('sequence/add_batch');
       return;
     }
