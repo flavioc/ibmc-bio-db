@@ -278,6 +278,9 @@ class SequenceExporter
   
   public function export_others($sequences, $type)
   {
+    if($type == 'simple-fasta')
+      return $this->export_simple_fasta($sequences);
+    
     $fasta_file = $this->write_sequences_to_fasta($sequences);
 
     $other_file = $this->__convert_export($fasta_file, $type);

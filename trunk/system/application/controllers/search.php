@@ -177,7 +177,7 @@ class Search extends BioController
     }
 
     $this->use_mygrid();
-    $this->smarty->load_stylesheets('add_label.css');
+    $this->smarty->load_stylesheets('add_label.css', 'operations.css');
     $this->use_autocomplete();
     $this->use_impromptu();
     $this->use_blockui();
@@ -192,6 +192,12 @@ class Search extends BioController
 
     $encoded = $this->get_post('encoded_tree');
     $this->smarty->assign('encoded', $encoded);
+    
+    $json = stripslashes($encoded);
+    $tree = json_decode($json, true);
+    $tree_str = search_tree_to_string($tree);
+    $this->smarty->assign('tree_str', $tree_str);
+    
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $this->smarty->assign('transform', $transform);
 
@@ -206,7 +212,7 @@ class Search extends BioController
     }
 
     $this->use_mygrid();
-    $this->smarty->load_stylesheets('add_label.css');
+    $this->smarty->load_stylesheets('add_label.css', 'operations.css');
     $this->use_autocomplete();
     $this->use_thickbox();
     $this->use_datepicker();
@@ -231,6 +237,11 @@ class Search extends BioController
     } else if($mode == 'edit') {
       $this->smarty->assign('title', 'Multiple edit label');
     }
+    
+    $json = stripslashes($encoded);
+    $tree = json_decode($json, true);
+    $tree_str = search_tree_to_string($tree);
+    $this->smarty->assign('tree_str', $tree_str);
     
     $this->smarty->assign('transform', $transform);
     $this->smarty->assign('mode', $mode);

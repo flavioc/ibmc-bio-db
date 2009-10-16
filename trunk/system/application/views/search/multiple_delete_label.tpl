@@ -24,6 +24,10 @@
 
 <div id="info_results"></div>
 
+<h3>Search term</h3>
+
+<p id="search_tree_string">{$tree_str}</p>
+
 <h3>Sequences</h3>
 
 {include file=search/operation_sequences.tpl dom_id=input_list}
