@@ -40,19 +40,6 @@ $(function () {
 {form_submit name=submit msg='Download file'}
 {form_end}
 
+<h3>Search term</h3>
+
 <p id="search_tree_string">{$tree_str}</p>
-
-<div id="tree_html">
-<ol>
-  {$tree_html}
-</ol>
-</div>
-
-<script>
-{literal}
-$(function () {
-  $('#tree_html li').addClass('tree-terms');
-  $('#tree_html ol').addClass('tree-list');
-});
-{/literal}
-</script>

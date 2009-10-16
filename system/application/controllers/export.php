@@ -46,8 +46,6 @@ class Export extends BioController
     $this->smarty->assign('tree_json', $json);
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
-    $tree_html = search_tree_to_html($tree);
-    $this->smarty->assign('tree_html', $tree_html);
 
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     
