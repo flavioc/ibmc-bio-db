@@ -9,9 +9,9 @@
   {include_js name=$script}
 {/foreach}
 {foreach from=$stylesheets item=stylesheet}
-<link rel="stylesheet" href="{top_dir}/styles/{$stylesheet}?random={random}" type="text/css" media="screen" />
+{include_css name=$stylesheet}
 {/foreach}
-<link rel="stylesheet" href="{top_dir}/styles/main.css?random={random}" type="text/css" charset="utf-8" />
+{include_css name=main}
 <link rel="shortcut icon" href="{top_dir}/images/favicon.ico" />
 <title>{$title}</title>
 </head>
