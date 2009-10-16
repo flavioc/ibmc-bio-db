@@ -27,7 +27,7 @@
       {if $search_term_input}
       <input type="text" name="search_global" value="{$search_term_input}" />
       {else}
-      <input type="text" name="search_global" autocomplete=off/>
+      <input type="text" name="search_global" autocomplete="off" />
       {/if}
     <input type="submit" value="Search"/>
     </form>
