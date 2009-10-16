@@ -21,7 +21,7 @@ $(function () {
   <tr>
     <td class="centered">{$name}</td>
     <td class="centered">{$label.type}</td>
-    <td>{if $label.status == 'not_found'}Label is not installed{/if}{if $label.status == 'type_differ'}Label types are different ({$label.new_type}){/if}{if $label.status == 'ok'}OK{/if}</td>
+    <td>{if $label.status == 'not_found'}Label is not installed{/if}{if $label.status == 'ok'}OK{/if}</td>
   </tr>
   {/foreach}
 </table>

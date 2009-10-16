@@ -63,6 +63,11 @@ class Export extends BioController
     $this->smarty->view('export/search');
   }
   
+  private function __can_access($id)
+  {
+    return $this->logged_in || $this->sequence_model->permission_public($id);
+  }
+  
   public function export_one()
   {
     $id = $this->get_post('id');

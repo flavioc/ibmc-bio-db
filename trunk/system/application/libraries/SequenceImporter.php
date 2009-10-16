@@ -25,28 +25,22 @@ class SequenceImporter
     }
 
     $labels_node = find_xml_child($top, 'labels');
-    if(!$labels_node) {
-      return null;
-    }
 
     $info = new ImportInfo();
 
-    foreach($labels_node->childNodes as $label) {
-      if($label->nodeName != 'label') {
-        continue;
-      }
+    if($labels_node) {
+      foreach($labels_node->childNodes as $label) {
+        if($label->nodeName != 'label') {
+          continue;
+        }
 
-      $type = $label->getAttribute('type');
-      if(!$type) {
-        continue;
-      }
+        $name = $label->textContent;
+        if(!$name) {
+          continue;
+        }
 
-      $name = $label->textContent;
-      if(!$name) {
-        continue;
+        $info->add_label($name);
       }
-
-      $info->add_label($name, $type);
     }
 
     foreach($top->childNodes as $child) {
@@ -126,13 +120,9 @@ class SequenceImporter
 
     foreach($labels_vec as $label_text) {
       $label_vec = explode(':', $label_text);
-      if(count($label_vec) != 2) {
-        continue;
-      }
       $label_name = $label_vec[0];
-      $label_type = $label_vec[1];
 
-      $info->add_label($label_name, $label_type);
+      $info->add_label($label_name);
     }
   }
 
