@@ -645,6 +645,21 @@ function smarty_function_include_js($params, &$smarty)
   return "<script type=\"text/javascript\" src=\"$top_dir/scripts/$name?random=$random\"></script>";
 }
 
+function smarty_function_include_css($params, &$smarty)
+{
+  $top_dir = smarty_function_top_dir(array(), $smarty);
+  
+  $name = $params['name'];
+  $random = smarty_function_random(array(), $smarty);
+  
+  $ext = findexts($name);
+  if($ext == null) {
+    $name = "$name.css";
+  }
+  
+  return '<link rel="stylesheet" href="'.$top_dir.'/styles/'.$name.'?random='.$random.'" type="text/css" charset="utf-8" media="screen" />';
+}
+
 function smarty_function_to_js($params, &$smarty)
 {
   $data = $params['value'];
@@ -700,6 +715,7 @@ class BioSmarty extends Smarty
     $this->register_function('boolean', 'smarty_function_boolean');
     $this->register_function('random', 'smarty_function_random');
     $this->register_function('include_js', 'smarty_function_include_js');
+    $this->register_function('include_css', 'smarty_function_include_css');
     $this->register_function('to_js', 'smarty_function_to_js');
     $this->register_function('display_none', 'smarty_function_display_none');
     $this->register_function('encode_json', 'smarty_function_encode_json');
