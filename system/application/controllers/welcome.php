@@ -10,13 +10,13 @@ class Welcome extends BioController
 	
   public function index()
   {
-    $this->smarty->assign('title', 'Main');
-
     // load comment
     $this->load->model('comment_model');
     $this->load->helper('text');
     $comment = newline_tab_html($this->comment_model->get());
     $this->smarty->assign('comment', $comment);
+
+    $this->smarty->assign('title', $comment);
 
     if(!$this->logged_in) {
       $this->smarty->load_scripts(VALIDATE_SCRIPT);
