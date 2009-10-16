@@ -91,8 +91,7 @@ class SequenceExporter
     foreach($merged_labels as &$label) {
       if(label_type_is_printable($label['type'])) {
         $name = $label['name'];
-        $type = $label['type'];
-        $ret .= "$t\t<label type=\"$type\">$name</label>\n";
+        $ret .= "$t\t<label>$name</label>\n";
       }
     }
 
@@ -224,8 +223,7 @@ class SequenceExporter
         }
 
         $name = $label['name'];
-        $type = $label['type'];
-        $ret .= "$name:$type";
+        $ret .= $name;
 
         $first_done = true;
       }

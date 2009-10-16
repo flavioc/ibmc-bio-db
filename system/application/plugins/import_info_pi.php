@@ -96,9 +96,9 @@ class ImportInfo
     return $protein;
   }
   
-  public function add_label($name, $type)
+  public function add_label($name)
   {
-    $this->labels[$name] = array('type' => $type);
+    $this->labels[$name] = array();
   }
   
   public function get_labels()
@@ -155,25 +155,29 @@ class ImportInfo
   
   private function __get_labels()
   {
-    foreach($this->labels as $name => &$data) {
+    $new_labels = array();
+    
+    foreach($this->labels as $name => $d) {
+      $data = array();
+      
       if(!$this->label_model->has($name)) {
         $data['status'] = 'not_found';
       } else {
         $new_label = $this->label_model->get_by_name($name);
         
         if($new_label) {
-          if($new_label['type'] != $data['type']) {
-            $data['status'] = 'type_differ';
-            $data['new_type'] = $new_label['type'];
-          } else {
-            $data['status'] = 'ok';
-            $data['data'] = $new_label;
-          }
+          $data['status'] = 'ok';
+          $data['data'] = $new_label;
+          $data['type'] = $new_label['type'];
         } else {
           $data['status'] = 'not_found';
         }
       }
+    
+      $new_labels[$name] = $data;
     }
+    
+    $this->labels = $new_labels;
   }
   
   private function __import_label_text_natural($value, $type)
@@ -183,7 +187,7 @@ class ImportInfo
     
     switch($type) {
     case 'bool':
-      $data == '0' ? 'No' : 'Yes';
+      return $data == '0' ? 'No' : 'Yes';
     }
     
     if($param) {
@@ -332,6 +336,7 @@ class ImportInfo
     $label_type = $label_info['type'];
     
     $already_there = $this->label_sequence_model->label_used_up($seq_id, $label_id);
+    
     $editable = $label_info['editable'];
     $multiple = $label_info['multiple'];
     $values =& $this_label['values'];
