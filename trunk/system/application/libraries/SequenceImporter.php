@@ -104,8 +104,13 @@ class SequenceImporter
   private function __get_sequence_name($line)
   {
     $vec = split("[ \|>]+", $line);
-
-    return $vec[1];
+    
+    foreach($vec as $a) {
+      if($a && $a != '')
+        return $a;
+    }
+    
+    return null;
   }
 
   private function __get_sequence_content($file)
@@ -218,6 +223,12 @@ class SequenceImporter
       } else if($this->__is_sequence_start($line)) {
         $name = $this->__get_sequence_name($line);
         $content = $this->__get_sequence_content($fp);
+        
+        if(!$content)
+          continue;
+        
+        if(!$name)
+          $name = substr($content, 0, 10);
 
         $info->add_sequence($name, $content);
 
