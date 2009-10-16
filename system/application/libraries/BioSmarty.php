@@ -636,13 +636,15 @@ function smarty_function_include_js($params, &$smarty)
 {
   $top_dir = smarty_function_top_dir(array(), $smarty);
   $name = $params['name'];
-  $random = smarty_function_random(array(), $smarty);
+  
   $ext = findexts($name);
   if($ext == null) {
     $name = "$name.js";
   }
 
-  return "<script type=\"text/javascript\" src=\"$top_dir/scripts/$name?random=$random\"></script>";
+  //$random = smarty_function_random(array(), $smarty);
+  //return "<script type=\"text/javascript\" src=\"$top_dir/scripts/$name?random=$random\"></script>";
+  return "<script type=\"text/javascript\" src=\"$top_dir/scripts/$name\"></script>";
 }
 
 function smarty_function_include_css($params, &$smarty)
@@ -650,14 +652,17 @@ function smarty_function_include_css($params, &$smarty)
   $top_dir = smarty_function_top_dir(array(), $smarty);
   
   $name = $params['name'];
-  $random = smarty_function_random(array(), $smarty);
+  
   
   $ext = findexts($name);
   if($ext == null) {
     $name = "$name.css";
   }
   
-  return '<link rel="stylesheet" href="'.$top_dir.'/styles/'.$name.'?random='.$random.'" type="text/css" charset="utf-8" media="screen" />';
+  //$random = smarty_function_random(array(), $smarty);
+  //return '<link rel="stylesheet" href="'.$top_dir.'/styles/'.$name.'?random='.$random.'" type="text/css" charset="utf-8" media="screen" />';
+  return '<link rel="stylesheet" href="'.$top_dir.'/styles/'.$name.'" type="text/css" charset="utf-8" media="screen" />';
+
 }
 
 function smarty_function_to_js($params, &$smarty)
