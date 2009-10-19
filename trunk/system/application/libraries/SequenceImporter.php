@@ -103,7 +103,7 @@ class SequenceImporter
 
   private function __get_sequence_name($line)
   {
-    $vec = split("[ \|>]+", $line);
+    $vec = split("[ \|>#]+", $line);
     
     foreach($vec as $a) {
       if($a && $a != '')
@@ -180,11 +180,11 @@ class SequenceImporter
           }
 
           $vec = $this->__parse_sequence_label_fasta($part);
-          $info->add_sequence_label($name, $label_name, $vec[0], $vec[1]);
+          $info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
         }
       } else {
         $vec = $this->__parse_sequence_label_fasta($data);
-        $info->add_sequence_label($name, $label_name, $vec[0], $vec[1]);
+        $info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
       }
 
       ++$i;
@@ -198,7 +198,7 @@ class SequenceImporter
     if(count($vec) == 2) {
       return $vec;
     } else {
-      return array($name, null);
+      return array(null, $name);
     }
   }
 

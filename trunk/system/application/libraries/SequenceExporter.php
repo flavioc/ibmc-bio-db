@@ -235,7 +235,7 @@ class SequenceExporter
   private function __get_sequence_header($sequence, $labels, $merged_labels)
   {
     $seq_name = trim($sequence['name']);
-    $ret = ">$seq_name|#";
+    $ret = ">$seq_name#";
 
     foreach($merged_labels as &$merged_label) {
       $res_labels = $this->__get_export_labels($merged_label, $labels);
@@ -261,7 +261,7 @@ class SequenceExporter
       }
     }
 
-    return $ret;
+    return trim($ret, '|');
   }
   
   private function __get_export_label_fasta_name($label)
@@ -270,7 +270,7 @@ class SequenceExporter
 
     $param = $label['param'];
     if($param) {
-      $toadd = $toadd . ' -> ' . $param;
+      $toadd = $param . ' -> ' . $toadd;
     }
 
     return $toadd;
