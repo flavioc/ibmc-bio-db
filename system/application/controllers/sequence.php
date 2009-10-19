@@ -515,7 +515,7 @@ class Sequence extends BioController
   public function fetch($id)
   {
     if(!$this->__can_access($id)) {
-      return $this->invalid_permission();
+      return $this->invalid_permission_nothing();
     }
     
     $content = $this->sequence_model->get_content($id);
