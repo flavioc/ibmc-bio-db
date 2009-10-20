@@ -224,6 +224,7 @@ class Parser
         }
         break;
       case 'tax':
+      case 'ref':
         return 'like';
       case 'text':
       case 'url':
@@ -247,6 +248,7 @@ class Parser
     switch($oper) {
       case 'is': case '=': case 'eq': case 'equal': return 'eq';
       case 'exists': return 'exists';
+      case 'notexists': return 'notexists';
     }
     
     return null;

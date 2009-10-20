@@ -369,7 +369,7 @@ class Search_model extends BioModel
             return array('oper' => $oper, 'label' => $label_name, 'value' => $val);
           } elseif($oper == 'like') {
             $seq_model = $this->load_model('sequence_model');
-            $all = $seq_model->get_all(0, 20, array('name' => $value), array(), 'id');
+            $all = $seq_model->get_all(0, 20, array('name' => $val), array(), 'id');
             
             $operands = array();
             
@@ -381,7 +381,7 @@ class Search_model extends BioModel
               return array('oper' => 'fail');
             }
             
-            return array('oper' => 'oper', 'operands' => &$operands);
+            return array('oper' => 'or', 'operands' => $operands);
           }
           break;
         case 'tax':
@@ -418,7 +418,7 @@ class Search_model extends BioModel
             return array('oper' => 'fail');
           }
           
-          return array('oper' => 'or', 'operands' => &$operands);
+          return array('oper' => 'or', 'operands' => $operands);
         default:
           return $term;
       }
