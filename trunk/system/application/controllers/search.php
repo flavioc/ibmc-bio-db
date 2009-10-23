@@ -138,6 +138,8 @@ class Search extends BioController
       return $this->invalid_permission();
     }
     
+    $this->load->model('sequence_model');
+    
     $encoded = $this->get_post('encoded_tree');
 
     $json = stripslashes($encoded);
