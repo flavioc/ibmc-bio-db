@@ -33,6 +33,7 @@ class Search extends BioController
     $this->use_thickbox();
 
     $type = $this->get_parameter('type');
+    
     switch($type) {
       case 'label':
       case 'notlabel':

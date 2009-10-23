@@ -125,8 +125,9 @@ class SequenceImporter
     foreach($labels_vec as $label_text) {
       $label_vec = explode(':', $label_text);
       $label_name = $label_vec[0];
-
-      $info->add_label($label_name);
+      
+      if($label_name && $label_name != '')
+        $info->add_label($label_name);
     }
   }
 
