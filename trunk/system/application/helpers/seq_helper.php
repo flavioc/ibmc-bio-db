@@ -2,7 +2,7 @@
 
 function is_dna_letter($letter)
 {
-  $dna_letters = array('A', 'G', 'T', 'C');
+  $dna_letters = array('A', 'G', 'T', 'C', 'N');
 
   return in_array($letter, $dna_letters);
 }
