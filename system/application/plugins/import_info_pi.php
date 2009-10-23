@@ -61,31 +61,29 @@ class ImportInfo
   // writes imported sequences to a temporary fasta file returning the temporary filename
   private function write_simple_fasta()
   {
-    $CI =& get_instance();
-    $CI->load->library('SequenceExporter');
+    $temp_file = generate_new_file_name();
+    $fp = fopen($temp_file, 'w');
+
+    foreach($this->ordered_sequences as &$seq) {
+      $name = $seq['name'];
+      $id = $seq['id'];
+      $content = $this->sequence_model->get_content($id);
+      
+      fwrite($fp, ">$name\n$content\n");
+    }
+    fclose($fp);
     
-    $str = $CI->sequenceexporter->export_simple_fasta($this->ordered_sequences);
-    
-    return write_file_export($str);
+    return $temp_file;
   }
   
   public function convert_protein_file()
-  {
+  { 
+    $CI =& get_instance();
+    $CI->load->library('SequenceConverter');
+   
     $fasta = $this->write_simple_fasta();
     
-    $transeq = find_executable('transeq');
-    if(!$transeq) {
-      unlink($fasta);
-      return null;
-    }
-    
-    $protein = generate_new_file_name();
-    
-    exec("$transeq $fasta $protein", $cmdoutput, $ret);
-    
-    if($ret) {
-      throw new Exception("Error executing transeq");  
-    }
+    $protein = $CI->sequenceconverter->convert_dna_fasta($fasta);
     
     unlink($fasta);
     
