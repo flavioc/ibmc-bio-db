@@ -179,11 +179,6 @@ function simple_timestamp_string()
   return date('j-n-Y');
 }
 
-function read_file_line($file)
-{
-  return trim(fgets($file));
-}
-
 function read_raw_file($file)
 {
   $fp = fopen($file, 'rb');
