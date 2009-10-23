@@ -150,6 +150,52 @@ class Label_model extends BioModel
 
     return $this->count_total();
   }
+  
+  public function edit($id, $name, $type, $must_exist, $auto_on_creation,
+    $auto_on_modification, $deletable, $editable, $multiple, $default,
+    $public, $code, $action_modification, $valid_code, $comment)
+  {
+    $type = trim($type);
+    $name = trim($name);
+    $comment = trim($comment);
+    
+    if(strlen($name) <= 0 || strlen($name) > 255) {
+      return false;
+    }
+    
+    $name = str_replace(' ', '_', $name);
+    
+    if($this->has($name, $id)) {
+      return false;
+    }
+    
+    if(!label_valid_type($type)) {
+      return false;
+    }
+    
+    if(strlen($comment) > 1024) {
+      return false;
+    }
+    
+    $data = array(
+      'name' => $name,
+      'type' => $type,
+      'must_exist' => $must_exist,
+      'auto_on_creation' => $auto_on_creation,
+      'auto_on_modification' => $auto_on_modification,
+      'deletable' => $deletable,
+      'editable' => $editable,
+      'multiple' => $multiple,
+      'default' => $default,
+      'public' => $public,
+      'code' => trim($code),
+      'valid_code' => trim($valid_code),
+      'action_modification' => trim($action_modification),
+      'comment' => $comment,
+    );
+    
+    return $this->edit_data_with_history($id, $data);
+  }
 
   public function add($name, $type, $mustexist, $auto_on_creation,
     $auto_on_modification, $deletable,
@@ -200,8 +246,11 @@ class Label_model extends BioModel
     return $this->insert_data_with_history($data);
   }
 
-  public function has($name)
+  public function has($name, $id = null)
   {
+    if($id) {
+      $this->db->where("id <> $id");
+    }
     return $this->has_field('name', $name);
   }
 
