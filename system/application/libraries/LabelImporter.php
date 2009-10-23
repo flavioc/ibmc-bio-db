@@ -93,6 +93,14 @@ class LabelImporter
       } else {
         $code = '';
       }
+      
+      # get action modification
+      $action_modification_node = find_xml_child($label, 'action_modification');
+      if($action_modification_node) {
+        $action_modification = xmlspecialchars_decode($action_modification_node->textContent);
+      } else {
+        $action_modification = '';
+      }
 
       # get valid_code
       $valid_code_node = find_xml_child($label, 'valid_code');
@@ -113,22 +121,25 @@ class LabelImporter
                       'default' => $default,
                       'public' => $public,
                       'code' => $code,
+                      'action_modification' => $action_modification,
                       'valid_code' => $valid_code,
                       'comment' => $comment);
 
       if($this->model->has($name)) {
         $id = $this->model->get_id_by_name($name);
 
-        $ret = $this->model->edit($id, $name, $type, $must_exist, $auto_on_creation, $auto_on_modification,
-          $deletable, $editable, $multiple, $default, $public, $code, $valid_code, $comment);
+        $ret = $this->model->edit($id, $name, $type, $must_exist, $auto_on_creation,
+          $auto_on_modification, $deletable, $editable, $multiple, $default,
+          $public, $code, $action_modification, $valid_code, $comment);
 
         $label_data['mode'] = 'edit';
         $label_data['ret'] = $ret;
         $label_data['id'] = $id;
       } else {
+          
         $ret = $this->model->add($name, $type, $must_exist, $auto_on_creation,
             $auto_on_modification, $deletable, $editable, $multiple,
-            $default, $public, $code, $valid_code, $comment);
+            $default, $public, $code, $action_modification, $valid_code, $comment);
 
         $label_data['mode'] = 'add';
         $label_data['ret'] = $ret;

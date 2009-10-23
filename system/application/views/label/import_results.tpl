@@ -35,6 +35,8 @@ $(function () {
         if(row.ret == false) {
           return false;
         }
+
+        var int = parseInt(row.ret);
         
         return int > 0;
       },
