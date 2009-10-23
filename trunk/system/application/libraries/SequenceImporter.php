@@ -103,14 +103,13 @@ class SequenceImporter
 
   private function __get_sequence_name($line)
   {
-    $vec = split("[ \|>#]+", $line);
+    $vec = split("[>#]", $line);
     
-    foreach($vec as $a) {
-      if($a && $a != '')
-        return $a;
+    if(count($vec) != 2) {
+      return null;
     }
     
-    return null;
+    return $vec[0];
   }
 
   private function __get_sequence_content($file)
