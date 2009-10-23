@@ -29,12 +29,8 @@ class ImportInfo
   public function all_type($wanted_type)
   {
     foreach($this->ordered_sequences as &$seq) {
-      $content =& $seq['content'];
-      $type = sequence_type($content);
-      
-      if($type != $wanted_type) {
+      if($seq['type'] != $wanted_type)
         return false;
-      }
     }
     
     return true;
@@ -114,8 +110,13 @@ class ImportInfo
   
   public function add_sequence($name, $content, $id = null)
   {
-    $name = trim($name);
-    $data = array('name' => $name, 'content' => sequence_normalize($content), 'id' => $id, 'labels' => array());
+    $content = sequence_normalize($content);
+    $type = sequence_type($content);
+    $name = $this->__fix_sequence_name(trim($name), $type);
+    
+    $data = array('name' => $name, 'type' => $type, 'content' => $content, 'id' => $id, 'labels' => array());
+    
+    $this->__import_base_sequence($data);
     
     $this->ordered_sequences[] = $data;
   }
@@ -420,57 +421,41 @@ class ImportInfo
     return preg_replace('/_[0-9]$/', '_p', $name);
   }
   
-  private function __fix_sequence_names()
+  private function __fix_sequence_name($old_name, $type)
   {
-    // fix sequence names: _n -> _p
-    $new_sequences = array();
-    
-    foreach($this->ordered_sequences as &$data)
+    if($type == 'protein' && $this->__is_generated_protein_name($old_name))
     {
-      $old_name = $data['name'];
-      $content =& $data['content'];
-      
-      if(sequence_type($content) == 'protein' && $this->__is_generated_protein_name($old_name))
-      {
-        $new_name = $this->__fix_protein_name($old_name);
-      } else {
-        $new_name = $old_name;
-      }
-      
-      $data['name'] = $new_name;
-      $new_sequences[] =& $data;
+      return $this->__fix_protein_name($old_name);
     }
     
-    $this->ordered_sequences = $new_sequences;
+    return $old_name;
+  }
+  
+  private function __import_base_sequence(&$data)
+  {
+    $content =& $data['content'];
+    $isnew = false;
+    $name = $data['name'];
+    
+    if($this->sequence_model->has_same_sequence($name, $content)) {
+      $data['id'] = $this->sequence_model->get_id_by_name_and_content($name, $content);
+      $data['short_content'] = $this->sequence_model->get_short_content($data['id']);
+      $data['comment'] = 'Sequence name and content are identical.';
+    } else {
+      $isnew = true;
+      $data['comment'] = '';
+      $data['id'] = $this->sequence_model->add($name, $content);
+      $data['short_content'] = sequence_short_content($data['content']);
+      unset($data['content']);
+    }
+    
+    $data['add'] = $isnew;
   }
   
   public function import()
   {
     $this->__get_labels();
-    $this->__fix_sequence_names();
     
-    foreach($this->ordered_sequences as &$data) {
-      $content =& $data['content'];
-      $isnew = false;
-      $name = $data['name'];
-      
-      if($this->sequence_model->has_same_sequence($name, $content)) {
-        $data['id'] = $this->sequence_model->get_id_by_name_and_content($name, $content);
-        $data['content'] = $this->sequence_model->get_content($data['id']);
-        $data['comment'] = 'Sequence name and content are identical.';
-      } else {
-        $isnew = true;
-        $data['comment'] = '';
-        $data['id'] = $this->sequence_model->add($name, $content);
-      }
-      
-      $data['short_content'] = sequence_short_content($data['content']);
-      $data['add'] = $isnew;
-    }
-    
-    // when importing a full set of sequences that are linked
-    // importing all the sequences first and then the labels
-    // makes it easy to link sequences using labels 
     foreach($this->ordered_sequences as &$data) {
       $this->__import_labels($data);
     }
