@@ -182,6 +182,11 @@ class Sequence_model extends BioModel
     
     return $row['segment'];
   }
+  
+  public function get_short_content($id)
+  {
+    return $this->get_content_segment($id, 1, SEQUENCE_SPACING);
+  }
 
   public function get_name($id)
   {
