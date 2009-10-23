@@ -237,6 +237,9 @@ function split_string_html(str, block)
   var size = str.length;
   var ret = '';
   
+  if(size < block)
+    return str;
+  
   for(var i = 0; i < size; i = i + block)
     ret += str.substr(i, block) + '<br />';
 

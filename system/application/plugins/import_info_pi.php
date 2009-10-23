@@ -59,7 +59,7 @@ class ImportInfo
   }
   
   // writes imported sequences to a temporary fasta file returning the temporary filename
-  public function write_simple_fasta()
+  private function write_simple_fasta()
   {
     $CI =& get_instance();
     $CI->load->library('SequenceExporter');
