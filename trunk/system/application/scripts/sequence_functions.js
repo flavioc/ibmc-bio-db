@@ -9,6 +9,9 @@ var data_transform_labels = {
       ref_data: function (row) {
         return row.sequence_name;
       },
+      text_data: function (row) {
+        return split_string_html(row.text_data, 70);
+      },
       taxonomy_data: function (row) {
         return row.taxonomy_name;
       },
