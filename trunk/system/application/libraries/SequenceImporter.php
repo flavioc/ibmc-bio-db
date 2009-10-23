@@ -112,9 +112,24 @@ class SequenceImporter
     return $vec[0];
   }
 
-  private function __get_sequence_content($file)
+  private function __get_sequence_content($reader)
   {
-    return read_file_line($file);
+    $ret = '';
+    while(!$reader->ends()) {
+      $new_line = $reader->get_line();
+      
+      if(!$new_line)
+        continue;
+      
+      if($this->__is_sequence_start($new_line)) {
+        $reader->unread_line($new_line);
+        return $ret;
+      } else {
+        $ret .= $new_line;
+      }
+    }
+    
+    return $ret;
   }
 
   private function __read_header_labels(&$info, &$line)
@@ -205,24 +220,25 @@ class SequenceImporter
   public function import_fasta($file)
   {
     $info = new ImportInfo();
-    $fp = fopen($file, 'rb');
-    $line_cnt = 0;
     $has_header = false;
+    
+    $CI =& get_instance();
+    $CI->load->plugin('line_reader');
 
-    while(!feof($fp)) {
-      $line = read_file_line($fp);
+    $reader = new LineReader($file);
+    
+    while(!$reader->ends()) {
+      $line = $reader->get_line();
 
-      $line_cnt++;
-      if($line == null) {
+      if (!$line)
         continue;
-      }
 
       if($this->__is_header_sequence($line) && !$has_header) {
         $this->__read_header_labels($info, $line);
         $has_header = true;
       } else if($this->__is_sequence_start($line)) {
         $name = $this->__get_sequence_name($line);
-        $content = $this->__get_sequence_content($fp);
+        $content = $this->__get_sequence_content($reader);
         
         if(!$content)
           continue;
