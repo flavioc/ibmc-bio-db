@@ -18,7 +18,7 @@ class SequenceConverter
   
   public function convert_dna_sequences($sequences)
   {
-    $fasta = write_simple_fasta($sequences);
+    $fasta = $this->write_simple_fasta($sequences);
     
     $protein = $this->convert_dna_fasta($fasta);
     
