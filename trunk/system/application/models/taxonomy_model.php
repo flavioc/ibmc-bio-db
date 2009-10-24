@@ -168,7 +168,7 @@ class Taxonomy_model extends BioModel
 
   public function edit_parent($id, $parent_id)
   {
-    if($parent_id && $this->has_id($parent_id)) {
+    if($parent_id && !$this->has_id($parent_id)) {
       return false;
     }
     
