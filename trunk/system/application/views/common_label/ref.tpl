@@ -11,7 +11,8 @@ $(function () {
 </script>
 {/literal}
 
+<div id="reference_add_label">
 <hr />
-
-{include file=sequence/form_search.tpl}
-<div id="show_sequences"></div>
+  {include file=sequence/form_search.tpl}
+  <div id="show_sequences"></div>
+</div>
