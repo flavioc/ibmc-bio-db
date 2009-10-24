@@ -101,15 +101,31 @@ class SequenceImporter
     return $line[0] == '#';
   }
 
-  private function __get_sequence_name($line)
+  private function __get_sequence_name($line, $has_header, $name_pos)
   {
-    $vec = split("[>#]", $line);
-    
-    if(count($vec) != 2) {
+    if(!$has_header) {
+      $vec = explode("|", trim($line, " \n\r\t>"));
+      
+      if(count($vec) > 0) {
+        return $vec[0];
+      }
+      
       return null;
     }
     
-    return $vec[0];
+    // has header
+    
+    if(!is_numeric($name_pos)) {
+      return null;
+    }
+    
+    $vec = $this->__get_label_vector_seq($line);
+    
+    if(count($vec) <= $name_pos) {
+      return null;
+    }
+    
+    return $vec[$name_pos];
   }
 
   private function __get_sequence_content($reader)
@@ -131,18 +147,35 @@ class SequenceImporter
     
     return $ret;
   }
-
-  private function __read_header_labels(&$info, &$line)
+  
+  private function __get_label_vector(&$line)
   {
-    $stripped_line = trim($line, " \t\n\r\#");
-    $labels_vec = explode("|", $stripped_line);
+    return explode("|", trim($line, " \t\n\r\#\|"));
+  }
+  
+  private function __get_label_vector_seq(&$line)
+  {
+    return explode("|", trim($line, " \t\n\r>\|"));
+  }
 
+  private function __read_header_labels(&$info, &$line, &$pos_name)
+  {
+    $labels_vec = $this->__get_label_vector($line);
+
+    $i = 0;
+    
     foreach($labels_vec as $label_text) {
       $label_vec = explode(':', $label_text);
       $label_name = $label_vec[0];
       
-      if($label_name && $label_name != '')
+      if($label_name && $label_name != '') {
+        if($label_name == 'name') {
+          $pos_name = $i;
+        }
+        
         $info->add_label($label_name);
+        ++$i;
+      }
     }
   }
 
@@ -160,31 +193,27 @@ class SequenceImporter
     return $text[0] == '[' && $text[$len-1] == ']';
   }
 
-  private function __get_sequence_labels($info, $name, $line)
+  private function __get_sequence_labels($name, $info, $line)
   {
-    $stripped_line = trim($line);
-    $line_vec = explode('#', $stripped_line);
-
-    if(count($line_vec) <= 1) {
-      // no labels
-      return;
-    }
-
-    // get label data
-    $labels_text = $line_vec[count($line_vec)-1];
-    $label_data = explode('|', $labels_text);
+    $label_data = $this->__get_label_vector_seq($line);
 
     $total_data = count($label_data);
     $i = 0;
+    
     foreach($info->get_labels() as $label_name) {
-      if($i >= $total_data) {
+      if($i == $total_data) {
         break;
       }
-      $data = $label_data[$i];
-
-      if($data == '') {
+    
+      ++$i;
+      
+      if($label_name == 'name')
         continue;
-      }
+      
+      $data = $label_data[$i-1];
+
+      if($data == '')
+        continue;
 
       if($this->__is_multiple_values($data)) {
         $parts = $this->__split_label_texts($data);
@@ -201,8 +230,6 @@ class SequenceImporter
         $vec = $this->__parse_sequence_label_fasta($data);
         $info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
       }
-
-      ++$i;
     }
   }
 
@@ -225,6 +252,7 @@ class SequenceImporter
     $CI =& get_instance();
     $CI->load->plugin('line_reader');
 
+    $name_pos = 'undefined';
     $reader = new LineReader($file);
     
     while(!$reader->ends()) {
@@ -233,11 +261,11 @@ class SequenceImporter
       if (!$line)
         continue;
 
-      if($this->__is_header_sequence($line) && !$has_header) {
-        $this->__read_header_labels($info, $line);
+      if(!$has_header && $this->__is_header_sequence($line)) {
+        $this->__read_header_labels($info, $line, $name_pos);
         $has_header = true;
       } else if($this->__is_sequence_start($line)) {
-        $name = $this->__get_sequence_name($line);
+        $name = $this->__get_sequence_name($line, $has_header, $name_pos);
         $content = $this->__get_sequence_content($reader);
         
         if(!$content)
@@ -248,7 +276,8 @@ class SequenceImporter
 
         $info->add_sequence($name, $content);
 
-        $this->__get_sequence_labels($info, $name, $line);
+        if($has_header)
+          $this->__get_sequence_labels($name, $info, $line);
       }
     }
 

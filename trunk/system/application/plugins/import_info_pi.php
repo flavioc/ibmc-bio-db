@@ -4,7 +4,7 @@ class ImportInfo
 {
   private $ordered_sequences = array();
   private $labels = array();
-  
+  private $count = 0;
   private $label_model = null;
   private $sequence_model = null;
   private $label_sequence_model = null;
@@ -116,6 +116,9 @@ class ImportInfo
     
     $this->__import_base_sequence($data);
     
+    ++$this->count;
+    error_log("Imported sequence with name: $name ".$this->count, 0);
+    
     $this->ordered_sequences[] = $data;
   }
   
@@ -157,6 +160,9 @@ class ImportInfo
     $new_labels = array();
     
     foreach($this->labels as $name => $d) {
+      if($name == 'name')
+        continue;
+        
       $data = array();
       
       if(!$this->label_model->has($name)) {
@@ -329,6 +335,8 @@ class ImportInfo
       return;
     }
     
+    error_log("Importing label $label_name...", 0);
+    
     $seq_id = $seq_data['id'];
     $label_info =& $label_data['data'];
     $label_id = $label_info['id'];
@@ -401,12 +409,12 @@ class ImportInfo
   private function __import_labels(&$data)
   {
     $seq_name = $data['name'];
-    //echo " => $seq_name ";
+    
     foreach($this->labels as $name => &$label_data) {
+      if($name == 'name')
+        continue;
       $this->__import_sequence_label($data, $name, $label_data);
     }
-    //print_r($data['labels']);
-    //echo "<br />";
   }
   
   private function __is_generated_protein_name($name)
@@ -454,7 +462,13 @@ class ImportInfo
   {
     $this->__get_labels();
     
+    $count = 0;
+    $total = count($this->ordered_sequences);
+    
     foreach($this->ordered_sequences as &$data) {
+      $name = $data['name'];
+      ++$count;
+      error_log("Importing sequence labels with name: $name $count / $total", 0);
       $this->__import_labels($data);
     }
     
