@@ -80,7 +80,6 @@ class Label_sequence_model extends BioModel
     return $this->count_total();
   }
   
-  
   public function label_exists($id)
   {
     return $this->has_id($id);

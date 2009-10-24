@@ -32,7 +32,7 @@ $(document).ready(function() {
     style: "inherit",
     submitdata: taxdata
   });
-
+/*
   $('#taxtree').editable(base_site + 'edit_tree', {
     data: {/literal}{encode_json_data data=$trees blank=yes}{literal},
     type: 'select',
@@ -41,13 +41,14 @@ $(document).ready(function() {
     style: 'inherit',
     submitdata: taxdata
   });
+  */
 
   $('#set_parent').click(function () {
     tb_show('Select parent',
       base_site + 'select_parent/' + taxonomy.id);
   });
 
-  $('#taxname, #taxrank, #taxtree').addClass('writeable');
+  $('#taxname, #taxrank').addClass('writeable');
 });
 {/literal}</script>
 {/if}
@@ -55,7 +56,7 @@ $(document).ready(function() {
 <div class="data_show">
   <p><span class="desc">Name: </span><span id="taxname">{$taxonomy.name}</span></p>
   <p><span class="desc">Rank: </span><span id="taxrank">{if $taxonomy.rank_name}{$taxonomy.rank_name}{else}---{/if}</span></p>
-  <p><span class="desc">Tree: </span><span id="taxtree">{if $taxonomy.tree_name}{$taxonomy.tree_name}{else}---{/if}</span></p>
+  <p><span class="desc">Tree: </span><span id="taxtree">{if $taxonomy.tree_name}<a href="{site}/tree/view/{$taxonomy.tree_id}">{$taxonomy.tree_name}</a>{else}---{/if}</span></p>
   <p><span class="desc">{if $logged_in}<span class="clickable"><a href="#" id="set_parent">Parent:</a></span>{else}Parent:{/if} </span>
   {if $parent}
     <a href="{site}/taxonomy/view/{$parent.id}">{$parent.name}</a>

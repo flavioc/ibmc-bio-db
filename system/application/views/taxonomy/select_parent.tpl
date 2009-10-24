@@ -1,5 +1,5 @@
 
-<h2>Select taxonomy's parent</h2>
+<h2>Select taxonomy parent</h2>
 
 {form_open name=form_select_parent to="taxonomy/set_parent"}
 
@@ -11,10 +11,9 @@
 
 </fieldset>
 
-{form_submit name=submit_file msg='Select'}
+{form_submit name=submit_parent msg='Select'}
 {form_end}
 
-<p>
 <hr />
 <br />
 
@@ -25,7 +24,7 @@
 
   <script>
   {literal}
-  $(document).ready(function () {
+  $(function () {
     var place = $('#show_data');
     var form = $('#form_select_parent');
 
@@ -54,5 +53,3 @@
 </script>
 
 </div>
-</p>
-
