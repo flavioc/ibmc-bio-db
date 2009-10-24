@@ -1,5 +1,5 @@
-<hr />
 <div id="taxonomy_search">
+<hr />
   {include file=taxonomy/form_search.tpl}
 
   <div id="show_data"></div>
