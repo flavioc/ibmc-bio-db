@@ -326,7 +326,7 @@ class ImportInfo
     $this_label =& $seq_labels[$label_name];
     
     if($this_label == null) {
-      $seq_labels[$label_name] = array('status' => 'Empty / Not inserted');
+      $seq_labels[$label_name] = array('status' => 'Empty / Not inserted / Unchanged');
       return;
     }
     
@@ -396,7 +396,7 @@ class ImportInfo
   private function __add_single_label($seq_id, $label_id, $label_name, $label_type, &$this_label, $value)
   {
     if($value == '') {
-      $this_label['status'] = 'Empty / Not inserted';
+      $this_label['status'] = 'Empty / Not inserted / Unchanged';
       return;
     }
     
