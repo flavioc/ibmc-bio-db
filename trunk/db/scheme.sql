@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.32, for apple-darwin9.5.0 (i386)
 --
--- Host: localhost    Database: FDB
+-- Host: localhost    Database: MINHA2
 -- ------------------------------------------------------
 -- Server version	5.1.32
 
@@ -30,6 +30,22 @@ CREATE TABLE `configuration` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `configuration_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Configuration table.';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `event`
+--
+
+DROP TABLE IF EXISTS `event`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `event` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Event id.',
+  `code` int(11) NOT NULL COMMENT 'Event code.',
+  `data` text COMMENT 'Event data.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Event table.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1102,7 +1118,7 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping routines for database 'FDB'
+-- Dumping routines for database 'MINHA2'
 --
 /*!50003 DROP FUNCTION IF EXISTS `CREATE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1697,4 +1713,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-10-25  1:04:53
+-- Dump completed on 2009-10-25 22:16:34
