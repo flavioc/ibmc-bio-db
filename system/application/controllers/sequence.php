@@ -471,7 +471,7 @@ class Sequence extends BioController
         break;
     }
     
-    if($event)
+    if($this->event)
       $this->event_model->remove($this->event);
   
     return $ret;
