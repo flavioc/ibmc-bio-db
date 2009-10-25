@@ -213,14 +213,12 @@ class SequenceExporter
       $ret .= ";$comments\n";
     }
 
-    $ret .= '#';
+    $ret .= '#name';
     $first_done = false;
 
     foreach($labels as &$label) {
       if(label_type_is_printable($label['type'])) {
-        if($first_done) {
-          $ret .= '|';
-        }
+        $ret .= '|';
 
         $name = $label['name'];
         $ret .= $name;
@@ -235,7 +233,7 @@ class SequenceExporter
   private function __get_sequence_header($sequence, $labels, $merged_labels)
   {
     $seq_name = trim($sequence['name']);
-    $ret = ">$seq_name#";
+    $ret = ">$seq_name|";
 
     foreach($merged_labels as &$merged_label) {
       $res_labels = $this->__get_export_labels($merged_label, $labels);
