@@ -141,6 +141,7 @@ CREATE TABLE `label` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `history_id` (`history_id`),
+  KEY `label_type` (`type`),
   CONSTRAINT `label_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label types.';
 SET character_set_client = @saved_cs_client;
@@ -525,6 +526,7 @@ CREATE TABLE `taxonomy` (
   KEY `tree_id` (`tree_id`),
   KEY `parent_id` (`parent_id`),
   KEY `import_parent_id` (`import_parent_id`),
+  KEY `taxonomy_name` (`name`(16)),
   CONSTRAINT `taxonomy_ibfk_10` FOREIGN KEY (`parent_id`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_11` FOREIGN KEY (`import_parent_id`) REFERENCES `taxonomy` (`import_id`) ON DELETE CASCADE,
   CONSTRAINT `taxonomy_ibfk_7` FOREIGN KEY (`rank_id`) REFERENCES `taxonomy_rank` (`id`) ON DELETE CASCADE,
@@ -1695,4 +1697,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-10-04 16:08:06
+-- Dump completed on 2009-10-25  1:04:53
