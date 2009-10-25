@@ -27,3 +27,4 @@ define('GETPARAMS_SCRIPT', 'jquery.getParams.js');
 define('LIVEQUERY_SCRIPT', 'jquery.livequery.js');
 define('TEXTGROW_SCRIPT', 'textgrow.js');
 define('BLOCKUI_SCRIPT', 'jquery.blockUI.js');
+define('TIMERS_SCRIPT', 'jquery.timers.js');

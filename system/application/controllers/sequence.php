@@ -2,6 +2,8 @@
 
 class Sequence extends BioController
 {
+  private $event = null;
+  
   function Sequence()
   {
     parent::BioController();
@@ -200,8 +202,13 @@ class Sequence extends BioController
       return $this->invalid_permission();
     }
 
+    $this->smarty->load_scripts(TIMERS_SCRIPT, FORM_SCRIPT);
+    $this->use_blockui();
+    
     $this->smarty->fetch_form_row('file');
     $this->smarty->fetch_form_row('file2');
+    
+    $this->smarty->assign('event', generate_random());
     
     $this->smarty->assign('title', 'Add batch sequences');
     $this->smarty->view('sequence/add_batch');
@@ -256,23 +263,37 @@ class Sequence extends BioController
     $this->smarty->assign("search_tree_get$n", $search_tree_get);
   }
   
+  private function __batch_go_back()
+  {
+    if($this->event) {
+      $this->event_model->remove($this->event);
+      $this->event = null;
+    }
+    redirect('sequence/add_batch');
+  }
+  
   private function __do_add_batch_none()
   {
+    if($this->event)
+      $event_data = array('file' => array(), 'event' => $this->event);
+    else
+      $event_data = null;
+    
     $this->__batch_init();
     
     $file = $this->__get_sequence_upload('file');
     if(!$file) {
       $this->set_upload_form_error('file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
-    $info = $this->sequenceimporter->import_file($file);
+    $info = $this->sequenceimporter->import_file($file, $event_data, 'file');
     unlink($file);
     
     if(!$info) {
       $this->set_form_error('file', 'Error reading file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
@@ -282,28 +303,33 @@ class Sequence extends BioController
   
   private function __do_add_batch_generate()
   {
+    if($this->event)
+      $event_data = array('generate_file' => array(), 'generated_file' => array(), 'event' => $this->event);
+    else
+      $event_data = null;
+      
     $this->__batch_init();
     
     $file1 = $this->__get_sequence_upload('file');
     
     if(!$file1) {
       $this->set_upload_form_error('file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
-    $info1 = $this->sequenceimporter->import_file($file1);
+    $info1 = $this->sequenceimporter->import_file($file1, $event_data, 'generate_file');
     unlink($file1);
     
     if(!$info1) {
       $this->set_form_error('file', 'Error reading file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
     if(!$info1->all_dna()) {
       $this->set_form_error('file', 'All sequences should be DNA sequences');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
@@ -311,28 +337,28 @@ class Sequence extends BioController
     
     if(!$file2) {
       $this->set_form_error('file', 'Error generating protein file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
-    $info2 = $this->sequenceimporter->import_file($file2);
+    $info2 = $this->sequenceimporter->import_file($file2, $event_data, 'generated_file');
     unlink($file2);
     
     if(!$info2) {
       $this->set_form_error('file2', 'Error reading file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
     if(!$info2->all_protein()) {
       $this->set_form_error('file', 'All sequences must be protein sequences');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
     if(!$info1->duo_match($info2)) {
       $this->set_form_error('file', 'Sequence files must have the same number of sequences');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
@@ -346,6 +372,11 @@ class Sequence extends BioController
   
   private function __do_add_batch_duo()
   {
+    if($this->event)
+      $event_data = array('file1' => array(), 'file2' => array(), 'event' => $this->event);
+    else
+      $event_data = null;
+      
     $this->__batch_init();
     
     $file1 = $this->__get_sequence_upload('file');
@@ -358,47 +389,47 @@ class Sequence extends BioController
         unlink($file2);
       if(!$file1)
         $this->set_upload_form_error('file');
-      if(!$file)
+      if(!$file2)
         $this->set_upload_form_error('file2');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
-    $info1 = $this->sequenceimporter->import_file($file1);
+    $info1 = $this->sequenceimporter->import_file($file1, $event_data, 'file1');
     unlink($file1);
     
     if(!$info1) {
       unlink($file2);
       $this->set_form_error('file', 'Error reading file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
     if(!$info1->all_dna()) {
       unlink($file2);
       $this->set_form_error('file', 'All sequences should be DNA sequences');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
-    $info2 = $this->sequenceimporter->import_file($file2);
+    $info2 = $this->sequenceimporter->import_file($file2, $event_data, 'file2');
     unlink($file2);
     
     if(!$info2) {
       $this->set_form_error('file2', 'Error reading file');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
     if(!$info2->all_protein()) {
       $this->set_form_error('file', 'All sequences must be protein sequences');
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
     
     if(!$info1->duo_match($info2)) {
       $this->set_form_error('file', "Sequence files must have the same number of sequences");
-      redirect('sequence/add_batch');
+      $this->__batch_go_back();
       return;
     }
   
@@ -417,15 +448,33 @@ class Sequence extends BioController
     }
     
     $option = $this->get_post('upload_option');
+    $this->event = $this->get_post('event');
+    
+    if($this->event) {
+      $this->load->model('event_model');
+      $this->event_model->remove($this->event);
+      $this->event_model->add($this->event);
+    }
+    
+    //sleep(60);
+    //die();
     
     switch($option) {
       case 'none':
-        return $this->__do_add_batch_none();
+        $ret = $this->__do_add_batch_none();
+        break;
       case 'duo':
-        return $this->__do_add_batch_duo();
+        $ret = $this->__do_add_batch_duo();
+        break;
       case 'generate':
-        return $this->__do_add_batch_generate();
+        $ret = $this->__do_add_batch_generate();
+        break;
     }
+    
+    if($event)
+      $this->event_model->remove($this->event);
+  
+    return $ret;
   }
 
   public function add()

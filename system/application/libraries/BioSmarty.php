@@ -586,7 +586,16 @@ function smarty_function_encode_json_data($params, &$smarty)
 function smarty_function_loader_pic($params, &$smarty)
 {
   $site = base_url();
-  return "<img id=\"loader\" src=\"$site/images/loading.gif\" style=\"display: none;\" />";
+  $show = $params['show'];
+  
+  $ret = "<img id=\"loader\" src=\"$site/images/loading.gif\"";
+  
+  if(!$show)
+    $ret .= " style=\"display: none;\"";
+    
+  $ret .= " />";
+  
+  return $ret;
 }
 
 function smarty_function_boolean($params, &$smarty)
@@ -602,22 +611,7 @@ function smarty_function_boolean($params, &$smarty)
 
 function smarty_function_random($params, &$smarty)
 {
-  srand((double)microtime() * 1000000);
-
-  $min = $params['min'];
-  $max = $params['max'];
-
-  if(!$min) {
-    $min = 0;
-  }
-
-  if(!$max) {
-    $max = 32768;
-  }
-
-  $random_number = rand($max, $min);
-
-  return $random_number;
+  return generate_random($params['min'], $params['max']);
 }
 
 function findexts($filename)

@@ -10,12 +10,39 @@ class ImportInfo
   private $label_sequence_model = null;
   private $taxonomy_model = null;
   
-  function ImportInfo()
+  private $event_model = null;
+  private $event_data = null;
+  private $event_component = null;
+  private $event_put = null;
+  
+  function ImportInfo(&$event_data = null, $event_component = null)
   {
     $this->label_model = load_ci_model('label_model');
     $this->sequence_model = load_ci_model('sequence_model');
     $this->label_sequence_model = load_ci_model('label_sequence_model');
     $this->taxonomy_model = load_ci_model('taxonomy_model');
+    
+    if($event_data && $event_component) {
+      $this->event_component = $event_component;
+      $this->event_data =& $event_data;
+      $this->event_data[$this->event_component] = array('base_sequences' => 0, 'total_labels' => 0);
+      $this->event_put =& $this->event_data[$this->event_component];
+      $this->event_model = load_ci_model('event_model');
+    }
+  }
+  
+  private function __has_event()
+  {
+    return $this->event_data && $this->event_component;
+  }
+  
+  private function __update_event()
+  {
+    if($this->__has_event())
+    {
+      $data = json_encode($this->event_data);
+      $this->event_model->set($this->event_data['event'], $data);
+    }
   }
   
   public function duo_match($info2)
@@ -117,7 +144,13 @@ class ImportInfo
     $this->__import_base_sequence($data);
     
     ++$this->count;
-    error_log("Imported sequence with name: $name ".$this->count, 0);
+    
+    if($this->__has_event()) {
+      ++$this->event_put['base_sequences'];
+      $this->__update_event();
+    }
+    
+    //error_log("Imported sequence with name: $name ".$this->count, 0);
     
     $this->ordered_sequences[] = $data;
   }
@@ -335,7 +368,7 @@ class ImportInfo
       return;
     }
     
-    error_log("Importing label $label_name...", 0);
+    //error_log("Importing label $label_name...", 0);
     
     $seq_id = $seq_data['id'];
     $label_info =& $label_data['data'];
@@ -464,14 +497,18 @@ class ImportInfo
   {
     $this->__get_labels();
     
-    $count = 0;
-    $total = count($this->ordered_sequences);
+    //$count = 0;
+    //$total = count($this->ordered_sequences);
     
     foreach($this->ordered_sequences as &$data) {
       $name = $data['name'];
-      ++$count;
-      error_log("Importing sequence labels with name: $name $count / $total", 0);
+      //++$count;
+      //error_log("Importing sequence labels with name: $name $count / $total", 0);
       $this->__import_labels($data);
+      if($this->__has_event()) {
+        ++$this->event_put['total_labels'];
+        $this->__update_event();
+      }
     }
     
     return array($this->ordered_sequences, $this->labels);
