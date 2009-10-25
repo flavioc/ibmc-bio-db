@@ -675,7 +675,7 @@ function smarty_function_to_js($params, &$smarty)
 
 function smarty_function_encode_json($params, &$smarty)
 {
-  $value = $params['value'];
+  $value =& $params['value'];
   
   return json_encode($value);
 }

@@ -231,7 +231,9 @@ class Sequence extends BioController
   
   private function __show_batch_report()
   {
-    $this->smarty->load_stylesheets(MYGRID_THEME);
+    $this->use_mygrid();
+    $this->use_thickbox();
+    
     $this->smarty->assign('title', 'Batch import');
     $this->smarty->view('sequence/batch_report');
   }
