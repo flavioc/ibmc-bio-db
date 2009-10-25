@@ -71,7 +71,7 @@ $(function () {
       }
     });
     
-    loading.stopTime(label, update_loading).everyTime(500, label, update_loading);
+    loading.stopTime(label, update_loading).everyTime(2000, label, update_loading);
    
     return true;
   });
