@@ -291,3 +291,18 @@ function split_string($string, $blocks, $separator)
 
   return $ret;
 }
+
+function generate_random($min = null, $max = null)
+{
+  srand((double)microtime() * 1000000);
+
+  if(!$min) {
+    $min = 0;
+  }
+
+  if(!$max) {
+    $max = 32768;
+  }
+
+  return rand($max, $min);
+}

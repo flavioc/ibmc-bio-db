@@ -8,17 +8,17 @@ class SequenceImporter
     $CI->load->plugin('import_info');
   }
   
-  public function import_xml($file)
+  public function import_xml($file, &$event_data = null, $event_component = null)
   {
     $xmlDoc = new DOMDocument();
     if(!$xmlDoc->load($file, LIBXML_NOERROR)) {
       return null;
     }
 
-    return $this->import_xml_node($xmlDoc->documentElement);
+    return $this->import_xml_node($xmlDoc->documentElement, $event_data, $event_component);
   }
 
-  public function import_xml_node($top)
+  public function import_xml_node($top, &$event_data = null, $event_component = null)
   {
     if(!$top || $top->nodeName != 'sequences') {
       return null;
@@ -26,7 +26,7 @@ class SequenceImporter
 
     $labels_node = find_xml_child($top, 'labels');
 
-    $info = new ImportInfo();
+    $info = new ImportInfo($event_data, $event_component);
 
     if($labels_node) {
       foreach($labels_node->childNodes as $label) {
@@ -244,9 +244,9 @@ class SequenceImporter
     }
   }
 
-  public function import_fasta($file)
+  public function import_fasta($file, &$event_data = null, $event_component = null)
   {
-    $info = new ImportInfo();
+    $info = new ImportInfo($event_data, $event_component);
     $has_header = false;
     
     $CI =& get_instance();
@@ -284,12 +284,12 @@ class SequenceImporter
     return $info; 
   }
   
-  public function import_file($file)
+  public function import_file($file, &$event_data = null, $event_component = null)
   {
     if(file_extension($file) == 'xml') {
-      return $this->import_xml($file);
+      return $this->import_xml($file, $event_data, $event_component);
     } else {
-      return $this->import_fasta($file);
+      return $this->import_fasta($file, $event_data, $event_component);
     }
   }
 }
