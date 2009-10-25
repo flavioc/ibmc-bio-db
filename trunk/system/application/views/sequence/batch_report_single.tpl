@@ -9,7 +9,7 @@ $(function () {
 })
 </script>{/literal}
 
-{if count($labels) > 0}
+{if $labels && count($labels) > 0}
 <h3>Labels</h3>
 <table class="data">
   <tr>
@@ -26,32 +26,13 @@ $(function () {
   {/foreach}
 </table>
 <br />
-{/if}
 
 {foreach from=$sequences item=seq}
-<h4>Sequence</h4>
-<table class="data">
-  <tr>
-    <th style="width: 10%;">New</th>
-    <th style="width: 20%;">Name</th>
-    <th style="width: 30%;">Content</th>
-    {if $seq.comment}
-    <th>Comment</th>
-    {/if}
-  </tr>
-  <tr>
-    <td class="centered">{boolean value=$seq.add}</td>
-    <td><a href="{site}/sequence/view/{$seq.id}">{$seq.name}</a></td>
-    <td class="centered">{$seq.short_content}...</td>
-    {if $seq.comment}
-    <td>{$seq.comment}</td>
-    {/if}
-  </tr>
-</table>
-<br />
+<div id="seq_{$seq.id}" {display_none}>
 
-{if count($labels) > 0 && $seq.labels}
+{if $seq.labels}
 {assign var=labelsseq value=$seq.labels}
+<br />
 <table class="data">
   <tr>
     <th style="width: 20%;">Label</th>
@@ -64,7 +45,77 @@ $(function () {
   </tr>
   {/foreach}
 </table>
-<br />
+{else}
+<p>No labels for this sequence.</p>
 {/if}
+</div>
 
 {/foreach}
+{/if}
+
+{literal}<script>
+$(function () {
+  var grid = $('#show_seqs_{/literal}{$what}{literal}');
+  var fieldNames = ['New'];
+  var fields = ['add'];
+  
+  {/literal}{if count($labels) > 0}fieldNames.push('Status');
+  fields.push('status');{/if}{literal}
+  
+  $.merge(fieldNames, ['Name', 'Content', 'Comment', 'Labels']);
+  $.merge(fields, ['name', 'short_content', 'comment', 'labels']);
+  
+  grid
+  .gridEnable()
+  .grid({
+    method: 'local',
+    local_data: {/literal}{encode_json value=$sequences}{literal},
+    fieldNames: fieldNames,
+    fields: fields,
+    tdClass: {
+      add: 'centered',
+      labels: 'centered',
+      status: 'centered'
+    },
+    ordering: {
+      add: 'def',
+      name: 'def'
+    },
+    dataTransform: {
+      labels: function (row) {
+        return img_go;
+      },
+      status: function (row) {
+        return img_go;
+      },
+      short_content: function (row) {
+        return row.short_content + '...';
+      }
+    },
+    types: {
+      add: 'boolean'
+    },
+    width: {
+      add: w_boolean,
+      labels: '10%'
+    },
+    links: {
+      name: function (row) {
+        return get_app_url() + '/sequence/view/' + row.id;
+      },
+      labels: function (row) {
+        return get_app_url() + '/sequence/labels/' + row.id;
+      }
+    },
+    clickFun: {
+      status: function (row) {
+        tb_show('Sequence status for ' + row.name, '#TB_inline?inlineId=seq_' + row.id + '&width=700&height=300');
+        return false;
+      }
+    }
+  });
+});
+</script>{/literal}
+
+<div id="show_seqs_{$what}">
+</div>

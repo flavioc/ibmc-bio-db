@@ -389,6 +389,8 @@ class ImportInfo
         }
       }
     }
+    
+    unset($this_label['values']);
   }
   
   private function __add_single_label($seq_id, $label_id, $label_name, $label_type, &$this_label, $value)

@@ -11,5 +11,5 @@
 {if $sequences2}
 <h3>Protein file</h3>
 
-{include file=sequence/batch_report_single.tpl what=second labels=$labels1 sequences=$sequences2 search_tree_get=$search_tree_get2}
+{include file=sequence/batch_report_single.tpl what=second sequences=$sequences2 search_tree_get=$search_tree_get2}
 {/if}

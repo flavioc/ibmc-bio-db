@@ -224,7 +224,13 @@
         var a_class_name = 'ordering_' + obj[0].id + '_' + field;
 
         $('#' + a_class_name, obj).click(function () {
-          var index = 'order_' + field;
+          var index = null;
+          if(opts.method == 'remote') {
+            index = 'order_' + field;
+          } else {
+            index = field;
+          }
+          
           var current = opts.inner.ordering[index];
 
           if(current == null) {
@@ -240,11 +246,7 @@
           var new_ordering = {};
           new_ordering[index] = current;
           opts.inner.ordering = new_ordering;
-
-          $.each(opts.ordering, function (key, value) {
-              opts.ordering[key] = 'def';
-          });
-
+          
           get_results(obj, opts);
           
           return false;
@@ -545,10 +547,54 @@ function get_results(obj, opts) {
     });
   } else {
     // local data
+    
+    // find ordering
+    var field_order = null;
+    var order_way = null;
+    
+    $.each(opts.inner.ordering, function (key, value) {
+      field_order = key;
+      order_way = value;
+      return false;
+    });
+    
+    if(field_order) {
+      opts.local_data.sort(function (a, b) {
+        var a_data = a[field_order];
+        var b_data = b[field_order];
+        
+        var i_a = parseInt(a_data);
+        
+        if(is_numeric(i_a)) {
+          var i_b = parseInt(b_data);
+          
+          // numbers
+          if(is_numeric(i_b)) {
+            if(order_way == 'desc')
+              return i_b - i_a;
+            else
+              return i_a - i_b;
+          }
+        }
+        
+        // text
+        
+        if(a_data == b_data)
+          return 0;
+
+        if(order_way == 'desc')
+          return (b_data < a_data) ? -1 : 1;
+        else
+          return (a_data < b_data) ? -1 : 1; 
+      });
+    }
+    
+    // filter page
     var rows = $.grep(opts.local_data, function (item, index) {
       return index >= opts.inner.start && index < (opts.inner.start + opts.size);
     });
     
+    // build html
     get_data_results(obj, opts, opts.inner.total, opts.inner.start, rows);
   }
 }
@@ -783,7 +829,7 @@ function reload_grid(this_obj, $this, opts)
 
 $.fn.grid = function(options) {
   return this.each(function() {
-    var opts = $.extend(true, this.opts, $.fn.grid.defaults, options, 
+    var opts = $.extend(false, this.opts, $.fn.grid.defaults, options, 
       {
         inner: {
           ordering: {},
