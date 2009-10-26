@@ -48,7 +48,7 @@ class CI_DB_driver {
 	var $benchmark		= 0;
 	var $query_count	= 0;
 	var $bind_marker	= '?';
-	var $save_queries	= TRUE;
+	var $save_queries	= FALSE;
 	var $queries		= array();
 	var $query_times	= array();
 	var $data_cache		= array();
