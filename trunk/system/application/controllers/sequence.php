@@ -447,6 +447,8 @@ class Sequence extends BioController
       return $this->invalid_permission();
     }
     
+    set_time_limit(60 * 10); // 10 minutes...
+    
     $option = $this->get_post('upload_option');
     $this->event = $this->get_post('event');
     
@@ -455,9 +457,6 @@ class Sequence extends BioController
       $this->event_model->remove($this->event);
       $this->event_model->add($this->event);
     }
-    
-    //sleep(60);
-    //die();
     
     switch($option) {
       case 'none':
