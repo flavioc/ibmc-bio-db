@@ -1,0 +1,7 @@
+#length:integer|name:text|species:taxonomy
+>6|T4a|Drosophila melanogaster
+CACCACCAC
+>5|T4b|drosophila Melanogaster
+CATCATCAT
+>6|T4c|drosophila Melanogasters
+CATCATCACCATCAT
