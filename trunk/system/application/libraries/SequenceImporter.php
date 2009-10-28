@@ -155,7 +155,7 @@ class SequenceImporter
   
   private function __get_label_vector_seq(&$line)
   {
-    return explode("|", trim($line, " \t\n\r>\|"));
+    return explode("|", trim($line, " \t\n\r>"));
   }
 
   private function __read_header_labels(&$info, &$line, &$pos_name)
@@ -190,6 +190,9 @@ class SequenceImporter
   {
     $len = strlen($text);
 
+    if($len == 0)
+      return false;
+      
     return $text[0] == '[' && $text[$len-1] == ']';
   }
 
@@ -201,8 +204,9 @@ class SequenceImporter
     $i = 0;
     
     foreach($info->get_labels() as $label_name) {
-      if($i == $total_data) {
-        break;
+      if($i >= $total_data) {
+        $info->add_sequence_label($name, $label_name, '');
+        continue;
       }
     
       ++$i;
@@ -211,9 +215,6 @@ class SequenceImporter
         continue;
       
       $data = $label_data[$i-1];
-
-      if($data == '')
-        continue;
 
       if($this->__is_multiple_values($data)) {
         $parts = $this->__split_label_texts($data);
