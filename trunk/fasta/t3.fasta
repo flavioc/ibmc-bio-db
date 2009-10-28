@@ -1,0 +1,5 @@
+#length:integer|name:text|misslabel:text
+>6|T3a|bla
+CACCACCAC
+>5|T3b|ble
+CATCATCAC

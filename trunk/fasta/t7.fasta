@@ -1,0 +1,5 @@
+#length:integer|name:text|species:taxonomy|letters:integer|nc_codon:float|refpos:position
+>6|T7a|Drosophila melanogaster|||1.1
+CACCACCACCATCATCAT
+>5|T7b|drosophila Melanogaster|||2 3
+CATCATCATCATCATCAT
