@@ -772,8 +772,7 @@ class Label_sequence_model extends BioModel
     $label = $label_model->get($label_id);
 
     if($this->__is_tax($label)) {
-      $this->add($seq_id, $label_id, 'tax', $tax);
-      return true;
+      return $this->add($seq_id, $label_id, 'tax', $tax);
     } else {
       return false;
     }

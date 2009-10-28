@@ -20,8 +20,8 @@ $(function () {
   {foreach from=$labels key=name item=label}
   <tr>
     <td class="centered">{$name}</td>
-    <td class="centered">{$label.type}</td>
-    <td>{if $label.status == 'not_found'}Label is not installed{/if}{if $label.status == 'ok'}OK{/if}</td>
+    <td class="centered">{if $label.type}{$label.type}{else}---{/if}</td>
+    <td>{if $label.status == 'not_found'}Label is NOT INSTALLED{elseif $label.status == 'ok'}OK{elseif $label.status == 'base'}OK: Base label{/if}</td>
   </tr>
   {/foreach}
 </table>
@@ -39,10 +39,12 @@ $(function () {
     <th>Status</th>
   </tr>
   {foreach from=$labels key=name item=label}
-  <tr>
-    <td>{$name}</td>
-    <td>{$labelsseq[$name].status}</td>
-  </tr>
+    {if $labelsseq[$name]}
+      <tr>
+        <td>{$name}</td>
+        <td>{$labelsseq[$name].status}</td>
+      </tr>
+    {/if}
   {/foreach}
 </table>
 {else}
