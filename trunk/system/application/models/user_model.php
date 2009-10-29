@@ -2,6 +2,8 @@
 
 class User_model extends BioModel
 {
+  private static $salt = 'xrg82bAcEFg4wVy02VLIPJncBMhPg0ievL2k4WOhQI1jC4vXBjwb2MMRWabP1anwATdsjDaxGHFL1TYhOTFT7g78GxrGgn2fC9vc';
+  
   function User_model()
   {
     parent::BioModel('user');
@@ -33,7 +35,7 @@ class User_model extends BioModel
       return false;
     }
 
-    return $user['password'] == md5($pwd);
+    return $user['password'] == md5(self::$salt . $pwd);
   }
 
   private function _get_user($key, $value)

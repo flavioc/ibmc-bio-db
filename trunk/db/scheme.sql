@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.32, for apple-darwin9.5.0 (i386)
 --
--- Host: localhost    Database: MINHA2
+-- Host: localhost    Database: FDB
 -- ------------------------------------------------------
 -- Server version	5.1.32
 
@@ -1040,13 +1040,14 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER ins_user BEFORE INSERT ON user FOR EACH ROW BEGIN SET NEW.history_id = CREATE_HISTORY(); SET NEW.password = MD5(NEW.password); END */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER `FDB`.`ins_user` BEFORE INSERT ON `FDB`.`user`
+ FOR EACH ROW BEGIN SET NEW.history_id = CREATE_HISTORY(); SET NEW.password = MD5(CONCAT("xrg82bAcEFg4wVy02VLIPJncBMhPg0ievL2k4WOhQI1jC4vXBjwb2MMRWabP1anwATdsjDaxGHFL1TYhOTFT7g78GxrGgn2fC9vc", NEW.password)); END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1055,13 +1056,14 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER upd_user BEFORE UPDATE ON user FOR EACH ROW BEGIN IF NEW.password <> OLD.password THEN SET NEW.password = MD5(NEW.password); END IF; IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; END */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER `FDB`.`upd_user` BEFORE UPDATE ON `FDB`.`user`
+ FOR EACH ROW BEGIN IF NEW.password <> OLD.password THEN SET NEW.password = MD5(CONCAT("xrg82bAcEFg4wVy02VLIPJncBMhPg0ievL2k4WOhQI1jC4vXBjwb2MMRWabP1anwATdsjDaxGHFL1TYhOTFT7g78GxrGgn2fC9vc", NEW.password)); END IF; IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1118,7 +1120,7 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping routines for database 'MINHA2'
+-- Dumping routines for database 'FDB'
 --
 /*!50003 DROP FUNCTION IF EXISTS `CREATE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1713,4 +1715,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-10-25 22:16:34
+-- Dump completed on 2009-10-29  0:31:21
