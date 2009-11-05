@@ -260,6 +260,11 @@ class Sequence_model extends BioModel
     return $this->load_model('label_sequence_model')->get_label($id, 'super');
   }
   
+  public function get_super_position($id)
+  {
+    return $this->load_model('label_model')->get_label($id, 'super_position');
+  }
+  
   public function get_lifetime($id)
   {
     return $this->load_model('label_sequence_model')->get_label($id, 'lifetime');
