@@ -13,6 +13,7 @@ UPLOAD_DIR=$PWD/uploads
 
 rm -rf $LOCATION
 
+mkdir -p $(dirname $LOCATION)
 ln -sf $PWD/www $LOCATION || exit 1
 ln -sf $PWD/system/application/images www/ || exit 1
 ln -sf $PWD/system/application/scripts www/ || exit 1
