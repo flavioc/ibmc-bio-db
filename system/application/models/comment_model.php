@@ -2,7 +2,7 @@
 
 class Comment_model extends Model
 {
-  private static $comment_file = "../application/data/comment.txt";
+  private static $comment_file = "application/data/comment.txt";
 
   function Comment_model()
   {
@@ -14,9 +14,8 @@ class Comment_model extends Model
     $file = BASEPATH . self::$comment_file;
 
     $size = filesize($file);
-    if($size == 0) {
+    if($size == 0)
       return '';
-    }
 
     $fh = fopen($file, "rb");
     $data = fread($fh, $size);
