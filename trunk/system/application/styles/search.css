@@ -88,7 +88,7 @@ label.search-desc {
   border: 1px dotted black;
 }
 
-#search_tree, #search_human {
+#search_tree, #search_human, #search_sql {
   margin-left: 10px;
   margin-bottom: 15px;
   border: 1px solid black;
@@ -97,12 +97,12 @@ label.search-desc {
   padding: 0px;
 }
 
-#search_human p {
+#search_human p, #search_sql p {
   padding: 5px;
   padding-left: 10px;
 }
 
-#search_human {
+#search_human, #search_sql {
   margin-top: 10px;
 }
 

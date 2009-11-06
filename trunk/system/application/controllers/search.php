@@ -109,6 +109,16 @@ class Search extends BioController
     echo $tree_str;
   }
   
+  public function sql()
+  {
+    $tree = $this->__get_search_term('post');
+    $transform = $this->__get_transform_label('transform', 'post');
+    
+    $sql = $this->search_model->get_sql($tree, array('transform' => $transform, 'only_public' => !$this->logged_in));
+    
+    echo $sql;
+  }
+  
   public function delete_results()
   {
     if(!$this->logged_in) {
@@ -353,7 +363,6 @@ class Search extends BioController
     } else {
       $search = $this->get_post($param);
     }
-    $search = stripslashes($search);
     $search_term = null;
     
     if($search) {

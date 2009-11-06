@@ -464,6 +464,12 @@ class Search_model extends BioModel
 
   public function get_search($search, $coptions = array())
   {
+    $sql = $this->get_sql($search, $coptions);
+    return $this->rows_sql($sql);
+  }
+  
+  public function get_sql($search, $coptions = array())
+  {
     $default = array('start' => null,
                      'size' => null,
                      'ordering' => array(),
@@ -488,16 +494,14 @@ class Search_model extends BioModel
     if($transform) {
       $transform_sql = $this->__get_transform_sql($sql_where, $transform, $only_public);
       
-      $sql = "SELECT $select_sql
+      return "SELECT $select_sql
               FROM $transform_sql
               $sql_order $sql_limit";
     } else {
-      $sql = "SELECT $select_sql
+      return "SELECT $select_sql
           FROM sequence_info_history
           WHERE $sql_where $sql_order $sql_limit";
     }
-
-    return $this->rows_sql($sql);
   }
   
   private function __get_transform_sql($sql_where, $transform, $only_public)

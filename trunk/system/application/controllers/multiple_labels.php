@@ -218,6 +218,8 @@ class Multiple_Labels extends BioController
       return $this->invalid_permission_empty();
     }
 
+    $this->more_time_limit();
+
     $this->__get_info();
 
     $this->__super_auto_label();
@@ -428,6 +430,8 @@ class Multiple_Labels extends BioController
     if(!$this->logged_in) {
       return $this->invalid_permission_empty();
     }
+    
+    $this->more_time_limit();
 
     $this->__get_info();
     $this->__get_values();

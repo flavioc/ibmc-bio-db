@@ -116,6 +116,7 @@ function search_tree_to_html($term)
 function humanize_search_terminal($term)
 {
   if(!$term) {
+    echo "Invalid term 1";
     return '-';
   }
   
@@ -214,6 +215,7 @@ function compound_term($term)
 function search_tree_to_string($term, $start_compound = null, $end_compound = null)
 {
   if(!$term) {
+    echo "Invalid term "; print_r($term);
     return 'Empty query';
   }
   

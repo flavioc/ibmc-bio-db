@@ -447,7 +447,7 @@ class Sequence extends BioController
       return $this->invalid_permission();
     }
     
-    set_time_limit(60 * 10); // 10 minutes...
+    $this->more_time_limit();
     
     $option = $this->get_post('upload_option');
     $this->event = $this->get_post('event');

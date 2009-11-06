@@ -27,6 +27,8 @@ class Delete_Labels extends BioController
       return $this->invalid_permission_nothing();
     }
     
+    $this->more_time_limit();
+    
     $label_id = $this->get_post('label_id');
     $search = stripslashes($this->get_post('search'));
     
