@@ -308,7 +308,6 @@ class Multiple_Labels extends BioController
     case 'integer':
       return $this->label_sequence_model->add_integer_label($seq_id, $this->label_id, $this->integer);
     case 'float':
-      echo "$this->float;";
       return $this->label_sequence_model->add_float_label($seq_id, $this->label_id, $this->float);
     case 'url':
       return $this->label_sequence_model->add_url_label($seq_id, $this->label_id, $this->url);
