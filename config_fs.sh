@@ -24,5 +24,6 @@ mkdir -p $CACHE_DIR || exit 1
 mkdir -p $UPLOAD_DIR || exit 1
 chmod -R ugo+w $CACHE_DIR || exit 1
 chmod -R ugo+w $UPLOAD_DIR || exit 1
+chmod 666 $PWD/application/data/comment.txt || exit 1
 
 exit 0
