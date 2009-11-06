@@ -70,7 +70,7 @@ echo "Creating database tables..."
 echo
 echo
 echo "Inserting default database data..."
-(cd scripts && sh run_all.sh) || exit 1
+(cd scripts && sh run_all.sh $PASSWORD) || exit 1
 
 mysql -u $USER --password=$PASSWORD $DATABASE -e "UPDATE user SET password = '$ADMIN_PASSWORD' WHERE name = 'admin'"
 if [ $? -ne 0 ]; then
