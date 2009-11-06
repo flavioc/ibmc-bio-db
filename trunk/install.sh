@@ -14,7 +14,7 @@ if [ -z "$SITE_URL" ]; then
 fi
 
 echo "What's the site location in apache's document root? Example: /home/flavio/public_html/bio"
-echo "In the example, please note that this will only create a symlink bio in public_html."
+echo "In the example, please note that this will only create the symlink bio in public_html."
 echo -n "> "
 read SITE_DIR
 
