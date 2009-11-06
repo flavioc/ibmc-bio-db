@@ -491,4 +491,9 @@ class BioController extends Controller
   {
     $this->set_daily_cookie('paging-size', $value);
   }
+  
+  protected function more_time_limit()
+  {
+    set_time_limit(60 * 10); // 10 minutes...
+  }
 }

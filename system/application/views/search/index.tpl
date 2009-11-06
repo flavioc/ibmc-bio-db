@@ -118,6 +118,9 @@ $(function () {
 <div id="search_human">
 </div>
 
+<div id="search_sql">
+</div>
+
 </div>
 
 {if $logged_in}

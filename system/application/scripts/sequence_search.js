@@ -33,6 +33,7 @@ var position_type_text = null;
 var submit_tree = null;
 var we_are_starting = true;
 var search_human = null;
+var search_sql = null;
 var data_date_input = null;
 var date_input = null;
 var select_transform = null;
@@ -496,6 +497,16 @@ function update_humanize(encoded)
     },
     function (data) {
       search_human.html('<p>' + data + '</p>');
+    });
+    
+  // also update sql
+  $.post(get_app_url() + '/search/sql',
+    {
+      search: encoded,
+      transform: select_transform.val()
+    },
+    function (data) {
+      search_sql.html('<p>' + data + '</p>');
     });
 }
 
@@ -1048,6 +1059,7 @@ $(function () {
     date_input = $('#date_input');
     submit_term = $('#submit_term').hide();
     search_human = $('#search_human');
+    search_sql = $('#search_sql');
     select_transform = $('#select_transform');
     param_input = $('#param_input');
     data_param = $('#data_param');
