@@ -169,7 +169,7 @@ $(function () {
 
 <hr />
 
-<h3>Addable labels</h3>
+<h3>Available labels</h3>
 <div id="hide_show_addable"></div>
 <div id="addable_box">
   {form_open to='#' name="filter_addable_form"}
