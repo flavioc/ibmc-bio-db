@@ -28,16 +28,10 @@ def add_user(name, complete_name = None, email = 'noemail@email.com', user_type 
   print("User %s added to database." % name)
   return id
 
-add_user(name = 'flavio',
-  complete_name = 'Flavio Cruz',
-  email = 'flaviocruz@gmail.com')
-add_user(name = 'nf',
-    complete_name = 'Nuno Fonseca',
-    email = 'nf@gmail.com')
-add_user(name = 'jbvieira',
-    complete_name = 'Jorge B. Vieira',
-    email = 'jbvieira@ibmc.up.pt')
-add_user(name = 'user1', user_type = 'user')
+#add_user(name = 'flavio',  complete_name = 'Flavio Cruz', email = 'flaviocruz@gmail.com')
+#add_user(name = 'nf',   complete_name = 'Nuno Fonseca',    email = 'nf@gmail.com')
+#add_user(name = 'jbvieira',    complete_name = 'Jorge B. Vieira',    email = 'jbvieira@ibmc.up.pt')
+# add_user(name = 'user1', user_type = 'user')
 add_user(name = 'admin')
 
 db.close()
