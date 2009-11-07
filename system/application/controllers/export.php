@@ -13,9 +13,7 @@ class Export extends BioController
   {
     $this->load->library('SequenceExporter');
     
-    $tree_str = $this->get_post('tree');
-    $tree = json_decode(stripslashes($tree_str), true);
-
+    $tree = $this->__get_search_term('post', 'tree', $tree_str, $raw);
     $transform = $this->__get_transform_label('transform', 'post');
     
     $this->load->model('search_model');
@@ -39,11 +37,8 @@ class Export extends BioController
     $this->smarty->assign('title', 'Export search');
     $this->smarty->load_stylesheets('export.css', 'operations.css');
 
-    $encoded = $this->get_post('encoded_tree');
-
-    $json = stripslashes($encoded);
-    $tree = json_decode($json, true);
-    $this->smarty->assign('tree_json', $json);
+    $tree = $this->__get_search_term('post', 'encoded_tree', $encoded, $raw);
+    $this->smarty->assign('tree_json', $raw);
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
 

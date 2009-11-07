@@ -30,9 +30,8 @@ class Delete_Labels extends BioController
     $this->more_time_limit();
     
     $label_id = $this->get_post('label_id');
-    $search = $this->get_post('search');
     
-    $search_tree = json_decode($search, true);
+    $search_tree = $this->__get_search_term('post', 'search', $encoded);
     $transform = $this->__get_transform_label('transform', 'post');
     
     $this->load->model('search_model');
@@ -41,6 +40,7 @@ class Delete_Labels extends BioController
     
     $deleted_labels = 0;
     $deleted_from_seqs = 0;
+    print_r($seqs);
     
     foreach($seqs as &$seq) {
       $id = $seq['id'];

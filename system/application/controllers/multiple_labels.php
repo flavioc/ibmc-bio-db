@@ -108,8 +108,7 @@ class Multiple_Labels extends BioController
     $this->label = $this->label_model->get($this->label_id);
     $this->label_type = $this->label['type'];
 
-    $search = $this->get_post('search');
-    $this->search_tree = json_decode($search, true);
+    $this->search_tree = $this->__get_search_term('post', 'search', $search);
     
     $transform = $this->__get_transform_label('transform', 'post');
     
@@ -427,9 +426,8 @@ class Multiple_Labels extends BioController
 
   public function add_label()
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in)
       return $this->invalid_permission_empty();
-    }
     
     $this->more_time_limit();
 

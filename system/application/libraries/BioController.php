@@ -508,4 +508,25 @@ class BioController extends Controller
   {
     set_time_limit(60 * 10); // 10 minutes...
   }
+  
+  protected function __get_search_term($method = 'get', $param = 'search', &$string = null, &$raw = null)
+  {
+    if($method == 'get') {
+      $search = $this->get_parameter($param);
+    } else {
+      $search = $this->get_post($param);
+    }
+    $raw = $search;
+    $search = addmyslashes($search);
+    
+    $string = $search;
+      
+    $search_term = null;
+    
+    if($search) {
+      $search_term = json_decode($search, true);
+    }
+
+    return $search_term;
+  }
 }
