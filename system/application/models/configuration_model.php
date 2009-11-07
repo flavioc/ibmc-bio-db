@@ -9,11 +9,13 @@ class Configuration_model extends BioModel
     parent::BioModel('configuration');
   }
 
-  private function get_key($key)
+  public function get_key($key, $user = null)
   {
-    if($this->user_id == null) {
+    if($user == null)
+      $user = $this->user_id;
+      
+    if($this->user_id == null)
       return null;
-    }
 
     $this->db->select('value');
     $this->db->where('user_id', $this->user_id);
@@ -21,35 +23,36 @@ class Configuration_model extends BioModel
 
     $query = $this->db->get($this->table);
 
-    if($query->num_rows() != 1) {
+    if($query->num_rows() != 1)
       return null;
-    }
 
     $data = $query->row_array();
 
     return unserialize($data['value']);
   }
 
-  private function has_key($key)
+  public function has_key($key, $user = null)
   {
-    if($this->user_id == null) {
+    if($user == null)
+      $user = $this->user_id;
+      
+    if($this->user_id == null)
       return false;
-    }
 
     $this->db->select('value');
     $this->db->where('user_id', $this->user_id);
     $this->db->where('key', $key);
 
-    $query = $this->db->get($this->table);
-
-    return $query->num_rows() == 1;
+    return $this->has_something();
   }
 
-  private function set_key($key, $value)
+  public function set_key($key, $value, $user = null)
   {
-    if($this->user_id == null) {
+    if($user == null)
+      $user = $this->user_id;
+      
+    if($this->user_id == null)
       return false;
-    }
 
     $serialized_value = serialize($value);
 

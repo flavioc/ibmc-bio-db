@@ -197,5 +197,68 @@ class Admin extends BioController
       redirect('admin/import_database');
     }
   }
+  
+  public function change_background()
+  {
+    if(!$this->is_admin)
+      return $this->invalid_permission_admin();
+    
+    $this->smarty->fetch_form_row('file');
+    $this->smarty->assign('title', 'Database background');
+    $this->smarty->view('admin/background');
+  }
+  
+  public function do_change_background()
+  {
+    if(!$this->is_admin)
+      return $this->invalid_permission_admin();
+      
+    $name = $this->get_post('submit');
+    $this->load->model('file_model');
+   
+    if($name == 'Remove current') {
+      $this->file_model->remove_background();
+      redirect('admin/change_background');
+    }
+    
+    $this->load->library('upload', $this->__get_background_upload_config());
+    
+    $upload_ret = $this->upload->do_upload('file');
+
+    if(!$upload_ret) {
+      $this->set_upload_form_error('file');
+      redirect('admin/change_background');
+      return;
+    }
+    
+    $data = $this->upload->data();
+    $path = $data['full_path'];
+    
+    $content = file_get_contents($path);
+    
+    unlink($path);
+    
+    $type = file_extension($path);
+    if($type != 'png' && $type != 'jpg') {
+      $this->set_form_error('file', 'Must be a PNG or JPG file');
+      redirect('admin/change_background');
+      return;
+    }
+    
+    
+    $this->file_model->add_background($content, $type);
+    redirect('admin/change_background');
+  }
+  
+  private function __get_background_upload_config()
+  {
+    $config['upload_path'] = UPLOAD_DIRECTORY;
+    $config['overwrite'] = true;
+    $config['encrypt_name'] = true;
+    $config['allowed_types'] = 'jpg|png';
+
+    return $config;
+  }
 }
+
 ?>

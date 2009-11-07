@@ -23,7 +23,7 @@ class Wide_Search extends BioController
       $parser = new Parser($search);
       $tree = $parser->parse();
       $tree_json = json_encode($tree);
-      setcookie('saved_search_tree', $tree_json, time()+500, '/');
+      set_cookie('saved_search_tree', $tree_json, time()+500);
       redirect('search?type=search');
     } catch(Exception $e) {
       $search = rawurlencode($search);

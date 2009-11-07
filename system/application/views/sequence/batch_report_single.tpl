@@ -27,6 +27,18 @@ $(function () {
 </table>
 <br />
 
+{if $empty && count($empty) > 0}
+<h4>Empty sequences</h4>
+
+The following sequences were empty:
+
+<ul>
+  {foreach from=$empty item=emp}
+    <li>{$emp}</li>
+  {/foreach}
+</ul>
+{/if}
+
 {foreach from=$sequences item=seq}
 <div id="seq_{$seq.id}" {display_none}>
 

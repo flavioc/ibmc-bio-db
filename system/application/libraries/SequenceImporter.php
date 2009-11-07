@@ -62,6 +62,7 @@ class SequenceImporter
 
       $content = xmlspecialchars_decode($content_node->textContent);
       if(!$content) {
+        $info->add_empty_sequence($name);
         continue;
       }
 
@@ -269,8 +270,10 @@ class SequenceImporter
         $name = $this->__get_sequence_name($line, $has_header, $name_pos);
         $content = $this->__get_sequence_content($reader);
         
-        if(!$content)
+        if(!$content) {
+          $info->add_empty_sequence($line);
           continue;
+        }
         
         if(!$name)
           $name = substr($content, 0, 10);

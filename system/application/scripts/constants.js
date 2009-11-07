@@ -21,4 +21,4 @@ var img_edit = build_image_url('edit.png', 'image_url');
 var img_export = build_image_url('export.png', 'image_url');
 var img_lupa = build_image_url('lupa.png', 'image_url');
 
-var cookie_options = {path: '/', expires: 10};
+var cookie_options = {path: cookie_path, expires: 10};

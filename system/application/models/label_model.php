@@ -281,6 +281,11 @@ class Label_model extends BioModel
   {
     return $this->get_field($id, 'multiple');
   }
+  
+  public function is_public($id)
+  {
+    return $this->get_field($id, 'public');
+  }
 
   public function get_name($id)
   {

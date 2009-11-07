@@ -52,7 +52,7 @@ $autoload['libraries'] = array('database', 'BioSmarty', 'session', 'input');
 */
 
 $autoload['helper'] = array('url', 'form', 'conf_values', 'utils',
-                            'seq', 'sql', 'label', 'text');
+                            'seq', 'sql', 'label', 'text', 'cookie');
 
 
 /*

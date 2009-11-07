@@ -35,6 +35,10 @@ body>div#leftmenu {
   float:left;
 }
 
+body>div#top {
+  opacity: 0.92;
+}
+
 body>div#content, body>div#footer, body>div#top {
   margin-right: 30px;
 }
@@ -54,6 +58,7 @@ body>div#content, body>div#footer {
 body>div#content {
   padding-top: 5px;
   padding-bottom: 35px;
+  z-index: 0;
 }
 
 body>div#footer {

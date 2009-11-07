@@ -10,6 +10,9 @@ class ImportInfo
   private $label_sequence_model = null;
   private $taxonomy_model = null;
   
+  // empty sequences
+  private $empty_seqs = array();
+  
   private $event_model = null;
   private $event_data = null;
   private $event_component = null;
@@ -131,6 +134,16 @@ class ImportInfo
     }
     
     return $ret;
+  }
+  
+  public function add_empty_sequence($what)
+  {
+    $this->empty_seqs[] = $what;
+  }
+  
+  public function get_empty_sequences()
+  {
+    return $this->empty_seqs;
   }
   
   public function add_sequence($name, $content, $id = null)

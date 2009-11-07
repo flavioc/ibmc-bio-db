@@ -940,18 +940,20 @@ function push_new_column_label()
 
 function get_label_field_data(data, type, name)
 {
-  var MAX_LABEL_TEXT = 40;
+  var MAX_LABEL_TEXT = 50;
   
   switch(type) {
     case 'ref':
-      return '<a href="' + get_app_url() + '/sequence/view/' + data.id + '">' + data.string + '</a>';
+      return '<a href="' + get_app_url() + '/sequence/view/' + data.id + '" target="_blank">' + data.string + '</a>';
     case 'tax':
-      return '<a href="' + get_app_url() + '/taxonomy/view/' + data.id + '">' + data.string + '</a>';
+      return '<a href="' + get_app_url() + '/taxonomy/view/' + data.id + '" target="_blank">' + data.string + '</a>';
     case 'obj':
-      return '<a href="' + get_app_url() + '/label_sequence/download_label/' + data.id + '">' + data.string + '</a>';
+      return '<a href="' + get_app_url() + '/label_sequence/download_label/' + data.id + '" target="_blank">' + data.string + '</a>';
+    case 'url':
+      return '<a href="' + data.string + '" target="_blank">' + data.string + '</a>';
     case 'text':
       if(name == 'creation_user' || name == 'update_user')
-        return '<a href="' + get_app_url() + '/profile/view/' + data.id + '">' + data.string + '</a>';
+        return '<a href="' + get_app_url() + '/profile/view/' + data.id + '" target="_blank">' + data.string + '</a>';
       
       if(data.string.length > MAX_LABEL_TEXT)
         return split_string_html(data.string, MAX_LABEL_TEXT);
