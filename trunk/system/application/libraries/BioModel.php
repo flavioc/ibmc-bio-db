@@ -143,9 +143,8 @@ class BioModel extends Model
   
   protected function has_something($table = null)
   {
-    if($table == null) {
+    if($table == null)
       $table = $this->table;
-    }
     
     $query = $this->db->get($table);
     

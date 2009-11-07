@@ -69,15 +69,7 @@ function sequence_split($content, $separator = "\n")
 
 function sequence_join($content)
 {
-  $vec = explode("\n", $content);
-
-  $ret = "";
-
-  foreach($vec as $el) {
-    $ret .= $el;
-  }
-
-  return sequence_normalize($ret);
+  return sequence_normalize(str_replace("\n", '', $content));
 }
 
 function sequence_normalize($content)
@@ -86,8 +78,14 @@ function sequence_normalize($content)
   $content = str_replace(' ', '', $content);
   $content = str_replace("\t", '', $content);
   $content = str_replace("\n", '', $content);
+  $content = strtoupper($content);
   
-  return strtoupper($content);
+  $len = strlen($content);
+  
+  if($content[$len-1] == 'X' || $content[$len-1] == '*')
+    $content = substr($content, 0, $len-1);
+  
+  return $content;
 }
 
 function sequence_short_content($content)

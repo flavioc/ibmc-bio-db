@@ -114,7 +114,7 @@ class Welcome extends BioController
     $this->session->unset_userdata('logged_in');
     $this->session->unset_userdata('username');
     $this->session->unset_userdata('user_type');
-    setcookie('logged-in', false);
+    set_cookie('logged-in', false);
     redirect('');
   }
   

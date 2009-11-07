@@ -34,3 +34,11 @@ To use some EMBOSS tools you need to create the PRINTS database:
 
 To use some EMBOSS tools you need to create the PROSITE database:
   # sudo sh generate_prosite.sh
+
+To install extra labels please run one of the following scripts:
+
+  # python script.py <database password>
+
+label_antigenic.py      label_letters.py        label_sigcleave.py
+label_chips.py          label_epestfind.py      label_patmatmotifs.py
+label_iep.py            label_pscan.py

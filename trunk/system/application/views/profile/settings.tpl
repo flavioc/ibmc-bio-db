@@ -22,5 +22,5 @@
 <fieldset>
 {form_row name=paging_size msg='Paging size:' size=10}
 </fieldset>
-{form_submit name=submit msg='Do edit'}
+{form_submit name=submit msg='Save'}
 {form_end}

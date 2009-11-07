@@ -111,6 +111,8 @@ class Search extends BioController
   
   public function sql()
   {
+    $a = $this->get_post('search');
+    echo $a; echo " ---";
     $tree = $this->__get_search_term('post');
     $transform = $this->__get_transform_label('transform', 'post');
     
@@ -126,8 +128,7 @@ class Search extends BioController
     }
     
     $encoded = $this->get_post('encoded_tree');
-    $json = stripslashes($encoded);
-    $tree = json_decode($json, true);
+    $tree = json_decode($encoded, true);
     
     $this->smarty->assign('encoded', $json);
     
@@ -153,8 +154,7 @@ class Search extends BioController
     
     $encoded = $this->get_post('encoded_tree');
 
-    $json = stripslashes($encoded);
-    $tree = json_decode($json, true);
+    $tree = json_decode($encoded, true);
     
     $transform = $this->__get_transform_label('transform', 'post');
     
@@ -206,8 +206,7 @@ class Search extends BioController
     $encoded = $this->get_post('encoded_tree');
     $this->smarty->assign('encoded', $encoded);
     
-    $json = stripslashes($encoded);
-    $tree = json_decode($json, true);
+    $tree = json_decode($encoded, true);
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
     
@@ -251,8 +250,7 @@ class Search extends BioController
       $this->smarty->assign('title', 'Multiple edit label');
     }
     
-    $json = stripslashes($encoded);
-    $tree = json_decode($json, true);
+    $tree = json_decode($encoded, true);
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
     

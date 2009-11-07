@@ -2,20 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
 {include_js name=jquery}
 {include_js name=functions}
+{include_js name=cookies}
 {include_js name=constants}
+
 {foreach from=$scripts item=script}
   {include_js name=$script}
 {/foreach}
+
 {foreach from=$stylesheets item=stylesheet}
-{include_css name=$stylesheet}
+  {include_css name=$stylesheet}
 {/foreach}
 {include_css name=main}
+
 <link rel="shortcut icon" href="{top_dir}/images/favicon.ico" />
 <title>{$title}</title>
 </head>
+
 <body>
+
 <div id="top">
   <div id="left_top">
     <a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BIO DB"/></a>
@@ -38,7 +45,7 @@
 <div id="leftmenu">
 {literal}
 <script>
-  $().ready(function() {
+  $(function() {
     $('#form_search_global input[type=text]').textGrow({pad: 25, max_limit: 700, min_limit: 300});
   });
 </script>
@@ -108,6 +115,7 @@
         <li><a href="{site}/profile/list_all">List</a></li>
         <li><a href="{site}/profile/register">Register</a></li>
       </ul></li>
+      <li><a href="{site}/admin/change_background">Database background</a></li>
       <li><a href="{site}/comment/edit">Database Description</a></li>
       <li><a href="{site}/admin/export_database">Export Database</a></li>
       <li><a href="{site}/admin/import_database">Import Database</a></li>
@@ -191,4 +199,9 @@ $(function () {
   
   $('#main_menu a[href="#"]').click(function() { return false; });
 });
-{/literal}</script>
+</script>
+{/literal}{if $has_background}{literal}<style>
+body
+{
+background-image:url('{/literal}{site}/file/background{literal}');
+}</style>{/literal}{/if}

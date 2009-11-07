@@ -1,37 +1,22 @@
 <?php
 
-class Comment_model extends Model
+class Comment_model extends BioModel
 {
-  private static $comment_file = "application/data/comment.txt";
-
+  private static $root_user = 0;
+  
   function Comment_model()
   {
-    parent::Model();
+    parent::BioModel('configuration');
+    $this->load->model('configuration_model');
   }
 
   public function get()
   {
-    $file = BASEPATH . self::$comment_file;
-
-    $size = filesize($file);
-    if($size == 0)
-      return '';
-
-    $fh = fopen($file, "rb");
-    $data = fread($fh, $size);
-    fclose($fh);
-
-    return $data;
+    return $this->configuration_model->get_key('comment', self::$root_user);
   }
 
   public function set($comment)
   {
-    $file = BASEPATH . self::$comment_file;
-
-    $fh = fopen($file, "w");
-
-    fwrite($fh, trim($comment));
-
-    fclose($fh);
+    return $this->configuration_model->set_key('comment', $comment, self::$root_user);
   }
 }

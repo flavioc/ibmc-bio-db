@@ -57,6 +57,13 @@ class BioController extends Controller
     if(!$this->logged_in) {
       $this->smarty->load_scripts(VALIDATE_SCRIPT);
     }
+    
+    // background stuff
+    $this->load->model('file_model');
+    $has_background = $this->file_model->has_background();
+    $this->smarty->assign('has_background', $has_background);
+    if($has_background)
+      $this->smarty->assign('background_ext', $this->file_model->get_background_extension());
   }
 
   protected function use_paging_size()
@@ -478,13 +485,18 @@ class BioController extends Controller
   
   protected function cookie_exists($name)
   {
-    return isset($_COOKIE[$name]);
+    return get_cookie($name) != null;
   }
   
   protected function set_daily_cookie($name, $value)
   {
-    $day = time() + 60*60*24;
-    setcookie($name, $value, $day, '/');
+    $cookie = array(
+              'name'   => $name,
+              'value'  => $value,
+              'expire' => time() + 60 * 60 * 24
+    );
+    
+    set_cookie($cookie);
   }
   
   protected function set_paging_size_cookie($value)

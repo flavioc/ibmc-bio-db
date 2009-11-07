@@ -258,6 +258,7 @@ class Sequence extends BioController
   
     $this->smarty->assign("sequences$n", $seqs);
     $this->smarty->assign("labels$n", $labels);
+    $this->smarty->assign("empty$n", $info->get_empty_sequences());
     $search_tree = $this->seqsearchtree->get_tree($seqs);
     $search_tree_get = json_encode($search_tree);
     $this->smarty->assign("search_tree_get$n", $search_tree_get);
@@ -478,9 +479,8 @@ class Sequence extends BioController
 
   public function add()
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in)
       return $this->invalid_permission();
-    }
     
     $this->smarty->assign('title', 'Add sequence');
     $this->smarty->load_scripts(VALIDATE_SCRIPT);

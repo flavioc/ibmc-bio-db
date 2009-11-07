@@ -18,10 +18,16 @@ var data_transform_labels = {
       position_start: function (row) {
         var start = row.position_start;
         var length = row.position_length;
+        var base = start + ' [' + length + ']';
+        
+        if(row.name.match(/.+_position/)) {
+          return base;
+        }
+        
         var url = base_site + '/get_position_content?id=' + row.seq_id
           + '&start=' + start + '&length=' + length
           + '&width=500&height=200';
-        return start + ' ['+ length + '] ' + '<a class="thickbox small-button" href="' + url +'">view</a>';
+        return base + ' ' + '<a class="thickbox small-button" href="' + url +'">view</a>';
       },
       obj_data: function (row) {
         return row.text_data;
@@ -49,8 +55,6 @@ var data_transform_labels = {
         return img_go;
       },
       name: function (row) {
-        return 'ahahah';
-        alert(row.param);
         if(row.param) {
           return row.name + '[' + row.param + ']';
         } else {
