@@ -288,6 +288,9 @@ class BioModel extends Model
   {
     $query = $this->db->query($sql);
 
+    if(!$query)
+      return null;
+      
     return $query->row_array();
   }
 

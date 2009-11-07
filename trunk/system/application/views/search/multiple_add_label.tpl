@@ -7,7 +7,7 @@
 {/if}
 
 {form_open to='#' name=label_form}
-{form_hidden name=search value=$encoded}
+{form_hidden name=search value=$encoded_no_slashes}
 {form_hidden name=transform value=$transform}
 
 {include file=common_label/select_label.tpl}

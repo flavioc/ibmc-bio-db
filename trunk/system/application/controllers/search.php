@@ -66,6 +66,7 @@ class Search extends BioController
     $data = $this->search_model->get_search($search,
       array('start' => $start,
             'size' => $size,
+            'select' => 'id, name',
             'ordering' => 
               array('name' => $ordering_name,
                     'update' => $ordering_update,
@@ -111,14 +112,13 @@ class Search extends BioController
   
   public function sql()
   {
-    $a = $this->get_post('search');
-    echo $a; echo " ---";
     $tree = $this->__get_search_term('post');
+    
     $transform = $this->__get_transform_label('transform', 'post');
     
-    $sql = $this->search_model->get_sql($tree, array('transform' => $transform, 'only_public' => !$this->logged_in));
+    $sql = $this->search_model->get_sql($tree, array('transform' => $transform, 'only_public' => !$this->logged_in, 'select' => 'id, name'));
     
-    echo $sql;
+    echo stripslashes($sql);
   }
   
   public function delete_results()
@@ -127,10 +127,10 @@ class Search extends BioController
       return $this->invalid_permission();
     }
     
-    $encoded = $this->get_post('encoded_tree');
-    $tree = json_decode($encoded, true);
+    $tree = $this->__get_search_term('post', 'encoded_tree', $json);
     
-    $this->smarty->assign('encoded', $json);
+    $this->smarty->assign('encoded', addmyslashes($json));
+    $this->smarty->assign('encoded_no_slashes', $json);
     
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
@@ -152,16 +152,13 @@ class Search extends BioController
     
     $this->load->model('sequence_model');
     
-    $encoded = $this->get_post('encoded_tree');
-
-    $tree = json_decode($encoded, true);
-    
+    $tree = $this->__get_search_term('post', 'encoded_tree', $json);
     $transform = $this->__get_transform_label('transform', 'post');
     
     $this->load->model('search_model');
     $results = $this->search_model->get_search($tree,
         array('transform' => $transform, 'select' => 'id'));
-        
+
     $total = 0;
 
     foreach($results as &$result) {
@@ -203,10 +200,10 @@ class Search extends BioController
       'common_sequence.js',
       'delete_multiple.js');
 
-    $encoded = $this->get_post('encoded_tree');
-    $this->smarty->assign('encoded', $encoded);
+    $tree = $this->__get_search_term('post', 'encoded_tree', $encoded, $raw);
+    $this->smarty->assign('encoded', addmyslashes($encoded));
+    $this->smarty->assign('encoded_no_slashes', $encoded);
     
-    $tree = json_decode($encoded, true);
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
     
@@ -239,8 +236,8 @@ class Search extends BioController
       'label_helpers.js',
       'taxonomy_functions.js',
       'common_sequence.js');
-
-    $encoded = $this->get_post('encoded_tree');
+      
+    $tree = $this->__get_search_term('post', 'encoded_tree', $encoded, $raw);
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $mode = $this->get_parameter('mode');
     
@@ -250,13 +247,13 @@ class Search extends BioController
       $this->smarty->assign('title', 'Multiple edit label');
     }
     
-    $tree = json_decode($encoded, true);
     $tree_str = search_tree_to_string($tree);
     $this->smarty->assign('tree_str', $tree_str);
     
     $this->smarty->assign('transform', $transform);
     $this->smarty->assign('mode', $mode);
-    $this->smarty->assign('encoded', $encoded);
+    $this->smarty->assign('encoded', addmyslashes($encoded));
+    $this->smarty->assign('encoded_no_slashes', $encoded);
 
     $this->smarty->view('search/multiple_add_label');
   }
@@ -321,11 +318,10 @@ class Search extends BioController
   
   public function subsequences()
   {
-    if(!$this->logged_in) {
+    if(!$this->logged_in)
       return $this->invalid_permission();
-    }
     
-    $search = $this->__get_search_term('post', 'encoded_tree');
+    $search = $this->__get_search_term('post', 'encoded_tree', $encoded);
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $label_id = $this->get_post('select_position');
     $keep = $this->get_post('keep_subsequence');
@@ -347,26 +343,10 @@ class Search extends BioController
     
     $this->smarty->assign('failed', $this->subsequence->get_failed());
     
-    $this->smarty->assign('encoded_input', json_encode($search));
+    $this->smarty->assign('encoded_input', addmyslashes($encoded));
     $this->smarty->assign('transform_input', $transform);
     
     $this->smarty->assign('title', 'Generate sub sequences');
     $this->smarty->view('search/subsequences');
-  }
-  
-  private function __get_search_term($method = 'get', $param = 'search')
-  {
-    if($method == 'get') {
-      $search = $this->get_parameter($param);
-    } else {
-      $search = $this->get_post($param);
-    }
-    $search_term = null;
-    
-    if($search) {
-      $search_term = json_decode($search, true);
-    }
-
-    return $search_term;
   }
 }

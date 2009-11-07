@@ -306,3 +306,8 @@ function generate_random($min = null, $max = null)
 
   return rand($max, $min);
 }
+
+function addmyslashes($str)
+{
+  return str_replace('\\', '\\\\', $str);
+}
