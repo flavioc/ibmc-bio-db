@@ -128,7 +128,7 @@
         var href = link_fun(row);
 
         if(href != null) {
-          field_data = '<a href="' + href + '" target="_blank">' + field_data + '</a>';
+          field_data = '<a href="' + href + '">' + field_data + '</a>';
         }
       }
 
