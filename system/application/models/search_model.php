@@ -149,7 +149,7 @@ class Search_model extends BioModel
       case 'date':
         return "DATE($field)";
       case 'obj':
-        return $field[0];
+        return 'file_name';
       default:
         return $field;
     }
