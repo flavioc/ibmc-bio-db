@@ -69,10 +69,9 @@ $(function () {
     if(operand_list.length != 0)
       obj = {oper: 'and', operands: operand_list};
     else
-      obj = {label: 'content', type: 'text', oper: 'exists'};
+      obj = {label: 'name', type: 'text', oper: 'exists'};
       
     $.cookie('saved_search_tree', $.toJSON(obj, true), cookie_options);
-    alert(obj);
     
     return true;
   });
