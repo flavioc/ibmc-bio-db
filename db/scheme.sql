@@ -353,7 +353,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER upd_label_seq before update on label_sequence for each row begin IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; IF NEW.obj_data IS NOT NULL AND NEW.obj_data <> OLD.obj_data THEN CALL decrement_file_ref(OLD.obj_data); CALL update_file_ref(NEW.obj_data); END IF; END */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER upd_label_seq BEFORE UPDATE ON label_sequence FOR EACH ROW BEGIN IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -368,7 +368,22 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_label_seq before delete on label_sequence for each row begin CALL DELETE_HISTORY(OLD.history_id); IF OLD.obj_data IS NOT NULL THEN CALL decrement_file_ref(OLD.obj_data); END IF; END */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER upd_after_label_seq AFTER UPDATE ON label_sequence FOR EACH ROW BEGIN IF NEW.obj_data IS NOT NULL AND NEW.obj_data <> OLD.obj_data THEN CALL decrement_file_ref(OLD.obj_data); CALL update_file_ref(NEW.obj_data); END IF; CALL UPDATE_HISTORY(NEW.history_id); END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50003 TRIGGER drop_label_seq AFTER DELETE ON label_sequence FOR EACH ROW begin CALL DELETE_HISTORY(OLD.history_id); IF OLD.obj_data IS NOT NULL THEN CALL decrement_file_ref(OLD.obj_data); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1730,4 +1745,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-11-09 16:53:59
+-- Dump completed on 2009-11-09 22:59:17
