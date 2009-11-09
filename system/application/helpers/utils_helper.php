@@ -311,3 +311,25 @@ function addmyslashes($str)
 {
   return str_replace('\\', '\\\\', $str);
 }
+
+class FileObject
+{
+  private $name = null;
+  private $content = null;
+  
+  function FileObject($name, $content)
+  {
+    $this->name = $name;
+    $this->content = $content;
+  }
+  
+  public function get_name()
+  {
+    return $this->name;
+  }
+  
+  public function get_content()
+  {
+    return $this->content;
+  }
+}

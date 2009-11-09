@@ -66,7 +66,6 @@ class Search extends BioController
     $data = $this->search_model->get_search($search,
       array('start' => $start,
             'size' => $size,
-            'select' => 'id, name',
             'ordering' => 
               array('name' => $ordering_name,
                     'update' => $ordering_update,

@@ -77,7 +77,29 @@ $.fn.validateObjLabel = function () {
   return this.validate({
     rules: {
       file: {
-        required: generate_disabled
+        required: function () {
+          
+          if(!generate_disabled())
+            return false;
+          
+          var selected = $("#stored_file option:selected");
+          if(selected.length == 0)
+            return true;
+            
+          return selected.val() == 0;
+        }
+      },
+      stored_file: {
+        required: function () {
+          if(!generate_disabled())
+            return false;
+          
+          var selected = $("#stored_file option:selected");
+          if(selected.length == 0)
+            return false;
+
+          return selected.val() != 0;
+        }
       }
     }
   });

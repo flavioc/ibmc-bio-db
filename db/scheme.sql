@@ -23,13 +23,12 @@ DROP TABLE IF EXISTS `configuration`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `configuration` (
-  `user_id` bigint(20) unsigned NOT NULL COMMENT 'User ID.',
-  `key` char(128) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Configuration Key.',
-  `value` varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Configuration value.',
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `key` char(128) NOT NULL,
+  `value` text NOT NULL,
   PRIMARY KEY (`user_id`,`key`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `configuration_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Configuration table.';
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -46,6 +45,27 @@ CREATE TABLE `event` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `event_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Event table.';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `file`
+--
+
+DROP TABLE IF EXISTS `file`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `file` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID.',
+  `label_id` bigint(20) unsigned DEFAULT '0' COMMENT 'Label for this file.',
+  `name` varchar(512) NOT NULL COMMENT 'File name.',
+  `count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Number of instances for this file.',
+  `data` longblob NOT NULL COMMENT 'Data for the file.',
+  `type` text COMMENT 'Optional file type.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `label_id` (`label_id`,`name`),
+  KEY `label_index` (`label_id`),
+  CONSTRAINT `file_ibfk_1` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table for object label instances.';
 SET character_set_client = @saved_cs_client;
 
 --
@@ -201,7 +221,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_label BEFORE DELETE ON label FOR EACH ROW CALL DELETE_HISTORY(OLD.history_id) */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER drop_label BEFORE DELETE ON label FOR EACH ROW BEGIN CALL DELETE_HISTORY(OLD.history_id); END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -284,7 +304,6 @@ CREATE TABLE `label_sequence` (
   `history_id` bigint(20) unsigned DEFAULT NULL COMMENT 'History.',
   `int_data` int(11) DEFAULT NULL COMMENT 'Integer data.',
   `text_data` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Text data.',
-  `obj_data` longblob COMMENT 'Object data.',
   `ref_data` bigint(20) unsigned DEFAULT NULL COMMENT 'Reference Data.',
   `position_start` int(11) DEFAULT NULL COMMENT 'Position start.',
   `position_length` int(11) DEFAULT NULL COMMENT 'Position length.',
@@ -294,12 +313,15 @@ CREATE TABLE `label_sequence` (
   `date_data` datetime DEFAULT NULL COMMENT 'Data for date labels.',
   `float_data` double DEFAULT NULL COMMENT 'Float data.',
   `param` text COLLATE utf8_unicode_ci COMMENT 'Label instance parameter.',
+  `obj_data` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `history_id` (`history_id`),
   KEY `label_id` (`label_id`),
   KEY `seq_id` (`seq_id`),
   KEY `ref_index` (`ref_data`),
   KEY `taxonomy_index` (`taxonomy_data`),
+  KEY `obj_index` (`obj_data`),
+  CONSTRAINT `label_sequence_ibfk_8` FOREIGN KEY (`obj_data`) REFERENCES `file` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_1` FOREIGN KEY (`seq_id`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
@@ -316,7 +338,7 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER ins_label_seq BEFORE INSERT ON label_sequence FOR EACH ROW SET NEW.history_id = CREATE_HISTORY() */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER ins_label_seq before insert on label_sequence for each row begin SET NEW.history_id = CREATE_HISTORY(); IF NEW.obj_data IS NOT NULL THEN CALL update_file_ref(NEW.obj_data); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -331,7 +353,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER upd_label_seq BEFORE UPDATE ON label_sequence FOR EACH ROW BEGIN IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; END */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER upd_label_seq before update on label_sequence for each row begin IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; IF NEW.obj_data IS NOT NULL AND NEW.obj_data <> OLD.obj_data THEN CALL decrement_file_ref(OLD.obj_data); CALL update_file_ref(NEW.obj_data); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -346,7 +368,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_label_seq BEFORE DELETE ON label_sequence FOR EACH ROW CALL DELETE_HISTORY(OLD.history_id) */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER drop_label_seq before delete on label_sequence for each row begin CALL DELETE_HISTORY(OLD.history_id); IF OLD.obj_data IS NOT NULL THEN CALL decrement_file_ref(OLD.obj_data); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -370,7 +392,7 @@ SET character_set_client = utf8;
   `int_data` int(11),
   `float_data` double,
   `text_data` varchar(1024),
-  `obj_data` longblob,
+  `obj_data` bigint(20) unsigned,
   `ref_data` bigint(20) unsigned,
   `position_start` int(11),
   `position_length` int(11),
@@ -379,7 +401,8 @@ SET character_set_client = utf8;
   `bool_data` tinyint(1),
   `date_data` datetime,
   `taxonomy_name` varchar(512),
-  `sequence_name` varchar(255)
+  `sequence_name` varchar(255),
+  `file_name` varchar(512)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -400,7 +423,7 @@ SET character_set_client = utf8;
   `int_data` int(11),
   `float_data` double,
   `text_data` varchar(1024),
-  `obj_data` longblob,
+  `obj_data` bigint(20) unsigned,
   `ref_data` bigint(20) unsigned,
   `position_start` int(11),
   `position_length` int(11),
@@ -410,6 +433,7 @@ SET character_set_client = utf8;
   `date_data` datetime,
   `taxonomy_name` varchar(512),
   `sequence_name` varchar(255),
+  `file_name` varchar(512),
   `type` enum('integer','float','text','obj','position','ref','tax','url','bool','date'),
   `name` char(255),
   `default` tinyint(1),
@@ -1014,7 +1038,7 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER ins_user BEFORE INSERT ON `user`
+/*!50003 CREATE*/ /*!50003 TRIGGER `ins_user` BEFORE INSERT ON `user`
  FOR EACH ROW BEGIN SET NEW.history_id = CREATE_HISTORY(); SET NEW.password = MD5(CONCAT("xrg82bAcEFg4wVy02VLIPJncBMhPg0ievL2k4WOhQI1jC4vXBjwb2MMRWabP1anwATdsjDaxGHFL1TYhOTFT7g78GxrGgn2fC9vc", NEW.password)); END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1030,7 +1054,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER upd_user BEFORE UPDATE ON `user`
+/*!50003 CREATE*/ /*!50003 TRIGGER `upd_user` BEFORE UPDATE ON `user`
  FOR EACH ROW BEGIN IF NEW.password <> OLD.password THEN SET NEW.password = MD5(CONCAT("xrg82bAcEFg4wVy02VLIPJncBMhPg0ievL2k4WOhQI1jC4vXBjwb2MMRWabP1anwATdsjDaxGHFL1TYhOTFT7g78GxrGgn2fC9vc", NEW.password)); END IF; IF NEW.history_id IS NULL THEN SET NEW.history_id = CREATE_HISTORY(); ELSE CALL UPDATE_HISTORY(OLD.history_id); END IF; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1046,7 +1070,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_user BEFORE DELETE ON user FOR EACH ROW CALL DELETE_HISTORY(OLD.history_id) */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER drop_user AFTER DELETE ON user FOR EACH ROW BEGIN CALL DELETE_HISTORY(OLD.history_id); DELETE FROM configuration WHERE user_id = OLD.id; END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1279,6 +1303,37 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `decrement_file_ref` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50003 PROCEDURE `decrement_file_ref`(IN file_id bigint(20))
+BEGIN
+   DECLARE current INT DEFAULT 0;
+
+   SELECT `count` INTO current
+   FROM file
+   WHERE id = file_id;
+
+   SET current = current - 1;
+
+   IF current = 0 THEN
+     DELETE FROM file WHERE id = file_id;
+   ELSE
+     UPDATE file SET `count` = current WHERE id = file_id;
+   END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `DELETE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1291,6 +1346,34 @@ DELIMITER ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50003 PROCEDURE `DELETE_HISTORY`(hid BIGINT(20))
 BEGIN if hid IS NOT NULL THEN DELETE FROM history WHERE history.id = hid; END IF; END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `update_file_ref` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50003 PROCEDURE `update_file_ref`(IN file_id bigint(20))
+BEGIN
+   DECLARE current INT DEFAULT 0;
+
+   SELECT `count` INTO current
+   FROM file
+   WHERE id = file_id;
+
+   SET current = current + 1;
+
+   UPDATE file SET `count` = current WHERE id = file_id;
+
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1381,7 +1464,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `label_sequence_extra` AS select `label_sequence`.`id` AS `id`,`label_sequence`.`param` AS `param`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`label_id` AS `label_id`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`float_data` AS `float_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_start` AS `position_start`,`label_sequence`.`position_length` AS `position_length`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_sequence`.`bool_data` AS `bool_data`,`label_sequence`.`date_data` AS `date_data`,`taxonomy`.`name` AS `taxonomy_name`,`sequence`.`name` AS `sequence_name` from ((`label_sequence` left join `taxonomy` on((`taxonomy`.`id` = `label_sequence`.`taxonomy_data`))) left join `sequence` on((`sequence`.`id` = `label_sequence`.`ref_data`))) */;
+/*!50001 VIEW `label_sequence_extra` AS select `label_sequence`.`id` AS `id`,`label_sequence`.`param` AS `param`,`label_sequence`.`seq_id` AS `seq_id`,`label_sequence`.`label_id` AS `label_id`,`label_sequence`.`history_id` AS `history_id`,`label_sequence`.`int_data` AS `int_data`,`label_sequence`.`float_data` AS `float_data`,`label_sequence`.`text_data` AS `text_data`,`label_sequence`.`obj_data` AS `obj_data`,`label_sequence`.`ref_data` AS `ref_data`,`label_sequence`.`position_start` AS `position_start`,`label_sequence`.`position_length` AS `position_length`,`label_sequence`.`taxonomy_data` AS `taxonomy_data`,`label_sequence`.`url_data` AS `url_data`,`label_sequence`.`bool_data` AS `bool_data`,`label_sequence`.`date_data` AS `date_data`,`taxonomy`.`name` AS `taxonomy_name`,`sequence`.`name` AS `sequence_name`,`file`.`name` AS `file_name` from (((`label_sequence` left join `taxonomy` on((`taxonomy`.`id` = `label_sequence`.`taxonomy_data`))) left join `sequence` on((`sequence`.`id` = `label_sequence`.`ref_data`))) left join `file` on((`file`.`id` = `label_sequence`.`obj_data`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1399,7 +1482,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `label_sequence_info` AS select `label_sequence_extra`.`label_id` AS `label_id`,`label_sequence_extra`.`id` AS `id`,`label_sequence_extra`.`param` AS `param`,`label_sequence_extra`.`seq_id` AS `seq_id`,`label_sequence_extra`.`history_id` AS `history_id`,`label_sequence_extra`.`int_data` AS `int_data`,`label_sequence_extra`.`float_data` AS `float_data`,`label_sequence_extra`.`text_data` AS `text_data`,`label_sequence_extra`.`obj_data` AS `obj_data`,`label_sequence_extra`.`ref_data` AS `ref_data`,`label_sequence_extra`.`position_start` AS `position_start`,`label_sequence_extra`.`position_length` AS `position_length`,`label_sequence_extra`.`taxonomy_data` AS `taxonomy_data`,`label_sequence_extra`.`url_data` AS `url_data`,`label_sequence_extra`.`bool_data` AS `bool_data`,`label_sequence_extra`.`date_data` AS `date_data`,`label_sequence_extra`.`taxonomy_name` AS `taxonomy_name`,`label_sequence_extra`.`sequence_name` AS `sequence_name`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`label_norm`.`public` AS `public`,`label_norm`.`action_modification` AS `action_modification`,`history_info`.`creation` AS `creation`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`update` AS `update`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`user_name` AS `user_name` from ((`label_sequence_extra` join `label_norm` on((`label_sequence_extra`.`label_id` = `label_norm`.`label_id`))) left join `history_info` on((`history_info`.`history_id` = `label_sequence_extra`.`history_id`))) */;
+/*!50001 VIEW `label_sequence_info` AS select `label_sequence_extra`.`label_id` AS `label_id`,`label_sequence_extra`.`id` AS `id`,`label_sequence_extra`.`param` AS `param`,`label_sequence_extra`.`seq_id` AS `seq_id`,`label_sequence_extra`.`history_id` AS `history_id`,`label_sequence_extra`.`int_data` AS `int_data`,`label_sequence_extra`.`float_data` AS `float_data`,`label_sequence_extra`.`text_data` AS `text_data`,`label_sequence_extra`.`obj_data` AS `obj_data`,`label_sequence_extra`.`ref_data` AS `ref_data`,`label_sequence_extra`.`position_start` AS `position_start`,`label_sequence_extra`.`position_length` AS `position_length`,`label_sequence_extra`.`taxonomy_data` AS `taxonomy_data`,`label_sequence_extra`.`url_data` AS `url_data`,`label_sequence_extra`.`bool_data` AS `bool_data`,`label_sequence_extra`.`date_data` AS `date_data`,`label_sequence_extra`.`taxonomy_name` AS `taxonomy_name`,`label_sequence_extra`.`sequence_name` AS `sequence_name`,`label_sequence_extra`.`file_name` AS `file_name`,`label_norm`.`type` AS `type`,`label_norm`.`name` AS `name`,`label_norm`.`default` AS `default`,`label_norm`.`must_exist` AS `must_exist`,`label_norm`.`auto_on_creation` AS `auto_on_creation`,`label_norm`.`auto_on_modification` AS `auto_on_modification`,`label_norm`.`code` AS `code`,`label_norm`.`deletable` AS `deletable`,`label_norm`.`editable` AS `editable`,`label_norm`.`multiple` AS `multiple`,`label_norm`.`public` AS `public`,`label_norm`.`action_modification` AS `action_modification`,`history_info`.`creation` AS `creation`,`history_info`.`creation_user_id` AS `creation_user_id`,`history_info`.`update` AS `update`,`history_info`.`update_user_id` AS `update_user_id`,`history_info`.`user_name` AS `user_name` from ((`label_sequence_extra` join `label_norm` on((`label_sequence_extra`.`label_id` = `label_norm`.`label_id`))) left join `history_info` on((`history_info`.`history_id` = `label_sequence_extra`.`history_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1647,4 +1730,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-10-29 18:41:36
+-- Dump completed on 2009-11-09 16:53:59

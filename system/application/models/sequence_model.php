@@ -114,6 +114,9 @@ class Sequence_model extends BioModel
 
   public function delete($id)
   {
+    // delete labels
+    $labels = $this->load_model('label_sequence_model');
+    $labels->remove_labels($id);
     $this->delete_id($id);
   }
 

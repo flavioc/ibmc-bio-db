@@ -17,8 +17,9 @@ class Edit_Labels extends BioController
     }
 
     $label = $this->label_sequence_model->get($id);
+    $label_id = $label['label_id'];
     $this->smarty->assign('label', $label);
-    $this->smarty->assign('label_id', $label['label_id']);
+    $this->smarty->assign('label_id', $label_id);
 
     $seq_id = $label['seq_id'];
     $sequence = $this->sequence_model->get($seq_id);
@@ -38,16 +39,18 @@ class Edit_Labels extends BioController
         case 'integer':
         case 'float':
         case 'url':
-        case 'obj':
         case 'bool':
         case 'position':
         case 'date':
-          $this->smarty->view_s("edit_label/$type");
+          break;
+        case 'obj':
+          $this->load->model('file_model');
+          $files = $this->file_model->get_label_files($label_id);
+          $this->smarty->assign('files', $files);
           break;
         case 'ref':
           $this->load->model('user_model');
           $this->smarty->assign('users', $this->user_model->get_users_all());
-          $this->smarty->view_s('edit_label/ref');
           break;
         case 'tax':
           $this->load->model('taxonomy_rank_model');
@@ -55,10 +58,10 @@ class Edit_Labels extends BioController
           
           $this->smarty->assign('ranks', $this->taxonomy_rank_model->get_ranks());
           $this->smarty->assign('trees', $this->taxonomy_tree_model->get_trees());
-
-          $this->smarty->view_s('edit_label/tax');
           break;
       }
+      
+      $this->smarty->view_s("edit_label/$type");
     } else {
       $this->smarty->view_s('common_label/malformed.tpl');
     }

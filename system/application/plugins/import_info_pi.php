@@ -9,6 +9,7 @@ class ImportInfo
   private $sequence_model = null;
   private $label_sequence_model = null;
   private $taxonomy_model = null;
+  private $file_model = null;
   
   // empty sequences
   private $empty_seqs = array();
@@ -24,6 +25,7 @@ class ImportInfo
     $this->sequence_model = load_ci_model('sequence_model');
     $this->label_sequence_model = load_ci_model('label_sequence_model');
     $this->taxonomy_model = load_ci_model('taxonomy_model');
+    $this->file_model = load_ci_model('file_model');
     
     if($event_data && $event_component) {
       $this->event_component = $event_component;
@@ -379,6 +381,13 @@ class ImportInfo
         }
       case 'tax':
         return $model->edit_tax_label($id, $this->__get_tax_value($value));
+      case 'obj':
+        $data = label_get_data($value);
+        
+        if(!$this->file_model->has_id($data))
+          return null;
+          
+        return $model->edit_obj_label($id, $value);
     }
     
     return null;
@@ -424,6 +433,13 @@ class ImportInfo
         return $model->add_bool_label($seq_id, $label_id, $value);
       case 'date':
         return $model->add_text_label($seq_id, $label_id, $value);
+      case 'obj':
+        $data = label_get_data($value);
+        
+        if(!$this->file_model->has_id($data))
+          return null;
+          
+        return $model->add_obj_label($seq_id, $label_id, $value);
     }
     
     return null;

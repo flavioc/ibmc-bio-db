@@ -157,7 +157,12 @@ class BioModel extends Model
       $table = $this->table;
     }
 
-    return $this->db->get($table)->result_array();
+    $query = $this->db->get($table);
+    
+    if(!$query)
+      return null;
+
+    return $query->result_array();
   }
 
   protected function count_total($table = null)

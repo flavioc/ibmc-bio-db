@@ -30,7 +30,10 @@ var data_transform_labels = {
         return base + ' ' + '<a class="thickbox small-button" href="' + url +'">view</a>';
       },
       obj_data: function (row) {
-        return row.text_data;
+        if(row.file_name)
+          return row.file_name;
+          
+        return null;
       },
       date_data: function (row) {
         return row.date_data;
@@ -73,7 +76,7 @@ var link_labels = {
         return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
       },
       obj_data: function (row) {
-        return label_site + '/download_label/' + row.id;
+        return get_app_url() + '/file/get/' + row.obj_data;
       },
       select: function (row) {
         return '#row_labels_list_' + row.id;

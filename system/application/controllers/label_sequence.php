@@ -66,22 +66,6 @@ class Label_Sequence extends BioController
     $this->json_return($data);
   }
 
-  public function download_label($id)
-  {
-    if(!$this->logged_in) {
-      return $this->invalid_permission();
-    }
-
-    $label = $this->label_sequence_model->get_id($id);
-
-    $name = $label['text_data'];
-    $data = $label['obj_data'];
-
-    header("Content-Disposition: attachment; filename=\"$name\"");
-
-    echo stripslashes($label['obj_data']);
-  }
-
   public function delete_label($id)
   {
     if(!$this->logged_in) {

@@ -2,8 +2,6 @@
 
 define('POSITION_START_INDEX', 0);
 define('POSITION_LENGTH_INDEX', 1);
-define('OBJ_FILE_NAME_INDEX', 0);
-define('OBJ_DATA_INDEX', 1);
 
 class LabelData
 {
@@ -44,23 +42,21 @@ class LabelData
 
 function label_get_data($obj)
 {
-  if($obj instanceof LabelData) {
+  if($obj instanceof LabelData)
     return $obj->get_data();
-  } else {
+  else
     return $obj;
-  }
 }
 
 function label_get_param($obj)
 {
-  if($obj instanceof LabelData) {
+  if($obj instanceof LabelData)
     return $obj->get_param();
-  } else {
+  else
     return null;
-  }
 }
 
-function label_fix_data($type, &$label_data, $multiple = false)
+function label_fix_data($type, &$label_data, $label_id, $multiple = false)
 {
   $data = label_get_data($label_data);
   
@@ -72,9 +68,23 @@ function label_fix_data($type, &$label_data, $multiple = false)
     case 'ref':
     case 'tax':
       break;
+    case 'obj':
+      if($data instanceof FileObject) {
+        
+        $filename = $data->get_name();
+        $len = strlen($filename);
+        
+        $CI =& get_instance();
+        $CI->load->model('file_model');
+          
+        $id = $CI->file_model->add($data->get_name(), $data->get_content(), $label_id);
+        
+        if($id)
+          $data = $id;
+      }
+      break;
     case 'text':
     case 'url':
-    case 'obj':
       $data = trim($data);
       break;
     case 'date':
@@ -114,18 +124,15 @@ function label_validate_data($type, $label_data)
     case 'bool':
       return true;
     case 'obj':
-      if(!is_array($data)) {
+      if(!isint($data)) {
         return false;
       }
+        
+      $CI =& get_instance();
+      $CI->load->model('file_model');
       
-      if(count($data) != 2) {
-        return false;
-      }
-      
-      $filename = $data[0];
-      
-      $len = strlen($filename);
-      return $len > 0 && $len <= 1024;
+      $has_id = $CI->file_model->has_id($data);
+      return $has_id;
     case 'position':
       if(!is_array($data) || count($data) != 2) {
         return false;
@@ -181,9 +188,8 @@ function label_data_fields($type)
   case 'date':
   case 'url':
   case 'ref':
-    return $type . '_data';
   case 'obj':
-    return array('text_data', 'obj_data');
+    return $type . '_data';
   case 'position':
     return array('position_start', 'position_length');
   case 'tax':
@@ -282,7 +288,7 @@ function label_get_printable_string($row, $type = null)
       $ret = $row['sequence_name'];
       break;
     case 'obj':
-      $ret = $data[0];
+      $ret = $row['obj_data'];
       break;
     default:
       $ret = $data;
@@ -304,6 +310,7 @@ function label_type_is_printable($type)
   case 'ref':
   case 'position':
   case 'date':
+  case 'obj':
     return true;
   default:
     return false;
