@@ -20,4 +20,16 @@ class Event extends BioController
   
     $this->smarty->view_s('event/show');
   }
+  
+  public function get_label_status($event)
+  {
+    if(!$this->logged_in)
+      return $this->invalid_permission_empty();
+      
+    $info = $this->event_model->get($event);
+      
+    $this->smarty->assign('event', $info);
+      
+    $this->smarty->view_s('event/label');
+  }
 }

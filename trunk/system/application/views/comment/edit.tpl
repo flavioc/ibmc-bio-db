@@ -4,5 +4,5 @@
 <fieldset>
 {form_row type=textarea name=comment msg='Description:' cols=50 rows=10 value=$comment}
 </fieldset>
-{form_submit name=submit msg='Edit'}
+{form_submit name=submit msg='Save'}
 {form_end}

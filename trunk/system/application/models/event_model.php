@@ -40,6 +40,6 @@ class Event_Model extends BioModel
   {
     $this->db->where('code', $code);
     
-    return $this->db->update($this->table, array('data' => $val));
+    return $this->db->update($this->table, array('data' => json_encode($val)));
   }
 }
