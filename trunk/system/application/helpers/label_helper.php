@@ -288,7 +288,7 @@ function label_get_printable_string($row, $type = null)
       $ret = $row['sequence_name'];
       break;
     case 'obj':
-      $ret = $row['obj_data'];
+      $ret = $row['file_name'];
       break;
     default:
       $ret = $data;
