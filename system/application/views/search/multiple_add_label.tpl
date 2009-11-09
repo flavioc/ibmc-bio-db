@@ -32,3 +32,9 @@
 <h3>Sequences</h3>
 
 {include file=search/operation_sequences.tpl add_change=yes dom_id=input_list}
+
+<div id="loading-labels" class="loading-div" {display_none}>
+{loader_pic show=yes}
+<div>
+</div>
+</div>

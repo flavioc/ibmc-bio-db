@@ -44,10 +44,7 @@ class ImportInfo
   private function __update_event()
   {
     if($this->__has_event())
-    {
-      $data = json_encode($this->event_data);
-      $this->event_model->set($this->event_data['event'], $data);
-    }
+      $this->event_model->set($this->event_data['event'], $this->event_data);
   }
   
   public function duo_match($info2)

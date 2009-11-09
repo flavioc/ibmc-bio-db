@@ -13,6 +13,9 @@ class Multiple_Labels extends BioController
   private $mode = null;
   private $edit_mode = false;
   private $add_mode = false;
+  private $event = null;
+  private $total = 0;
+  private $proc = 0;
   
   // data
   private $text = null;
@@ -58,6 +61,7 @@ class Multiple_Labels extends BioController
     
     $label = $this->label_model->get($label_id);
     $this->smarty->assign('label', $label);
+    $this->smarty->assign('event', generate_random());
 
     $editable = $label['editable'];
     $auto = $label['code'];
@@ -139,6 +143,22 @@ class Multiple_Labels extends BioController
     }
     
     $this->param = $this->get_post('param');
+    
+    $this->event = $this->get_post('event');
+    if($this->event) {
+      $this->load->model('event_model');
+      $this->event_model->remove($this->event);
+      $this->event_model->add($this->event);
+      $this->total = count($this->seqs);
+    }
+  }
+  
+  private function __event_step()
+  {
+    ++$this->proc;
+    
+    if($this->event)
+      $this->event_model->set($this->event, array('proc' => $this->proc, 'total' => $this->total));
   }
   
   private function __add_auto_label()
@@ -169,6 +189,8 @@ class Multiple_Labels extends BioController
           }
         }
       }
+      
+      $this->__event_step();
     }
   }
   
@@ -200,6 +222,8 @@ class Multiple_Labels extends BioController
           }
         }
       }
+      
+      $this->__event_step();
     }
   }
   
@@ -418,6 +442,8 @@ class Multiple_Labels extends BioController
           $this->__add_multiple_label($seq_id);
         }
       }
+      
+      $this->__event_step();
     }
   }
   
@@ -439,6 +465,8 @@ class Multiple_Labels extends BioController
           $this->__add_multiple_label($seq_id);
         }
       }
+      
+      $this->__event_step();
     }
   }
 
@@ -463,5 +491,8 @@ class Multiple_Labels extends BioController
     }
     
     $this->__show_stats();
+    
+    if($this->event)
+      $this->event_model->remove($this->event);
   }
 }

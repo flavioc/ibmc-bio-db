@@ -16,6 +16,9 @@ class Welcome extends BioController
     $comment = newline_tab_html($this->comment_model->get());
     $this->smarty->assign('comment', $comment);
 
+    if(!$comment)
+      $comment = 'BioDB';
+      
     $this->smarty->assign('title', $comment);
 
     if(!$this->logged_in) {

@@ -78,15 +78,9 @@ $(function () {
   
 });
 </script>
-<style>
-#loading-upload {
-  padding-top: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-</style>
 {/literal}
-<div id="loading-upload" {display_none}>
+
+<div id="loading-upload" class="loading-div" {display_none}>
 {loader_pic show=yes}
 <h4 id="loading-file1" {display_none}></h4>
 <h4 id="loading-file2" {display_none}></h4>

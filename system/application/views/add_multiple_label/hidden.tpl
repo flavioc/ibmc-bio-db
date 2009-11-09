@@ -4,3 +4,4 @@
 {form_hidden name=label_id}
 {form_hidden name=mode}
 {form_hidden name=addnew}
+{form_hidden name=event value=$event}

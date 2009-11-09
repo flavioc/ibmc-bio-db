@@ -4,6 +4,9 @@ var mode = 'add';
 var current_label = null;
 var hidden_search = null;
 var hidden_transform = null;
+var loading = null;
+var tag = "timer_label";
+var event = null;
 
 $(function () {
   var got = $.getURLParam('mode');
@@ -12,6 +15,14 @@ $(function () {
     mode = got;
   }
 });
+
+function update_loading()
+{
+  var url = get_app_url() + "/event/get_label_status/"+event;
+  $.get(url, {}, function (data) {
+    $('#loading-labels div').html(data);
+  }, 'text');
+}
 
 function get_search_tree_encoded()
 {
@@ -25,13 +36,29 @@ function get_transform()
 
 $.fn.submitAjax = function () {
   return this.ajaxForm({
-    success: function (resp) { $.unblockUI(); eval(resp); tb_remove(); },
+    success: function (resp) {
+      loading.stopTime(tag, update_loading);
+      $.unblockUI();
+      eval(resp);
+      tb_remove();
+    },
     beforeSubmit: function (data, form) {
       if(!$(form).valid()) {
         return false;
       }
       
-      $.blockLoadingUI();
+      event = $('input[name=event]').val();
+
+      $('#loading-labels div').empty();
+      
+      $.blockUI({ message: loading,  css: {
+          color:		'#000',
+          border:		'3px solid #aaa',
+          backgroundColor:'#fff'
+        }
+      });
+
+      loading.stopTime(tag, update_loading).everyTime(2000, tag, update_loading);
       
       return true;
     }
@@ -61,6 +88,7 @@ $(function () {
 
   update = $('#update');
   addnew = $('#addnew');
+  loading = $('#loading-labels');
 
   hidden_transform = $('input[name=transform]', label_form);
   hidden_search = $('input[name=search]', label_form);

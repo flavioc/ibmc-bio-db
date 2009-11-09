@@ -229,6 +229,7 @@ class Search extends BioController
     $this->smarty->load_scripts(VALIDATE_SCRIPT,
       FORM_SCRIPT,
       GETPARAMS_SCRIPT,
+      TIMERS_SCRIPT,
       'label_functions.js',
       'select_label.js',
       'add_multiple.js',
