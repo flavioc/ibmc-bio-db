@@ -35,15 +35,17 @@ class Add_Labels extends BioController
         case 'float':
         case 'url':
         case 'obj':
+          $this->load->model('file_model');
+          $files = $this->file_model->get_label_files($label_id);
+          $this->smarty->assign('files', $files);
+          break;
         case 'bool':
         case 'position':
         case 'date':
-          $this->smarty->view_s("new_label/$type");
           break;
         case 'ref':
           $this->load->model('user_model');
           $this->smarty->assign('users', $this->user_model->get_users_all());
-          $this->smarty->view_s('new_label/ref');
           break;
         case 'tax':
           $this->load->model('taxonomy_rank_model');
@@ -52,9 +54,9 @@ class Add_Labels extends BioController
           $this->smarty->assign('ranks', $this->taxonomy_rank_model->get_ranks());
           $this->smarty->assign('trees', $this->taxonomy_tree_model->get_trees());
 
-          $this->smarty->view_s('new_label/tax');
           break;
       }
+      $this->smarty->view_s("new_label/$type");
     } else {
       $this->smarty->view_s('common_label/malformed.tpl');
     }

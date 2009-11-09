@@ -183,6 +183,9 @@ class SequenceExporter
     case 'date':
       $toadd = $label['date_data'];
       break;
+    case 'obj':
+      $toadd = $label['obj_data'];
+      break;
     }
 
     return trim(strval($toadd));

@@ -948,7 +948,7 @@ function get_label_field_data(data, type, name)
     case 'tax':
       return '<a href="' + get_app_url() + '/taxonomy/view/' + data.id + '" target="_blank">' + data.string + '</a>';
     case 'obj':
-      return '<a href="' + get_app_url() + '/label_sequence/download_label/' + data.id + '" target="_blank">' + data.string + '</a>';
+      return '<a href="' + get_app_url() + '/file/get/' + data.id + '" target="_blank">' + data.string + '</a>';
     case 'url':
       return '<a href="' + data.string + '" target="_blank">' + data.string + '</a>';
     case 'text':

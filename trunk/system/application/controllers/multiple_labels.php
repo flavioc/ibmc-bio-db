@@ -25,9 +25,8 @@ class Multiple_Labels extends BioController
   private $tax = null;
   private $ref = null;
   private $upload_error = false;
-  private $filename = null;
-  private $bytes = null;
   private $date = null;
+  private $stored_file = null;
   
   private $param = null;
   
@@ -75,9 +74,13 @@ class Multiple_Labels extends BioController
         case 'url':
         case 'bool':
         case 'position':
-        case 'obj':
         case 'date':
-          $this->smarty->view_s("add_multiple_label/$type");
+          break;
+          
+        case 'obj':
+          $this->load->model('file_model');
+          $files = $this->file_model->get_label_files($label_id);
+          $this->smarty->assign('files', $files);
           break;
         
         case 'tax':
@@ -85,17 +88,15 @@ class Multiple_Labels extends BioController
           $this->load->model('taxonomy_tree_model');
           $this->smarty->assign('ranks', $this->taxonomy_rank_model->get_ranks());
           $this->smarty->assign('trees', $this->taxonomy_tree_model->get_trees());
-          
-          $this->smarty->view_s('add_multiple_label/tax');
           break;
           
         case 'ref':
           $this->load->model('user_model');
           $this->smarty->assign('users', $this->user_model->get_users_all());
-          
-          $this->smarty->view_s('add_multiple_label/ref');
           break;
       }
+      
+      $this->smarty->view_s("add_multiple_label/$type");
     } else {
       $this->smarty->view_s('common_label/malformed.tpl');
     }
@@ -291,9 +292,26 @@ class Multiple_Labels extends BioController
         break;
       case 'obj':
         try {
+          $stored_file = $this->get_post('stored_file');
+          
+          if($stored_file) {
+            if($this->param)
+              $stored_file = new LabelData($stored_file, $this->param);
+            
+            $this->stored_file = $stored_file;
+            return;
+          }
+          
           $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
-          $this->filename = $data['filename'];
-          $this->bytes = $data['bytes'];
+          $filename = $data['filename'];
+          $bytes = $data['bytes'];
+          
+          $this->load->model('file_model');
+          
+          $this->stored_file = $this->file_model->add($filename, $bytes, $this->label_id);
+          
+          if($this->stored_file && $this->param)
+            $this->stored_file = new LabelData($this->stored_file, $this->param);
         } catch(Exception $e) {
           $this->upload_error = true;
         }
@@ -321,7 +339,7 @@ class Multiple_Labels extends BioController
     case 'ref':
       return $this->label_sequence_model->add_ref_label($seq_id, $this->label_id, $this->ref);
     case 'obj':
-      return $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->filename, $this->bytes, $this->param);
+      return $this->label_sequence_model->add_obj_label($seq_id, $this->label_id, $this->stored_file);
     case 'date':
       return $this->label_sequence_model->add_date_label($seq_id, $this->label_id, $this->date);
     }
@@ -368,7 +386,7 @@ class Multiple_Labels extends BioController
       $ret = $this->label_sequence_model->edit_ref_label($id, $this->ref);
       break;
     case 'obj':
-      $ret = $this->label_sequence_model->edit_obj_label($id, $this->filename, $this->bytes, $this->param);
+      $ret = $this->label_sequence_model->edit_obj_label($id, $this->stored_file);
       break;
     case 'date':
       $ret = $this->label_sequence_model->edit_date_label($id, $this->date);

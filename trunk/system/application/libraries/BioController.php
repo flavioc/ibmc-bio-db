@@ -290,6 +290,7 @@ class BioController extends Controller
     $config['overwrite'] = true;
     $config['encrypt_name'] = true;
     $config['allowed_types'] = 'xml';
+    $config['max_size'] = 2048 * 10; // 10MB
 
     return $config;
   }
@@ -300,6 +301,7 @@ class BioController extends Controller
     $config['overwrite'] = true;
     $config['encrypt_name'] = true;
     $config['any_file'] = true;
+    $config['max_size'] = 2048 * 10; // 10MB
 
     return $config;
   }
@@ -371,9 +373,25 @@ class BioController extends Controller
         return $this->label_sequence_model->add_position_label($seq_id, $label_id, $start, $length, $param);
       case 'obj':
         try {
+          $stored_file = $this->get_post('stored_file');
+
+          if($stored_file) {
+            if($param)
+              $stored_file = new LabelData($stored_file, $param);
+            
+            return $this->label_sequence_model->add_obj_label($seq_id, $label_id, $stored_file);
+          }
+          
           $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
-          return $this->label_sequence_model->add_obj_label($seq_id, $label_id,
-                $data['filename'], $data['bytes'], $param);
+          
+          $filename = $data['filename'];
+          $bytes = $data['bytes'];
+          $obj = new FileObject($filename, $bytes);
+          
+          if($param)
+            $obj = new LabelData($obj, $param);
+          
+          return $this->label_sequence_model->add_obj_label($seq_id, $label_id, $obj);
         } catch(Exception $e) {
           return $e->getMessage();
         }
@@ -421,8 +439,25 @@ class BioController extends Controller
         return $this->label_sequence_model->edit_float_label($id, new LabelData($this->get_post('float'), $param));
       case 'obj':
         try {
+          $stored_file = $this->get_post('stored_file');
+
+          if($stored_file) {
+            if($param)
+              $stored_file = new LabelData($stored_file, $param);
+              
+            return $this->label_sequence_model->edit_obj_label($id, $stored_file);
+          }
+          
           $data = $this->__read_uploaded_file('file', $this->__get_obj_label_config());
-          return $this->label_sequence_model->edit_obj_label($id, $data['filename'], $data['bytes'], $param);
+          
+          $filename = $data['filename'];
+          $bytes = $data['bytes'];
+          $obj = new FileObject($filename, $bytes);
+          
+          if($param)
+            $obj = new LabelData($obj, $param);
+          
+          return $this->label_sequence_model->edit_obj_label($id, $obj);
         } catch(Exception $e) {
           return $e->getMessage();
         }
