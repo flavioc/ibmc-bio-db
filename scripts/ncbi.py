@@ -4,7 +4,7 @@ import MySQLdb
 import sys
 from connection import *
 
-just_add = True
+just_add = False
 db = create_conn()
 
 ######## NAME TYPES
@@ -237,11 +237,11 @@ def update_tax(id, parent, rank, name):
 
 ### TAXONOMY NAMES
 
-def get_tax_names(id):
+def remove_tax_names(id):
   c = db.cursor()
-  sql = "SELECT id, name, type_id FROM taxonomy_name WHERE tax_id = " + str(id)
+  sql = "DELETE FROM taxonomy_name WHERE tax_id = " + str(id)
   c.execute(sql)
-  rows = c.fetchall()
+  db.commit()
   return rows
 
 def add_tax_name(id, name, type_id):
@@ -254,27 +254,9 @@ def add_tax_name(id, name, type_id):
 
 tax_dir = "taxdump/"
 
-def has_missing_name(current_names, name):
-  name_cmp = name[1]
-  for cur_name in current_names:
-    cur_name_str = cur_name[1]
-    if cur_name_str == name_cmp:
-      return True
-  return False
-
-def get_missing_names(other_names, current_names):
-  ret = []
+def sync_names(id, other_names):
+  remove_tax_names(id)
   for name in other_names:
-    if not has_missing_name(current_names, name):
-      ret.append(name)
-  return ret
-
-def sync_names(id, other_names, current_names):
-  if just_add:
-    missing = other_names
-  else:
-    missing = get_missing_names(other_names, current_names)
-  for name in missing:
     name_str = name[1]
     type_str = name[3]
     type_id = ensure_type(type_str)
@@ -302,8 +284,7 @@ def sync_db():
       #else:
       #  update_tax(import_id, parent_id, rank, name)
     other_names = get_other_names(tax_names)
-    current_names = get_tax_names(tax)
-    sync_names(tax, other_names, current_names)
+    sync_names(tax, other_names)
     print import_id
 
 def disable_tax_keys():
