@@ -242,7 +242,6 @@ def remove_tax_names(id):
   sql = "DELETE FROM taxonomy_name WHERE tax_id = " + str(id)
   c.execute(sql)
   db.commit()
-  return rows
 
 def add_tax_name(id, name, type_id):
   cursor = db.cursor()
@@ -254,13 +253,16 @@ def add_tax_name(id, name, type_id):
 
 tax_dir = "taxdump/"
 
-def sync_names(id, other_names):
-  remove_tax_names(id)
+def add_tax_names(id, other_names):
   for name in other_names:
     name_str = name[1]
     type_str = name[3]
     type_id = ensure_type(type_str)
     add_tax_name(id, name_str, type_id)
+
+def sync_names(id, other_names):
+  remove_tax_names(id)
+  add_tax_names(id, other_names)
 
 def sync_db():
   nodes = TaxFile(tax_dir + "nodes.dmp")
@@ -281,32 +283,15 @@ def sync_db():
       tax = get_tax(import_id)
       if not tax:
         tax = create_tax(import_id, parent_id, rank, name)
-      #else:
-      #  update_tax(import_id, parent_id, rank, name)
+      else:
+        update_tax(import_id, parent_id, rank, name)
     other_names = get_other_names(tax_names)
     sync_names(tax, other_names)
-    print import_id
-
-def disable_tax_keys():
-  cursor = db.cursor()
-  sql = "ALTER TABLE taxonomy DROP FOREIGN KEY taxonomy_ibfk_11"
-  cursor.execute(sql)
-  db.commit()
-
-def enable_tax_keys():
-  cursor = db.cursor()
-  sql = "ALTER TABLE taxonomy ADD CONSTRAINT taxonomy_ibfk_11 FOREIGN KEY (import_parent_id) REFERENCES taxonomy(import_id) ON DELETE CASCADE"
-  cursor.execute(sql)
-  db.commit()
+    print import_id, name
 
 if just_add:
   drop_tax()
 
-try:
-  disable_tax_keys()
-  sync_db()
-  enable_tax_keys()
-except:
-  enable_tax_keys()
+sync_db()
 
 db.close()
