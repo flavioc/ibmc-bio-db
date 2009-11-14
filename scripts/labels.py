@@ -173,5 +173,15 @@ add_label(name = "lifetime",
     multiple = False,
     default = True)
 
+add_label(name = "file",
+    type = "obj",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = True,
+    must_exist = False,
+    deletable = True,
+    multiple = False,
+    default = True)
+
 db.close()
 
