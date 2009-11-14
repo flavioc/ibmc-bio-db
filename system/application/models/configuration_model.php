@@ -11,14 +11,11 @@ class Configuration_model extends BioModel
 
   public function get_key($key, $user = null)
   {
-    if($user == null)
+    if($user == null && $key != 'comment')
       $user = $this->user_id;
-      
-    if($this->user_id == null)
-      return null;
 
     $this->db->select('value');
-    $this->db->where('user_id', $this->user_id);
+    $this->db->where('user_id', $user);
     $this->db->where('key', $key);
 
     $query = $this->db->get($this->table);
@@ -33,14 +30,11 @@ class Configuration_model extends BioModel
 
   public function has_key($key, $user = null)
   {
-    if($user == null)
+    if($user == null && $key != 'comment')
       $user = $this->user_id;
       
-    if($this->user_id == null)
-      return false;
-
     $this->db->select('value');
-    $this->db->where('user_id', $this->user_id);
+    $this->db->where('user_id', $user);
     $this->db->where('key', $key);
 
     return $this->has_something();
@@ -48,17 +42,14 @@ class Configuration_model extends BioModel
 
   public function set_key($key, $value, $user = null)
   {
-    if($user == null)
+    if($user == null && $key != 'comment')
       $user = $this->user_id;
-      
-    if($this->user_id == null)
-      return false;
 
     $serialized_value = serialize($value);
 
     if($this->has_key($key)) {
       // update existing key
-      $this->db->where('user_id', $this->user_id);
+      $this->db->where('user_id', $user);
       $this->db->where('key', $key);
 
       $this->db->update($this->table,
@@ -67,7 +58,7 @@ class Configuration_model extends BioModel
     } else {
       // insert new key
       $data = array(
-        'user_id' => intval($this->user_id),
+        'user_id' => intval($user),
         'key' => $key,
         'value' => $serialized_value,
       );

@@ -622,6 +622,9 @@ class Search_model extends BioModel
       case 'tax':
         $field = 'taxonomy_name';
         break;
+      case 'obj':
+        $field = 'file_name';
+        break;
     }  
     
     if($param) {
