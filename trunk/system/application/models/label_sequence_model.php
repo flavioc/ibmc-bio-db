@@ -398,7 +398,7 @@ class Label_sequence_model extends BioModel
   {
     $type = $label['type'];
     $label_id = $label['id'];
-    $res = $this->generate_label_value($seq, $label['code']);
+    $res = $this->generate_label_value($seq, $label['code'], $label);
     
     if($label['multiple']) {
       $ret = 0;
@@ -491,15 +491,17 @@ class Label_sequence_model extends BioModel
     return $ret;
   }
 
-  public function generate_label_value($id, $code)
+  public function generate_label_value($id, $code, $label)
   {
     $seq_model = $this->load_model('sequence_model');
 
-    $seq = $seq_model->get_id($id);
+    $sequence = $seq_model->get_id($id);
 
     // once the sequence has been fetched it can be used in the label code!
-    $name = $seq['name'];
-    $content = $seq['content'];
+    $name = $sequence['name'];
+    $content = $sequence['content'];
+    $label_name = $label['name'];
+    $label_id = $label['id'];
     
     try {
       return eval($code);
@@ -831,7 +833,7 @@ class Label_sequence_model extends BioModel
     $label_name = $label['name'];
     $label_id = $label['id'];
     $code = $label['action_modification'];
-    $sequence_id = $sequence['id'];
+    $id = $sequence['id'];
     $content = $sequence['content'];
     
     try {
@@ -871,7 +873,7 @@ class Label_sequence_model extends BioModel
     
     $type = $label['type'];
     $code = $label['code'];
-    $value = $this->generate_label_value($seq_id, $code);
+    $value = $this->generate_label_value($seq_id, $code, $label);
     
     if($label['multiple']) {
       $ret = false;
@@ -1036,16 +1038,22 @@ class Label_sequence_model extends BioModel
   private function __get_validation_status($label, $sequence, $valid_code, $data)
   {
     $seq_model = $this->load_model('sequence_model');
-    $seq_id = $sequence['id'];
+    $id = $sequence['id'];
     $content = $sequence['content'];
     $name = $sequence['name'];
     $data = label_get_data($data);
+    $label_id = $label['id'];
+    $label_name = $label['name'];
 
-    $ret = eval($valid_code);
+    try {
+      $ret = eval($valid_code);
 
-    if($ret)
-      return 'valid';
-      
+      if($ret)
+        return 'valid';
+    } catch(Exception $e) {
+      return 'invalid';
+    }
+    
     return 'invalid';
   }
 
