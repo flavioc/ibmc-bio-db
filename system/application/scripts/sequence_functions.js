@@ -1,6 +1,7 @@
 
 var base_site = get_app_url() + '/sequence';
 var label_site = get_app_url() + '/label_sequence';
+var labels_loaded = false;
 var missing_loaded = false;
 var addable_loaded = false;
 var bad_multiple_loaded = false;
@@ -129,6 +130,8 @@ function select_field(row)
 
 function setup_labels_list()
 {
+  labels_loaded = true;
+  
   var name_field = $('#label_name_field');
   var type_field = $('#label_type_field');
   var user_field = $('#label_user_field');
@@ -222,16 +225,23 @@ function reload_labels_list()
   $('#labels_list').gridReload();
 }
 
+function show_labels_list()
+{
+  if(!labels_loaded)
+    setup_labels_list();
+    
+  $('#labels_box').show();
+}
+
 function load_labels_list()
 {
   setup_labels_list();
-
-  $('#labels_box').fadeIn();
+  show_labels_list();
 }
 
 function hide_labels_list()
 {
-  $('#labels_box').fadeOut();
+  $('#labels_box').hide();
 }
 
 var nameLink = function (row) {
@@ -302,29 +312,25 @@ function setup_missing_list()
 
 function reload_missing_list()
 {
-  if(!missing_loaded) {
-    setup_missing_list();
-  } else {
-    $('#missing_list').gridReload();
-  }
+  $('#missing_list').gridReload();
 }
 
-function ensure_missing_list_loaded()
+function show_missing_list()
 {
-  if(!missing_loaded) {
-    reload_missing_list();
-  }
+  if(!missing_loaded)
+    setup_missing_list();
+  $('#missing_box').show();
 }
 
 function load_missing_list()
 {
-  ensure_missing_list_loaded();
-  $('#missing_box').fadeIn();
+  setup_missing_list();
+  show_missing_list();
 }
 
 function hide_missing_list()
 {
-  $('#missing_box').fadeOut();
+  $('#missing_box').hide();
 }
 
 function setup_addable_list()
@@ -398,46 +404,46 @@ function setup_addable_list()
 
 function reload_addable_list()
 {
-  if(addable_loaded) {
-    $('#addable_list').gridReload();
-  } else {
-    setup_addable_list();
-  }
+  $('#addable_list').gridReload();
 }
 
 function hide_addable_list()
 {
-  $('#addable_box').fadeOut();
+  $('#addable_box').hide();
 }
 
-function ensure_addable_list_loaded()
+function show_addable_list()
 {
-  if(!addable_loaded) {
-    reload_addable_list();
-  }
+  if(!addable_loaded)
+    setup_addable_list();
+  $('#addable_box').show();
 }
 
 function load_addable_list()
 {
-  ensure_addable_list_loaded();
-  $('#addable_box').fadeIn();
+  setup_addable_list();
+  show_addable_list();
 }
 
 function hide_bad_multiple_list()
 {
-  $('#bad_multiple_box').fadeOut();
+  $('#bad_multiple_box').hide();
 }
 
 function load_bad_multiple_list()
 {
-  if(!bad_multiple_loaded) {
-    reload_bad_multiple_list();
-  }
-
-  $('#bad_multiple_box').fadeIn();
+  setup_bad_multiple_list();
+  show_bad_multiple_list();
 }
 
-function reload_bad_multiple_list()
+function show_bad_multiple_list()
+{
+  if(!bad_multiple_loaded)
+    setup_bad_multiple_list();
+  $('#bad_multiple_box').show();
+}
+
+function setup_bad_multiple_list()
 {
   bad_multiple_loaded = true;
 

@@ -39,7 +39,7 @@ $(function() {
   
   $('#hide_show_labels').minusPlus({
     enabled: true,
-    plusEnabled: load_labels_list,
+    plusEnabled: show_labels_list,
     minusEnabled: hide_labels_list
   });
 
@@ -92,14 +92,13 @@ $(function () {
 {if $missing}
 <script>{literal}
 $(function () {
-
   $('#missing_list').gridEnable({paginate: false});
 
   hide_missing_list();
 
   $('#hide_show_missing').minusPlus({
     enabled: false,
-    plusEnabled: load_missing_list,
+    plusEnabled: show_missing_list,
     minusEnabled: hide_missing_list
   });
 
@@ -156,7 +155,7 @@ $(function () {
   });
 
   $('#hide_show_addable').minusPlus({
-    plusEnabled: load_addable_list,
+    plusEnabled: show_addable_list,
     minusEnabled: hide_addable_list
   });
 
@@ -188,23 +187,19 @@ $(function () {
 <hr />
 
 {if $bad_multiple}
-<script>
-{literal}
+<script>{literal}
 $(function () {
-
   $('#bad_multiple_list').gridEnable({paginate: false});
 
   hide_bad_multiple_list();
 
   $('#hide_show_bad_multiple').minusPlus({
     enabled: false,
-    plusEnabled: load_bad_multiple_list,
+    plusEnabled: show_bad_multiple_list,
     minusEnabled: hide_bad_multiple_list
   });
 });
-
-{/literal}
-</script>
+{/literal}</script>
 
 <hr />
 
