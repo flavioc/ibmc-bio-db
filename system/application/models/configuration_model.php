@@ -47,7 +47,7 @@ class Configuration_model extends BioModel
 
     $serialized_value = serialize($value);
 
-    if($this->has_key($key)) {
+    if($this->has_key($key, $user)) {
       // update existing key
       $this->db->where('user_id', $user);
       $this->db->where('key', $key);

@@ -500,14 +500,14 @@ function update_humanize(encoded)
     });
     
   // also update sql
-  $.post(get_app_url() + '/search/sql',
+  /*$.post(get_app_url() + '/search/sql',
     {
       search: encoded,
       transform: select_transform.val()
     },
     function (data) {
       search_sql.html('<p>' + data + '</p>');
-    });
+    });*/
 }
 
 function update_tree(encoded)
