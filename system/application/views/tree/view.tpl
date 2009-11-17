@@ -30,13 +30,11 @@ $(document).ready(function() {
 
 </div>
 
-{if $logged_in}
-  {if $tree.name != "NCBI"}
+{if $logged_in && $tree.name != "NCBI"}
   {form_open name=form_delete to="tree/delete_redirect"}
   {form_hidden name=id value=$tree.id}
   {form_submit name=delete_button msg=Delete}
   {form_end}
-  {/if}
 {/if}
 
 {form_open name=form_export to="tree/export"}

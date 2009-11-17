@@ -1,5 +1,5 @@
 
-<h2>Select taxonomy parent</h2>
+<h2>Select parent taxonomy</h2>
 
 {form_open name=form_select_parent to="taxonomy/set_parent"}
 

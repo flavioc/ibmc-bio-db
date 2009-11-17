@@ -54,8 +54,8 @@ class Taxonomy extends BioController
     $tree_id = $this->smarty->get_initial_var('tree');
     if(!$tree_id && $parent_id) {
       $tree_id = $this->taxonomy_model->get_tree($parent_id);
-
-      $this->smarty->set_initial_var('tree', $tree_id);
+      $this->smarty->assign('set_tree_name', $this->taxonomy_tree_model->get_name($tree_id));
+      $this->smarty->assign('set_tree', $tree_id);
     }
 
     $this->smarty->view('taxonomy/add');
