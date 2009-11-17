@@ -86,7 +86,13 @@ class Tree extends BioController
     } else {
       $id = $this->taxonomy_tree_model->add($name);
 
-      redirect("tree/view/$id");
+      if($id)
+        redirect("tree/view/$id");
+      else {
+        $this->set_error_message('An unknown error ocurred');
+        $this->assign_row_data('name');
+        redirect('tree/add');
+      }
     }
   }
 

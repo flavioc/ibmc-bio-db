@@ -312,8 +312,10 @@ class Profile extends BioController
 
       $this->user_model->new_user($username, $complete_name, $email,
         $password);
+      
+      $this->set_info_message("Registered user $username");
 
-      redirect('');
+      redirect('profile/list_all');
     }
   }
 }
