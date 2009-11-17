@@ -18,6 +18,7 @@ class ImportInfo
   private $event_data = null;
   private $event_component = null;
   private $event_put = null;
+  private $event_step = 0;
   
   function ImportInfo(&$event_data = null, $event_component = null)
   {
@@ -43,8 +44,11 @@ class ImportInfo
   
   private function __update_event()
   {
-    if($this->__has_event())
+    if($this->__has_event()) {
+      ++$this->event_step;
+      
       $this->event_model->set($this->event_data['event'], $this->event_data);
+    }
   }
   
   public function duo_match($info2)
