@@ -61,7 +61,6 @@ class Taxonomy_name extends BioController
     $this->load->model('taxonomy_name_model');
 
     $id = $this->taxonomy_name_model->add(intval($tax), $name, intval($type));
-
     $this->json_return($this->taxonomy_name_model->get_name_and_type($id));
   }
 

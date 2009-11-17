@@ -614,6 +614,7 @@ $.fn.gridAdd = function(data) {
 
       table.appendDom([row_tag]);
       activate_edition(opts, $this, table);
+      apply_td_styles(opts, $this);
       increment_results($this);
   });
 }

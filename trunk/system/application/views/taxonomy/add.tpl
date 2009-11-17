@@ -23,9 +23,15 @@
 <fieldset>
 {form_row name=name msg='Name:'}
 {form_row type=select data=$ranks name=rank msg='Rank:' blank=yes start=0 key=rank_id value=rank_name}
+{if $set_tree}
+  {form_hidden name=tree value=$set_tree}
+  <p><span class="desc">Tree: </span><strong>{$set_tree_name}</strong></p>
+{else}
 {form_row type=select data=$trees name=tree msg='Tree:' blank=yes start=0}
+{/if}
+
 {if $parent_name}
-{form_hidden name=parent_id value=$parent_id}
+  {form_hidden name=parent_id value=$parent_id}
   <p><span class="desc">Parent: </span><strong>{$parent_name}</strong></p>
 {/if}
 </fieldset>

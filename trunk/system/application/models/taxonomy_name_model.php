@@ -93,7 +93,7 @@ class Taxonomy_name_model extends BioModel
 
     $ret = $this->insert_data($data);
     if($ret) {
-      $ret = $this->update_history($tax, 'taxonomy');
+      $this->update_history($tax, 'taxonomy');
     }
 
     $this->db->trans_complete();
