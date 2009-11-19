@@ -662,6 +662,16 @@ class CI_Session {
 				);
 	}
 
+  function set_rawcookie($key, $value, $expires)
+  {
+    setrawcookie(
+      $key,
+      rawurlencode($value),
+      $expires,
+      $this->cookie_path,
+      $this->cookie_domain);
+  }
+
 	// --------------------------------------------------------------------
 	
 	/**

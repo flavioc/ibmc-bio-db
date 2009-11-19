@@ -322,8 +322,8 @@ class Search_model extends BioModel
 
       $sql_field = $this->__translate_sql_field($fields, $label_type);
     
-      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence_info_history.id
-            AND label_sequence.label_id = $label_id AND $sql_field $sql_oper $sql_value $param_sql)";
+      return "EXISTS(SELECT label_sequence_info.id FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id
+            AND label_sequence_info.label_id = $label_id AND $sql_field $sql_oper $sql_value $param_sql)";
     }
   }
   

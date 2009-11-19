@@ -16,14 +16,15 @@ class Wide_Search extends BioController
   {
     $this->load->plugin('parser');
     
-    $search = stripslashes($this->get_parameter('search_global'));
+    $search = urldecode($this->get_parameter('search_global'));
+    $search = stripslashes($search);
     $this->session->set_userdata('search_term', $search);
     
     try {
       $parser = new Parser($search);
       $tree = $parser->parse();
       $tree_json = json_encode($tree);
-      set_cookie('saved_search_tree', $tree_json, time()+500);
+      $this->session->set_rawcookie('saved_search_tree', $tree_json, time()+500);
       redirect('search?type=search');
     } catch(Exception $e) {
       $search = rawurlencode($search);
