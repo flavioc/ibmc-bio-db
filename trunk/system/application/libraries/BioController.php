@@ -290,6 +290,7 @@ class BioController extends Controller
     $config['overwrite'] = true;
     $config['encrypt_name'] = true;
     $config['allowed_types'] = 'xml';
+    $config['any_file'] = true;
     $config['max_size'] = 2048 * 10; // 10MB
 
     return $config;

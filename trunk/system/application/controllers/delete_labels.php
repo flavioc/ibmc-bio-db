@@ -40,7 +40,6 @@ class Delete_Labels extends BioController
     
     $deleted_labels = 0;
     $deleted_from_seqs = 0;
-    print_r($seqs);
     
     foreach($seqs as &$seq) {
       $id = $seq['id'];
