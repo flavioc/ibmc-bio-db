@@ -47,6 +47,7 @@ class Command_Line extends BioController
       
       $results = $this->search_model->get_search($tree, array('transform' => $label_id, 'select' => 'id, name, content'));
       
+      echo count($results) . " TOTAL\n";
       foreach($results as &$result) {
         $id = $result['id'];
         $name = $result['name'];
@@ -197,11 +198,11 @@ class Command_Line extends BioController
     if($seqs && count($seqs) > 0) {
       echo "Sequence report:\n";
       foreach ($seqs as $name => &$seq) {
-        $content = $seq['content'];
+        $content = $seq['short_content'];
         $new = ($seq['add'] ? "New" : "Updated");
         $comment = $seq['comment'];
         
-        echo "-> $new $name $content $comment\n";
+        echo "-> $new $name $content... $comment\n";
         
         foreach ($seq['labels'] as $name => &$label) {
           $status = $label['status'];
@@ -210,6 +211,47 @@ class Command_Line extends BioController
       }
     } else {
       echo "No sequences present\n";
+    }
+  }
+  
+  public function add_url_label($url, $param)
+  {
+    $url = $this->__get_file($url);
+    $seqs = $this->sequence_model->get_all();
+    $label_id = $this->label_model->get_id_by_name('url');
+    echo $url . " -> " . $param . "\n";
+    
+    $data = new LabelData($url, $param);
+    foreach($seqs as &$seq) {
+      $seq_id = $seq['id'];
+      
+      $this->label_sequence_model->add_url_label($seq_id, $label_id, $data);
+    }
+  }
+  
+  public function add_refpos_label($start, $length)
+  {
+    $seqs = $this->sequence_model->get_all();
+    $label_id = $this->label_model->get_id_by_name('refpos');
+    
+    foreach($seqs as &$seq) {
+      $seq_id = $seq['id'];
+      
+      $this->label_sequence_model->add_position_label($seq_id, $label_id, $start, $length);
+    }
+  }
+  
+  public function edit_refpos_label($start, $length)
+  {
+    $seqs = $this->sequence_model->get_all();
+    $label_id = $this->label_model->get_id_by_name('refpos');
+    
+    foreach($seqs as &$seq) {
+      $seq_id = $seq['id'];
+      
+      $id = $this->label_sequence_model->get_label_id($seq_id, $label_id);
+      
+      $this->label_sequence_model->edit_position_label($id, $start, $length);
     }
   }
   
