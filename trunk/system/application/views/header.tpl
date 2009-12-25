@@ -26,7 +26,7 @@
 <div id="top">
   <div id="left_top">
     <a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BIO DB"/></a>
-    <h1><a href="{site}/welcome">Bio DB</a></h1>
+    <h1><a href="{site}/welcome">BioSeD</a></h1>
     <span id="comment_db">{$comment_header}</span>
   </div>
   <div id="right_top">
