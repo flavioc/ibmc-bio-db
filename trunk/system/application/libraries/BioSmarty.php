@@ -616,7 +616,7 @@ function smarty_function_random($params, &$smarty)
 
 function findexts($filename)
 {
-  $exts = split("[/\\.]", $filename) ;
+  $exts = explode(".", $filename) ;
   $n = count($exts)-1;
 
   if($n == 0) {

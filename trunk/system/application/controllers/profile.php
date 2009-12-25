@@ -157,11 +157,6 @@ class Profile extends BioController
 
     if($this->form_validation->run() == FALSE) {
       $errors = true;
-      $this->assign_row_data('complete_name');
-      $this->assign_row_data('email');
-      $this->assign_row_data('old_password', false);
-      $this->assign_row_data('password1', false);
-      $this->assign_row_data('password2', false);
     }
 
     $password = $this->get_post('old_password');
@@ -171,7 +166,12 @@ class Profile extends BioController
     }
 
     if($errors) {
-      redirect('profile/edit');
+      $this->assign_row_data('complete_name');
+      $this->assign_row_data('email');
+      $this->assign_row_data('old_password', false);
+      $this->assign_row_data('password1', false);
+      $this->assign_row_data('password2', false);
+      redirect("profile/edit/$id");
     } else {
       $complete_name = $this->get_post('complete_name');
       $email = $this->get_post('email');
