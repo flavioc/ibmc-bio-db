@@ -14,12 +14,13 @@ $(function () {
       user: function () { return $('#user').val(); }
   });
   
+  /*
   $('#submit_export').click(function () {
     $('input[name=export_name]').val(name_field.val());
     $('input[name=export_user]').val(user_field.val());
     
     return true;
-  });
+  });*/
 });
 </script>
 {/literal}
@@ -28,12 +29,12 @@ $(function () {
 
 <div id="show_sequences"></div>
 
-{form_open to='export/export_all' name=export_form}
+<!-- {form_open to='export/export_all' name=export_form}
 {form_hidden name=export_name}
 {form_hidden name=export_user}
 {include file=export/types.tpl}
 {form_submit name=submit_export msg='Export all'}
-{form_end}
+{form_end} -->
 
 {form_open to='search?type=list' name=form_search_seqs}
 {form_submit msg='Search'}

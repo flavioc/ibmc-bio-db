@@ -10,4 +10,7 @@
   <option value="meganon">meganon</option>
   <option value="paup">paup</option>
   <option vlaue="paupnon">paupnon</option>
+{if $csv}
+  <option value="csv">CSV</option>
+{/if}
 </select>

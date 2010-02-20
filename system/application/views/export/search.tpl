@@ -36,10 +36,12 @@ $(function () {
 {/foreach}
 </ul>
 </fieldset>
-{include file=export/types.tpl}
+{include file=export/types.tpl csv=true}
 {form_submit name=submit msg='Download file'}
 {form_end}
 
 <h3>Search term</h3>
 
 <p id="search_tree_string">{$tree_str}</p>
+
+{include file=search/operation_sequences.tpl dom_id=result_list}
