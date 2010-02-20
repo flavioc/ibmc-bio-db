@@ -39,6 +39,18 @@ The following sequences were empty:
 </ul>
 {/if}
 
+{if $error && count($error) > 0}
+<h4>Unexpected lines</h4>
+
+The following lines contained errors:
+
+<ul>
+  {foreach from=$error item=e}
+    <li>{$e}</li>
+  {/foreach}
+</ul>
+{/if}
+
 {foreach from=$sequences item=seq}
 <div id="seq_{$seq.id}" {display_none}>
 

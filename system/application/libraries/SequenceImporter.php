@@ -2,6 +2,8 @@
 
 class SequenceImporter
 {
+  private $info = null;
+  
   function SequenceImporter()
   {
     $CI =& get_instance();
@@ -142,6 +144,10 @@ class SequenceImporter
         $reader->unread_line($new_line);
         return $ret;
       } else {
+        if(!valid_sequence_type(sequence_type($new_line))) {
+          $this->info->add_error_line($new_line);
+          return $ret;
+        }
         $ret .= $new_line;
       }
     }
@@ -159,7 +165,7 @@ class SequenceImporter
     return explode("|", trim($line, " \t\n\r>"));
   }
 
-  private function __read_header_labels(&$info, &$line, &$pos_name)
+  private function __read_header_labels(&$line, &$pos_name)
   {
     $labels_vec = $this->__get_label_vector($line);
 
@@ -174,7 +180,7 @@ class SequenceImporter
           $pos_name = $i;
         }
         
-        $info->add_label($label_name);
+        $this->info->add_label($label_name);
         ++$i;
       }
     }
@@ -197,16 +203,16 @@ class SequenceImporter
     return $text[0] == '[' && $text[$len-1] == ']';
   }
 
-  private function __get_sequence_labels($name, $info, $line)
+  private function __get_sequence_labels($name, $line)
   {
     $label_data = $this->__get_label_vector_seq($line);
 
     $total_data = count($label_data);
     $i = 0;
     
-    foreach($info->get_labels() as $label_name) {
+    foreach($this->info->get_labels() as $label_name) {
       if($i >= $total_data) {
-        $info->add_sequence_label($name, $label_name, '');
+        $this->info->add_sequence_label($name, $label_name, '');
         continue;
       }
     
@@ -226,11 +232,11 @@ class SequenceImporter
           }
 
           $vec = $this->__parse_sequence_label_fasta($part);
-          $info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
+          $this->info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
         }
       } else {
         $vec = $this->__parse_sequence_label_fasta($data);
-        $info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
+        $this->info->add_sequence_label($name, $label_name, $vec[1], $vec[0]);
       }
     }
   }
@@ -248,7 +254,7 @@ class SequenceImporter
 
   public function import_fasta($file, &$event_data = null, $event_component = null)
   {
-    $info = new ImportInfo($event_data, $event_component);
+    $this->info = new ImportInfo($event_data, $event_component);
     $has_header = false;
     
     $CI =& get_instance();
@@ -264,28 +270,31 @@ class SequenceImporter
         continue;
 
       if(!$has_header && $this->__is_header_sequence($line)) {
-        $this->__read_header_labels($info, $line, $name_pos);
+        $this->__read_header_labels($line, $name_pos);
         $has_header = true;
       } else if($this->__is_sequence_start($line)) {
         $name = $this->__get_sequence_name($line, $has_header, $name_pos);
         $content = $this->__get_sequence_content($reader);
         
         if(!$content) {
-          $info->add_empty_sequence($line);
+          $this->info->add_empty_sequence($line);
           continue;
         }
         
         if(!$name)
           $name = substr($content, 0, 10);
 
-        $info->add_sequence($name, $content);
+        $this->info->add_sequence($name, $content);
 
         if($has_header)
-          $this->__get_sequence_labels($name, $info, $line);
+          $this->__get_sequence_labels($name, $line);
+      } else {
+        if($line)
+          $this->info->add_error_line($line);
       }
     }
 
-    return $info; 
+    return $this->info; 
   }
   
   public function import_file($file, &$event_data = null, $event_component = null)

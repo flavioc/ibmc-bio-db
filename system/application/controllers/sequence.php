@@ -259,6 +259,7 @@ class Sequence extends BioController
     $this->smarty->assign("sequences$n", $seqs);
     $this->smarty->assign("labels$n", $labels);
     $this->smarty->assign("empty$n", $info->get_empty_sequences());
+    $this->smarty->assign("error$n", $info->get_error_lines());
     $search_tree = $this->seqsearchtree->get_tree($seqs);
     $search_tree_get = json_encode($search_tree);
     $this->smarty->assign("search_tree_get$n", $search_tree_get);
