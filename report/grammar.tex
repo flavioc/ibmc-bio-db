@@ -1,0 +1,85 @@
+\section{Query language}\label{sec:grammar}
+
+A simple, yet arbitrarily complex, query language was designed to search
+stored sequences using annotated information present in label instances.
+
+A simplified grammar in BNF format for this language is shown in Figure \ref{fig:query_bnf}.
+Note that every label supports two basic unary operators: \textbf{exists} and \textbf{notexists}, when
+used they filter sequences that contain any value label or no value at all, respectively.
+Queries can be nested using the AND, OR and NOT operators. Parenthesis can also be used to group expressions.
+
+\begin{figure}[ht]
+\begin{grammar} 
+[(colon){$\rightarrow$}] 
+[(semicolon)$|$] 
+[(comma){}] 
+[(period){\\}] 
+[(quote){\begin{bf}}{\end{bf}}] 
+[(nonterminal){$\langle$}{$\rangle$}]
+<expression>:<expression> AND <expression>; <expression> OR <expression>; NOT <expression>;(<expression>) ; <terminal>.
+<terminal>:<label name>,<unary operators>;<bool terminal>;<integer terminal>;<float terminal>;<position terminal>;<taxonomy terminal>;<text terminal>;<url terminal>; <obj terminal>; <date terminal>.
+<bool terminal>:<label name>;<label name>,<bool operators>,<bool value>.
+<bool operators>:<base operators>.
+<bool value>: "true"; "false".
+<unary operators>:"exists";"notexists".
+<base operators>:"is"; "$=$"; "eq"; "equal".
+<integer terminal>:<label name>,<numeric operators>,<integer value>.
+<float terminal>:<label name>,<numeric operators>,<float value>.
+<position terminal>:<label name>,<position type>,<numeric operators>,<integer value>.
+<numeric operators>:<base operators>;"$\greaterthan$"; "$\greaterthan=$"; "$\lessthan$"; "$\lessthan=$".
+<position type>:"start";"length".
+<taxonomy terminal>:<label name>,<taxonomy operators>,<label value>.
+<taxonomy operators>:<base operators>; "like".
+<url terminal>:<label name>,<text operators>,<url>.
+<text terminal>:<label name>,<text operators>,<label value>.
+<text operators>:<base operators>;"contains"; "starts"; "ends"; "regexp".
+<obj terminal>:<text terminal>.
+<date terminal>:<label name>,<date operators>,<date value>.
+<date operators>:<base operators>; "after"; "before".
+<date value>:<day>,"-", <month>, "-", <year>.
+<label name>: <base label name>;<base label name>, "[", <string>, "]".
+<base label name>:"{\tt\quotesymbol}",<string>,"{\tt\quotesymbol}"; <string>.
+<label value>:"{\tt\quotesymbol}",<string>,"{\tt\quotesymbol}"; <string>.
+\end{grammar}
+\caption{Query language written in BNF.}
+\label{fig:query_bnf}
+\end{figure}
+
+All labels support a basic set of operators: \textbf{is}, \textbf{=}, \textbf{eq} and \textbf{equal}. All those operators do the same thing and, depending on the label type, they filter sequences which contain the specified label value.
+
+We can also specify a multiple label instance with the parameter selector, using \textit{label\_name{[parameter]}}. If an expression involves a multiple label that is not parameter specific, all label instances will be considered, instead of only one.
+
+The following list specifies the differences for each label type:
+
+\begin{itemize}
+  \item \textbf{Bool}
+  
+  Labels of this type can use the equal operation on values \textit{true} or \textit{false}. We can also skip the operator and value altogether and only keep the label name, as the example: \textit{dna and length $>$ 5} instead of \textit{dna is true and length $>$ 5}. 
+  
+  \item \textbf{Integer and float}
+  
+  Numeric labels use the basic comparison operators: \textbf{=}, \textbf{$>$}, \textbf{$>=$}, \textbf{$<$}, \textbf{$<=$}.
+
+  \item \textbf{Position}
+  
+  For position labels we must first select between the start or the length component, and then an integer operator.
+  Example: \textit{label\_name start $>$ 5}.
+  
+  \item \textbf{Taxonomy and reference}
+  
+  For these kinds of labels we can also use the operator \textbf{like}, which has the same effect as the standard equal operator. Those operators work by searching all sequences or taxonomies where the name matches the provided regular expression and then filtering the result list of sequences who have at least one label instance point to the same sequence or taxonomy of the former search result.
+  
+  \item \textbf{Url and text}
+  
+  For these label types the operators provided are: \textbf{starts} (if the string starts with the provided value),
+  \textbf{ends} and \textbf{regexp}, for regular expression matches.
+  
+  \item \textbf{Object}
+  
+  Object labels can use the same text operators to search the filename associated with the label instance.
+  
+  \item \textbf{Date}
+  
+  Date labels provide day based operators: \textbf{equal} (in the same day), \textbf{after} (after the day),
+  \textbf{before} (before the day).
+\end{itemize}

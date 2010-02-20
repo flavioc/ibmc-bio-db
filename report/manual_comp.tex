@@ -1,0 +1,94 @@
+\documentclass[a4paper,11pt]{article}
+
+% remove runningheads to submit
+\usepackage[english]{babel}
+
+% portuguese
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{courier}
+\usepackage{color}
+\usepackage{bnf}
+\usepackage{appendix}
+\usepackage[boxed,linesnumbered]{algorithm2e}
+
+\lstset{
+         basicstyle=\footnotesize\ttfamily, % Standardschrift
+         %numbers=left,               % Ort der Zeilennummern
+         numberstyle=\tiny,          % Stil der Zeilennummern
+         %stepnumber=2,               % Abstand zwischen den Zeilennummern
+         numbersep=5pt,              % Abstand der Nummern zum Text
+         tabsize=3,                  % Groesse von Tabs
+         %extendedchars=true,         %
+         breaklines=true,            % Zeilen werden Umgebrochen
+         keywordstyle=\color{red},
+                %frame=b,         
+ %        keywordstyle=[1]\textbf,    % Stil der Keywords
+ %        keywordstyle=[2]\textbf,    %
+ %        keywordstyle=[3]\textbf,    %
+ %        keywordstyle=[4]\textbf,   \sqrt{\sqrt{}} %
+         %stringstyle=\color{white}\ttfamily, % Farbe der String
+         showspaces=false,           % Leerzeichen anzeigen ?
+         showtabs=false,             % Tabs anzeigen ?
+         xleftmargin=10pt,
+         framexleftmargin=5pt,
+         framexrightmargin=10pt,
+         framexbottommargin=4pt,
+         %backgroundcolor=\color{lightgray},
+         %showstringspaces=false      % Leerzeichen in Strings anzeigen ?        
+ }
+ 
+
+\usepackage{caption}
+\DeclareCaptionFont{blue}{\color{blue}} 
+   \captionsetup[lstlisting]{singlelinecheck=false, labelfont={blue}, textfont={blue}}
+   
+ \DeclareCaptionFont{white}{\color{white}}
+ \DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=-2pt, font={bf,footnotesize}}
+
+% images: .png or .pdf w/ pdflatex; .eps w/ latex
+\usepackage[latin1]{inputenc}
+
+\usepackage[hyphens]{url}
+
+% urls
+%\usepackage{times}
+
+% PS fonts
+%\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+
+%\hyphenation{}                  % explicit hyphenation
+% entities
+%\newcommand{\class}[1]{{\normalfont\slshape #1\/}}
+\begin{document}
+  \title{BioSeD - \textbf{Bio}logical \textbf{Se}quences \textbf{D}atabase\\\textbf{User Manual}}
+
+  \date{\today}
+
+
+  \maketitle
+
+
+  \tableofcontents
+  \listoffigures
+  \listoftables
+  \lstlistoflistings
+  \clearpage
+\input{manual}
+\input{file_formats}
+\include{grammar}
+
+\clearpage
+\renewcommand{\bibname}{References} 
+\begin{thebibliography}
+  {10}
+  \bibitem{php} PHP: HyperText Preprocessor, \url{http://www.php.net/}
+	\bibitem{fasta} FASTA format description, \url{http://www.ncbi.nlm.nih.gov/blast/fasta.shtml}
+	  
+\end{thebibliography}
+
+\end{document}
