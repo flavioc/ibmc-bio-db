@@ -191,14 +191,29 @@ class SequenceExporter
     return trim(strval($toadd));
   }
   
+  public function export_csv($sequences, $seq_labels)
+  {
+    $merged_labels = $this->__merge_export_labels($seq_labels);
+    $ret = $this->__get_export_csv_header($merged_labels). "\n";
+    
+    for($i = 0; $i < count($sequences); $i++) {
+      $sequence =& $sequences[$i];
+      $labels =& $seq_labels[$i];
+      
+      $ret .= $this->__get_sequence_csv_line($sequence, $labels, $merged_labels) . "\n";
+    }
+    
+    return $ret;
+  }
+  
   public function export_fasta($sequences, $seq_labels, $comments = null)
   {
     $merged_labels = $this->__merge_export_labels($seq_labels);
     $ret = $this->__get_export_header($merged_labels, $comments) . "\n";
 
     for($i = 0; $i < count($sequences); $i++) {
-      $sequence = $sequences[$i];
-      $labels = $seq_labels[$i];
+      $sequence =& $sequences[$i];
+      $labels =& $seq_labels[$i];
 
       $ret .= $this->__get_sequence_header($sequence, $labels, $merged_labels);
       $content = trim($sequence['content']);
@@ -230,6 +245,19 @@ class SequenceExporter
       }
     }
 
+    return $ret;
+  }
+  
+  private function __get_export_csv_header($labels)
+  {
+    $ret = 'name ; content';
+    
+    foreach($labels as &$label) {
+      if(label_type_is_printable($label['type'])) {
+        $ret .= ' ; ' . $label['name'];
+      }
+    }
+    
     return $ret;
   }
   
@@ -265,7 +293,48 @@ class SequenceExporter
     return trim($ret, '|');
   }
   
-  private function __get_export_label_fasta_name($label)
+  private function __get_sequence_csv_line($sequence, $labels, $merged_labels)
+  {
+    $seq_name = trim($sequence['name']);
+    $seq_content = trim($sequence['content']);
+    
+    $ret = "$seq_name ; $seq_content";
+    
+    foreach($merged_labels as &$merged_label) {
+      $res_labels = $this->__get_export_labels($merged_label, $labels);
+      if(count($res_labels) == 0) {
+        $ret .= ' ;';
+      } else if(count($res_labels) == 1) {
+        $ret .= ' ;';
+        $ret .= $this->__get_export_label_csv_name($res_labels[0]);
+      } else {
+        // multiple labels
+        $ret .= ' ;';
+        $first_done = false;
+        foreach($res_labels as &$label) {
+          if($first_done)
+            $ret .= ' ,';
+            
+          $ret .= $this->__get_export_label_csv_name($label);
+          $first_done = true;
+        }
+      }
+    }
+    
+    return $ret;
+  }
+  
+  private function __get_export_label_csv_name(&$label)
+  {
+    $data = $this->__get_label_export_data($label);
+    $ret = '';
+    if($label['param'])
+      $ret .= ' ' . $label['param'] . ' :';
+    $ret .= ' ' . $data;
+    return $ret;
+  }
+  
+  private function __get_export_label_fasta_name(&$label)
   {
     $toadd = $this->__get_label_export_data($label);
 

@@ -22,7 +22,7 @@ class Export extends BioController
     
     $type = $this->get_post('format');
 
-    if($type == 'fasta' || $type == 'xml') {
+    if($type == 'fasta' || $type == 'xml' || $type == 'csv') {
       $labels_str = $this->get_post('label_obj');
       $labels = json_decode(stripslashes($labels_str), true);
 
@@ -37,6 +37,7 @@ class Export extends BioController
     $this->smarty->assign('title', 'Export search');
     $this->smarty->load_stylesheets('export.css', 'operations.css');
 
+    $this->use_mygrid();
     $tree = $this->__get_search_term('post', 'encoded_tree', $encoded, $raw);
     $this->smarty->assign('tree_json', $raw);
     $tree_str = search_tree_to_string($tree);
@@ -45,6 +46,7 @@ class Export extends BioController
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     
     $this->smarty->assign('transform', $transform);
+    $this->smarty->assign('encoded', addmyslashes($encoded));
     
     $this->load->model('search_model');
     $seqs = $this->search_model->get_search($tree,
@@ -152,12 +154,14 @@ class Export extends BioController
         $comment = "$comment - transformed by label $trans_name";
       }
       $this->__do_export_fasta($sequences, $seq_labels, $comment);
-    } else {
+    } else if($type == 'xml') {
       $comment = $tree_str;
       if($trans_name) {
         $comment = "$comment ; transformed by label $trans_name";
       }
       $this->__do_export_xml($sequences, $seq_labels, $comment);
+    } else if($type == 'csv') {
+      $this->__do_export_csv($sequences, $seq_labels);
     }
   }
 
@@ -198,6 +202,14 @@ class Export extends BioController
     
     echo $this->sequenceexporter->export_fasta($sequences, $seq_labels,
       $this->__get_basic_comments() . " $extra_comments");
+  }
+  
+  private function __do_export_csv($sequences, $seq_labels)
+  {
+    header('Content-type: text/plain');
+    header('Content-disposition: attachment; filename="sequences.csv"');
+    
+    echo $this->sequenceexporter->export_csv($sequences, $seq_labels);
   }
 
   private function __do_export_xml($sequences, $seq_labels, $comment)
