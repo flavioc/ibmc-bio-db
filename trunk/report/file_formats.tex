@@ -1,0 +1,221 @@
+\section{File formats} \label{sec:file_formats}
+
+
+We use files to import or export data in order to interchange information between different kinds of systems or among various instances of the application. These files can be in two different kinds of formats: XML or FASTA.
+
+Among other things, those files are used throughout the system to: copy entire databases, import sequences, install new labels, import whole taxonomy trees or heterogenous integration. 
+ 
+\subsection{FASTA}
+
+The FASTA format \cite{fasta} is very well known in the bioinformatics field as it is used to store a specific set of DNA or protein sequences.
+
+In our system, this format is used to export stored sequences or to import new ones.
+
+We have designed two FASTA-like formats:
+
+\begin{itemize}
+  \item Plain format
+  
+  In the plain format we just store the sequence name followed by its content.
+  
+\begin{lstlisting}[float, language=bash,frame=single,caption={Plain FASTA format.}]
+>AK315637
+ELRLRYCAPAGFALLKCNDADYDGFKTNCSNVSVVHCTNLMNTTVTTGLLLNGSYSENRT
+QIWQKHRTSNDSALILLNKHYNLTVTCKRPGNKTVLPVTIMAGLVFHSQKYNLRLRQAWC
+HFPSNWKGAWKEVKEEIVNLPKERYRGTNDPKRIFFQRQWGDPETANLWFNCHGEFFYCK
+MDWFLNYLNNLTVDADHNECKNTSGTKSGNKRAPGPCVQRTYVACHIRSVIIWLETISKK
+TYAPPREGHLECTSTVTGMTVELNYIPKNRTNVTLSPQIESIWAAELDRYKLVEITPIGF
+APTEVRRYTGGHERQKRVPFVXXXXXXXXXXXXXXXXXXXXXXVQSQHLLAGILQQQKNL
+LAAVEAQQQMLKLTIWGVK
+<...more sequences...>
+\end{lstlisting}
+  
+  \item Complex format
+  
+  In this format we also store label instance information along the sequence data. \\
+  
+  The format starts by including one line comment, followed by a line telling which labels are included for each sequence. Those labels are separated by the character '$|$'.\\
+  
+  For each sequence line we put all the label instances separated by the character '$|$'. The order of the label instances must be equal to the label's order at the file's header.\\
+  
+  If the sequence does not have a specific label instance the string in that column should be empty "".\\
+  
+  If the label instance value is empty and that label is not editable and can be generated from code it will be automatically generated when imported.
+  
+  For multiple labels, the label value is enclosed by square brackets '[]' and each instance, represented as \textit{param -$>$ value}, is separated by the character '§'.\\
+  
+  The special label 'name' is treated like any other label. If it is not included in the label's header, the
+  first 10 sequence's content characters will be used by omission.
+  
+  An example of this format can be seen in Listing~\ref{ComplexFastaFormat}.\\
+  
+\begin{lstlisting}[float, language=bash,frame=single,breaklines=true,caption={Complex FASTA format example.}, label=ComplexFastaFormat]
+;flavio - Monday 19th October 2009 07:06:33 PM - sequence id 465
+#name|length|internal_id|perm_public|type|translated|url
+>AK315637|1554|465|0|dna|AK315637_p|[google -> http://google.pt § ncbi -> http://www.ncbi.nlm.nih.gov/]
+ELRLRYCAPAGFALLKCNDADYDGFKTNCSNVSVVHCTNLMNTTVTTGLLLNGSYSENRT
+QIWQKHRTSNDSALILLNKHYNLTVTCKRPGNKTVLPVTIMAGLVFHSQKYNLRLRQAWC
+HFPSNWKGAWKEVKEEIVNLPKERYRGTNDPKRIFFQRQWGDPETANLWFNCHGEFFYCK
+MDWFLNYLNNLTVDADHNECKNTSGTKSGNKRAPGPCVQRTYVACHIRSVIIWLETISKK
+TYAPPREGHLECTSTVTGMTVELNYIPKNRTNVTLSPQIESIWAAELDRYKLVEITPIGF
+APTEVRRYTGGHERQKRVPFVXXXXXXXXXXXXXXXXXXXXXXVQSQHLLAGILQQQKNL
+LAAVEAQQQMLKLTIWGVK (...)
+<...more sequences...>
+\end{lstlisting}
+  
+\end{itemize}
+
+\subsection{XML}
+
+The XML format is widely used to export and import lots of different kinds of data throughout the system. This format can handle labels, sequences, taxonomy trees, ranks and the database itself.
+
+\begin{itemize}
+  \item \textbf{Labels}
+  
+  Using the XML format we can export a set of labels. This file can then be imported in another system resulting in label installation or update. \\
+  
+  An example of this kind of file is shown in Listing~\ref{LabelXmlFile} and as it can be seen, we store each label property as a XML tag.
+  
+  All the rules concerning empty label instances from the complex FASTA format are also present in this format.
+  
+\begin{lstlisting}[float, language=xml, frame=single, label=LabelXmlFile, caption={An example Label XML file.}]
+<labels>
+  <label>
+		<name>length</name>
+		<type>integer</type>
+		<comment></comment>
+		<default>1</default>
+		<must_exist>1</must_exist>
+		<auto_on_creation>1</auto_on_creation>
+		<auto_on_modification>1</auto_on_modification>
+		<code>return strlen($content);</code>
+		<valid_code>return $data &gt; 0;</valid_code>
+		<editable>0</editable>
+		<deletable>0</deletable>
+		<multiple>0</multiple>
+		<public>1</public>
+	</label>
+	<...more labels...>
+</labels>
+\end{lstlisting}
+
+\item \textbf{Sequences}
+
+Besides the FASTA format, sequences can also be stored in XML files. The main difference between the FASTA format is that, given the structured and flexible nature of XML, it is easier to describe the sequence contents and its label instances.
+
+\begin{lstlisting}[float, language=xml, frame=single, label=SequenceXmlFile, caption={An Sequence XML file.}]
+<sequences>
+<author>flavio</author>
+<date>Tuesday 20th October 2009 12:59:53 AM</date>
+<what>sequence id 465</what>
+<labels>
+	<label>length</label>
+	<label>internal_id</label>
+	<label>perm_public</label>
+	<label>type</label>
+	<label>translated</label>
+	<label>url</label>
+</labels>
+<sequence>
+	<name>AK315637</name>
+	<content>ELRLRYCAPAGFALLKCNDADYDGFKTNCSNVSVVHCTNLMNTTVTTGLLLNGSYSENRT
+  QIWQKHRTSNDSALILLNKHYNLTVTCKRPGNKTVLPVTIMAGLVFHSQKYNLRLRQAWC
+  HFPSNWKGAWKEVKEEIVNLPKERYRGTNDPKRIFFQRQWGDPETANLWFNCHGEFFYCK
+  MDWFLNYLNNLTVDADHNECKNTSGTKSGNKRAPGPCVQRTYVACHIRSVIIWLETISKK
+  TYAPPREGHLECTSTVTGMTVELNYIPKNRTNVTLSPQIESIWAAELDRYKLVEITPIGF
+  APTEVRRYTGGHERQKRVPFVXXXXXXXXXXXXXXXXXXXXXXVQSQHLLAGILQQQKNL
+  LAAVEAQQQMLKLTIWGVK (...)</content>
+	<label name="length">1554</label>
+	<label name="internal_id">465</label>
+	<label name="perm_public">0</label>
+	<label name="type">dna</label>
+	<label name="translated">AK315637_p</label>
+	<label name="url" param="google">http://google.pt</label>
+	<label name="url" param="ncbi">http://www.ncbi.nlm.nih.gov/</label>
+</sequence>
+</sequences>
+\end{lstlisting}
+
+The same sequence represented in FASTA (Listing~\ref{ComplexFastaFormat}) can be seen formatted as XML in Listing~\ref{SequenceXmlFile}.
+  
+  \item \textbf{Ranks}
+  
+  To manage ranks across multiple application instances we designed a XML format to store taxonomy ranks.
+  
+\begin{lstlisting}[float, language=xml, frame=single, label=RankXmlFile, caption={An example Rank XML file.}]
+<ranks>
+	<rank>
+		<name>class</name>
+		<parent>phylum</parent>
+	</rank>
+	<rank>
+		<name>family</name>
+		<parent>order</parent>
+	</rank>
+	<...more ranks...>
+</ranks>
+\end{lstlisting}
+  
+  As it can be seen in Listing~\ref{RankXmlFile}, for each rank we register its name and parent rank. This type of files is useful to copy rank sets around systems.
+  
+  \item \textbf{Taxonomy trees}
+  
+  We designed a XML format to store taxonomy trees, which is very useful to easily copy an entire taxonomy tree from one system to another.
+  
+\begin{lstlisting}[float, language=xml, frame=single, label=TaxonomyTreeXmlFile, caption={An example Taxonomy tree XML file.}]
+<tree>
+	<name>example</name>
+	<nodes>
+		<taxonomy>
+			<name>root_taxonomy</name>
+			<rank>family</rank>
+			<taxonomy>
+				<name>child_taxonomy</name>
+				<rank>genus</rank>
+			</taxonomy>
+			<taxonomy>
+				<name>child_taxonomy2</name>
+				<rank>genus</rank>
+			</taxonomy>
+		</taxonomy>
+	</nodes>
+</tree>
+\end{lstlisting}
+  
+  In this format, we store the tree name followed by a 'nodes' tag which will store, starting by the root taxonomies, the taxonomies from this tree. Each 'taxonomy' tag may contain an arbitrary number of 'taxonomy' tags which represent taxonomy's children.
+  
+  \item \textbf{Database}
+  
+  We designed another XML based format, this time to store the entire database. The skeleton for this format is presented in Listing~\ref{DatabaseXmlFile} and it is organized as follows:
+  
+  \begin{itemize}
+    \item \textbf{labels}
+    
+    This section is exactly the same as the Label XML file.
+    
+    \item \textbf{ranks}
+    
+    Idem, but for ranks.
+    
+    \item \textbf{trees}
+    
+    A special tag containing all the taxonomy trees. Each tree is represented the way it is shown for the Taxonomy tree XML file.
+    
+    \item \textbf{sequences}
+    
+    This section follows the Sequence XML file structure.
+    
+  \end{itemize}
+
+  \begin{lstlisting}[float, language=xml, frame=single, label=DatabaseXmlFile, caption={Database in XML skeleton.}]
+  <biodata>
+    <...labels...>
+    <...ranks...>
+    <trees>
+      <...all taxonomy trees...>
+    </trees>
+    <...sequences...>
+  </biodata>
+  \end{lstlisting}
+
+\end{itemize}
