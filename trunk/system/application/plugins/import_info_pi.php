@@ -13,6 +13,7 @@ class ImportInfo
   
   // empty sequences
   private $empty_seqs = array();
+  private $error_text = array();
   
   private $event_model = null;
   private $event_data = null;
@@ -144,9 +145,19 @@ class ImportInfo
     $this->empty_seqs[] = $what;
   }
   
+  public function add_error_line($line)
+  {
+    $this->error_text[] = $line;
+  }
+  
   public function get_empty_sequences()
   {
     return $this->empty_seqs;
+  }
+  
+  public function get_error_lines()
+  {
+    return $this->error_text;
   }
   
   public function add_sequence($name, $content, $id = null)
