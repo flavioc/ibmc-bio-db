@@ -183,5 +183,35 @@ add_label(name = "file",
     multiple = False,
     default = True)
 
+add_label(name = "evalue",
+    type = "float",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    must_exist = False,
+    deletable = True,
+    multiple = True,
+    default = True)
+
+add_label(name = "blast_score",
+    type = "float",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    must_exist = False,
+    deletable = True,
+    multiple = True,
+    default = True)
+
+add_label(name = "blast_query",
+    type = "bool",
+    auto_on_creation = False,
+    auto_on_modification = False,
+    editable = False,
+    must_exist = False,
+    deletable = True,
+    multiple = True,
+    default = True)
+
 db.close()
 
