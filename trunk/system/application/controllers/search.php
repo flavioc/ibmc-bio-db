@@ -356,14 +356,48 @@ class Search extends BioController
       return $this->invalid_permission();
       
     $this->use_mygrid();
-    $search = $this->__get_search_term('post', 'encoded_tree', $encoded);
+    $this->use_plusminus();
+    $search = $this->__get_search_term('post', 'encoded_tree', $encoded, $raw);
     $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $this->smarty->assign('tree_json', $raw);
     $this->smarty->assign('encoded', addmyslashes($encoded));
     $this->smarty->assign('encoded_no_slashes', $encoded);
     $this->smarty->assign('transform', $transform);
+    $this->load->library('BlastLib');
     
     $this->smarty->assign('blast_programs', build_data_array(array('blastn', 'blastp', 'blastx', 'tblastn', 'tblastx'), 'id'));
     
+    $this->smarty->assign('expect_values', BlastLib::$expect_values);
+                                                 
+    $this->smarty->assign('matrix', BlastLib::$matrix_values);
+    
+    $this->smarty->assign('query_genetic_codes', array(array('id' => 1, 'name' => 'Standard (1)'),
+                                                 array('id' => 2, 'name' => 'Vertebrate Mitochondrial (2)'),
+                                                 array('id' => 3, 'name' => 'Yeast Mitochondrial (3)'),
+                                                 array('id' => 4, 'name' => 'Mold, Protozoan, and Coelocoel Mitochondrial (4)'),
+                                                 array('id' => 5, 'name' => 'Invertebrate Mitochondrial (5)'),
+                                                 array('id' => 6, 'name' => 'Ciliate Nuclear (6)'),
+                                                 array('id' => 9, 'name' => 'Echinoderm Mitochondrial (9)'),
+                                                 array('id' => 10, 'name' => 'Euplotid Nuclear (10)'),
+                                                 array('id' => 11, 'name' => 'Bacterial (11)'),
+                                                 array('id' => 12, 'name' => 'Alternative Yeast Nuclear (12)'),
+                                                 array('id' => 13, 'name' => 'Ascidian Mitochondrial (13)'),
+                                                 array('id' => 14, 'name' => 'Flatworm Mitochondrial (14)'),
+                                                 array('id' => 15, 'name' => 'Blepharisma Macronuclear (15)')));
+    
+    $this->smarty->assign('db_genetic_codes', array(array('id' => 1, 'name' => 'Standard (1)'),
+                                                    array('id' => 2, 'name' => 'Vertebrate Mitochondrial (2)'),
+                                                    array('id' => 3, 'name' => 'Yeast Mitochondrial (3)'),
+                                                    array('id' => 4, 'name' => 'Mold, Protozoan, and Coelocoel Mitochondrial (4)'),
+                                                    array('id' => 5, 'name' => 'Invertebrate Mitochondrial (5)'),
+                                                    array('id' => 6, 'name' => 'Ciliate Nuclear (6)'),
+                                                    array('id' => 9, 'name' => 'Echinoderm Mitochondrial (9)'),
+                                                    array('id' => 10, 'name' => 'Euplotid Nuclear (10)'),
+                                                    array('id' => 11, 'name' => 'Bacterial (11)'),
+                                                    array('id' => 12, 'name' => 'Alternative Yeast Nuclear (12)'),
+                                                    array('id' => 13, 'name' => 'Ascidian Mitochondrial (13)'),
+                                                    array('id' => 14, 'name' => 'Flatworm Mitochondrial (14)'),
+                                                    array('id' => 15, 'name' => 'Blepharisma Macronuclear (15)')));
     $this->smarty->assign('title', 'BLAST search');
     $this->smarty->view('search/blast');
     
