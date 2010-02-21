@@ -23,3 +23,5 @@
   <a href="{site}/sequence/browse"><img src="{top_dir}/images/site4.png" /></a>
 </p>
 {/if}
+
+<p><a href="{top_dir}/manual/manual.pdf">User Manual</a></p>
