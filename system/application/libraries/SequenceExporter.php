@@ -362,12 +362,17 @@ class SequenceExporter
     return $ret;
   }
   
-  public function write_sequences_to_fasta($sequences)
+  public function write_sequences_to_fasta(&$sequences)
+  {
+    return $this->write_fasta_to_file($this->export_simple_fasta($sequences));
+  }
+  
+  public function write_fasta_to_file(&$fasta)
   {
     $temp_file = generate_new_file_name();
     $fp = fopen($temp_file, 'w');
 
-    fwrite($fp, $this->export_simple_fasta($sequences));
+    fwrite($fp, $fasta);
     fclose($fp);
 
     return $temp_file;
