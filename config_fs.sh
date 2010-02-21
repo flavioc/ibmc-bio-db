@@ -15,9 +15,10 @@ rm -rf $LOCATION
 
 mkdir -p $(dirname $LOCATION)
 ln -sf $PWD/www $LOCATION || exit 1
-ln -sf $PWD/system/application/images www/ || exit 1
-ln -sf $PWD/system/application/scripts www/ || exit 1
-ln -sf $PWD/system/application/styles www/ || exit 1
+ln -sf $PWD/system/application/images $NAME/ || exit 1
+ln -sf $PWD/system/application/scripts $NAME/ || exit 1
+ln -sf $PWD/system/application/styles $NAME/ || exit 1
+ln -sf $PWD/system/application/manual $NAME/ || exit 1
 rm -rf $CACHE_DIR || exit 1
 rm -rf $UPLOAD_DIR || exit 1
 mkdir -p $CACHE_DIR || exit 1
