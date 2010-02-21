@@ -49,7 +49,7 @@ class BioController extends Controller
     
     $search_term = $this->session->userdata('search_term');
     if($search_term) {
-      $this->smarty->assign('search_term_input', $search_term);
+      $this->smarty->assign('search_term_input', htmlspecialchars($search_term));
     }
     
     $this->use_livequery();
