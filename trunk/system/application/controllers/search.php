@@ -349,4 +349,23 @@ class Search extends BioController
     $this->smarty->assign('title', 'Generate sub sequences');
     $this->smarty->view('search/subsequences');
   }
+  
+  public function blast()
+  {
+    if(!$this->logged_in)
+      return $this->invalid_permission();
+      
+    $this->use_mygrid();
+    $search = $this->__get_search_term('post', 'encoded_tree', $encoded);
+    $transform = $this->__get_transform_label('transform_hidden', 'post');
+    $this->smarty->assign('encoded', addmyslashes($encoded));
+    $this->smarty->assign('encoded_no_slashes', $encoded);
+    $this->smarty->assign('transform', $transform);
+    
+    $this->smarty->assign('blast_programs', build_data_array(array('blastn', 'blastp', 'blastx', 'tblastn', 'tblastx'), 'id'));
+    
+    $this->smarty->assign('title', 'BLAST search');
+    $this->smarty->view('search/blast');
+    
+  }
 }

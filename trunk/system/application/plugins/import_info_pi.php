@@ -20,6 +20,11 @@ class ImportInfo
   private $event_component = null;
   private $event_put = null;
   private $event_step = 0;
+
+  // set this to true to ignore dependencies between sequences in a file
+  private static $fast_mode = FALSE;
+  private $got_labels = FALSE;
+  private $old_sequence = null;
   
   function ImportInfo(&$event_data = null, $event_component = null)
   {
@@ -36,6 +41,12 @@ class ImportInfo
       $this->event_put =& $this->event_data[$this->event_component];
       $this->event_model = load_ci_model('event_model');
     }
+  }
+
+  public static function set_fast()
+  {
+    self::$fast_mode = TRUE;
+    echo "Set fast mode\n";
   }
   
   private function __has_event()
@@ -178,8 +189,15 @@ class ImportInfo
     }
     
     //error_log("Imported sequence with name: $name ".$this->count, 0);
-    
-    $this->ordered_sequences[] = $data;
+    if(self::$fast_mode == TRUE) {
+      $this->__get_labels();
+      if($this->old_sequence)
+        $this->__import_seq_labels($this->old_sequence);
+      $this->old_sequence =& $data;
+      $this->ordered_sequences[] = array('id' => $data['id'], 'type' => $data['type']);
+    } else {
+      $this->ordered_sequences[] = $data;
+    }
   }
   
   public function add_sequence_label($sequence, $label, $value, $param = null)
@@ -191,32 +209,43 @@ class ImportInfo
       return false;
     }
     
-    // find sequence
-    for($i = count($this->ordered_sequences) - 1; $i >= 0; --$i) {
-      $sequence_data =& $this->ordered_sequences[$i];
+    if(self::$fast_mode) {
+      $this->__insert_label_sequence($this->old_sequence, $label, $value, $param);
+    } else {
+      // find sequence
+      for($i = count($this->ordered_sequences) - 1; $i >= 0; --$i) {
+        $sequence_data =& $this->ordered_sequences[$i];
       
-      if($sequence_data['name'] == $sequence) {
-        $labels =& $sequence_data['labels'];
-        
-        $label_data = new LabelData($value, $param);
-        
-        if(array_key_exists($label, $labels)) {
-          $current_label_info =& $labels[$label];
-          $values =& $current_label_info['values'];
-          $values[] = $label_data;
-        } else {
-          $labels[$label] = array('values' => array($label_data));
+        if($sequence_data['name'] == $sequence) {
+          $this->__insert_label_sequence($sequence_data, $label, $value, $param);
+          return true;
         }
-        
-        return true;
       }
     }
     
     return false;
   }
-  
+
+  private function __insert_label_sequence(&$sequence_data, &$label, &$value, &$param)
+  {
+    $labels =& $sequence_data['labels'];
+          
+    $label_data = new LabelData($value, $param);
+          
+    if(array_key_exists($label, $labels)) {
+      $current_label_info =& $labels[$label];
+      $values =& $current_label_info['values'];
+      $values[] = $label_data;
+    } else {
+      $labels[$label] = array('values' => array($label_data));
+    }
+  }
+
   private function __get_labels()
   {
+    if($this->got_labels)
+      return;
+    $this->got_labels = TRUE;
     $new_labels = array();
     
     foreach($this->labels as $name => $d) {
@@ -683,25 +712,31 @@ class ImportInfo
     
     $data['add'] = $isnew;
   }
+
+  private function __import_seq_labels(&$data)
+  {
+    echo "importing new sequence: " . $this->count . "\n";
+    $this->__import_labels($data);
+    if($this->__has_event()) {
+      ++$this->event_put['total_labels'];
+      $this->__update_event();
+    }
+  }
   
   public function import()
   {
     $this->__get_labels();
-    
-    //$count = 0;
-    //$total = count($this->ordered_sequences);
-    
-    foreach($this->ordered_sequences as &$data) {
-      $name = $data['name'];
-      //++$count;
-      //error_log("Importing sequence labels with name: $name $count / $total", 0);
-      $this->__import_labels($data);
-      if($this->__has_event()) {
-        ++$this->event_put['total_labels'];
-        $this->__update_event();
+
+    if(self::$fast_mode) {
+      if($this->old_sequence)
+        $this->__import_seq_labels($this->old_sequence);
+      $this->old_sequence = null;
+      return $this->count;
+    } else {
+      foreach($this->ordered_sequences as &$data) {
+        $this->__import_seq_labels($data);
       }
+      return array($this->ordered_sequences, $this->labels);
     }
-    
-    return array($this->ordered_sequences, $this->labels);
   }
 }
