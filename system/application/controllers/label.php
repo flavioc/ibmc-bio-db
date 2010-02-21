@@ -83,7 +83,7 @@ class Label extends BioController
             'only_public' => !$this->logged_in),
       array('name' => $ordering_name,
             'type' => $ordering_type),
-      true); # get sequence totals
+      false); # get sequence totals
 
     $this->json_return($labels);
   }
