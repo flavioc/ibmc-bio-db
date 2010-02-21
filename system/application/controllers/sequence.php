@@ -470,6 +470,10 @@ class Sequence extends BioController
       case 'generate':
         $ret = $this->__do_add_batch_generate();
         break;
+      default:
+        $this->set_form_error('file', 'Upload limits reached, please contact the site administrator');
+        $this->__batch_go_back();
+        return false;
     }
     
     if($this->event)
