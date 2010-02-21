@@ -324,9 +324,8 @@ function smarty_function_form_select($params, &$smarty)
   }
 
   $value = $params['value'];
-  if(!$value) {
-    $value = 'name';
-  }
+  if(!$value)
+    $value = $key;
 
   $data = $params['data'];
   if($data) {

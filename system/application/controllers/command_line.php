@@ -172,6 +172,8 @@ class Command_Line extends BioController
       return;
     }
     
+    $this->load->plugin('import_info');
+    ImportInfo::set_fast();
     $this->load->library('SequenceImporter');
     
     $info = $this->sequenceimporter->import_file($file);
@@ -180,8 +182,14 @@ class Command_Line extends BioController
       return;
     }
     
-    list($seqs, $labels) = $info->import();
-    $this->__write_report($seqs, $labels);
+    $ret = $info->import();
+
+    if(is_numeric($ret)) {
+      echo "Imported $ret sequences\n";
+    } else { 
+      list($seqs, $labels) = $ret;
+      $this->__write_report($seqs, $labels);
+    }
   }
   
   private function __write_report(&$seqs, &$labels)

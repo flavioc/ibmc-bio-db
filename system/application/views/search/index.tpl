@@ -161,6 +161,12 @@ $(function () {
 {form_end}
 
 {if $logged_in}
+{form_open to='search/blast' name=blast_form}
+{form_hidden name=encoded_tree value=null}
+{form_hidden name=transform_hidden value=null}
+{form_submit name=submit msg='BLAST' id='submit_blast'}
+{form_end}
+
 {form_open to='search/add_label?mode=add' name=add_label_form}
 {form_hidden name=encoded_tree value=null}
 {form_hidden name=transform_hidden value=null}

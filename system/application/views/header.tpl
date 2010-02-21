@@ -25,7 +25,7 @@
 
 <div id="top">
   <div id="left_top">
-    <a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BIO DB"/></a>
+    <a href="{site}/welcome"><img src="{top_dir}/images/dna.jpg" alt="BioSeD"/></a>
     <h1><a href="{site}/welcome">BioSeD</a></h1>
     <span id="comment_db">{$comment_header}</span>
   </div>
@@ -46,7 +46,7 @@
 {literal}
 <script>
   $(function() {
-    $('#form_search_global input[type=text]').textGrow({pad: 25, max_limit: 700, min_limit: 300});
+    $('#form_search_global input[type=text]').textGrow({pad: 50, max_limit: 700, min_limit: 300});
   });
 </script>
 {/literal}
