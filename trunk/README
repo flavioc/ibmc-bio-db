@@ -42,3 +42,8 @@ To install extra labels please run one of the following scripts:
 label_antigenic.py      label_letters.py        label_sigcleave.py
 label_chips.py          label_epestfind.py      label_patmatmotifs.py
 label_iep.py            label_pscan.py
+
+In some installations, PHP only allows uploads up to 2MB, if you want
+to upload bigger sequence files please change upload_max_filesize and
+post_max_size in php.ini and reset the HTTP server.
+Note that post_max_size should be greater than upload_max_filesize.
