@@ -64,21 +64,24 @@ class Sequence extends BioController
   {
     $start = $this->get_parameter('start');
     $size = $this->get_parameter('size');
+    $disable_ordering = $this->get_parameter('disable_ordering');
 
     $ordering_name = $this->get_order('name');
     $ordering_update = $this->get_order('update');
     $ordering_user = $this->get_order('user_name');
-
+    
     $filter_name = $this->get_parameter('name');
     $filter_user = $this->get_parameter('user');
-
+    
     $this->json_return($this->sequence_model->get_all($start, $size,
       array('name' => $filter_name,
             'user' => $filter_user,
             'only_public' => !$this->logged_in),
       array('name' => $ordering_name,
             'update' => $ordering_update,
-            'user_name' => $ordering_user)));
+            'user_name' => $ordering_user),
+            'id, name, update_user_id, `update`, user_name',
+            !$disable_ordering));
   }
 
   public function get_total()
