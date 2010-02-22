@@ -1,3 +1,4 @@
+var DEBUG_SQL = false;
 var operator_select = null;
 var operator_input = null;
 var operator_text = null;
@@ -500,14 +501,19 @@ function update_humanize(encoded)
     });
     
   // also update sql
-  /*$.post(get_app_url() + '/search/sql',
-    {
-      search: encoded,
-      transform: select_transform.val()
-    },
-    function (data) {
-      search_sql.html('<p>' + data + '</p>');
-    });*/
+  if(DEBUG_SQL) {
+     $.post(get_app_url() + '/search/sql',
+     {
+        search: encoded,
+        transform: select_transform.val()
+     },
+     function (data) {
+        search_sql.html('<p>' + data + '</p>');
+        search_sql.show();
+     });
+ } else {
+    search_sql.hide();
+ }
 }
 
 function update_tree(encoded)

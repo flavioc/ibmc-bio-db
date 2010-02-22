@@ -26,7 +26,7 @@ class Tokenizer
   
   private function __is_special_char($val)
   {
-    return in_array($val, array('(', ')'));
+    return in_array($val, array('(', ')', '[', ']'));
   }
   
   private function __really_the_end()
