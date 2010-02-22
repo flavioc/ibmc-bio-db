@@ -20,6 +20,9 @@ class Configuration_model extends BioModel
 
     $query = $this->db->get($this->table);
 
+    if(!$query)
+      return null;
+      
     if($query->num_rows() != 1)
       return null;
 
