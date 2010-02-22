@@ -402,10 +402,12 @@
 
     table.hide();
 
-    for(var i = 0; i < rows.length; ++i) {
-      var row = rows[i];
-      var row_tag = create_row_dom(row, opts, obj);
-      table.appendDom([row_tag]);
+    if(rows) {
+       for(var i = 0; i < rows.length; ++i) {
+          var row = rows[i];
+          var row_tag = create_row_dom(row, opts, obj);
+          table.appendDom([row_tag]);
+       }
     }
 
     if(opts.paginate) {    
