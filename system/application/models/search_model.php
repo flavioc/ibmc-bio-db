@@ -475,6 +475,7 @@ class Search_model extends BioModel
                      'ordering' => array(),
                      'transform' => null,
                      'only_public' => false,
+                     'enable_ordering' => false,
                      'select' => 'id, user_name, update_user_id, `update`, name');
 
     $options = array_merge($default, $coptions);
@@ -488,7 +489,10 @@ class Search_model extends BioModel
     
     $sql_where = $this->__get_search_sql($search, $only_public);
     $sql_limit = sql_limit($start, $size);
-    $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
+    if($options['enable_ordering'])
+      $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
+    else
+      $sql_order = '';
     $select_sql = "DISTINCT $select";
     
     if($transform) {

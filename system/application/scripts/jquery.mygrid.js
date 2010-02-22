@@ -1,5 +1,7 @@
 
 (function ($) {
+   
+  var MAX_ORDER_ROWS = 2000;
 
   function show_loading(obj) {
     $('h4', obj).show();
@@ -803,6 +805,9 @@ function reload_grid(this_obj, $this, opts)
         type: opts.ajax_method,
         success: function (data) {
           var total = parseInt(data);
+          
+          if(total > MAX_ORDER_ROWS)
+            opts.inner.params['disable_ordering'] = 't';
 
           set_results($this, data);
           opts.inner.total = total;
