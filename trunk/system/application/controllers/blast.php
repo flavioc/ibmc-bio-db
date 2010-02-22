@@ -41,7 +41,9 @@ class Blast extends BioController
     $search = $this->__get_search_term('post', 'encoded_tree', $encoded);
     $transform = $this->__get_transform_label('transform_hidden', 'post');
     $seqs = $this->search_model->get_search($search,
-      array('transform' => $transform, 'only_public' => !$this->logged_in, 'select' => 'id, content, name'));
+      array('transform' => $transform,
+            'only_public' => !$this->logged_in,
+            'select' => 'id, content, name'));
       
     $type_db = $this->__type_db($seqs);
       

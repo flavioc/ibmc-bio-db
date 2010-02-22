@@ -58,6 +58,7 @@ class Search extends BioController
     $search = $this->__get_search_term('post');
     $transform = $this->__get_transform_label('transform', 'post');
     $labels = $this->get_post('labels');
+    $disable_ordering = $this->get_post('disable_ordering');
 
     $ordering_name = $this->get_order('name', 'post');
     $ordering_update = $this->get_order('update', 'post');
@@ -66,6 +67,7 @@ class Search extends BioController
     $data = $this->search_model->get_search($search,
       array('start' => $start,
             'size' => $size,
+            'enable_ordering' => !$disable_ordering,
             'ordering' => 
               array('name' => $ordering_name,
                     'update' => $ordering_update,
