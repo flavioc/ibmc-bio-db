@@ -698,14 +698,14 @@ class ImportInfo
     $isnew = false;
     $name = $data['name'];
     
-    if($this->sequence_model->has_same_sequence($name, $content)) {
+    if(!self::$fast_mode && $this->sequence_model->has_same_sequence($name, $content)) {
       $data['id'] = $this->sequence_model->get_id_by_name_and_content($name, $content);
       $data['short_content'] = $this->sequence_model->get_short_content($data['id']);
       $data['comment'] = 'Sequence name and content are identical.';
     } else {
       $isnew = true;
       $data['comment'] = '';
-      $data['id'] = $this->sequence_model->add($name, $content);
+      $data['id'] = $this->sequence_model->add($name, $content, self::$fast_mode);
       $data['short_content'] = sequence_short_content($data['content']);
       unset($data['content']);
     }
