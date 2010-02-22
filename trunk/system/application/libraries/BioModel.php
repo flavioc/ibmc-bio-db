@@ -61,9 +61,11 @@ class BioModel extends Model
 
     $query = $this->db->get_where($table, array($id_field => $id));
 
-    if($query->num_rows() != 1) {
+    if(!$query)
       return null;
-    }
+      
+    if($query->num_rows() != 1)
+      return null;
 
     $data = $query->row_array();
 
@@ -83,9 +85,11 @@ class BioModel extends Model
 
     $query = $this->db->get_where($table, array($field => $data));
 
-    if($query->num_rows() < 1) {
+    if(!$query)
       return null;
-    }
+      
+    if($query->num_rows() < 1)
+      return null;
 
     return $query->row_array();
   }
@@ -113,6 +117,9 @@ class BioModel extends Model
 
     $query = $this->db->get_where($table, array($field => $data));
 
+    if(!$query)
+      return array();
+
     return $query->result_array();
   }
 
@@ -129,6 +136,9 @@ class BioModel extends Model
 
     $query = $this->db->get_where($table, array($field => $data));
 
+    if(!$query)
+      return false;
+      
     return $query->num_rows() == 1;
   }
 
@@ -280,6 +290,9 @@ class BioModel extends Model
 
     $query = $this->db->get_where($table, array($field => $data));
 
+    if(!$query)
+      return array();
+
     $data = $query->result_array();
 
     return $data;
@@ -288,6 +301,9 @@ class BioModel extends Model
   protected function rows_sql($sql)
   {
     $query = $this->db->query($sql);
+
+    if(!$query)
+      return array();
 
     return $query->result_array();
   }

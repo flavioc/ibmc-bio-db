@@ -59,12 +59,7 @@ class SubSequence
           $sub_name = build_sub_sequence_name($name, $start, $length);
           $sub_content = $this->sequence_model->get_content_segment($id, $start, $length);
           
-          if($this->sequence_model->has_same_sequence($sub_name, $sub_content)) {
-            // XXX: do something
-            $new_id = $this->sequence_model->get_id_by_name_and_content($sub_name, $sub_content);
-          } else {
-            $new_id = $this->sequence_model->add($sub_name, $sub_content);
-          }
+          $new_id = $new_id = $this->sequence_model->add($sub_name, $sub_content);
           
           $this->label_sequence_model->add_ref_label($new_id, $super_id, $id);
           $this->label_sequence_model->add_position_label($new_id, $super_position_id, $start, $length);

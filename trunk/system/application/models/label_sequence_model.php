@@ -363,7 +363,8 @@ class Label_sequence_model extends BioModel
       $db_data[$fields] = $data_value;
     }
 
-    return $this->insert_data_with_history($db_data) ? TRUE : FALSE;
+    return $this->insert_data($db_data) ? TRUE : FALSE;
+    //return $this->insert_data_with_history($db_data) ? TRUE : FALSE;
   }
 
   public function add_generated_label($seq_id, $label_id, $type = null)

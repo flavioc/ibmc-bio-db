@@ -80,7 +80,7 @@ class Sequence_model extends BioModel
     return $this->count_total('sequence_info_history');
   }
 
-  public function add($name, $content)
+  public function add($name, $content, $fast = false)
   {
     $name = trim($name);
     if(strlen($name) <= 0 || strlen($name) > 255) {
@@ -96,6 +96,11 @@ class Sequence_model extends BioModel
       'name' => $name,
       'content' => $content,
     );
+    
+    if(!$fast) {
+      if($this->has_same_sequence($name, $content))
+        return $this->get_id_by_name_and_content($name, $content);
+    }
 
     $label_sequence = $this->load_model('label_sequence_model');
 

@@ -523,11 +523,7 @@ class Sequence extends BioController
       $name = $this->get_post('name');
       $content = $this->get_post('content');
 
-      if($this->sequence_model->has_same_sequence($name, $content)) {
-        $id = $this->sequence_model->get_id_by_name_and_content($name, $content);
-      } else {
-        $id = $this->sequence_model->add($name, $content);
-      }
+      $id = $this->sequence_model->add($name, $content);
 
       $protein = $this->get_post('protein');
       if($protein) {
