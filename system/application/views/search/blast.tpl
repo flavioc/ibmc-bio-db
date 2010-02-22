@@ -8,6 +8,7 @@
 {form_row name=identifier msg='Search identifier (*):'}
 {form_row type=textarea name=query_sequences msg='Query sequences (FASTA):' cols=70 rows=5}
 {form_row type=select data=$blast_programs name=blast_program msg='Program:' key=id value=id}
+{form_row type=select data=$expect_values name=expect_value msg='Expect:' key=id start=4}
 {form_row type=checkbox name=generate_labels msg='Generate labels:'}
 </fieldset>
 
@@ -17,7 +18,6 @@
 <p>The query sequence is NOT filtered for low complexity regions by default.</p>
 {form_row type=checkbox name=low_complexity msg='Low complexity:'}
 {form_row type=checkbox name=mask_lookup msg='Mask for lookup table only:'}
-{form_row type=select data=$expect_values name=expect_value msg='Expect:' key=id start=4}
 {form_row type=select data=$matrix name=matrix msg='Matrix' key=id start=4}
 {form_row type=checkbox name=ungapped_alignment msg='Perform ungapped alignment:'}
 {form_row type=select data=$query_genetic_codes name=query_genetic_code msg='Query Genetic Codes (blastx only):'}

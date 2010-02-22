@@ -123,15 +123,31 @@ class Parser
   /* parses label name including label param label_name[param] */
   private function parse_label_name()
   {
-    $raw = $this->tokenizer->get_next();
-    if(!$raw) {
+    $name = $this->tokenizer->get_next();
+    if(!$name)
       throw new Exception('parser error: missing label name');
-    }
+      
+    $next = $this->tokenizer->peek();
     
-    if(preg_match('/(.*)\\[(.*)\\]$/', $raw, $matches)) {
-      return array($matches[1], $matches[2]);
+    if($next == '[') {
+      $multiple_array = array();
+      
+      $this->tokenizer->get_next();
+      while(TRUE) {
+        $next = $this->tokenizer->peek();
+        if($next == ']') {
+          $this->tokenizer->get_next();
+          break;
+        } else {
+          $this->tokenizer->get_next();
+          $multiple_array[] = $next;
+        }
+      }
+      
+      $param = implode(' ', $multiple_array);
+      return array($name, $param);
     } else {
-      return array($raw, null);
+      return array($name, null);
     }
   }
   
