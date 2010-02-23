@@ -35,6 +35,8 @@ class Blast extends BioController
   {
     if(!$this->logged_in)
       return $this->invalid_permission();
+      
+    die;
     
     $this->use_mygrid();
     $this->use_plusminus();
@@ -44,7 +46,7 @@ class Blast extends BioController
       array('transform' => $transform,
             'only_public' => !$this->logged_in,
             'select' => 'id, content, name'));
-      
+    
     $type_db = $this->__type_db($seqs);
       
     $advanced_options = $this->get_post('advanced_options');
@@ -130,6 +132,10 @@ class Blast extends BioController
       $cmd .= " $advanced_options";
       
     $out = shell_exec($cmd);
+    if($out) {
+      die("Failed to run blastall");
+    }
+    
     $output = read_raw_file($output_file);
     $this->smarty->assign('output', $output);
     
@@ -151,46 +157,85 @@ class Blast extends BioController
       if(file_exists($garbage))
         unlink($garbage);
     
-    if($generate_labels) {
-      $this->load->model('label_model');
-      $this->load->model('label_sequence_model');
-      
-      // get query sequence names
-      preg_match_all('/Query= (.*)\n/U', $output, $matches);
-      $queries = array();
-      foreach($matches[1] as &$match)
-        $queries[] = $match;
-    
-      // get blast matches
-      preg_match_all('/Sequences producing significant alignments:.*\n\n(.*)\n\n/msU', $output, $matches);
-    
-      $evalue_id = $this->label_model->get_id_by_name('evalue');
-      $score_id = $this->label_model->get_id_by_name('blast_score');
-      $query_id = $this->label_model->get_id_by_name('blast_query');
-    
-      $i = 0;
-      foreach($matches[1] as &$match) {
-        $sequence_parts = explode("\n", $match);
-        foreach($sequence_parts as &$part) {
-          $comps = preg_split("/\s+/", $part);
-          $len = count($comps);
-          $e_value = $comps[$len-1];
-          $score = $comps[$len-2];
-          $id = $comps[0];
-          $query = $queries[$i];
-          $param = '';
-          if($identifier)
-            $param .= $identifier . ":";
-          $param .= $query;
-          $this->label_sequence_model->add_float_label($id, $evalue_id, new LabelData($e_value, $param));
-          $this->label_sequence_model->add_float_label($id, $score_id, new LabelData($score, $param));
-          $this->label_sequence_model->add_bool_label($id, $query_id, new LabelData(true, $param));
-        }
-        $i++;
+    // get query sequence names
+    preg_match_all('/Query= (.*)\n/U', $output, $matches);
+    $queries = array();
+    foreach($matches[1] as &$match)
+      $queries[] = $match;
+  
+    // get blast matches
+    preg_match_all('/Sequences producing significant alignments:.*\n\n(.*)\n\n/msU', $output, $matches);
+  
+    $i = 0;
+    $data = array();
+    foreach($matches[1] as &$match) {
+      $sequence_parts = explode("\n", $match);
+      foreach($sequence_parts as &$part) {
+        $comps = preg_split("/\s+/", $part);
+        $len = count($comps);
+        $e_value = $comps[$len-1];
+        $score = $comps[$len-2];
+        $id = $comps[0];
+        $query = $queries[$i];
+        $param = '';
+        if($identifier)
+          $param .= $identifier . ":";
+        $param .= $query;
+        $data[] = array('id' => $id, 'param' => $param, 'evalue' => $e_value, 'score' => $score);
       }
+      $i++;
     }
+    $json = json_encode($data);
     
+    $this->smarty->assign('labels', $json);
     $this->smarty->assign('title', 'BLAST results');
     $this->smarty->view('blast/results');
+  }
+  
+  public function add_labels()
+  {
+    if(!$this->logged_in)
+      return $this->invalid_permission();
+      
+    $labels = $this->get_post('labels');
+    $data = json_decode($labels, true);
+    
+    $this->load->model('label_model');
+    $this->load->model('label_sequence_model');
+    $this->load->library('SeqSearchTree');
+    
+    $evalue_id = $this->label_model->get_id_by_name('evalue');
+    $score_id = $this->label_model->get_id_by_name('blast_score');
+    $query_id = $this->label_model->get_id_by_name('blast_query');
+    
+    $ids = array();
+    
+    foreach($data as &$el) {
+      $id = $el['id'];
+      $param = $el['param'];
+      
+      if($evalue_id) {
+        $evalue = $el['evalue'];
+        $this->label_sequence_model->add_float_label($id, $evalue_id, new LabelData($evalue, $param));
+      }
+      
+      if($score_id) {
+        $score = $el['score'];
+        $this->label_sequence_model->add_float_label($id, $score_id, new LabelData($score, $param));
+      }
+      
+      if($query_id) {
+        $this->label_sequence_model->add_bool_label($id, $query_id, new LabelData(true, $param));
+      }
+      
+      $ids[] = $id;
+    }
+    
+    $tree = $this->seqsearchtree->get_tree_ids($ids);
+    
+    $this->use_mygrid();
+    $this->smarty->assign('encoded', addmyslashes(json_encode($tree)));
+    $this->smarty->assign('title', 'BLAST results');
+    $this->smarty->view('blast/labels');
   }
 }
