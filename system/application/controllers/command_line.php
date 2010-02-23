@@ -113,13 +113,24 @@ class Command_Line extends BioController
     $this->__show_two_seq_files($info1, $info2);
   }
   
-  public function import_sequence_file_and_generate($file)
+  public function import_sequence_file_and_generate($file, $keep_structure0 = true)
   {
+    $keep_structure = $keep_structure0;
+    
+    if($keep_structure0 == "yes")
+      $keep_structure = true;
+    
+    if($keep_structure0 == "no")
+      $keep_structure = false;
+    
     $file = $this->__get_file($file);
     if(!file_exists($file)) {
       echo "File $file doesn't exist\n";
       return;
     }
+    
+    $this->load->plugin('import_info');
+    ImportInfo::set_fast();
     
     $this->load->library('SequenceImporter');
     
@@ -134,7 +145,15 @@ class Command_Line extends BioController
       return;
     }
     
-    $file2 = $info->convert_protein_file();
+    $file2 = null;
+    
+    if($keep_structure && !is_xml_file($file)) {
+      $this->load->library('SequenceConverter');
+      $file2 = $this->sequenceconverter->convert_dna_protein($file);
+    } else {
+      $file2 = $info1->convert_protein_file();
+    }
+    
     if(!$file2) {
       echo "Couldn't generate protein file\n";
       return;
@@ -154,14 +173,26 @@ class Command_Line extends BioController
   
   private function __show_two_seq_files(&$info1, &$info2)
   {
-    list($seqs1, $labels1) = $info1->import();
-    list($seqs2, $labels2) = $info2->import();
-    $info1->link_sequences($info2);
+    $ret1 = $info1->import();
+    $ret2 = $info2->import();
     
     echo "DNA FILE:\n\n";
-    $this->__write_report($seqs1, $labels1);
+    if(is_numeric($ret1)) {
+      echo "$ret1 sequences imported\n\n";
+    } else {
+      list($seqs1, $labels1) = $ret1;
+      $this->__write_report($seqs1, $labels1);
+    }
+    
     echo "\nPROTEIN FILE:\n\n";
-    $this->__write_report($seqs2, $labels2);
+    if(is_numeric($ret2)) {
+      echo "$ret2 sequences imported\n\n";
+    } else {
+      list($seqs2, $labels2) = $ret2;
+      $this->__write_report($seqs2, $labels2);
+    }
+    
+    $info1->link_sequences($info2, true);
   }
   
   public function import_sequence_file($file)
