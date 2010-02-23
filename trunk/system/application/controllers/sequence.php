@@ -323,22 +323,32 @@ class Sequence extends BioController
       return;
     }
     
+    $keep_structure = $this->get_post('keep_structure') && !is_xml_file($file1);
+    
     $info1 = $this->sequenceimporter->import_file($file1, $event_data, 'generate_file');
-    unlink($file1);
     
     if(!$info1) {
+      unlink($file1);
       $this->set_form_error('file', 'Error reading file');
       $this->__batch_go_back();
       return;
     }
     
     if(!$info1->all_dna()) {
+      unlink($file1);
       $this->set_form_error('file', 'All sequences should be DNA sequences');
       $this->__batch_go_back();
       return;
     }
     
-    $file2 = $info1->convert_protein_file();
+    $file2 = null;
+    if($keep_structure) {
+      $this->load->library('SequenceConverter');
+      $file2 = $this->sequenceconverter->convert_dna_protein($file1);
+    } else {
+      $file2 = $info1->convert_protein_file();
+    }
+    unlink($file1);
     
     if(!$file2) {
       $this->set_form_error('file', 'Error generating protein file');
