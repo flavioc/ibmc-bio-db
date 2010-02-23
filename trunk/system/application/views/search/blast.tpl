@@ -1,15 +1,14 @@
 <h2>BLAST search</h2>
 
-{form_open to='blast/do_blast' name=add_form}
+{form_open to='blast/do_blast' name=blast_form}
 
 <fieldset id="basic_fieldset">
 {form_hidden name=encoded_tree value=$tree_json}
 {form_hidden name=transform value=$transform}
-{form_row name=identifier msg='Search identifier (*):'}
+{form_row name=identifier msg='Search identifier:'}
 {form_row type=textarea name=query_sequences msg='Query sequences (FASTA):' cols=70 rows=5}
 {form_row type=select data=$blast_programs name=blast_program msg='Program:' key=id value=id}
 {form_row type=select data=$expect_values name=expect_value msg='Expect:' key=id start=4}
-{form_row type=checkbox name=generate_labels msg='Generate labels:'}
 </fieldset>
 
 <div id="show_advanced"></div>
@@ -56,6 +55,21 @@ $(function () {
     minusText: 'Hide advanced pane'
   });
   $('#advanced_fieldset').hide();
+  
+  $('#blast_form').validate({
+      rules: {
+        identifier: {
+          required: true,
+          minlength: 2,
+          maxlength: 255
+        },
+        query_sequences: {
+          required: true,
+          minlength: 5
+        }
+      },
+      errorPlacement: basicErrorPlacement
+    });
 });
 </script>
 {/literal}
