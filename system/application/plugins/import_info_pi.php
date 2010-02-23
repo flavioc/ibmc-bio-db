@@ -91,13 +91,16 @@ class ImportInfo
     return $this->all_type('protein');
   }
   
-  public function link_sequences($info2)
+  public function link_sequences($info2, $output = false)
   {
     $i = 0;
     foreach($this->ordered_sequences as &$seq) {
       $dna_id = $seq['id'];
       $seq2 =& $info2->ordered_sequences[$i++];
       $protein_id = $seq2['id'];
+      
+      if($output)
+        echo "Linked sequence number $i\n";
       
       $this->sequence_model->set_translated_sequence($dna_id, $protein_id);
     }
@@ -122,7 +125,7 @@ class ImportInfo
   }
   
   public function convert_protein_file()
-  { 
+  {
     $CI =& get_instance();
     $CI->load->library('SequenceConverter');
    
