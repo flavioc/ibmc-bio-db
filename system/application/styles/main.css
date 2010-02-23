@@ -35,10 +35,6 @@ body>div#leftmenu {
   float:left;
 }
 
-body>div#top {
-  opacity: 0.92;
-}
-
 body>div#content, body>div#footer, body>div#top {
   margin-right: 30px;
 }
