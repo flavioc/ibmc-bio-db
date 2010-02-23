@@ -298,7 +298,7 @@ class SequenceExporter
     $seq_name = trim($sequence['name']);
     $seq_content = trim($sequence['content']);
     
-    $ret = "$seq_name ; $seq_content";
+    $ret = "$seq_name";
     
     foreach($merged_labels as &$merged_label) {
       $res_labels = $this->__get_export_labels($merged_label, $labels);
