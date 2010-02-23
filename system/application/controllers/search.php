@@ -357,17 +357,43 @@ class Search extends BioController
     if(!$this->logged_in)
       return $this->invalid_permission();
       
-    $this->use_mygrid();
-    $this->use_plusminus();
+    
+    $this->smarty->assign('title', 'BLAST search');
+    
     $search = $this->__get_search_term('post', 'encoded_tree', $encoded, $raw);
     $transform = $this->__get_transform_label('transform_hidden', 'post');
+    
+    $data = $this->search_model->get_search($search,
+      array('start' => 0,
+            'size' => 1,
+            'transform' => $transform,
+            'select' => 'id'));
+    
+    if(!$data) {
+      $this->smarty->view('blast/no_data');
+      return;
+    }
+    
+    $this->load->model('sequence_model');
+    $type = $this->sequence_model->get_type($data[0]['id']);
+    
+    $this->use_mygrid();
+    $this->use_plusminus();
+    $this->smarty->load_scripts(VALIDATE_SCRIPT);
+    
     $this->smarty->assign('tree_json', $raw);
     $this->smarty->assign('encoded', addmyslashes($encoded));
     $this->smarty->assign('encoded_no_slashes', $encoded);
     $this->smarty->assign('transform', $transform);
     $this->load->library('BlastLib');
     
-    $this->smarty->assign('blast_programs', build_data_array(array('blastn', 'blastp', 'blastx', 'tblastn', 'tblastx'), 'id'));
+    $programs = null;
+    if($type == 'dna')
+      $programs = array('blastn');
+    else
+      $programs = array('blastp', 'tblastx', 'blastp', 'tblastn');
+    
+    $this->smarty->assign('blast_programs', build_data_array($programs, 'id'));
     
     $this->smarty->assign('expect_values', BlastLib::$expect_values);
                                                  
@@ -400,7 +426,7 @@ class Search extends BioController
                                                     array('id' => 13, 'name' => 'Ascidian Mitochondrial (13)'),
                                                     array('id' => 14, 'name' => 'Flatworm Mitochondrial (14)'),
                                                     array('id' => 15, 'name' => 'Blepharisma Macronuclear (15)')));
-    $this->smarty->assign('title', 'BLAST search');
+    
     $this->smarty->view('search/blast');
     
   }
