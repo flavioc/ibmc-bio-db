@@ -229,6 +229,11 @@ function file_extension($file)
   }
 }
 
+function is_xml_file($file)
+{
+  return file_extension($file) == 'xml';
+}
+
 function find_executable($name)
 {
   $normal_paths = array('/bin', '/usr/bin', '/usr/local/bin', '/opt/local/bin', '/usr/local/blast/bin');
