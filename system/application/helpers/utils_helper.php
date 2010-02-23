@@ -258,15 +258,20 @@ function generate_new_file_name()
   return tempnam(sys_get_temp_dir(), 'bio');
 }
 
-function write_file_export($seq_content)
+function write_raw_file($str)
 {
   $temp_file = generate_new_file_name();
   $fp = fopen($temp_file, 'w');
 
-  fwrite($fp, $seq_content);
+  fwrite($fp, $str);
   fclose($fp);
 
   return $temp_file;
+}
+
+function write_file_export($seq_content)
+{
+  return write_raw_file($seq_content);
 }
 
 function load_ci_model($name)
