@@ -4,6 +4,7 @@
 <fieldset>
 {form_row name=file msg="FASTA/XML file:" type=upload}
 {form_row name=file2 msg="Protein file:" type=upload hidden=yes}
+{form_row type=checkbox name=keep_structure msg='Keep structure:'}
 {form_hidden name=event value=$event}
 {form_row name=upload_option msg="Options" type=radio options='none,duo,generate' msgs='None,DNA/Protein,Generate Protein' checked='none'}
 </fieldset>
@@ -13,8 +14,11 @@
 {literal}<script>
 $(function () {
   var second_file = $('#file2').parent();
+  var keep_structure = $('#keep_structure').parent();
   
   {/literal}{if !$file2_error}second_file.hide();{/if}{literal}
+  
+  keep_structure.hide();
   
   $('input[name=upload_option][value=none]').attr('checked', 'checked');
   
@@ -28,6 +32,11 @@ $(function () {
     } else {
       first_label.text('FASTA/XML file:');
     }
+    
+    if(val == 'generate')
+      keep_structure.show();
+    else
+      keep_structure.hide();
     
     if(val == 'duo') {
       second_file.show();
