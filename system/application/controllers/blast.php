@@ -154,7 +154,7 @@ class Blast extends BioController
   
   private function __valid_query_sequences()
   {
-    return $this->query_sequences != '';
+    return $this->query_sequences != '' && $this->query_sequences[0] == '>';
   }
   
   public function do_blast()
