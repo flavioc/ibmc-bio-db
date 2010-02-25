@@ -90,7 +90,7 @@ class Sequence_model extends BioModel
     }
     
     $content = sequence_normalize($content);
-    if(strlen($content) <= 0 || strlen($content) > 65535) {
+    if(strlen($content) <= 0 || strlen($content) > 16777215) {
       return false;
     }
     
