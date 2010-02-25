@@ -4,7 +4,7 @@
 
 <fieldset id="basic_fieldset">
 {form_hidden name=encoded_tree value=$tree_json}
-{form_hidden name=transform value=$transform}
+{form_hidden name=transform_hidden value=$transform}
 {form_row name=identifier msg='Search identifier:'}
 {form_row type=textarea name=query_sequences msg='Query sequences (FASTA):' cols=70 rows=5}
 {form_row type=select data=$blast_programs name=blast_program msg='Program:' key=id value=id}
