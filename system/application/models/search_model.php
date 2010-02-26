@@ -2,8 +2,6 @@
 
 class Search_model extends BioModel
 {
-  private static $public_sequence_where = "EXISTS (SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id AND label_sequence_info.name = 'perm_public' AND label_sequence_info.bool_data IS TRUE)";
-  
   function Search_model()
   {
     parent::BioModel('label_sequence');
@@ -232,7 +230,7 @@ class Search_model extends BioModel
       if(label_special_operator($oper)) {
         if(label_special_purpose($label_name)) {
           switch($label_name) {
-            case 'creation_user':
+            /*case 'creation_user':
               if($oper == 'exists') {
                 return 'creation_user_name IS NOT NULL';
               } else {
@@ -256,7 +254,7 @@ class Search_model extends BioModel
                 return "$identifier IS NOT NULL";
               } else {
                 return "$identifier IS NULL";
-              }
+              }*/
             default:
               if($oper == 'exists') {
                 return 'TRUE';
@@ -267,7 +265,7 @@ class Search_model extends BioModel
         }
         
         $sql = "EXISTS (SELECT label_sequence.id FROM label_sequence
-          WHERE label_sequence.seq_id = sequence_info_history.id AND label_sequence.label_id = $label_id $param_sql)";
+          WHERE label_sequence.seq_id = sequence.id AND label_sequence.label_id = $label_id $param_sql)";
 
         if($oper == 'notexists') {
           $sql = "NOT $sql";
@@ -310,6 +308,7 @@ class Search_model extends BioModel
           return "name $sql_oper $sql_value";
         case 'content':
           return "content $sql_oper $sql_value";
+        /*
         case 'creation_user':
           return "creation_user_name $sql_oper $sql_value";
         case 'update_user':
@@ -317,13 +316,13 @@ class Search_model extends BioModel
         case 'creation_date':
           return $this->__translate_sql_field('creation', 'date') . " $sql_oper $sql_value";
         case 'update_date':
-          return $this->__translate_sql_field($this->db->protect_identifiers('update'), 'date') . " $sql_oper $sql_value";
+          return $this->__translate_sql_field($this->db->protect_identifiers('update'), 'date') . " $sql_oper $sql_value";*/
       }
 
       $sql_field = $this->__translate_sql_field($fields, $label_type);
     
-      return "EXISTS(SELECT label_sequence_info.id FROM label_sequence_info WHERE label_sequence_info.seq_id = sequence_info_history.id
-            AND label_sequence_info.label_id = $label_id AND $sql_field $sql_oper $sql_value $param_sql)";
+      return "EXISTS(SELECT label_sequence.id FROM label_sequence WHERE label_sequence.seq_id = sequence.id
+            AND label_sequence.label_id = $label_id AND $sql_field $sql_oper $sql_value $param_sql)";
     }
   }
   
@@ -432,7 +431,7 @@ class Search_model extends BioModel
     $new_search = $this->__expand_search_tree($search, $labels);
     $sql_part = $this->__get_search_where($new_search, $labels);
     if($only_public) {
-      return $sql_part . ' AND ' . self::$public_sequence_where;
+      return $sql_part . ' AND ' . $this->__generate_public_where();
     } else {
       return $sql_part;
     }
@@ -441,24 +440,7 @@ class Search_model extends BioModel
   // get total number of sequences with this search tree
   public function get_search_total($search, $transform = null, $only_public = false)
   {
-    $sql_where = $this->__get_search_sql($search, $only_public);
-    
-    if($transform) {
-      if($only_public) {
-        $public_where = 'WHERE EXISTS(SELECT * FROM label_sequence_info WHERE label_sequence_info.seq_id = label_seqs.ref_data AND label_sequence_info.name = \'perm_public\' AND label_sequence_info.bool_data IS TRUE)';
-      } else {
-        $public_where = '';
-      }
-      $sql = "SELECT count(DISTINCT ref_data) AS total
-              FROM (SELECT id FROM sequence_info_history WHERE $sql_where) all_seqs
-                      NATURAL JOIN (SELECT seq_id AS id, ref_data FROM label_sequence WHERE label_id = $transform AND ref_data IS NOT NULL) label_seqs
-              $public_where";
-    } else {
-      $sql = "SELECT count(id) AS total
-              FROM sequence_info_history
-              WHERE $sql_where";
-    }
-
+    $sql = $this->__get_base_search_sql($search, $transform, $only_public, $select ='count(id) AS total');
     return $this->total_sql($sql);
   }
 
@@ -476,7 +458,7 @@ class Search_model extends BioModel
                      'transform' => null,
                      'only_public' => false,
                      'enable_ordering' => false,
-                     'select' => 'id, user_name, update_user_id, `update`, name');
+                     'select' => 'id, name');
 
     $options = array_merge($default, $coptions);
     
@@ -487,59 +469,45 @@ class Search_model extends BioModel
     $only_public = $options['only_public'];
     $select = $options['select'];
     
-    $sql_where = $this->__get_search_sql($search, $only_public);
     $sql_limit = sql_limit($start, $size);
     if($options['enable_ordering'])
       $sql_order = $this->get_order_sql($ordering, 'name', 'asc');
     else
       $sql_order = '';
-    $select_sql = "DISTINCT $select";
     
-    if($transform) {
-      $transform_sql = $this->__get_transform_sql($sql_where, $transform, $only_public);
-      
-      return "SELECT $select_sql
-              FROM $transform_sql
-              $sql_order $sql_limit";
-    } else {
-      return "SELECT $select_sql
-          FROM sequence_info_history
-          WHERE $sql_where $sql_order $sql_limit";
-    }
+    return $this->__get_base_search_sql($search, $transform, $only_public, $select, "$sql_order $sql_limit");
   }
   
-  private function __get_transform_sql($sql_where, $transform, $only_public)
+  private function __get_transform_sql($sql_where, $transform, $only_public, $select = 'id', $others = '')
   {
-    $base = "(SELECT id AS orig_id FROM sequence_info_history WHERE $sql_where) all_seqs
-        NATURAL JOIN
-         (SELECT seq_id AS orig_id, ref_data AS id FROM label_sequence WHERE label_id = $transform
-                                                          AND ref_data IS NOT NULL) label_seqs
-        NATURAL JOIN ";
+    if($only_public)
+      $public_sql = 'AND ' . $this->__generate_public_where();
+    else
+      $public_sql = '';
     
-    if(!$only_public) {
-      return "$base sequence_info_history";
-    } else {
-      $public_where = 'WHERE ' . self::$public_sequence_where;
-      return "$base (SELECT * FROM sequence_info_history $public_where) every_seqs";
-    }
+    return "SELECT $select
+             FROM sequence
+             WHERE id IN (SELECT ref_data
+                          FROM label_sequence AS trans
+                          WHERE trans.label_id = $transform AND
+                                trans.seq_id IN (SELECT id FROM sequence WHERE $sql_where) AND
+                                ref_data IS NOT NULL)
+                   $public_sql
+             $others";
   }
   
-  private function __get_base_search_sql($search, $transform, $only_public)
+  private function __get_base_search_sql($search, $transform, $only_public, $select ='id AS seq_id', $others = '')
   {
     $sql_where = $this->__get_search_sql($search, $only_public);
     
     if($transform) {
-      $transform_sql = $this->__get_transform_sql($sql_where, $transform, $only_public);
-      
-      $base_sql = "SELECT id AS seq_id
-                   FROM $transform_sql";
+      return $this->__get_transform_sql($sql_where, $transform, $only_public, $select, $others);
     } else {
-      $base_sql = "SELECT id AS seq_id
-             FROM sequence_info_history
-             WHERE $sql_where";
+      return "SELECT $select
+             FROM sequence
+             WHERE $sql_where
+             $others";
     }
-    
-    return $base_sql;
   }
   
   public function get_numeral_search_distribution($search, $label_id, $coptions = array())
@@ -577,10 +545,8 @@ class Search_model extends BioModel
     $sql =
       "SELECT distr, COUNT(distr) AS total
        FROM (SELECT seq_id, $sql_distr AS distr
-             FROM ($base_sql) seqs
-                  NATURAL JOIN
-                  (SELECT seq_id, $field FROM label_sequence
-                   WHERE label_id = $label_id $param_sql) labels
+             FROM (SELECT seq_id, $field FROM label_sequence
+                   WHERE seq_id IN ($base_sql) AND label_id = $label_id $param_sql) labels
               GROUP BY seq_id) distr_table
        GROUP BY distr
        ORDER BY distr ASC";
@@ -616,6 +582,8 @@ class Search_model extends BioModel
       $field = $field[0];
     }
     
+    $lookup_table = 'label_sequence_extra';
+    
     switch($label_type) {
       case 'position':
         $field = "CONCAT(position_start, ' ', position_length)";
@@ -629,6 +597,9 @@ class Search_model extends BioModel
       case 'obj':
         $field = 'file_name';
         break;
+      default:
+        $lookup_table = 'label_sequence';
+        break;
     }  
     
     if($param) {
@@ -639,10 +610,10 @@ class Search_model extends BioModel
     
     $sql =
       "SELECT distr, COUNT(distr) AS total
-       FROM ($base_sql) seqs
-          NATURAL JOIN
-        (SELECT seq_id, $field AS distr FROM label_sequence_extra
-         WHERE label_id = $label_id $param_sql) labels
+       FROM
+        (SELECT seq_id, $field AS distr FROM $lookup_table
+         WHERE label_id = $label_id $param_sql
+               AND seq_id IN ($base_sql)) labels
        GROUP BY distr
        ORDER BY distr ASC";
     
@@ -670,7 +641,7 @@ class Search_model extends BioModel
                 GROUP BY $name
                 ORDER BY $name ASC";
         break;
-      case 'creation_user':
+      /*case 'creation_user':
       case 'update_user':
         if($name == 'creation_user')
           $field = 'creation_user_name';
@@ -680,7 +651,7 @@ class Search_model extends BioModel
         $sql = "SELECT $field AS distr, count(seq_id) AS total
                 FROM ($base_sql) seqs
                       NATURAL JOIN
-                      (SELECT id AS seq_id, $field FROM sequence_info_history) allseqs
+                      (SELECT id AS seq_id, $field FROM sequence) allseqs
                 GROUP BY $field
                 ORDER BY $field ASC";
         break;
@@ -694,12 +665,24 @@ class Search_model extends BioModel
         $sql = "SELECT distr, count(seq_id) AS total
                 FROM ($base_sql) seqs
                      NATURAL JOIN
-                     (SELECT id AS seq_id, DATE_FORMAT($field, \"%d-%m-%Y\") AS distr FROM sequence_info_history) allseqs
+                     (SELECT id AS seq_id, DATE_FORMAT($field, \"%d-%m-%Y\") AS distr FROM sequence) allseqs
                 GROUP BY distr
                 ORDER BY distr ASC";
-        break;
+        break;*/
     }
     
     return $this->rows_sql($sql);
+  }
+  
+  private function __generate_public_where()
+  {
+    $label_model = $this->load_model('label_model');
+    $id = $label_model->get_id_by_name('perm_public');
+    
+    if($id) {
+      return "EXISTS(SELECT id FROM label_sequence WHERE label_sequence.seq_id = sequence.id AND label_sequence.label_id = $id AND label_sequence.bool_data IS TRUE)";
+    } else {
+      return 'TRUE';
+    }
   }
 }
