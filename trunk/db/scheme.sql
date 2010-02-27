@@ -321,6 +321,10 @@ CREATE TABLE `label_sequence` (
   KEY `ref_index` (`ref_data`),
   KEY `taxonomy_index` (`taxonomy_data`),
   KEY `obj_index` (`obj_data`),
+  KEY `int_index` (`int_data`),
+  KEY `float_index` (`float_data`),
+  KEY `seq_label_index` (`seq_id`,`label_id`),
+  KEY `text_data_index` (`text_data`(16)),
   CONSTRAINT `label_sequence_ibfk_1` FOREIGN KEY (`seq_id`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
   CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
@@ -1729,4 +1733,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-02-25 14:49:54
+-- Dump completed on 2010-02-27 15:41:02
