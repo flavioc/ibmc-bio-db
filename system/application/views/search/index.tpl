@@ -129,17 +129,22 @@ $(function () {
 </div>
 
 <h3>Preview</h3>
-<p>
-<div id="label_box">
-  {form_open to='#' name=add_label_form}
-  <label for="label_result" class="search-desc">View label: </label>
-  {form_input name=label_result size=20}
-  {form_submit msg='View' id='add_label_button'}
-  {form_end}
+<div id="show_result_list" {display_none}>
+  <div id="label_box">
+    {form_open to='#' name=add_label_form}
+    <label for="label_result" class="search-desc">View label: </label>
+    {form_input name=label_result size=20}
+    {form_submit msg='View' id='add_label_button'}
+    {form_end}
+  </div>
+</div>
+<div id="show_result_total">
+{loader_pic id=total_loader show=no}
+<p id="total_num"></p>
+<a class="view_full" href='#view_full_list'>(View full list)</a>
 </div>
 
 <div id="show_sequences"></div>
-</p>
 
 <h3>Operations</h3>
 
