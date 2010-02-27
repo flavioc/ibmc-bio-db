@@ -157,7 +157,7 @@ class SequenceImporter
   
   private function __get_label_vector(&$line)
   {
-    return explode("|", trim($line, " \t\n\r\#\|"));
+    return explode("|", trim($line, " \t\n\r\#"));
   }
   
   private function __get_label_vector_seq(&$line)
@@ -181,8 +181,11 @@ class SequenceImporter
         }
         
         $this->info->add_label($label_name);
-        ++$i;
+      } else {
+        $this->info->add_null_label();
       }
+      
+      ++$i;
     }
   }
 
@@ -217,6 +220,9 @@ class SequenceImporter
       }
     
       ++$i;
+      
+      if($label_name == null) // null label
+        continue;
       
       if($label_name == 'name')
         continue;

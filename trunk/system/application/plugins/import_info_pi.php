@@ -4,6 +4,7 @@ class ImportInfo
 {
   private $ordered_sequences = array();
   private $labels = array();
+  private $label_names = array();
   private $count = 0;
   private $label_model = null;
   private $sequence_model = null;
@@ -140,18 +141,18 @@ class ImportInfo
   
   public function add_label($name)
   {
+    $this->label_names[] = $name;
     $this->labels[$name] = array();
+  }
+  
+  public function add_null_label()
+  {
+    $this->label_names[] = null;
   }
   
   public function get_labels()
   {
-    $ret = array();
-    
-    foreach($this->labels as $name => $data) {
-      $ret[] = $name;
-    }
-    
-    return $ret;
+    return $this->label_names;
   }
   
   public function add_empty_sequence($what)
