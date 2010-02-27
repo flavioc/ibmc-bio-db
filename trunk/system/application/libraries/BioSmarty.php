@@ -586,8 +586,12 @@ function smarty_function_loader_pic($params, &$smarty)
 {
   $site = base_url();
   $show = $params['show'];
+  $id = $params['id'];
   
-  $ret = "<img id=\"loader\" src=\"$site/images/loading.gif\"";
+  if(!$id)
+    $id = 'loader';
+  
+  $ret = "<img id=\"$id\" src=\"$site/images/loading.gif\"";
   
   if(!$show)
     $ret .= " style=\"display: none;\"";
