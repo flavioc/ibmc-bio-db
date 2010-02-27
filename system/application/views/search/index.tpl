@@ -123,33 +123,23 @@ $(function () {
 
 </div>
 
-{if $logged_in}
-<div id="generate_sequences_box">
-  {form_open to="search/subsequences" name=generate_sequences_form}
-  <label for="select_position" class="search-desc">Generate subsequences: </label>
-  {form_hidden name=encoded_tree value=null}
-  {form_hidden name=transform_hidden value=null}
-  {form_select name=select_position data=$positions key=id}
-  {form_checkbox name=keep_subsequence} Keep
-  {form_submit msg="Generate" id="generate_sequences_button"}
+<div id="transform_box">
+  <label for="select_transform" class="search-desc">Transform results: </label>
+  {form_select blank=yes name=select_transform start=0 data=$refs key=id}
+</div>
+
+<h3>Preview</h3>
+<p>
+<div id="label_box">
+  {form_open to='#' name=add_label_form}
+  <label for="label_result" class="search-desc">View label: </label>
+  {form_input name=label_result size=20}
+  {form_submit msg='View' id='add_label_button'}
   {form_end}
 </div>
-{/if}
-<div id="generate_histogram_box">
-  {form_open to='search/get_histogram' name=generate_histogram_form}
-    {form_hidden name=encoded_tree value=null}
-    {form_hidden name=transform_hidden value=null}
-    {form_hidden name=histogram_label value=null}
-    <label for="generate_histogram" class="search-desc">Generate histogram: </label>
-    {form_input name=generate_label size=20}
-    <select name="generate_histogram_type" id="generate_histogram_type">
-      <option value="avg">avg</option>
-      <option value="max">max</option>
-      <option value="min">min</option>
-    </select>
-    {form_submit msg='Show' id='show_histogram_button'}
-  {form_end}
-</div>
+
+<div id="show_sequences"></div>
+</p>
 
 <h3>Operations</h3>
 
@@ -193,24 +183,35 @@ $(function () {
 
 {/if}
 
+{if $logged_in}
+<div id="generate_sequences_box">
+  {form_open to="search/subsequences" name=generate_sequences_form}
+  <label for="select_position" class="search-desc">Generate subsequences: </label>
+  {form_hidden name=encoded_tree value=null}
+  {form_hidden name=transform_hidden value=null}
+  {form_select name=select_position data=$positions key=id}
+  {form_checkbox name=keep_subsequence} Keep
+  {form_submit msg="Generate" id="generate_sequences_button"}
+  {form_end}
 </div>
-
-<h3>Preview</h3>
-<p>
-<div id="transform_box">
-  <label for="select_transform" class="search-desc">Transform results: </label>
-  {form_select blank=yes name=select_transform start=0 data=$refs key=id}
-</div>
-<div id="label_box">
-  {form_open to='#' name=add_label_form}
-  <label for="label_result" class="search-desc">View label: </label>
-  {form_input name=label_result size=20}
-  {form_submit msg='View' id='add_label_button'}
+{/if}
+<div id="generate_histogram_box">
+  {form_open to='search/get_histogram' name=generate_histogram_form}
+    {form_hidden name=encoded_tree value=null}
+    {form_hidden name=transform_hidden value=null}
+    {form_hidden name=histogram_label value=null}
+    <label for="generate_histogram" class="search-desc">Generate histogram: </label>
+    {form_input name=generate_label size=20}
+    <select name="generate_histogram_type" id="generate_histogram_type">
+      <option value="avg">avg</option>
+      <option value="max">max</option>
+      <option value="min">min</option>
+    </select>
+    {form_submit msg='Show' id='show_histogram_button'}
   {form_end}
 </div>
 
-<div id="show_sequences"></div>
-</p>
+</div>
 
 <!-- Needed for the histogram thickbox -->
 <div id="histogram_data" {display_none}>
