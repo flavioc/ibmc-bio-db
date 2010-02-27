@@ -313,9 +313,14 @@ class Blast extends BioController
       }
       $i++;
     }
-    $json = json_encode($data);
     
-    $this->smarty->assign('labels', $json);
+    if($i == 0)
+      $this->smarty->assign('empty', true);
+    else {
+      $json = json_encode($data);
+      $this->smarty->assign('labels', $json);
+    }
+    
     $this->smarty->assign('title', 'BLAST results');
     $this->smarty->view('blast/results');
   }
