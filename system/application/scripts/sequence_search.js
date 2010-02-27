@@ -1,4 +1,4 @@
-var DEBUG_SQL = false;
+var DEBUG_SQL = true;
 var operator_select = null;
 var operator_input = null;
 var operator_text = null;
@@ -58,7 +58,8 @@ $(function () {
   }
 });
 
-var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete small-button">Delete</span> [<span class="term-count"></span>]</span>';
+//var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete small-button">Delete</span> [<span class="term-count"></span>]</span>';
+var term_options_html = '<span class="term-options" style="display: none;"> <span class="term-delete small-button">Delete</span></span>';
 
 function get_cookie_tree_name()
 {
@@ -500,6 +501,11 @@ function update_humanize(encoded)
       search_human.html('<p>' + data + '</p>');
     });
     
+  update_sql(encoded);
+}
+
+function update_sql(encoded)
+{
   // also update sql
   if(DEBUG_SQL) {
      $.post(get_app_url() + '/search/sql',
@@ -558,6 +564,8 @@ function update_transform()
   if(current_selected_li) {
     compute_total_term(current_selected_li);
   }
+  
+  update_sql(encoded);
 }
 
 function handle_compound(what)
@@ -774,6 +782,7 @@ function compute_total_term(li)
   
   current_selected_li = li;
   
+  /*
   $.post(get_app_url() + '/search/get_search_total',
     {
       search: encoded,
@@ -781,7 +790,7 @@ function compute_total_term(li)
     },
     function (data) {
       $('.term-count:first', li).text(data).effect('highlight', {}, 500);
-    });
+    });*/
 }
 
 function activate_term(name)
