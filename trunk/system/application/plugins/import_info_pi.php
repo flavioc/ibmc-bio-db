@@ -719,7 +719,7 @@ class ImportInfo
   private function __import_seq_labels(&$data)
   {
     if(self::$fast_mode)
-      echo "importing new sequence: " . $this->count . "\n";
+      echo "importing new sequence: " . ($this->count - 1) . "\n";
     $this->__import_labels($data);
     if($this->__has_event()) {
       ++$this->event_put['total_labels'];
