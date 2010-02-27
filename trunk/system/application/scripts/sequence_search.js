@@ -47,8 +47,12 @@ var generate_histogram_type = null;
 var label_result = null;
 var label_result_info = null;
 var add_label_button = null;
+var show_result_list = null;
+var show_result_total = null;
+var view_full = null;
 var shown_labels = [];
 var search_type = 'all';
+var use_result_list = false;
 
 $(function () {
   var got = $.getURLParam('type');
@@ -540,9 +544,30 @@ function reload_results(encoded)
    encoded = get_main_search_term_encoded(); 
   }
   
-  show_seqs.gridFilter('search', encoded);
-  show_seqs.gridFilter('transform', select_transform.val());
-  show_seqs.gridReload();
+  if(use_result_list) {
+     show_seqs.gridFilter('search', encoded);
+     show_seqs.gridFilter('transform', select_transform.val());
+     show_seqs.gridReload();
+  } else {
+     // only get total
+     var loader = $('#total_loader', show_result_total);
+     var num = $('#total_num', show_result_total);
+     
+     loader.show();
+     num.hide();
+     view_full.hide();
+     
+     $.post(get_app_url() + '/search/get_search_total',
+         {
+           search: encoded,
+           transform: select_transform.val()
+         },
+         function (data) {
+            loader.hide();
+            view_full.show();
+            num.html('Found <strong>' + data + '</strong> sequences').show();
+         });
+  }
 }
 
 // reload results and search string
@@ -851,6 +876,9 @@ function restore_old_tree()
   if(we_are_starting) {
     and_form_submitted();
   }
+  
+  // load result total
+  reload_results();
 }
 
 function compound_term(oper)
@@ -1012,6 +1040,46 @@ function label_data_transform(label_data, type, name)
   return ret + ')';
 }
 
+function init_result_list()
+{
+   show_seqs.grid({
+       url: get_app_url() + '/search',
+       ajax_method: 'post',
+       retrieve: 'get_search',
+       total: 'get_search_total',
+       params: {
+         search: function () { return get_start_search_param(); }
+       },
+       fieldNames: ['Labels', 'Name'],
+       fields: ['labels', 'name'],
+       tdClass: {labels: 'centered'},
+       width: {
+         labels: w_select
+       },
+       ordering: {
+         name: 'asc',
+         update: 'def',
+         user_name: 'def'
+       },
+       dataTransform: {
+         labels: function (row) {
+           return img_go;
+         }
+       },
+       links: {
+         name: function (row) {
+           return get_app_url() + '/sequence/view/' + row.id;
+         },
+         user_name: function (row) {
+           return get_app_url() + '/profile/view/' + row.update_user_id;
+         },
+         labels: function (row) {
+           return get_app_url() + '/sequence/labels/' + row.id;
+         }
+       }
+     });
+}
+
 $.fn.clickCompoundName = function () {
   return this.each(function () {
     var what = $(this).text();
@@ -1084,6 +1152,9 @@ $(function () {
     generate_histogram_type = $('#generate_histogram_type');
     label_result = $('#label_result');
     add_label_button = $('#add_label_button');
+    show_result_list = $('#show_result_list');
+    show_result_total = $('#show_result_total');
+    view_full = $('.view_full', show_result_total);
     
     select_transform.change(update_transform);
     
@@ -1272,45 +1343,17 @@ $(function () {
     $('#reset_form').validate({
       submitHandler: reset_form_submitted
     });
+    
+  show_seqs.gridEnable();
 
   restore_old_tree();
-
-  show_seqs
-  .gridEnable()
-  .grid({
-    url: get_app_url() + '/search',
-    ajax_method: 'post',
-    retrieve: 'get_search',
-    total: 'get_search_total',
-    params: {
-      search: function () { return get_start_search_param(); }
-    },
-    fieldNames: ['Labels', 'Name'],
-    fields: ['labels', 'name'],
-    tdClass: {labels: 'centered'},
-    width: {
-      labels: w_select
-    },
-    ordering: {
-      name: 'asc',
-      update: 'def',
-      user_name: 'def'
-    },
-    dataTransform: {
-      labels: function (row) {
-        return img_go;
-      }
-    },
-    links: {
-      name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
-      },
-      user_name: function (row) {
-        return get_app_url() + '/profile/view/' + row.update_user_id;
-      },
-      labels: function (row) {
-        return get_app_url() + '/sequence/labels/' + row.id;
-      }
-    }
-  });
+  
+  // activate view full button
+  view_full.click(function () {
+     show_result_total.hide().remove();
+     show_result_list.show();
+     use_result_list = true;
+     init_result_list();
+     return false;
+  })
 });
