@@ -230,31 +230,31 @@ class Search_model extends BioModel
       if(label_special_operator($oper)) {
         if(label_special_purpose($label_name)) {
           switch($label_name) {
-            /*case 'creation_user':
+            case 'creation_user':
               if($oper == 'exists') {
-                return 'creation_user_name IS NOT NULL';
+                return "EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND creation_user_id IS NOT NULL)";
               } else {
-                return 'creation_user_name IS NULL';
+                return '(NOT EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND creation_user_id IS NOT NULL))';
               }
             case 'update_user':
               if($oper == 'exists') {
-                return 'user_name IS NOT NULL';
+                return "EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND update_user_id IS NOT NULL)";
               } else {
-                return 'user_name IS NULL';
+                return '(NOT EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND update_user_id IS NOT NULL))';
               }
             case 'creation_date':
               if($oper == 'exists') {
-                return 'creation IS NOT NULL';
+                return "EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND creation IS NOT NULL)";
               } else {
-                return 'creation IS NULL';
+                return '(NOT EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND creation IS NOT NULL))';
               }
             case 'update_date':
               $identifier = $this->db->protect_identifiers('update');
               if($oper == 'exists') {
-                return "$identifier IS NOT NULL";
+                return "EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND $identifier IS NOT NULL)";
               } else {
-                return "$identifier IS NULL";
-              }*/
+                return '(NOT EXISTS(SELECT id FROM history WHERE history.id = sequence.history_id AND $identifier IS NOT NULL))';
+              }
             default:
               if($oper == 'exists') {
                 return 'TRUE';
@@ -308,15 +308,17 @@ class Search_model extends BioModel
           return "name $sql_oper $sql_value";
         case 'content':
           return "content $sql_oper $sql_value";
-        /*
         case 'creation_user':
-          return "creation_user_name $sql_oper $sql_value";
+          return "EXISTS(SELECT id FROM history_info WHERE history_info.history_id = sequence.history_id AND creation_user_name $sql_oper $sql_value)";
         case 'update_user':
-          return "user_name $sql_oper $sql_value";
+          return "EXISTS(SELECT id FROM history_info WHERE history_info.history_id = sequence.history_id AND user_name $sql_oper $sql_value)";
+          
         case 'creation_date':
-          return $this->__translate_sql_field('creation', 'date') . " $sql_oper $sql_value";
+          $field = $this->__translate_sql_field('creation', 'date');
+          return "EXISTS(SELECT id FROM history_info WHERE history_info.history_id = sequence.history_id AND $field $sql_oper $sql_value)";
         case 'update_date':
-          return $this->__translate_sql_field($this->db->protect_identifiers('update'), 'date') . " $sql_oper $sql_value";*/
+          $field = $this->__translate_sql_field($this->db->protect_identifiers('update'), 'date');
+          return "EXISTS(SELECT id FROM history_info WHERE history_info.history_id = sequence.history_id AND $field $sql_oper $sql_value)";
       }
 
       $sql_field = $this->__translate_sql_field($fields, $label_type);
@@ -635,13 +637,13 @@ class Search_model extends BioModel
       case 'name':
       case 'content':
         $sql = "SELECT $name AS distr, count(seq_id) AS total
-                FROM ($base_sql) seqs
-                     NATURAL JOIN
-                   (SELECT id AS seq_id, $name FROM sequence) allseqs
+                FROM (SELECT id AS seq_id, $name
+                      FROM sequence
+                      WHERE id IN ($base_sql)) seqs
                 GROUP BY $name
                 ORDER BY $name ASC";
         break;
-      /*case 'creation_user':
+      case 'creation_user':
       case 'update_user':
         if($name == 'creation_user')
           $field = 'creation_user_name';
@@ -649,9 +651,9 @@ class Search_model extends BioModel
           $field = 'user_name';
         
         $sql = "SELECT $field AS distr, count(seq_id) AS total
-                FROM ($base_sql) seqs
-                      NATURAL JOIN
-                      (SELECT id AS seq_id, $field FROM sequence) allseqs
+                FROM (SELECT id AS seq_id, $field
+                      FROM sequence_info_history
+                      WHERE id IN ($base_sql)) seqs
                 GROUP BY $field
                 ORDER BY $field ASC";
         break;
@@ -661,14 +663,14 @@ class Search_model extends BioModel
           $field = 'creation';
         else
           $field = '`update`';
-          
+        
         $sql = "SELECT distr, count(seq_id) AS total
-                FROM ($base_sql) seqs
-                     NATURAL JOIN
-                     (SELECT id AS seq_id, DATE_FORMAT($field, \"%d-%m-%Y\") AS distr FROM sequence) allseqs
+                FROM (SELECT id AS seq_id, DATE_FORMAT($field, \"%d-%m-%Y\") AS distr
+                      FROM sequence_info_history
+                      WHERE id IN ($base_sql)) seqs
                 GROUP BY distr
                 ORDER BY distr ASC";
-        break;*/
+        break;
     }
     
     return $this->rows_sql($sql);
