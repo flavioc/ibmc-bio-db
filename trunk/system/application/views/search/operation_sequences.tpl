@@ -16,8 +16,8 @@ $(function () {
       , transform: {$transform}
       {/if}{literal}
     },
-    fieldNames: [{/literal}{if $add_change}'Change',{/if}{literal} 'Labels', 'Name','Last update', 'User'],
-    fields: [{/literal}{if $add_change}'change',{/if}{literal} 'labels', 'name', 'update', 'user_name'],
+    fieldNames: [{/literal}{if $add_change}'Change',{/if}{literal} 'Labels', 'Name'],
+    fields: [{/literal}{if $add_change}'change',{/if}{literal} 'labels', 'name'],
     tdClass: {user_name: 'centered', labels: 'centered', update: 'centered', change: 'centered'},
     width: {
       user_name: w_user,
