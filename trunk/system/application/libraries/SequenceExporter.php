@@ -250,11 +250,11 @@ class SequenceExporter
   
   private function __get_export_csv_header($labels)
   {
-    $ret = 'name ; content';
+    $ret = 'name';
     
     foreach($labels as &$label) {
       if(label_type_is_printable($label['type'])) {
-        $ret .= ' ; ' . $label['name'];
+        $ret .= ' , ' . $label['name'];
       }
     }
     
@@ -303,17 +303,17 @@ class SequenceExporter
     foreach($merged_labels as &$merged_label) {
       $res_labels = $this->__get_export_labels($merged_label, $labels);
       if(count($res_labels) == 0) {
-        $ret .= ' ;';
+        $ret .= ' ,';
       } else if(count($res_labels) == 1) {
-        $ret .= ' ;';
+        $ret .= ' ,';
         $ret .= $this->__get_export_label_csv_name($res_labels[0]);
       } else {
         // multiple labels
-        $ret .= ' ;';
+        $ret .= ' ,';
         $first_done = false;
         foreach($res_labels as &$label) {
           if($first_done)
-            $ret .= ' ,';
+            $ret .= ' ;';
             
           $ret .= $this->__get_export_label_csv_name($label);
           $first_done = true;
