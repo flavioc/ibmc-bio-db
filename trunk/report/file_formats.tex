@@ -34,7 +34,8 @@ LAAVEAQQQMLKLTIWGVK
   
   In this format we also store label instance information along the sequence data. \\
   
-  The format starts by including one line comment, followed by a line telling which labels are included for each sequence. Those labels are separated by the character '$|$'.\\
+  The format starts by including one line comment, followed by a line telling which labels are included for each sequence. Those labels are separated by the character '$|$'. If some label values are to be ignored, the label
+  name should be skipped by placing an empty string followed by a '$|$'. \\
   
   For each sequence line we put all the label instances separated by the character '$|$'. The order of the label instances must be equal to the label's order at the file's header.\\
   
@@ -219,3 +220,22 @@ The same sequence represented in FASTA (Listing~\ref{ComplexFastaFormat}) can be
   \end{lstlisting}
 
 \end{itemize}
+
+\subsection{CSV}
+
+The CSV format is used to display distribution values over a set
+of sequences and a numeric label. Once copied, this information can be used in spreadsheet programs.
+
+Another use of the CSV format is to export a sequence list and a selected set of labels.
+The file header contains the list of labels that are represented and each line contains a single
+sequence. Multiple label values are separated by the character \texttt{;} and each value is of
+the form \texttt{paramater : value}.
+
+An example CSV file is shown in Listing \ref{SequencesCSV}.
+
+\begin{lstlisting}[float, language=bash, frame=single, label=SequencesCSV, caption={An example CSV file.}]
+name , length , type
+seq1 , 513 , dna
+seq2 , 231 , protein
+seq3 , 85 , dna
+\end{lstlisting}

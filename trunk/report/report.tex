@@ -92,48 +92,49 @@
 This report describes the design and implementation of a computer system that was built
 to store sequences and related annotations.
 
-The main goal of the system is to be as flexible as possible, giving the
-possibility to attach an arbitrary number of annotations (which we call labels)
-to a sequence, to have different kinds of labels, to enable automatic label generation when
-a sequence is added into the system or is modified, and mainly,
-to make arbitrarily complex search queries using those annotated labels.
-Efficient search of sequences with some specific characteristics is then,
+We designed a flexible system where it is possible to:
+attach an arbitrary number of annotations (which we call \textit{labels})
+to a sequence; have different kinds of labels; make automatic annotations when
+a sequence is added into the system or is modified; and, mainly,
+to make arbitrarily complex search queries using annotated information.
+Efficient search of sequences by some specific characteristics is then,
 the main objective of the system and its crucial functionality.
 
-When searching for a certain set of sequences the user will
-also be able to apply operations to the whole sequence list,
+During sequence search it is possible to apply operations to the whole result list,
 such as: add new labels, delete current labels, change label
-values, export the sequence list and get the translated sequence
-list, that is, get the related protein sequences from a list of DNA sequences.
+values, export the sequence list, do a BLAST search on the result set,
+and translate the result list using annotated
+information. This last functionality makes possible to retrieve the protein sequences
+from a set of DNA sequences.
 
-Each label stored in the system has a certain number of properties that define
-the label behavior. These properties will indicate if the the label should be
-auto generated when a sequence is added, if it is user editable or deletable.
-More importantly, the system must store, if that is the case, the code used to generate default label values.
+Each label stored in the system has properties that define its behavior.
+Some of properties include: if the label should be
+auto generated when a sequence is added; if it is user editable or deletable; 
+and the code used to generate annotations using a sequence as input.
 
-The system will support basic label types such as: integer, float, boolean,
+The system supports basic label types such as: integer, float, boolean,
 simple text, date, url, a sequence position, reference to a sequence, a file
 (basically the same as attaching files to a sequence) and a reference to a taxonomy.
 
-Another important facility that must be present in the system is the use of
-taxonomies, supporting the storing of various taxonomy trees and a specific
-label type that is a reference to a taxonomy. The basic use case of this
-functionality is the creation of a label named 'species' and then attaching
-this 'species' label to specific sequences.
+Another important facility is the use of taxonomies.
+The system is able to store multiple taxonomy trees and annotate sequences
+with labels that act as references to taxonomies. The basic use case of this
+functionality is the creation of a label named \textit{species}, which annotates each
+sequence with the corresponding species.
 
 The NCBI taxonomy tree is present by default, but the system allows the creation of new and custom taxonomy trees.
 
-Every data stored should also be exportable and importable, to and from files.
-The system accepts the FASTA and XML formats to export sequences and related annotations.
+Every data stored is exportable and importable, to and from files.
+The system adopts the FASTA, XML and CSV formats to export sequences and related annotations.
 The XML format is used to export everything else.
 
 The system, implemented as a web application, uses the client/server design architecture.
 Some features, like searching and data viewing, can be used without client authentication, but
 everything else requires authentication.
-Some clients can be application administrators, given them the permission to edit user information, manage labels and do database maintenance.
+Some clients can be application administrators and have the permission to edit user information, manage labels and do database maintenance.
 
 The rest of the report is organized as follows. First, we analyze some systems that try to do the same as ours.
-We will describe the advantages, faults and the flexibility of those systems. Next, we describe more thoroughly each system object, the sequence, the label and the taxonomy. With these objects in mind, we describe the design we come up with that tries to maximize flexibility and efficiency. The main object of analysis at this stage is the relational database we implemented to support the features. Following the design we describe some implementation details worth mentioning: the authentication system, how the label code is stored, how we generate the default label values, how do we transform the queries into SQL code and how we parse complex text queries into a manageable format, etc. Next, we describe important user interface elements, like the search and taxonomy tree browsing interfaces. Then we show time results for search operations to analyze the efficiency of the solution. Finally we describe the major difficulties, the future work and the project conclusions. 
+We will describe the advantages, faults and the flexibility of those systems. Next, we describe more thoroughly each system object, the sequence, the label and the taxonomy. With these objects in mind, we describe the design we come up with that tries to maximize flexibility and efficiency. The main object of analysis at this stage is the relational database we implemented to support the features. Following the design we describe some implementation details worth mentioning: the authentication system, how the label code is stored, how we generate the default label values, how do we transform the queries into SQL code and how we parse complex text queries into a manageable format. Next, we describe important user interface elements, like the search, BLAST search and taxonomy tree browsing interfaces. Then we show time results for search operations to analyze the efficiency of the solution. Finally we describe the major difficulties, the future work and the project conclusions.
 
 \clearpage
 \chapter{Related Work}
@@ -158,7 +159,7 @@ The application can also search a sequence for specific patterns using regular e
 display.
 
 Like BioSeD, Genotator can generate sequence annotations, although it fails to provide an
-integrated search environment over a set of sequences, using the generated sequences.
+integrated search environment over a set of sequences.
 
 \begin{figure}[ht]
   \centering
@@ -653,7 +654,9 @@ When a specific system object is modified or created, we need to store the user 
 This information is used in the following tables: \textit{user}, \textit{label}, \textit{label\_sequence}, \textit{sequence}, \textit{taxonomy}, \textit{taxonomy\_rank} and \textit{taxonomy\_tree}. Each table has an history\_id field which points to an history's table record. Each record stores pointers to creation and update users and respective time stamps.
 
 We created triggers that automatically delete history information when any database record using it is removed.
-Update and insert triggers were also put in place to automatically update time information.
+Update and insert triggers were also put in place to automatically update time information. As the system
+can generate an enormous amount of label instances, no insert trigger exists for the \textit{label\_sequence} table,
+and it is only when a row is modified that a new history record is created.
 
 Some abstractions were created to automatically insert or update new database information along with history data.
 These abstractions are implemented in the \textit{BioModel} class.
@@ -810,8 +813,14 @@ In the following list we present the indexes created for each table:
     \item history\_id - foreign key index.
     \item label\_id - foreign key index. To search label instances by label.
     \item seq\_id - foreign key index. To search label instances by sequence.
+    \item seq\_label\_id - for faster searches using sequence and label id.
     \item ref\_data - foreign key index. To locate the sequence this reference label points to.
     \item tax\_data - foreign key index. To locate the taxonomy this taxonomy label points to.
+    \item obj\_data - foreign key index. To locate the file this object label points to.
+    \item int\_data - for faster searches of integer label values.
+    \item float\_data - for faster searches of float label values.
+    \item text\_data - index with size 16 to locate text labels.
+  
   \end{itemize}
   
   \item \textbf{sequence}
@@ -819,8 +828,8 @@ In the following list we present the indexes created for each table:
   \begin{itemize}
     \item id - primary index.
     \item history\_id - foreign key index.
-    \item content - index with size 15 to do faster sequence searches using content.
-    \item name - index with size 10 to locate sequences by name.
+    \item content - index with size 16 to do faster sequence searches using content.
+    \item name - index with size 16 to locate sequences by name.
   \end{itemize}
   
   \item \textbf{taxonomy}
@@ -951,11 +960,12 @@ the following list:
   \item \textbf{search}: the serialized JSON object representing the query.
   \item \textbf{labels}: list of labels attached to the result list.
   \item \textbf{transform}: the label in which we will transform the results. We will talk about this later on.
+  \item \textbf{disable\_ordering}: if this parameter contains something, the sequences will not be ordered by name.
 \end{itemize}
 
-For convenience the http method \textbf{search/get\_search\_total} can return the
-number of sequences for a specific query. When we know the total number of rows in the result,
-we can then fetch partial results using the \textbf{get\_search} method.
+For convenience, the http method \textbf{search/get\_search\_total} can return the
+number of sequences for a specific query. When we know the total number of rows,
+it is then possible to fetch partial results using the \textbf{get\_search} method.
 
 \subsection{Query trees}
 
@@ -1128,7 +1138,7 @@ a query object into an SQL expression, which MySQL can understand and execute.
         \If{expression is multiple parameterized}{
           param\_sql $\leftarrow$ build SQL code for parameter\;
         }
-        \Return "EXISTS(SELECT label\_sequence\_info.id FROM label\_sequence\_info WHERE label\_sequence\_info.seq\_id = sequence\_info\_history.id AND label\_sequence\_info.label\_id = " + label\_id + " AND " + field + " " + oper + " " + value + param\_sql + ")"\;
+        \Return "EXISTS(SELECT label\_sequence.id FROM label\_sequence WHERE label\_sequence.seq\_id = sequence.id AND label\_sequence.label\_id = " + label\_id + " AND " + field + " " + oper + " " + value + param\_sql + ")"\;
       }
     }
   }
@@ -1142,13 +1152,13 @@ For example when searching for sequences where $<$\textit{(length $>$ 500 and na
 the SQL to fetch the result is shown in Listing \ref{sql_example}.
 
 \begin{lstlisting}[float, language=sql, frame=single, label=sql_example, caption={Resulting SQL query.}]
-SELECT DISTINCT id, name
-FROM sequence_info_history
+SELECT id, name
+FROM sequence
 WHERE ((EXISTS(SELECT label_sequence.id FROM label_sequence
-               WHERE label_sequence.seq_id = sequence_info_history.id
+               WHERE label_sequence.seq_id = sequence.id
           AND label_sequence.label_id = 1 AND int_data > 500 ))
       AND (TRUE)) OR (content REGEXP 'AGTG')
-ORDER BY `name` ASC 
+ORDER BY `name` ASC
 \end{lstlisting}
 
 \subsection{The transform label}
@@ -1166,11 +1176,12 @@ before and \textbf{transform\_label} is the transform label ID.
 
 \begin{lstlisting}[float, language=sql, frame=single, label=sql_transform, caption={Transform label SQL code template.}]
 SELECT id, name
-FROM  (SELECT id AS orig_id FROM sequence_info_history WHERE $sql_where) all_seqs
-      NATURAL JOIN
-      (SELECT seq_id AS orig_id, ref_data AS id FROM label_sequence WHERE label_id = $transform_label
-                                                      AND ref_data IS NOT NULL) label_seqs
-      NATURAL JOIN sequence_info_history
+FROM  sequence
+WHERE id IN (SELECT ref_data
+             FROM label_sequence AS trans
+             WHERE trans.label_id = $transform_label AND
+                   trans.seq_id IN (SELECT id FROM sequence WHERE $sql_where) AND
+                   ref_data IS NOT NULL)
 ORDER BY 'name' ASC
 \end{lstlisting}
 
@@ -1240,7 +1251,7 @@ The following system objects can be exported:
 \end{itemize}
 
 The sequences can be exported in XML, FASTA, phylip, phylip 3, nexus, nexusnon, mega,
-meganon, paup and paupon formats. Remaining system objects can only be exported
+meganon, paup, paupon, and CSV formats. Remaining system objects can only be exported
 in the XML format.
 
 All formats, except XML and FASTA, are generated by the seqret \cite{seqret} EMBOSS utility
@@ -1299,9 +1310,9 @@ SQL to fetch the sequence search list.
 
 \begin{lstlisting}[float, language=sql, frame=single, label=distribution_name, caption={Making distribution table for the name label.}]
 SELECT name AS distr, count(seq_id) AS total
-FROM ($base_sql) seqs
-      NATURAL JOIN
-     (SELECT id AS seq_id, name FROM sequence) allseqs
+FROM (SELECT id AS seq_id, name
+      FROM sequence
+      WHERE id IN ($base_sql)) seqs
 GROUP BY name
 ORDER BY name ASC
 \end{lstlisting}
@@ -1318,11 +1329,9 @@ or AVG(field), defaulting to AVG(field) when the label is not multiple.
 \begin{lstlisting}[float, language=sql, frame=single, label=distribution_numeric, caption={Making distribution table for numeric labels.}]
 SELECT distr, COUNT(distr) AS total
 FROM (SELECT seq_id, $sql_distr AS distr
-       FROM ($base_sql) seqs
-            NATURAL JOIN
-            (SELECT seq_id, $field FROM label_sequence
-             WHERE label_id = $label_id $param_sql) labels
-        GROUP BY seq_id) distr_table
+      FROM (SELECT seq_id, $field FROM label_sequence
+            WHERE seq_id IN ($base_sql) AND label_id = $label_id $param_sql) labels
+      GROUP BY seq_id) distr_table
 GROUP BY distr
 ORDER BY distr ASC
 \end{lstlisting}
@@ -1330,13 +1339,16 @@ ORDER BY distr ASC
 For non-numeric values, sequences with multiple values can be represented more than once,
 but if a multiple parameter value is given, we use it to filter the distribution.
 Listing \ref{distribution_non_numeric} show us the code to get the distribution table.
+Note that \textbf{lookup\_table} represents the table or view to use to get label values, hence
+for complex values like taxonomies or references to other sequences we use the \textit{label\_sequence\_extra}
+view, else we use the \textit{label\_sequence} table.
 
 \begin{lstlisting}[float, language=sql, frame=single, label=distribution_non_numeric, caption={Making distribution table for non-numeric labels.}]
 SELECT distr, COUNT(distr) AS total
- FROM ($base_sql) seqs
-    NATURAL JOIN
-  (SELECT seq_id, $field AS distr FROM label_sequence_extra
-   WHERE label_id = $label_id $param_sql) labels
+FROM (SELECT seq_id, $field AS distr
+      FROM $lookup_table
+      WHERE label_id = $label_id $param_sql
+            AND seq_id IN ($base_sql)) labels
 GROUP BY distr
 ORDER BY distr ASC
 \end{lstlisting}
@@ -1569,6 +1581,26 @@ but they will also be enumerated.
   \item \textbf{file}: object
   
   Default object label.
+  
+  \item \textbf{species}: taxonomy
+  
+  Species annotation using the stored taxonomies.
+  
+  \item \textbf{chromosome}: text
+  
+  Information about the sequence chromosome.
+  
+  \item \textbf{gene\_start}: integer
+  
+  The starting position of the sequence on the gene.
+  
+  \item \textbf{gene\_end}: integer
+  
+  The ending position on the gene.
+  
+  \item \textbf{strand}: text
+  
+  Annotated information about the sequence's strand.
 \end{itemize}
 
 \section{Ranks}
@@ -1654,7 +1686,7 @@ The green background can be customized for each installation.
 
 \begin{figure}[H]
   \centering
-    \includegraphics[scale=0.4]{interface.png}
+    \includegraphics[scale=0.35]{interface.png}
   \caption{System home page.}
   \label{fig:home_page}
 \end{figure}
@@ -1711,11 +1743,11 @@ The example lists all system labels.
 \section{Query interface}
 
 The search screen is probably the most important page in the whole application.
-It is structured into three parts: query input, operations and results.
-
-A search screen showing the query input component is shown in Figure \ref{fig:search1}.
 This search page helps the user build the query expression and can display the results
 in real time.
+It is structured into three parts: query input, results and operations.
+
+A search screen showing the query input component is shown in Figure \ref{fig:search1}.
 
 To build a query the user must input the label name, operator and value and then
 select in which part of the search tree this new term will be placed. AND, NOT and OR
@@ -1723,12 +1755,12 @@ operators can also be inserted. Optionally, one can also reset the whole query e
 
 The query expression is shown in two formats: tree like and simple text. When selecting
 a term in the tree format the user can delete that sub-query. The simple text format is read-only.
-It is also possible to select parts of query in the tree to know how many results
-there are for that query sub-expression.
+Optionally we can also transform query results by selecting a reference label from te \textbf{Transform results}
+list.
 
 Every time the query expression changes, we store it in a cookie. When the search page
 is opened again the old query is restored. This proves useful when the user goes back
-and forth between the search page and each operations page, without losing any work. 
+and forth between the search page and each operation page, without losing any work. 
 
 \begin{figure}[H]
   \centering
@@ -1737,20 +1769,20 @@ and forth between the search page and each operations page, without losing any w
   \label{fig:search1}
 \end{figure}
 
-Operations wise, the search page features the following list:
+The preview component initially shows the result total, but can display the complete result set
+that match the query in a grid component.
+The grid component can be augmented with label instance information in \textbf{View label}. For
+example we could input the \textbf{length} label and then the grid will show the length for each
+sequence in the list.
 
-\begin{itemize}
-  \item \textbf{Generate subsequences}: can generate sub-sequences using a \textbf{position} label and the current result list. The user has the option to keep the new subsequences around or not.
-  \item \textbf{Generate histogram}: generate an histogram analysis based on the input label. When the label
-  is numeric and multiple the user can choose a representative value for each sequence: minimum, maximum or average.
-  \item \textbf{Export}: export the result sequence list to a file.
-  \item \textbf{Add label}: adds label instances to all sequences in the result list.
-  \item \textbf{Edit label}: same as before, but editing.
-  \item \textbf{Delete label}: removes a specific label from the result list sequences.
-  \item \textbf{Delete results}: simply delete the result list sequences.
-\end{itemize}
+\begin{figure}[H]
+  \centering
+    \includegraphics[scale=0.5]{search3.png}
+  \caption{Search preview results.}
+  \label{fig:search3}
+\end{figure}
 
-Appearing right below the query input component, the operator component is shown in Figure \ref{fig:search2}.
+Appearing right below the preview component, the operator component is shown in Figure \ref{fig:search2}.
 
 \begin{figure}[H]
   \centering
@@ -1759,20 +1791,19 @@ Appearing right below the query input component, the operator component is shown
   \label{fig:search2}
 \end{figure}
 
-The preview component shows all the sequences that match the query in a grid component.
-The grid component can be augmented with label instance information in \textbf{View label}. For
-example we could input the \textbf{length} label and then the grid will show the length for each
-sequence in the list.
+The following operations are available:
 
-Optionally we can also transform the results using the \textbf{Transform results} option and
-selecting a reference label. Everything is shown in Figure \ref{fig:search3}.
-
-\begin{figure}[H]
-  \centering
-    \includegraphics[scale=0.5]{search3.png}
-  \caption{Search preview results.}
-  \label{fig:search3}
-\end{figure}
+\begin{itemize}
+  \item \textbf{Export}: export the result sequence list to a file.
+  \item \textbf{BLAST}: run a BLAST search across the result list.
+  \item \textbf{Add label}: adds label instances to all sequences in the result list.
+  \item \textbf{Edit label}: same as before, but editing.
+  \item \textbf{Delete label}: removes a specific label from the result list sequences.
+  \item \textbf{Delete results}: simply delete the result list sequences.
+  \item \textbf{Generate subsequences}: can generate sub-sequences using a \textbf{position} label and the current result list. The user has the option to keep the new subsequences around or not.
+  \item \textbf{Generate histogram}: generate an histogram analysis based on the input label. When the label
+  is numeric and multiple the user can choose a representative value for each sequence: minimum, maximum or average.
+\end{itemize}
 
 Finally, three search screens are available: one can use all sequences, other only searches in DNA sequences and
 the third in protein sequences. Hopefully, the interface looks the same in all of them. 
@@ -1905,8 +1936,11 @@ is added or edited the page is updated to reflect the changes.
 The application features a page where the user can upload sequence files and have them
 imported into the system.
 
-In this page (Figure \ref{fig:sequence_upload}) three options are available: upload a single file; upload both DNA and protein file, linking
+In this page (Figure \ref{fig:sequence_upload}) three options are available:
+upload a single file; upload both DNA and protein file, linking
 the sequences along the process; upload a DNA file and also generate protein sequences.
+When generating protein sequences, it is possible to keep the FASTA annotated information,
+thus annotating the protein sequences with the DNA labels.
 
 \begin{figure}[ht]
   \centering
@@ -2188,7 +2222,7 @@ The performance also decreases when the search expression gets more complex.
 \chapter{Conclusion}
 
 In this technical report we presented a possible design and implementation of a bioinformatics
-system that was built to store sequences and annotations, which we called labels.
+system that was built to store sequences and annotations called labels.
 
 We presented all the system objects that make up the bulk of the system: sequences, labels and taxonomies.
 
@@ -2459,8 +2493,8 @@ making the life easier for those who work with the system.
     Table & Fields \\ \hline
     Sequence & \begin{itemize}
       \item id (SERIAL)
-      \item content (TEXT): The sequence content.
-      \item name (VARCHAR)
+      \item content (MEDIUMTEXT): The sequence content.
+      \item name (CHAR)
       \item history\_id (ID): To store sequence history information.
     \end{itemize} \\ \hline
   \end{tabular}
@@ -2517,7 +2551,7 @@ making the life easier for those who work with the system.
     File & \begin{itemize}
       \item id (SERIAL)
       \item label\_id (ID): Which label this file refers to.
-      \item name (VARCHAR(512)): File name.
+      \item name (VARCHAR): File name.
       \item count (INT): Reference count.
       \item data (LONGBLOB): File data, the file itself.
       \item type (TEXT): Optional field to indicate the file type.
