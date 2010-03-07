@@ -87,7 +87,6 @@ create a new label.
 In the label list grid, special notes should be said about the columns:
 
 \begin{itemize}
-  \item The column \textbf{Total} tells how many sequences contain that label.
   \item Clicking on the label name redirects the application to the label's page.
   \item The column \textbf{Seqs} creates a new search page with sequences that contain that label.
   \item The column \textbf{Others} creates a new search page with sequences that do not contain that label.
@@ -154,9 +153,6 @@ as true will appear. This page also features a filter form.
 More options are available in that page, namely:
 
 \begin{itemize}
-  \item \textbf{Export all}: exports all sequences in the grid to one of the following formats:
-  FASTA, XML, Simple FASTA, phylip, phylip3, nexus, nexusnon, mega, meganon, paup, and paupnon.
-  
   \item \textbf{Search}: launches a new search page with the sequences present in the grid.
   
   \item \textbf{Add new}: redirects to a new page, where one can insert a new sequence.
@@ -275,6 +271,8 @@ To access this functionality use the \textbf{Sequences - Batch} main menu option
 
 In this page (Figure \ref{fig:sequence_upload2}) three options are available: upload a single file; upload both DNA and protein file, linking
 the sequences along the process; upload a DNA file and also generate protein sequences.
+When converting DNA to protein sequences, it is possible to annotate the protein sequences
+with the same DNA labels by using the \textbf{Keep structure} option.
 
 \begin{figure}[ht]
   \centering
@@ -311,7 +309,6 @@ the label will not be updated and the text \textbf{Already inserted} will be sho
 
 Clicking on the \textbf{batch manipulated} link will redirect you to a new search page with only the imported sequences,
 which is useful to run various operations for all those sequences in batch mode.
-
 
 \section{Taxonomies}
 
@@ -505,11 +502,10 @@ the query input section, the operations section and the preview section.
 The query input section (as shown in Figure \ref{fig:search1_man}) presents you controls
 to display and manipulate the query expression.
 
-The query is presented in two formats: the tree, where you can select parts of the expression
-and preview in real time how many sequences are filtered using that sub-expression and the
-query text, where the query is presented in an human readable format. In the query tree view,
+The query is presented in two formats: the tree, where you can manipulate parts of the expression
+and the query text, where the query is presented in an human readable format. In the query tree view,
 apart from selecting where to insert sub-expressions, you can also delete parts of the expression by
-selecting an AND, OR, NOT or sub-expression and pressing \textbf{Delete}.
+selecting an AND, OR, NOT or terminal expression and pressing \textbf{Delete}.
 
 To insert a new query expression, you should choose where the expression will be put. That is possible
 selecting one of the previously inserted OR, AND or NOT expressions. If you simply want
@@ -617,10 +613,18 @@ You can also insert AND, OR and NOT terms. Use the respective buttons.
   \label{tbl:operators}
 \end{table}
 
+One important option in this section is \textbf{Transform results}. Here you can select a reference label,
+and the results will be transformed using the annotated reference label in each sequence.
+If not all sequences are annotated with that label, the new result set will be smaller than the original.
+If the reference label is multiple, the new result set can be potentially bigger.
+
+Please note that the new, transformed, set will be used for the following operations.
+
 \subsection{Operations}
 
-While you create your complex query you can see the preview list getting shorter and shorter, giving you
-immediate feedback. And now that you have your results, you can do things with them.
+While you create your complex query you can see the preview component getting refreshed,
+with either the result total, or, optionally, the result list. Finally, once the query is built,
+you can do operations on the results.
 
 The operations section as it can be seen in Figure \ref{fig:search2_man}, contains various operations
 you can do to the search result list.
@@ -634,7 +638,7 @@ you can do to the search result list.
 
 \subsection{Sub-sequences}
 
-To begin, we can generate sub-sequences using a position label from the result list. For example,
+We can generate sub-sequences using a position label from the result list. For example,
 if your sequences contain a position label for a specific sequence segment, you can generate
 sub-sequences for the complete set of sequences. To do that, you must select the position label
 from the \textbf{Generate subsequences} select list and then push the \textbf{Generate button}.
@@ -672,7 +676,7 @@ Another important operation is the \textbf{Export} button.
 It can export your result sequences (Figure \ref{fig:export_search})
 into the file formats mentioned before and supported by the system.
 
-For formats like FASTA or XML, you can select the labels that will appear on the file, only exporting annotation 
+For formats like FASTA, CSV or XML, you can select the labels that will appear on the file, only exporting annotation 
 that is important to the task at hand.
 
 \begin{figure}[ht]
@@ -720,8 +724,8 @@ everything will be deleted. The action is irreversible, so use it with care!
 
 \subsection{Preview}
 
-The last section (Figure \ref{fig:search3_man}) present in the search page is the preview section. In it
-we can see the results (as a list of sequences) for the query being build.
+The middle section (Figure \ref{fig:search3_man}) present in the search page is the preview section. In it
+we can see the results for the query being build, as either the final total or the result list in a data grid.
 
 \begin{figure}[H]
   \centering
@@ -730,14 +734,7 @@ we can see the results (as a list of sequences) for the query being build.
   \label{fig:search3_man}
 \end{figure}
 
-One important option in this section is \textbf{Transform results}. Here you can select a reference label,
-and the current results will be transformed using the annotated reference label in each sequence.
-If not all sequences are annotated with that label, the new result set will be smaller than the original.
-If the reference label is multiple, the new result set can be potentially bigger.
-
-Please note that the new, transformed, set will be used for the batch operations mentioned before.
-
-The other option, \textbf{View label}, can add new label columns to the result grid, showing the label
+The \textbf{View label} option, can add new label columns to the result grid, showing the label
 values for each sequence, as shown in Figure \ref{fig:view_label}.
 
 \begin{figure}[H]
