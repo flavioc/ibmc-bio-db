@@ -1407,6 +1407,38 @@ The \textbf{subsequence} label makes use of the \textbf{action\_modification} co
 \ref{sec:action_modification}, eliminating all subsequences when the original
 sequence content is altered.
 
+\subsection{BLAST}
+
+The BLAST operation uses the sequence result list and query sequences provided by the user
+to do a BLAST search.
+A BLAST search consists of using a \textit{Basic Local Alignment Search Tool} (BLAST), which can "find regions of local similarity between sequences" \cite{blast}.
+
+To implement this functionality we used the NCBI's BLAST program \texttt{blastall}.
+First we compute the result list using the search query, then these sequences are converted
+to a database recognized by BLAST using the \texttt{formatdb} program. Next, a file
+containing the query sequences provided by the user is created. Finally, the \texttt{blastall}
+program is run over the created database and query file.
+
+The \texttt{blastall} output is parsed to retrieve the \textit{BLAST score} and \textit{expectation value}
+for each matched sequences.
+This data is used to, optionally, annotate the matched sequences with score and expectation values.
+
+The following labels are used:
+
+\begin{itemize}
+  \item \textbf{evalue} (float): Expectation value.
+  \item \textbf{blast\_score} (float): BLAST score.
+  \item \textbf{blast\_query} (boolean): True if the sequence matched the BLAST search.
+\end{itemize}
+
+Each one of these labels can have multiple instances and is parametrized by a search identifier
+provided before the search process and the name of the matched query sequence.
+
+\texttt{blastall} can use the following specialized programs:
+\texttt{blastn}, \texttt{blastp}, \texttt{tblastx}, and \texttt{tblastn}.
+BioSeD is intelligent enough to restrict which specialized program to run based on the
+resulting sequence set. Other BLAST search parameters can also be customized.
+
 \section{Storing system wide information}
 
 The system can be customized with: a specific comment that
@@ -1997,6 +2029,45 @@ An example plot bar is displayed in Figure \ref{fig:histogram}.
   \label{fig:histogram}
 \end{figure}
 
+\section{BLAST}
+
+The BLAST search interface provides a page where the query sequences
+can be provided and the BLAST parameters can be tuned before launching
+the search.
+
+This page is displayed on Figure \ref{fig:blast} and shows two distinct
+sections: section (1) for basic BLAST setup, section (2) for advanced parametrization.
+
+\begin{figure}[ht]
+  \centering
+    \includegraphics[scale=0.45]{blast.png}
+  \caption{BLAST search screen.}
+  \label{fig:blast}
+\end{figure}
+
+In the first section, the user must provide a search identifier, which identifies
+this specific search and the query sequences in FASTA format that will be
+matched against the result sequence list. It is also possible to
+select between specialized BLAST programs, depending on the result sequence list
+characteristics, but usually this option is pretty restricted by the system knowledge of
+the sequences. Finally, the default \textit{expect} value can be changed to best
+suit the search purposes.
+
+The second section provides more advanced BLAST options.
+If some BLAST option can not be found, the \textbf{Other advanced options} input box
+is provided to pass arbitrary \texttt{blastall} program arguments.
+
+Once the BLAST parameters are set, the \textbf{BLAST} button launches the BLAST
+search and a new page is loaded (Figure \ref{fig:blast_results}), presenting the BLAST output and a button to,
+optionally, annotate the matched sequences with BLAST information.
+
+\begin{figure}[ht]
+  \centering
+    \includegraphics[scale=0.45]{blast_results.png}
+  \caption{BLAST results screen.}
+  \label{fig:blast_results}
+\end{figure}
+
 \section{Loading screens}
 
 For long server processing tasks and to give the user some feedback, we used the jquery blockUI
@@ -2320,7 +2391,9 @@ making the life easier for those who work with the system.
 	
 	\bibitem{extensible_open_source} Sean D. Mooney and Peter H. Baenziger. Extensible open source content management systems and frameworks: a solution for many needs of a bioinformatics group. \textit{Center for Computational Biology and Bioinformatics, Department of Medical and Molecular Genetics, Indiana University School of Medicine}, 2007.
 	
-	  \bibitem{gendb} Folker Meyer, Alexander Goesmann, Alice C. McHardy, Daniela Bartels, Thomas Bekel, Jorn Clausen, Jorn Kalinowski, Burkhard Linke, Oliver Rupp, Robert Giegerich and Alfred Puhler. GenDB: an open source genome annotation system for prokaryote genomes. \textit{Nucleic Acids Research}, 2003.
+	  \bibitem{gendb} Folker Meyer, Alexander Goesmann, Alice C. McHardy, Daniela Bartels, Thomas Bekel, Jorn Clausen, Jorn Kalinowski, Burkhard Linke, Oliver Rupp, Robert Giegerich and Alfred Puhler. \textit{GenDB: an open source genome annotation system for prokaryote genomes}. \textit{Nucleic Acids Research}, 2003.
+	  
+	  \bibitem{blast} Altschul, S.F., Gish, W., Miller, W., Myers, E.W. and Lipman, D.J. \textit{Basic local alignment search tool}. \textit{Journal of Molecular Biology}, 1990.
 	  
 \end{thebibliography}
 
