@@ -284,20 +284,23 @@ In BioSeD, systems can be linked using data interchange formats or web services 
 \clearpage
 \chapter{System objects}\label{sec:objects}
 
-In this section we describe the main system objects: sequence, label, and taxonomy. Each object will be described by its properties, and basic organization.
+In this section we describe the main system objects: sequence, label, and taxonomy.
+Each object will be described by its properties and basic organization.
 
 \section{Sequences}
 
-A sequence represents a succession of letters forming the primary structure of a
+A \textit{sequence} groups an arbitrary number of label instances, commonly called annotations,
+that describe some property of the sequence.
+Biologically, a sequence represents a succession of letters forming the primary structure of a
 DNA molecule or the structure of a protein.
-This succession of letters will form a special label instance of the label named 'content'.
-Another basic sequence label is the 'name' representing its name.
+This succession of letters forms a special label instance named \texttt{content}.
+Another basic sequence label is its \texttt{name}.
 
-Given these two basic labels, a sequence can have an arbitrary number of labels, commonly called annotations.
-Each label will be an instance of a label object.
-An example sequence object is represented in Figure~\ref{fig:seq}.
-For example we can have the label object 'length' (integer type)
-and have it instantiated in various sequences, and each instance representing the content length of each sequence.
+Each \textit{label instance} is an instance of a label object and
+is associated with a specific sequence.
+An illustrated sequence is shown in Figure~\ref{fig:seq}.
+If a label object named \texttt{length} exists, we can instantiate it
+over a set of sequences to represent the corresponding sequence length.
 
 \begin{figure}[H]
   \centering
@@ -308,9 +311,9 @@ and have it instantiated in various sequences, and each instance representing th
 
 \section{Labels}\label{sec:object_label}
 
-A label object represents all the information required to instantiate, and manage label instances in the system sequences.
-
-Each stored label has a set of properties. Each label property is described in table \ref{tbl:label_properties}.
+A \textit{label object} represents all the information required to instantiate and manage label instances
+over a set of sequences. A label has a set of \textit{label properties} that define its behavior.
+The defined properties are described in Table \ref{tbl:label_properties}.
 
 \begin{table}[H]
   \begin{tabular}{ | >{\centering}m{25mm} | >{\centering}m{18mm} | p{11cm} |}
@@ -335,7 +338,8 @@ Each stored label has a set of properties. Each label property is described in t
   \label{tbl:label_properties}
 \end{table}
 
-Label objects will generate label instances of some type (table \ref{tbl:label_types}). The type dictates the data format.
+Label objects will generate label instances of some \textit{label type} (Table \ref{tbl:label_types}).
+The type dictates the data format, the search operators and visualization methods.
 
 \begin{table}[H]
   
@@ -359,11 +363,13 @@ Label objects will generate label instances of some type (table \ref{tbl:label_t
 
 \section{Taxonomies}
 
-It is known that a taxonomy classifies another object. By relating sequences and taxonomies, we can classify some sequence by its originating species or subspecies.
+It is known that a \textit{taxonomy} classifies another object. By relating sequences and taxonomies,
+we can classify some sequence by its originating species or subspecies.
 
-In our system the taxonomy is an object that is linked to a specific rank and is aggregated in a taxonomy tree. A tree can support multiple roots.
+In our system the taxonomy is an object that is linked to a specific \textit{rank} and is aggregated in a \textit{taxonomy tree}.
+A tree can have multiple roots.
 
-A name given for each taxonomy is used, system wide, for reference. Unfortunately, it is well known that the same taxonomy can have multiple names for various reasons: commonly used misspellings, synonyms, names used in well known database banks (genbank), etc. To solve this problem, we associate pairs of secondary names and reasons for existence to each taxonomy.
+A name given for each taxonomy is used, system wide, for reference. Unfortunately, it is well known that the same taxonomy can have multiple names for various reasons: commonly used misspellings, synonyms, names used in well known database banks (genbank), etc. To solve this problem, we associate pairs of \textit{secondary names} and reasons for the existence of each taxonomy version.
 
 \begin{figure}[H]
   \centering
@@ -372,8 +378,10 @@ A name given for each taxonomy is used, system wide, for reference. Unfortunatel
   \label{fig:tax}
 \end{figure}
 
-Each taxonomy can be used as label values of the type 'taxonomy' shown in table \ref{tbl:label_types}.
-Figure \ref{fig:tax} shows an example taxonomy tree. The rounded squares represent taxonomies, each taxonomy point to a squared box representing the specific rank and some taxonomies (in the picture, "Homo Sapiens") can point to an arbitrary number of secondary names.
+Each taxonomy can be used as label values of the type \textbf{taxonomy} shown in Table \ref{tbl:label_types}.
+Figure \ref{fig:tax} shows an example taxonomy tree. The rounded squares represent taxonomies, each taxonomy
+points to a squared box representing the specific rank and some taxonomies (in the picture, "Homo Sapiens")
+can point to an arbitrary number of secondary names.
 An observation should be made: it is recurrent (and natural) that all taxonomies in the same tree level share the same rank.
 
 \clearpage
@@ -385,7 +393,7 @@ As we have used a relational database, a relational model will be presented and 
 
 \section{Architecture}
 
-The system architecture follows the client/server model very closely (see Figure \ref{fig:architecture}) because it is built as a standard web application. The server hosts the application and delivers html pages or JSON objects, through HTTP, to the clients on request. Each client, using a web browser, can access the system and generate new requests based on what the user is trying to accomplish.
+The system architecture follows the client/server model very closely (see Figure \ref{fig:architecture}) because it is built as a standard web application. The server hosts the application and delivers HTML pages or JSON objects, through HTTP, to the clients on request. Each client, using a web browser, can access the system and generate new requests based on the current task.
 
 \begin{figure}[H]
   \centering

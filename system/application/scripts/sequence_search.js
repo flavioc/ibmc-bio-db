@@ -1,4 +1,4 @@
-var DEBUG_SQL = true;
+var DEBUG_SQL = false;
 var operator_select = null;
 var operator_input = null;
 var operator_text = null;
