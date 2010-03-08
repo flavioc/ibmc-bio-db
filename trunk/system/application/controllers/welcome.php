@@ -17,7 +17,7 @@ class Welcome extends BioController
     $this->smarty->assign('comment', $comment);
 
     if(!$comment)
-      $comment = 'BioDB';
+      $comment = 'BioSeD';
       
     $this->smarty->assign('title', $comment);
 
