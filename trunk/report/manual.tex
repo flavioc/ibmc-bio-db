@@ -647,6 +647,67 @@ checkbox. When not keeping the sequences around, the system will delete them aft
 
 Once the sub-sequences are generated, a report page will be shown.
 
+\subsection{BLAST}
+
+The BLAST search option is used to do a BLAST search
+over the result sequence list using an arbitrary number of 
+query sequences.
+
+The BLAST page is displayed on Figure \ref{fig:blast2} and shows two distinct
+sections: section (1) for basic BLAST setup, section (2) for advanced parametrization.
+
+\begin{figure}[ht]
+  \centering
+    \includegraphics[scale=0.45]{blast.png}
+  \caption{BLAST search screen.}
+  \label{fig:blast2}
+\end{figure}
+
+In the first section, a search identifier must be provided, which identifies
+this specific search and the query sequences in FASTA format that will be
+matched against the result sequence list. It is also possible to
+select between specialized BLAST programs, depending on the result sequence list
+characteristics, but usually this option is pretty restricted by the system knowledge of
+the sequences. Finally, the default \textit{expect} value can be changed to best
+suit the search purposes.
+
+The second section provides more advanced BLAST options.
+If some BLAST option can not be found, the \textbf{Other advanced options} input box
+is provided to pass arbitrary \texttt{blastall} program arguments.
+
+Once the BLAST parameters are set, the \textbf{BLAST} button launches the BLAST
+search and a new page is loaded (Figure \ref{fig:blast_results2}), presenting the BLAST output and a button to,
+optionally, annotate each matched sequence with BLAST information.
+
+\begin{figure}[ht]
+  \centering
+    \includegraphics[scale=0.45]{blast_results.png}
+  \caption{BLAST results screen.}
+  \label{fig:blast_results2}
+\end{figure}
+
+The following labels are used:
+
+\begin{itemize}
+  \item \textbf{evalue} (float): Expectation value.
+  \item \textbf{blast\_score} (float): BLAST score.
+  \item \textbf{blast\_query} (boolean): True if the sequence matched the BLAST search.
+\end{itemize}
+
+Each one of these labels can have multiple instances and is parametrized by a search identifier
+and the name of the matched query sequence.
+
+For example, the search identifier provided was \textit{search1}, the
+query sequences only included one sequence named \textit{query\_sequence} and
+one sequence on the result list matched the query sequence.
+The following annotations would be made:
+
+\begin{itemize}
+  \item \texttt{evalue[search1:query\_sequence] = 3e-06}
+  \item \texttt{blast\_score[search1:query\_sequence] = 32}
+  \item \texttt{blast\_query[search1:query\_sequence] = Yes}
+\end{itemize}
+
 \subsection{Histograms}
 
 Another operation is the \textbf{Generate histogram} (Figure \ref{fig:histogram_man}).
