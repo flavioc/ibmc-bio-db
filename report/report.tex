@@ -2125,7 +2125,7 @@ To measure time and space results, we considered three main functionalities:
 \end{itemize}
 
 Time is measured by calculating the number of seconds and milliseconds spent executing the operation.
-For space measurements, we compute the database size using the SQL query presented in Listing.
+For space measurements, we compute the database size using the SQL query presented in Listing \ref{mysql_database_size}.
 
 \begin{lstlisting}[float, language=sql, frame=single, label=mysql_database_size, caption={MySQL database size query.}]
 SELECT table_schema "Data Base Name", sum( data_length + index_length) / 1024 "Data Base Size in KB" FROM information_schema.TABLES WHERE table_schema = "BioSeD_Database";
@@ -2151,7 +2151,7 @@ The test files used were:
 \end{itemize}
 
 The labels installed in the system during measurements are available in \textit{fasta/test\_labels.xml}.
-Initial database size was 247267KB.
+Initial database size was 803.0664KB. The tables were recreated before each test using \texttt{OPTIMIZE TABLE}.
 
 \begin{table}[H]
   \begin{center}
@@ -2159,12 +2159,10 @@ Initial database size was 247267KB.
     \begin{tabular}{ | l | c | c | c | c | }
       \hline
       \textbf{Test} & \textbf{Sequences in the system} & \textbf{Time} & \textbf{Database size} & \textbf{Size increment} \\ \hline
-      (1) big.fasta with no protein translation & 0 & 1m2.931s & 249795KB & 2528KB \\ \hline
-      (2) big.fasta with protein translation & 0 & 2m1.767s & 250355KB & 3088KB \\ \hline
-      (3) serpina1.dna.fasta + serpina1.trans.fasta & 0 & 0m2.497s & 247347KB & 80KB \\ \hline
-      (4) big.fasta with protein translation & 748: test (2) results & 0m56.399s & 251379KB & 4112KB \\ \hline
-      (5) serpina1.dna.fasta + serpina1.trans.fasta & 748: test (2) results & 0m2.612s & 251939KB & 4672KB \\ \hline
-      (6) serpina1.dna.fasta + serpina1.trans.fasta & 778: test (5) results & 0m0.593s & 251939KB & 4672KB \\ \hline
+      (1) big.fasta with no protein translation & 0 & 0m28.139s & 2819.0664KB & 2015.9996KB \\ \hline
+      (2) big.fasta with protein translation & 0 & 1m0.126s & 4739.0664KB & 3936KB \\ \hline
+      (3) serpina1.dna.fasta + serpina1.trans.fasta & 0 & 0m2.058s & 883.0664KB & 80KB \\ \hline
+      (4) serpina1.dna.fasta + serpina1.trans.fasta & 748: test (2) results & 0m2.017s & 4835.0664KB & 4032KB \\ \hline
     \end{tabular}}
   \end{center}
   \caption{Sequence importing results.}
@@ -2174,7 +2172,6 @@ Initial database size was 247267KB.
 By analyzing Table \ref{tbl:results_importing} we can see that the number of sequences to import linearly affects the
 resulting time and space. For example, when importing translated sequences in the test (2), the test time nearly doubled from
 a simple import from the test (1).
-Another conclusion we can make is that the import time is greatly reduced when the sequences are already in the system.
 
 \section{Multiple sequence annotation}
 
@@ -2191,7 +2188,7 @@ The scripts we used to run the tests were:
   \item tools/edit\_refpos\_label.sh
 \end{itemize}
 
-The database state from sequence importing test (6) was used and the initial database size was 251939KB.
+The database state from sequence importing test (4) was used and the initial database size was 4835.0664KB.
 
 \begin{table}[H]
   \begin{center}
@@ -2199,10 +2196,10 @@ The database state from sequence importing test (6) was used and the initial dat
     \begin{tabular}{ | l | c | c | c | c | }
       \hline
       \textbf{Test} & \textbf{Sequences} & \textbf{Time} & \textbf{Database size} & \textbf{Size increment} \\ \hline
-      (1) annotate all sequences with \textbf{url} (google.pt, parameter google) & 778 & 0m7.913s & 253091KB & 1152KB \\ \hline
-      (2) annotate all sequences with \textbf{url} (sapo.pt, parameter sapo) & 778: test (1) & 0m8.135s & 253155KB & 1216KB \\ \hline
-      (3) annotate all sequences with \textbf{refpos} (start: 1, length: 10) & 778: test (2) & 0m8.029s & 253331KB & 1392KB \\ \hline
-      (4) edit all \textbf{refpos} instances (start: 2, length: 10) & 778: test (3) & 0m8.656s & 253331KB & 1392KB \\ \hline
+      (1) annotate all sequences with \textbf{url} (google.pt, parameter google) & 788 & 0m4.291s & 5091.0664KB & 256KB \\ \hline
+      (2) annotate all sequences with \textbf{url} (sapo.pt, parameter sapo) & 788: test (1) & 0m4.318s & 5491.0664KB & 656KB \\ \hline
+      (3) annotate all sequences with \textbf{refpos} (start: 1, length: 10) & 788: test (2) & 0m4.453s & 5683.0664KB & 848KB \\ \hline
+      (4) edit all \textbf{refpos} instances (start: 2, length: 10) & 788: test (3) & 0m7.246s & 5811.0664KB & 976KB \\ \hline
     \end{tabular}}
   \end{center}
   \caption{Multiple sequence annotation.}
@@ -2224,19 +2221,19 @@ Some conclusions can be made:
 For search we created the script tools/search.sh, which accepts a search expression and, optionally, a transform label.
 
 First, we used a sequence set composed of serpina1.dna.fasta, serpina1.trans.fasta and big.fasta without DNA translation
-(404 sequences).
-Then we ran some test expressions against the set, then we augmented the set with big.fasta protein translations and ran
-the same test expressions and everything was timed.
+(409 sequences). The NCBI taxonomy database was imported into the system.
+Next, we ran some test expressions against the database and augmented it with big.fasta protein translations and ran
+the same test expressions.
 
 \begin{table}[H]
     \begin{tabular}{ | p{11.2cm} | c | c |}
       \hline
       \textbf{Expression} & \textbf{Results} & \textbf{Time} \\ \hline
-      length exists & 404 & 0m0.371s \\ \hline
-      length $>$ 0 & 404 & 0m0.399s \\ \hline
-      length $>$ 0 and name regexp A & 47 & 0m0.157s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A & 47 & 0m0.158s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 43 & 0m8.668s \\ \hline
+      length exists & 409 & 0m0.150s \\ \hline
+      length $>$ 0 & 409 & 0m0.152s \\ \hline
+      length $>$ 0 and name regexp A & 48 & 0m0.134s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A & 48 & 0m0.137s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 44 & 0m5.491s \\ \hline
   \end{tabular}
   \caption{Searching 404 sequences, no result translation.}
   \label{tbl:results_search_404_no_translation}
@@ -2246,11 +2243,11 @@ the same test expressions and everything was timed.
     \begin{tabular}{ | p{11.2cm} | c | c |}
       \hline
       \textbf{Expression} & \textbf{Results} & \textbf{Time} \\ \hline
-      length exists & 30 & 0m0.135s \\ \hline
-      length $>$ 0 & 30 & 0m0.209s \\ \hline
-      length $>$ 0 and name regexp A & 4 & 0m0.136s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A & 4 & 0m0.146s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 0 &  0m8.951s \\ \hline
+      length exists & 30 & 0m0.125s \\ \hline
+      length $>$ 0 & 30 & 0m0.134s \\ \hline
+      length $>$ 0 and name regexp A & 4 & 0m0.129s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A & 4 & 0m0.131s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 0 & 0m1.396s \\ \hline
   \end{tabular}
   \caption{Searching 404 sequences with \textbf{translated} translation.}
   \label{tbl:results_search_404_translation}
@@ -2260,13 +2257,13 @@ the same test expressions and everything was timed.
     \begin{tabular}{ | p{11.2cm} | c | c |}
       \hline
       \textbf{Expression} & \textbf{Results} & \textbf{Time} \\ \hline
-      length exists & 778 & 0m0.526s \\ \hline
-      length $>$ 0 & 778 & 0m0.323s \\ \hline
-      length $>$ 0 and name regexp A & 90 & 0m0.183s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A & 90 & 0m0.179s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 43 & 0m9.628s \\ \hline
+      length exists & 788 & 0m0.352s \\ \hline
+      length $>$ 0 & 788 & 0m0.170s \\ \hline
+      length $>$ 0 and name regexp A & 244 & 0m0.145s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A & 244 & 0m0.304s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 44 & 0m2.799s \\ \hline
   \end{tabular}
-  \caption{Searching 778 sequences with no translation.}
+  \caption{Searching 788 sequences with no translation.}
   \label{tbl:results_search_778_no_translation}
 \end{table}
 
@@ -2274,11 +2271,11 @@ the same test expressions and everything was timed.
     \begin{tabular}{ | p{11.2cm} | c | c |}
       \hline
       \textbf{Expression} & \textbf{Results} & \textbf{Time} \\ \hline
-      length exists & 778 & 0m0.371s \\ \hline
-      length $>$ 0 & 778 & 0m0.401s \\ \hline
-      length $>$ 0 and name regexp A & 90 & 0m0.548s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A & 90 & 0m0.217s \\ \hline
-      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 43 & 0m8.235s \\ \hline
+      length exists & 788 & 0m0.188s \\ \hline
+      length $>$ 0 & 788 & 0m0.178s \\ \hline
+      length $>$ 0 and name regexp A & 244 & 0m0.298s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A & 244 & 0m0.163s \\ \hline
+      length $>$ 0 and name regexp A and content regexp A and species like Drosophila & 43 & 0m2.827s \\ \hline
   \end{tabular}
   \caption{Searching 778 sequences with \textbf{translated} translation.}
   \label{tbl:results_search_778_translation}
@@ -2287,7 +2284,7 @@ the same test expressions and everything was timed.
 From tables \ref{tbl:results_search_404_no_translation}, \ref{tbl:results_search_404_translation},
 \ref{tbl:results_search_778_no_translation}, and \ref{tbl:results_search_778_translation}
 we can see that the number of stored sequences affects the system performance.
-The performance also decreases when the search expression gets more complex.
+The performance also tends to decrease when the search expression gets more complex.
 
 \clearpage
 \chapter{Conclusion}
