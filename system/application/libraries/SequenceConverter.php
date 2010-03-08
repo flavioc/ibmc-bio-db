@@ -73,7 +73,7 @@ class SequenceConverter
     # remove header line
     $dna_file2 = generate_new_file_name();
     $sed = find_executable("sed");
-    $cmd = "$sed -e '/#.*/d' $dna_file > $dna_file2";
+    $cmd = "$sed -e '/#.*/d' -e '/^$/d' $dna_file > $dna_file2";
     $do_sed = shell_exec($cmd);
     if($do_sed) {
       unlink($dna_file2);

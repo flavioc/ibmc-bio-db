@@ -151,7 +151,7 @@ class Command_Line extends BioController
       $this->load->library('SequenceConverter');
       $file2 = $this->sequenceconverter->convert_dna_protein($file);
     } else {
-      $file2 = $info1->convert_protein_file();
+      $file2 = $info->convert_protein_file();
     }
     
     if(!$file2) {

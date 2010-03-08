@@ -114,7 +114,11 @@ class ImportInfo
     $fp = fopen($temp_file, 'w');
 
     foreach($this->ordered_sequences as &$seq) {
-      $name = $seq['name'];
+      if(self::$fast_mode) {
+        $name = $this->sequence_model->get_name($seq['id']);
+      } else {
+        $name = $seq['name'];
+      }
       $id = $seq['id'];
       $content = $this->sequence_model->get_content($id);
       
