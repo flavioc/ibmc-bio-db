@@ -82,7 +82,7 @@ class Blast extends BioController
     if($type == 'dna')
       $programs = array('blastn');
     else
-      $programs = array('blastp', 'tblastx', 'blastp', 'tblastn');
+      $programs = array('blastp', 'tblastx', 'tblastn');
     
     $this->smarty->assign('blast_programs', build_data_array($programs, 'id'));
     if($this->blast_program)
