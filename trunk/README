@@ -20,14 +20,14 @@ First, create an empty database in mysql, then you have two options:
 	sh config_fs.sh <site location in apache dir>
 	sh config_db.sh <database> <database user> <database password>
 	cd db && sh import.sh <database> <user> <password
-	cd scripts && sh run_all.sh
+	cd scripts && sh run_all.sh <database password>
   # update user set password = 'admin_password' where name = 'admin'
 
 You should also install the following cron jobs:
 0 0 * * * /usr/bin/python $(PWD)/scripts/gc_subsequences.py
 
 To install the NCBI taxonomy database, you should do:
-  cd scripts && sh ncbi.sh
+  cd scripts && sh ncbi.sh <database password>
 
 To use some EMBOSS tools you need to create the PRINTS database:
   # sudo sh generate_prints.sh
@@ -41,7 +41,7 @@ To install extra labels please run one of the following scripts:
 
 label_antigenic.py      label_letters.py        label_sigcleave.py
 label_chips.py          label_epestfind.py      label_patmatmotifs.py
-label_iep.py            label_pscan.py
+label_iep.py            label_pscan.py          label_others.py
 
 In some installations, PHP only allows uploads up to 2MB, if you want
 to upload bigger sequence files please change upload_max_filesize and
