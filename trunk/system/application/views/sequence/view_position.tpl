@@ -7,5 +7,5 @@
 {/if}
 
 {if $sub_id}
-<p>The subsequence for this segment is <a href="{site}/sequence/view/{$sub_id}">here</a>.</p>
+<p>The subsequence for this segment is <a href="{site}/sequence/labels/{$sub_id}">here</a>.</p>
 {/if}

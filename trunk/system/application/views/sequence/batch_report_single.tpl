@@ -88,8 +88,8 @@ $(function () {
   {/literal}{if count($labels) > 0}fieldNames.push('Status');
   fields.push('status');{/if}{literal}
   
-  $.merge(fieldNames, ['Name', 'Content', 'Comment', 'Labels']);
-  $.merge(fields, ['name', 'short_content', 'comment', 'labels']);
+  $.merge(fieldNames, ['Name', 'Content', 'Comment']);
+  $.merge(fields, ['name', 'short_content', 'comment']);
   
   grid
   .gridEnable()
@@ -100,7 +100,6 @@ $(function () {
     fields: fields,
     tdClass: {
       add: 'centered',
-      labels: 'centered',
       status: 'centered'
     },
     ordering: {
@@ -108,9 +107,6 @@ $(function () {
       name: 'def'
     },
     dataTransform: {
-      labels: function (row) {
-        return img_go;
-      },
       status: function (row) {
         return img_go;
       },
@@ -122,14 +118,10 @@ $(function () {
       add: 'boolean'
     },
     width: {
-      add: w_boolean,
-      labels: '10%'
+      add: w_boolean
     },
     links: {
       name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
-      },
-      labels: function (row) {
         return get_app_url() + '/sequence/labels/' + row.id;
       }
     },
