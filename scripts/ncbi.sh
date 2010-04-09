@@ -20,7 +20,7 @@ function cleanup ()
 cat <<EOF
 Now installing the NCBI taxonomy database.
 ***************************************************************
-**  This will take some time (~600000 taxonomies to import)  **
+**  This will take some time (~700000 taxonomies to import)  **
 ***************************************************************
 EOF
 
