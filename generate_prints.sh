@@ -6,12 +6,17 @@ VERSIONFILE=newpr.lis.gz
 function discover_version ()
 {
   rm -f $VERSIONFILE
-  wget -q $URL/$VERSIONFILE || exit 1
-  gunzip -c $VERSIONFILE | grep VERSION | awk -F' ' {'print $3'} | sed -e 's/\./_/'
+  wget --timeout=15 -q $URL/$VERSIONFILE
+  if [ ! $? -eq 0 ]; then
+    echo "Failed to retrieve PRINTS database (server down?): run generate_prints.sh later!"
+    exit 1
+  fi
+  VERSION=`gunzip -c $VERSIONFILE | grep VERSION | awk -F' ' {'print $3'} | sed -e 's/\./_/'`
   rm -f $VERSIONFILE
 }
 
-VERSION=`discover_version`
+echo "Discovering PRINTS database latest version..."
+discover_version
 FILE=prints$VERSION.dat
 echo "Last version is $VERSION..."
 wget -c $URL/$FILE.gz || exit 1
