@@ -156,7 +156,7 @@ class Sequence extends BioController
   {
     if(!$this->__can_access($id)) {
       $this->set_error_message('Sequence is private, please login');
-      redirect('sequence/browse');
+      redirect('welcome');
       return;
     }
 
@@ -597,8 +597,9 @@ class Sequence extends BioController
 
     $id = $this->get_post('id');
     $this->sequence_model->delete($id);
+    $this->set_info_message("Sequence has been deleted.");
 
-    redirect('sequence/browse');
+    redirect('welcome');
   }
 
   public function delete_dialog($id)
