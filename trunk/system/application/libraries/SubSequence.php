@@ -70,6 +70,7 @@ class SubSequence
           if($keep) {
             $this->label_sequence_model->remove_labels_sequence($lifetime_id, $new_id);
           } else {
+            date_default_timezone_set('UTC');
             $plus = time() + 60 * 60 * 24 * 3; // 3 days
             $date = date("d-m-Y H:i:s", $plus);
           
