@@ -37,7 +37,7 @@ $(function () {
     },
     links: {
       name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
+        return get_app_url() + '/sequence/labels/' + row.id;
       },
       user_name: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;

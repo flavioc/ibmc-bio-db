@@ -9,7 +9,7 @@
   <p><span class="desc">Translated:</span><a href="{site}/sequence/labels/{$trans_sequence.id}">{$trans_sequence.name}</a></p>
   {/if}
   {if $super}
-  <p><span class="desc">Super:</span><a href="{site}/sequence/view/{$super.id}">{$super.name}</a></p>
+  <p><span class="desc">Super:</span><a href="{site}/sequence/labels/{$super.id}">{$super.name}</a></p>
   {/if}
   {if $lifetime}
   <p><span class="desc">Lifetime:</span>{$lifetime}</p>
