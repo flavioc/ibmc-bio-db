@@ -16,14 +16,13 @@ $(function () {
       , transform: {$transform}
       {/if}{literal}
     },
-    fieldNames: [{/literal}{if $add_change}'Change',{/if}{literal} 'Labels', 'Name'],
-    fields: [{/literal}{if $add_change}'change',{/if}{literal} 'labels', 'name'],
-    tdClass: {user_name: 'centered', labels: 'centered', update: 'centered', change: 'centered'},
+    fieldNames: [{/literal}{if $add_change}'Change',{/if}{literal} 'Name'],
+    fields: [{/literal}{if $add_change}'change',{/if}{literal} 'name'],
+    tdClass: {user_name: 'centered', update: 'centered', change: 'centered'},
     width: {
       user_name: w_user,
       update: w_update,
-      change: w_add,
-      labels: w_select
+      change: w_add
     },
     ordering: {
       name: 'asc',
@@ -32,13 +31,10 @@ $(function () {
     },
     links: {
       name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
+        return get_app_url() + '/sequence/labels/' + row.id;
       },
       user_name: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;
-      },
-      labels: function (row) {
-        return get_app_url() + '/sequence/labels/' + row.id;
       }
     },
     dataTransform: {
@@ -46,12 +42,9 @@ $(function () {
       {literal}
       change: function (row) {
         return img_add;
-      },
+      }
       {/literal}
       {/if}{literal}
-      labels: function (row) {
-        return img_go;
-      }
     }
     {/literal}{if $add_change}
     ,{literal}
