@@ -14,32 +14,22 @@ function start_sequence_grid(place, click, params)
     url: get_app_url() + '/sequence',
     retrieve: 'get_all',
     total: 'get_total',
-    fieldNames: ['Labels', 'Name', 'Last update', 'User'],
-    fields: ['labels', 'name', 'update', 'user_name'],
+    fieldNames: ['Name', 'Last update', 'User'],
+    fields: ['name', 'update', 'user_name'],
     tdClass: {
       update: 'centered',
-      user_name: 'centered',
-      labels: 'centered'
+      user_name: 'centered'
     },
     width: {
       update: '30%',
-      user_name: w_user,
-      labels: w_select
-    },
-    dataTransform: {
-      labels: function (row) {
-        return img_go;
-      }
+      user_name: w_user
     },
     links: {
       name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
+        return get_app_url() + '/sequence/labels/' + row.id;
       },
       user_name: function (row) {
         return get_app_url() + '/profile/view/' + row.update_user_id;
-      },
-      labels: function (row) {
-        return get_app_url() + '/sequence/labels/' + row.id;
       }
     },
     ordering: {

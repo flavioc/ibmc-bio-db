@@ -987,7 +987,7 @@ function get_label_field_data(data, type, name)
   
   switch(type) {
     case 'ref':
-      return '<a href="' + get_app_url() + '/sequence/view/' + data.id + '" target="_blank">' + data.string + '</a>';
+      return '<a href="' + get_app_url() + '/sequence/labels/' + data.id + '" target="_blank">' + data.string + '</a>';
     case 'tax':
       return '<a href="' + get_app_url() + '/taxonomy/view/' + data.id + '" target="_blank">' + data.string + '</a>';
     case 'obj':
@@ -1050,31 +1050,19 @@ function init_result_list()
        params: {
          search: function () { return get_start_search_param(); }
        },
-       fieldNames: ['Labels', 'Name'],
-       fields: ['labels', 'name'],
-       tdClass: {labels: 'centered'},
-       width: {
-         labels: w_select
-       },
+       fieldNames: ['Name'],
+       fields: ['name'],
        ordering: {
          name: 'asc',
          update: 'def',
          user_name: 'def'
        },
-       dataTransform: {
-         labels: function (row) {
-           return img_go;
-         }
-       },
        links: {
          name: function (row) {
-           return get_app_url() + '/sequence/view/' + row.id;
+           return get_app_url() + '/sequence/labels/' + row.id;
          },
          user_name: function (row) {
            return get_app_url() + '/profile/view/' + row.update_user_id;
-         },
-         labels: function (row) {
-           return get_app_url() + '/sequence/labels/' + row.id;
          }
        }
      });

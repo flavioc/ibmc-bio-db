@@ -71,7 +71,7 @@ var link_labels = {
         return row.url_data;
       },
       ref_data: function (row) {
-        return get_app_url() + '/sequence/view/' + row.ref_data;
+        return get_app_url() + '/sequence/labels/' + row.ref_data;
       },
       taxonomy_data: function (row) {
         return get_app_url() + '/taxonomy/view/' + row.taxonomy_data;
