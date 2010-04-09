@@ -1,7 +1,15 @@
 #!/bin/sh
 
-wget -c ftp://ftp.expasy.org/databases/prosite/prosite.dat || exit 1
-wget -c ftp://ftp.expasy.org/databases/prosite/prosite.doc || exit 1
+wget --timeout=15 -c ftp://ftp.expasy.org/databases/prosite/prosite.dat
+if [ ! $? -eq 0 ]; then
+  echo "Failed to retrieve the PROSITE database (server down?): please run generate_prosite.sh later!"
+  exit 1
+fi
+wget --timeout=15 -c ftp://ftp.expasy.org/databases/prosite/prosite.doc
+if [ ! $? -eq 0 ]; then
+  echo "Failed to retrieve the PROSITE database (server down?): please run generate_prosite.sh later!"
+  exit 1
+fi
 
 prosextract -prositedir . || exit 1
 
