@@ -173,12 +173,14 @@ fi
 
 echo
 echo "The application installs the 'admin' user. Please specify the admin password to login. (not echoed)"
+echo "The password must have at least 6 characters"
 echo -n "> "
 read -rs ADMIN_PASSWORD
 echo
 
-if [ -z "$ADMIN_PASSWORD" ]; then
-  echo "Invalid admin password"
+len_admin=${#ADMIN_PASSWORD}
+if [ "$len_admin" -lt 6 ]; then
+  echo "Admin password musth ave at least 6 characters, please re-run script"
   exit 1
 fi
 
