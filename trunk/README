@@ -6,27 +6,36 @@ Dependencies
 - mysql 5.1
 - php-xml
 - python >= 2.x
-- Emboss (seqret and transeq XXX)
+- EMBOSS
 - MySQLdb for python
 
 ====================
 Install
 ====================
 
-First, create an empty database in mysql, then you have two options:
- o Guided install: sh install.sh
- o Manual install:
-	sh config_site.sh <base site url>
-	sh config_fs.sh <site location in apache dir>
-	sh config_db.sh <database> <database user> <database password>
-	cd db && sh import.sh <database> <user> <password
-	cd scripts && sh run_all.sh <database password>
-  # update user set password = 'admin_password' where name = 'admin'
+To install you need to configure the installation
+in the file install.config. Please remember that we encourage that
+you create an empty database before installing the application.
+After editing install.config, just run:
 
-You should also install the following cron jobs:
+$ ./install.sh
+
+An follow the steps. Note that you'll probably don't need
+to install as root, depending on the directories you pass on install.config.
+
+======================
+Extra steps
+======================
+
+The next few tips are only needed when the main install
+script failed or was not configured to do so.
+
+To manually install the garbage collector cron job:
+$ crontab -e
+and append:
 0 0 * * * /usr/bin/python $(PWD)/scripts/gc_subsequences.py
 
-To install the NCBI taxonomy database, you should do:
+To manually install the NCBI taxonomy database, you should do:
   cd scripts && sh ncbi.sh <database password>
 
 To use some EMBOSS tools you need to create the PRINTS database:
@@ -35,15 +44,28 @@ To use some EMBOSS tools you need to create the PRINTS database:
 To use some EMBOSS tools you need to create the PROSITE database:
   # sudo sh generate_prosite.sh
 
-To install extra labels please run one of the following scripts:
+To install labels that were not installed during installation
+you run some of the following scripts:
 
-  # python script.py <database password>
+  # python script.py
 
 label_antigenic.py      label_letters.py        label_sigcleave.py
 label_chips.py          label_epestfind.py      label_patmatmotifs.py
 label_iep.py            label_pscan.py          label_others.py
 
+==========================
+PHP/MySQL considerations
+==========================
+
 In some installations, PHP only allows uploads up to 2MB, if you want
 to upload bigger sequence files please change upload_max_filesize and
 post_max_size in php.ini and reset the HTTP server.
 Note that post_max_size should be greater than upload_max_filesize.
+In the [PHP] section of /etc/php.ini you can use for example:
+post_max_size = 32MB
+upload_max_size = 16MB
+
+For MySQL we recommend activating the query cacher, by setting in
+/etc/my.cnf the following variables in the section [mysqld]:
+query_cache_type=1
+query_cache_size=67108864 # 64MB
