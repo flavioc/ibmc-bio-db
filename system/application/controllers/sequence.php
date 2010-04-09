@@ -47,6 +47,7 @@ class Sequence extends BioController
     $this->smarty->view_s('sequence/view_position');
   }
   
+  /*
   public function browse()
   {
     $this->smarty->assign('title', 'Browse sequences');
@@ -59,6 +60,7 @@ class Sequence extends BioController
 
     $this->smarty->view('sequence/list');
   }
+  */
 
   public function get_all()
   {

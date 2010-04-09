@@ -145,11 +145,6 @@ body>div#top img {
   right: 15px;
 }
 
-#number_sequences:hover {
-  background: #CC0000;
-  color: white;
-}
-
 .desc {
   float:left;
   width: 170px;

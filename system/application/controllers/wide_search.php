@@ -20,6 +20,11 @@ class Wide_Search extends BioController
     $search = stripslashes($search);
     $this->session->set_userdata('search_term', $search);
     
+    if($search == '') {
+      redirect('search?type=search');
+      return;
+    }
+    
     try {
       $parser = new Parser($search);
       $tree = $parser->parse();
