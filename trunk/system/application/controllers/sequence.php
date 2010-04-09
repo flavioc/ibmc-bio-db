@@ -122,7 +122,7 @@ class Sequence extends BioController
     
     $sequence = $this->sequence_model->get($id);
 
-    $this->smarty->assign('title', 'Labels '.$sequence['name']);
+    $this->smarty->assign('title', 'Sequence/Labels: '.$sequence['name']);
     $this->__load_js();
     $this->use_thickbox();
     $this->use_mygrid();
@@ -560,7 +560,7 @@ class Sequence extends BioController
         }
       }
       
-      redirect("sequence/view/$id");
+      redirect("sequence/labels/$id");
     }
   }
   
