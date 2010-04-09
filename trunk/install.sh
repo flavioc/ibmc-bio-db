@@ -69,7 +69,7 @@ function install_emboss_data()
 {
   echo
   echo "If asked, please provide your root password to install the EMBOSS's PROSITE database."
-  sudo sh generate_prosite.sh
+  sudo bash generate_prosite.sh
   echo
   echo
   echo "If asked, please provide your root password to install the EMBOSS's PRINT database."
@@ -80,7 +80,7 @@ function install_emboss_data()
 
 function install_ncbi()
 {
-  cd scripts && ./ncbi.sh $PASSWORD
+  cd scripts && bash ./ncbi.sh $PASSWORD
   if [ $? -ne 0 ]; then
     echo "Run manually: cd scripts && ./ncbi.sh DATABASE_PASSWORD"
   fi
@@ -92,7 +92,11 @@ function run_python_script()
 {
   script="$1"
   cd scripts
-  python "$script" &> /dev/null || exit 1
+  python "$script" &> /dev/null
+  if [ $? -ne 0 ]; then
+    echo "Failed to run python script $script!"
+    exit 1
+  fi
   cd ..
   return 0
 }
@@ -139,7 +143,7 @@ if [ -z "$USER" ]; then
   exit 1
 fi
 
-echo "What's the $DATABASE database password? (password is not echoed)"
+echo "What's the MySQL database password? (password is not echoed)"
 echo -n "> "
 read -rs PASSWORD
 echo
