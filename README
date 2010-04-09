@@ -18,7 +18,7 @@ in the file install.config. Please remember that we encourage that
 you create an empty database before installing the application.
 After editing install.config, just run:
 
-$ ./install.sh
+$ bash install.sh
 
 An follow the steps. Note that you'll probably don't need
 to install as root, depending on the directories you pass on install.config.
