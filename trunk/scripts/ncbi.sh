@@ -1,32 +1,36 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ -z "$1" ]; then
 	echo "Database password must be given."
 	exit 1
 fi
 
-LOCK=ncbi.lock
-
-function cleanup ()
+function cleanup_timeout()
 {
-  rm -f $LOCK
+  echo "Cannot install NCBI database (server down?): please run ncbi.sh later!"
   exit 1
 }
 
-if [ -f $LOCK ]; then
-  echo "Locked!"
+function cleanup ()
+{
+  echo "Failed to install the NCBI database!"
   exit 1
-fi
+}
 
-touch $LOCK
+cat <<EOF
+Now installing the NCBI taxonomy database.
+***************************************************************
+**  This will take some time (~600000 taxonomies to import)  **
+***************************************************************
+EOF
+
 rm -rf taxdump || cleanup
 rm -f taxdump.tar.gz || cleanup
 mkdir -p taxdump || cleanup
-wget -c ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz || cleanup
+wget --timeout=15 -c ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz || cleanup_timeout
 tar zxvf taxdump.tar.gz -C taxdump || cleanup
 rm -f taxdump.tar.gz || cleanup
 python ncbi.py $1 || cleanup
 rm -rf taxdump || cleanup
 
-rm -f $LOCK
 exit 0
