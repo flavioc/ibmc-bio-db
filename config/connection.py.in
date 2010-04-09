@@ -2,7 +2,4 @@ import MySQLdb
 import sys
 
 def create_conn():
-  if len(sys.argv) != 2:
-    print "No database password was given."
-    sys.exit(1)
-  return MySQLdb.connect(host = "localhost", user = "USER_DB", passwd = sys.argv[1], db="DATABASE", use_unicode = True, charset = 'utf8')
+  return MySQLdb.connect(host = "localhost", user = "USER_DB", passwd = 'USER_PWD', db="DATABASE", use_unicode = True, charset = 'utf8')
