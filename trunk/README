@@ -6,7 +6,7 @@ Dependencies
 - mysql 5.1
 - php-xml
 - python >= 2.x
-- Emboss (seqret and transeq)
+- Emboss (seqret and transeq XXX)
 - MySQLdb for python
 
 ====================

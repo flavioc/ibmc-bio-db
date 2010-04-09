@@ -38,7 +38,7 @@
       {/if}
     <input type="submit" value="Search"/>
     </form>
-    <a id="number_sequences" href="{site}/sequence/browse">{$total_seqs} saved sequences</a>
+    <span id="number_sequences">{$total_seqs} saved sequences</span>
   </div>
 </div>
 
@@ -58,13 +58,12 @@
       <li><a href="{site}/search">All</a></li>
     </ul></li>
     <li id="sequence_menu"><a href="#">Sequences</a>
+    {if $logged_in}
     <ul id="sequence_id">
-      <li><a href="{site}/sequence/browse">List</a></li>
-      {if $logged_in}
       <li><a href="{site}/sequence/add">Add/New</a></li>
       <li><a href="{site}/sequence/add_batch">Upload</a></li>
-      {/if}
     </ul></li>
+    {/if}
     {if $logged_in}
     <li id="label_menu"><a href="#">Labels</a>
     <ul id="label_id">
