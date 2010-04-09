@@ -103,18 +103,25 @@ function run_python_script()
 
 function get_crontab()
 {
-  crontab -l 2>1
+  crontab -l 2>&1
 }
 
 add_to_crontab()
 {
+  NEWTAB="0 0 * * * /usr/bin/python $PWD/scripts/gc_subsequences.py"
   CRONTAB=`get_crontab`
+  if [ $? -ne 0 ]; then
+    # empty crontab
+    echo "$NEWTAB" | crontab
+    echo "done [init crontab]."
+    return 0
+  fi
+
   echo $CRONTAB | grep "$PWD/scripts/gc_subsequences.py" &>/dev/null
   if [ $? -eq 0 ]; then
     echo "already installed."
     return 0
   fi
-  NEWTAB="0 0 * * * /usr/bin/python $PWD/scripts/gc_subsequences.py"
   if [ -z "$CRONTAB" ]; then
     echo "$NEWTAB" | crontab
   else
