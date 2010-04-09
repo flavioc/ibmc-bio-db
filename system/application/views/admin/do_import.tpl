@@ -73,16 +73,12 @@ $(function () {
   .grid({
     method: 'local',
     local_data: {/literal}{encode_json value=$sequences}{literal},
-    fieldNames: ['New', 'Name', 'Content', 'Labels'],
-    fields: ['add', 'name', 'short_content', 'labels'],
+    fieldNames: ['New', 'Name', 'Content'],
+    fields: ['add', 'name', 'short_content'],
     tdClass: {
-      add: 'centered',
-      labels: 'centered'
+      add: 'centered'
     },
     dataTransform: {
-      labels: function (row) {
-        return img_go;
-      },
       short_content: function (row) {
         if(row.content != row.short_content) {
           return row.short_content + '...';
@@ -95,14 +91,10 @@ $(function () {
       add: 'boolean'
     },
     width: {
-      add: w_boolean,
-      labels: '10%'
+      add: w_boolean
     },
     links: {
       name: function (row) {
-        return get_app_url() + '/sequence/view/' + row.id;
-      },
-      labels: function (row) {
         return get_app_url() + '/sequence/labels/' + row.id;
       }
     }
