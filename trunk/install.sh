@@ -130,6 +130,25 @@ add_to_crontab()
   echo "done."
 }
 
+function has_my_mysqldb()
+{
+  python 2>1 <<EOF
+import sys
+
+try:
+  import MySQLdb
+  sys.exit(0)
+except ImportError:
+  sys.exit(1)
+EOF
+}
+
+has_my_mysqldb
+if [ $? -ne 0 ]; then
+  echo "Your system doesn't have MySQLdb for python"
+  exit 1
+fi
+
 if [ -z "$SITE_URL" ]; then
   echo "No SITE_URL was defined in $FILE"
   exit 1
