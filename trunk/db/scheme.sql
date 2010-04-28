@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.41, for apple-darwin9.5.0 (i386)
 --
--- Host: localhost    Database: MINHA2
+-- Host: localhost    Database: biosed
 -- ------------------------------------------------------
 -- Server version	5.1.41
 
@@ -215,13 +215,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_label BEFORE DELETE ON label FOR EACH ROW BEGIN CALL DELETE_HISTORY(OLD.history_id); END */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER `biosed`.`drop_label` BEFORE DELETE ON `biosed`.`label`
+ FOR EACH ROW
+BEGIN
+CALL DELETE_HISTORY(OLD.history_id);
+DELETE FROM label_sequence WHERE label_sequence.label_id = OLD.id;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -324,14 +329,8 @@ CREATE TABLE `label_sequence` (
   KEY `int_index` (`int_data`),
   KEY `float_index` (`float_data`),
   KEY `seq_label_index` (`seq_id`,`label_id`),
-  KEY `text_data_index` (`text_data`(16)),
-  CONSTRAINT `label_sequence_ibfk_1` FOREIGN KEY (`seq_id`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `label_sequence_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `label_sequence_ibfk_3` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `label_sequence_ibfk_6` FOREIGN KEY (`ref_data`) REFERENCES `sequence` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `label_sequence_ibfk_7` FOREIGN KEY (`taxonomy_data`) REFERENCES `taxonomy` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `label_sequence_ibfk_8` FOREIGN KEY (`obj_data`) REFERENCES `file` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
+  KEY `text_data_index` (`text_data`(16))
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Label''s of sequences.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -473,9 +472,8 @@ CREATE TABLE `sequence` (
   PRIMARY KEY (`id`),
   KEY `history_id` (`history_id`),
   KEY `name` (`name`(16)),
-  KEY `content` (`content`(16)),
-  CONSTRAINT `sequence_ibfk_1` FOREIGN KEY (`history_id`) REFERENCES `history` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
+  KEY `content` (`content`(16))
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Sequences table.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -510,13 +508,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_seq BEFORE DELETE ON sequence FOR EACH ROW CALL DELETE_HISTORY(OLD.history_id) */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER `biosed`.`drop_seq` BEFORE DELETE ON `biosed`.`sequence`
+ FOR EACH ROW
+BEGIN
+CALL DELETE_HISTORY(OLD.history_id);
+DELETE FROM label_sequence WHERE label_sequence.seq_id = OLD.id OR label_sequence.ref_data = OLD.id;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -610,13 +613,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER drop_tax BEFORE DELETE ON taxonomy FOR EACH ROW CALL DELETE_HISTORY(OLD.history_id) */;;
+/*!50003 CREATE*/ /*!50003 TRIGGER `biosed`.`drop_tax` BEFORE DELETE ON `biosed`.`taxonomy`
+ FOR EACH ROW
+BEGIN
+   CALL DELETE_HISTORY(OLD.history_id);
+   DELETE FROM label_sequence WHERE label_sequence.taxonomy_data = OLD.id;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1115,7 +1123,7 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping routines for database 'MINHA2'
+-- Dumping routines for database 'biosed'
 --
 /*!50003 DROP FUNCTION IF EXISTS `CREATE_HISTORY` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1733,4 +1741,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-03-07 21:07:18
+-- Dump completed on 2010-04-28  1:21:55
