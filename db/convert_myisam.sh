@@ -7,4 +7,4 @@ echo -n "> "
 read -rs PASSWORD
 echo
 
-mysql -u $USER --password="$PASSWORD" $DATABASE < convert_myisam.sql
+mysql -u $USER --password="$PASSWORD" $DATABASE < db/convert_myisam.sql
