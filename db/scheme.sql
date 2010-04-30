@@ -67,6 +67,24 @@ CREATE TABLE `file` (
   CONSTRAINT `file_ibfk_1` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table for object label instances.';
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50003 TRIGGER `drop_file` BEFORE DELETE ON `file`
+ FOR EACH ROW BEGIN
+DELETE FROM label_sequence WHERE label_sequence.obj_data = OLD.id;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `history`
@@ -221,7 +239,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER `biosed`.`drop_label` BEFORE DELETE ON `biosed`.`label`
+/*!50003 CREATE*/ /*!50003 TRIGGER `drop_label` BEFORE DELETE ON `label`
  FOR EACH ROW
 BEGIN
 CALL DELETE_HISTORY(OLD.history_id);
@@ -514,7 +532,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER `biosed`.`drop_seq` BEFORE DELETE ON `biosed`.`sequence`
+/*!50003 CREATE*/ /*!50003 TRIGGER `drop_seq` BEFORE DELETE ON `sequence`
  FOR EACH ROW
 BEGIN
 CALL DELETE_HISTORY(OLD.history_id);
@@ -619,7 +637,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50003 TRIGGER `biosed`.`drop_tax` BEFORE DELETE ON `biosed`.`taxonomy`
+/*!50003 CREATE*/ /*!50003 TRIGGER `drop_tax` BEFORE DELETE ON `taxonomy`
  FOR EACH ROW
 BEGIN
    CALL DELETE_HISTORY(OLD.history_id);
@@ -1741,4 +1759,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-04-28  1:21:55
+-- Dump completed on 2010-04-30 15:48:18
