@@ -132,7 +132,7 @@ add_to_crontab()
 
 function has_my_mysqldb()
 {
-  python 2>1 <<EOF
+  python 2>/dev/null <<EOF
 import sys
 
 try:
