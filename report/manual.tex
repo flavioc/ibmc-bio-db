@@ -1,7 +1,4 @@
 
-In this appendix we will cover the main use cases for the application, from a user point of view.
-After reading this section, the user should be able to install and use the application.
-
 \section{Installation}
 
 Before installing the application we will need to download the install package from the project
@@ -104,7 +101,7 @@ The form contains all the fields needed to create a new label. They are:
   \item \textbf{Validation code}: code to validate a new label instance. Should return true if the value is valid, false otherwise.
   \item \textbf{Modification code}: block of code run after the sequence's content is updated. Should not return anything.
   \item \textbf{Comment}: comment about the label.
-  \item \textbf{Must exist}: if true, every sequence must be annotated with this label, when that doesn't happen the label goes to the sequence's missing list.
+  \item \textbf{Must exist}: if true, every sequence must be annotated with this label, when that does not happen the label goes to the sequence's missing list.
   \item \textbf{Generate on creation}: if true when a sequence is created, the sequence will be automatically annotated with this label using the \textbf{Code} field.
   \item \textbf{Generate on modification}: if true and if the sequence is already annotated with this label, the label value is automatically changed using the \textbf{Code} field when the sequence's content is altered.
   \item \textbf{Deletable}: if true a specific label instance can be user deleted.
@@ -425,7 +422,7 @@ a page like Figure \ref{fig:rank_import} is shown.
 
 The column \textbf{Success} tells if the new rank was installed into the system or not,
 the column \textbf{Mode} indicates if the new rank was added or edited. The \textbf{Parent found}
-column tells if the parent was found in the system (if the system can't find it, it is created).
+column tells if the parent was found in the system (if the system can not find it, it is created).
 The column \textbf{Original parent} was the rank parent before the import operation if the rank
 was already in the system and the column \textbf{Parent} just indicates the new parent rank.
 
