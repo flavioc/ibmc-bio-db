@@ -288,7 +288,8 @@ function run_util_over_sequence($sequence, $command)
   $CI->load->library('SequenceExporter');
   
   $sequence = array('name' => 'SEQ', 'content' => $sequence);
-  $fasta = $CI->sequenceexporter->write_sequences_to_fasta(array($sequence));
+  $seqa=array($sequence);
+  $fasta = $CI->sequenceexporter->write_sequences_to_fasta($seqa);
   $output_file = generate_new_file_name();
   
   $command .= " $fasta -outfile $output_file";
